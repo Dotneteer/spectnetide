@@ -330,7 +330,9 @@ Signature | Value | Description
 `exp(float)` | `float` | __e__ raised to the specified power.
 `fill(string, integer)` | `string` | Creates a new string by concatenating the specified one with the given times.
 `floor(float)` | `float` | The largest integer less than or equal to the specified number.
+`frac(float)` | `float` | The fractional part of the specified number.
 `high(integer)` | `integer` | The leftmost 8 bits (MSB) of a 16-bit integer number.
+`int(float)` | `integer` | The integer part of the specified number.
 `left(string, integer)` | `string` | Takes the leftmost characters of the string with the length specified.
 `len(string)` | `integer` | The length of the specified string.
 `length(string)` | `integer` | The length of the specified string.
@@ -365,12 +367,12 @@ Functions have the same precedence as the unary operators (such as the unary `+`
 
 ## Z80 Instructions
 
-__spectnetide__ implements Every officially documented Z80 instruction as well as the 
+__SpectNetIde__ implements Every officially documented Z80 instruction as well as the 
 non-official ones. During the implementation I used [ClrHome.org](http://clrhome.org/table/)
 as a reference.
 
 Z80 instructions may start with a label. Labels are identifiers that can be terminated by an
-optional colon (```:```). Both labels in these samples are accepted by the compiler:
+optional colon (`:`). Both labels in these samples are accepted by the compiler:
 
 ```
 Start: ld b,#f0
@@ -381,32 +383,34 @@ Wait   djnz Wait
 
 The compiler accepts these mnemonics:
 
-```ADC```, ```ADD```, ```AND```, ```BIT```, ```CALL```, ```CCF```, ```CP```, ```CPD```,
-```CPDR```, ```CPI```, ```CPIR```, ```CPL```, ```DAA```, ```DEC```, ```DI```, ````DJNZ````,
-```EI```, ```EX```, ```EXX```, ```HALT```, ```IM```, ```IN```, ```INC```, ```IND```,
-```INDR```, ```INI```, ```INIR```, ```JP```, ```JR```, ```LD```, ```LDD```, ```LDDR```,
-```LDI```, ```LDIR```, ```NEG```, ```NOP```, ```OR```, ```OTDR```, ```OTIR```, ```OUT```,
-```OUTD```, ```OUTI```, ```POP```, ```PUSH```, ```RES```, ```RET```, ```RETI```, ```RETN```,
-```RL```, ```RLA```, ```RLC```, ```RLCA```, ```RLD```, ```RR```, ```RRA```, ```RRC```,
-```RRCA```, ```RRD```, ```RST```, ```SBC```, ```SCF```, ```SET```, ```SLA```, ```SLL```
-```SRA```, ```SRL```, ```SUB```, ```XOR```.
+`ADC`, `ADD`, `AND`, `BIT`, `CALL`, `CCF`, `CP`, `CPD`,
+`CPDR`, `CPI`, `CPIR`, `CPL`, `DAA`, `DEC`, `DI`, `DJNZ`,
+`EI`, `EX`, `EXX`, `HALT`, `IM`, `IN`, `INC`, `IND`,
+`INDR`, `INI`, `INIR`, `JP`, `JR`, `LD`, `LDD`, `LDDR`, `LDDRX`&ast;, `LDDX`&ast;, 
+`LDI`, `LDIR`, `LDIRSCALE`&ast;, `LDIRX`&ast;, `LDIX`&ast;, `LDPIRX`&ast;, `MIRROR`&ast;, `MUL`&ast;, `NEG`, 
+`NEXTREG`&ast;, `NOP`, `OR`, `OTDR`, `OTIR`, `OUT`, `OUTINB`&ast;,
+`OUTD`, `OUTI`, `PIXELAD`&ast;, `PIXELDN`&ast;, `POP`, `PUSH`, `RES`, `RET`, `RETI`, `RETN`,
+`RL`, `RLA`, `RLC`, `RLCA`, `RLD`, `RR`, `RRA`, `RRC`,
+`RRCA`, `RRD`, `RST`, `SBC`, `SCF`, `SET`, `SETAE`&ast;, `SLA`, `SLL`
+`SRA`, `SRL`, `SUB`, `SWAPNIB`&ast;, `TEST`&ast;, `XOR`.
+
+> The instructions marked with &ast; can be used only with the ZX Spectrum Next model.
 
 ### Z80 Registers
 
 The compiler uses the standard 8-bit and 16-bit register names, as specified in the official 
 Zilog Z80 documentation:
 
-* 8-bit registers: ```A```, ```B```, ```C```, ```D```, ```E```, ```H```, 
-```L```, ```I```, ```R```
-* 16-bit registers: ```AF```, ```BC```, ```DE```, ```HL```, ```SP```, ```IX```, ```IY```
-* For the 8-bit halves of the ```IX``` and ```IY``` index registers, the compiler uses these names:
-```XL```, ```XH```, ```YL```, ```YH```. Alternatively, the compiler accepts these names, too: 
-```IXL```, ```IXH```, ```IYL```, ```IYH```. As a kind of exception to general naming conventions, 
-these mixed-case names are also accepted: ```IXl```, ```IXh```, ```IYl```, ```IYh```.
+* 8-bit registers: `A`, `B`, `C`, `D`, `E`, `H`, `L`, `I`, `R`
+* 16-bit registers: `AF`, `BC`, `DE`, `HL`, `SP`, `IX`, `IY`
+* For the 8-bit halves of the `IX` and `IY` index registers, the compiler uses these names:
+`XL`, `XH`, `YL`, `YH`. Alternatively, the compiler accepts these names, too: 
+`IXL`, `IXH`, `IYL`, `IYH`. As a kind of exception to general naming conventions, 
+these mixed-case names are also accepted: `IXl`, `IXh`, `IYl`, `IYh`.
 
 ### JP Syntax
 
-Z80 assemblers use two different syntax for the indirect ```JP``` statements:
+Z80 assemblers use two different syntax for the indirect `JP` statements:
 
 ```
 ; Notation #1
@@ -419,11 +423,11 @@ jp (hl)
 jp (ix)
 jp (iy)
 ```
-The __spectnetide__ compiler accepts both notation.
+The __SpectNetIde__ compiler accepts both notation.
 
 ### ALU operations syntax
 
-Three standard ALU operations between ```A``` and other operands (```ADD```, ```ADC```, and ```SBC```) sign ```A```
+Three standard ALU operations between `A` and other operands (`ADD`, `ADC`, and `SBC`) sign `A`
 as their first operand:
 
 ```
@@ -432,8 +436,8 @@ adc a,(hl)
 sbc a,e
 ```
 
-Hovewer, the five other standard ALU operations between ```A``` and other operands (```SUB```, ```AND```, ```XOR```, ```OR```
-, and ```CP```) omit ```A``` from their notation:
+Hovewer, the five other standard ALU operations between `A` and other operands (`SUB`, `AND`, `XOR`, 
+`OR`, and `CP`) omit `A` from their notation:
 
 ```
 sub e
@@ -443,7 +447,8 @@ or c
 cp b
 ```
 
-The __spectnetide__ compiler accepts the second group of ALU operations with using the explicit ```A``` operand, too:
+The __SpectNetIde__ compiler accepts the second group of ALU operations with using the explicit 
+`A` operand, too:
 
 ```
 sub a,e
@@ -468,17 +473,17 @@ This a sample demonstrates this situation:
 Table:  ld bc,#4000
 ```
 
-When the compiler emits the code for the ```ld hl,Table``` instruction, it does not know the
-value of ```Table```, as this symbol will receive its value only later. In the first trip, the
-compiler records the fact that later it should use the value of ```Table``` to complete the 
-```ld hl,NNNN``` instruction.
-While emitting the code, the compiler reaches the ```ld bc,#4000``` instruction and at that point 
-it has a value for ```Table```.
+When the compiler emits the code for the `ld hl,Table` instruction, it does not know the
+value of `Table`, as this symbol will receive its value only later. In the first trip, the
+compiler records the fact that later it should use the value of `Table` to complete the 
+`ld hl,NNNN` instruction.
+While emitting the code, the compiler reaches the `ld bc,#4000` instruction and at that point 
+it has a value for `Table`.
 After the code is emitted, in the second &mdash; fixup &mdash; trip, the compiler is able to replace
-```Table``` with its value.
+`Table` with its value.
 
-There might be situations where the compiler cannot resolve symbolic values. In this case it signs an error.
-For example, in this example there is a circular reference between ```Addr1``` and ```Addr2```:
+There might be situations when the compiler cannot resolve symbolic values. In this case it signs an error.
+For example, in this example there is a circular reference between `Addr1` and `Addr2`:
 
 ```
 Addr1: .equ Addr2+#20
@@ -489,7 +494,7 @@ Addr2  .equ Addr1-#10
 ## Pragmas
 
 The compiler understands several pragmas that &mdash; thought they are not Z80 
-instructions &mdash; influence the emitted code. Each pragma has two alternative syntax,
+instructions &mdash; they influence the emitted code. Each pragma has two alternative syntax,
 one with a dot prefix and another without it. 
 
 For example, you can write ```ORG``` or ```.ORG``` to use the __ORG__ pragma.
@@ -507,7 +512,7 @@ For example, the following line sets this location to the 0x6000 address:
 
 If you do not use __ORG__, the default address is 0x8000.
 
-You can apply multiple __ORG__ in your source code. Each usage creates a new segment in the
+You can apply multiple __ORG__ pragmas in your source code. Each usage creates a new segment in the
 assembler output. Take a look at this code:
 
 ```
@@ -519,7 +524,7 @@ assembler output. Take a look at this code:
 ```
 
 This code generates three output segment, each with one emitted byte that represents the 
-corresponding ```LD``` operation. The first segment will start at 0x8000 (default), 
+corresponding `LD` operation. The first segment will start at 0x8000 (default), 
 the second at 0x8100, whilst the third at 0x8200.
 
 ### The ENT pragma
@@ -539,7 +544,7 @@ very first output code segment. Here's a sample:
     ...
 ```
 
-The ```.ent $``` pragma will sign the address of the ```jp #6100``` isntruction as the entry
+The `.ent $` pragma will sign the address of the `jp #6100` isntruction as the entry
 address of the code. Should you omit the __ENT__ pragma from this code, the entry point would be
 0x6200, for this is the start of the very first output segment, even though there is another
 segment starting at 0x6100.
@@ -573,7 +578,7 @@ the code with the __Run Z80 Program__. Nonetheless, the __Export Z80 Program__ w
 ### The DISP pragma
 
 The __DISP__ pragma allows you to define a displacement for the code. The value affects the
-```$``` token that represents the current assembly address. Your code is placed according 
+`$` token that represents the current assembly address. Your code is placed according 
 to the __ORG__ of the particular output segment, but the assembly address is always displaced
 with the value according to __DISP__. Take a look at this sample:
 
@@ -583,8 +588,8 @@ with the value according to __DISP__. Take a look at this sample:
     ld hl,$
 ```
 
-The ```ld hl,$``` instruction will be placed to the 0x6000 address, but it will be equivalent
-with the ```ld hl,#7000``` statement due to the ```.disp #1000``` displacement.
+The `ld hl,$` instruction will be placed to the 0x6000 address, but it will be equivalent
+with the `ld hl,#7000` statement due to the `.disp #1000` displacement.
 
 > Of course, you can use negative displacement, too.
 
@@ -604,10 +609,12 @@ Sym2:   .equ $+4
 
 This sample is equivalent with this one:
 
+```
         .org #6200
         ld hl,#4000 ; Sym1 <-- #4000
         ld bc,#620a ; Sym2 <-- #620a as an ld bc,NNNN operation and
                                an ld hl,NNNN each takes 3 bytes
+```
 
 ### The VAR pragma
 
@@ -627,9 +634,9 @@ here is a sample:
 ```
 
 The __DEFB__ pragma will emit these four bytes starting at 0x6000: 0x01, 0x02, 0x03, 0x04.
-The ```$``` expression will emit 0x03, because at the emission point the current assembly
+The `$` expression will emit 0x03, because at the emission point the current assembly
 address is 0x6003. The __DEFB__ program takes into account only the rightmost 8 bits of any
-expression: this is how ```$``` results in 0x03.
+expression: this is how `$` results in 0x03.
 
 > __DEFB__ has extra syntax variants: `db`, `.db`, `DB`, and `.DB` are accepted, too.
 
@@ -661,7 +668,7 @@ sequence represents the copyrigh sign) : 0x7f, 0x20, 0x62, 0x69, 0x20, 0x6d, 0x6
 
 ### The DEFS pragma
 
-You can emit zero (```0x00```) bytes with this pragma. It accepts a single argument,
+You can emit zero (`0x00`) bytes with this pragma. It accepts a single argument,
 the number of zeros to emit. This code sends 16 zeros to the generated output:
 
 ```
@@ -672,7 +679,7 @@ the number of zeros to emit. This code sends 16 zeros to the generated output:
 
 With __FILLB__, you can emit a particular count of a specific byte. The first argument
 of the pragma sets the count, the second specifies the byte to emit. This code emits 24
-bytes of ```#A5``` values:
+bytes of `#A5` values:
 ```
     .fillb 24,#a5
 ```
@@ -681,7 +688,7 @@ bytes of ```#A5``` values:
 
 With __FILLW__, you can emit a particular count of a specific 16-bit word. The first argument
 of the pragma sets the count, the second specifies the word to emit. This code emits 8
-words (16 bytes) of ```#12A5``` values:
+words (16 bytes) of `#12A5` values:
 ```
     .fillw 8,#12a5
 ```
@@ -692,7 +699,7 @@ Of course, the bytes of a word are emitted in LSB/MSB order.
 ### The SKIP pragma
 
 The __SKIP__ pragma &mdash; as its name suggests &mdash; skips the number of bytes
-as specified in its argument. It fills up the skipped bytes with 0xff.
+as specified in its argument. It fills up the skipped bytes with 0xFF.
 
 ### The EXTERN pragma
 
@@ -703,8 +710,8 @@ does not do any action when observing this pragma.
 
 This pragma is used when you run or debug your Z80 code within the emulator. With Spectrum 128K, Spectrum +3, 
 and Spectrum Next models, you can run the Z80 code in differend contexts. The __MODEL__ pragma lets you
-specify on which model you want to run the code. You can use the ```SPECTRUM48```, ```SPECTRUM128```, 
-```SPECTRUMP3```, or ```NEXT``` identifiers to choose the model (identifiers are case-insensitive):
+specify on which model you want to run the code. You can use the `SPECTRUM48`, `SPECTRUM128`, 
+`SPECTRUMP3`, or `NEXT` identifiers to choose the model (identifiers are case-insensitive):
 
 ```
 .model Spectrum48
@@ -713,11 +720,11 @@ specify on which model you want to run the code. You can use the ```SPECTRUM48``
 .model Next
 ```
 
-For example, when you create code for Spectrum 128K, and add the ```.model Spectrum48``` pragma to the code,
+For example, when you create code for Spectrum 128K, and add the `.model Spectrum48` pragma to the code,
 the __Run Z80 Code__ command will start the virtual machine, turns the machine into Spectrum 48K mode, and ignites
 the code just after that.
 
-_Note_: With the ```#ifmod``` and ```#ifnmod``` directives, you can check the model type. For example, the following
+_Note_: With the `#ifmod` and `#ifnmod` directives, you can check the model type. For example, the following
 Z80 code results green background on Spectrum 48K, cyan an Spectrum 128K:
 
 ```
@@ -824,7 +831,7 @@ Here are a few samples:
 
 ## Directives
 
-The directives of the __spectnetide__ Z80 Assembler representation are used for preprocessing
+The directives of the __SpectNetIde__ Z80 Assembler representation are used for preprocessing
 &mdash; similarly as in the C and C++ programming languages &mdash; though their semantics are
 different.
 
@@ -858,8 +865,8 @@ works in concert with __#ELSE__ and __#ENDIF__:
 ```
 
 Here, __Block #1__ does not generate output, since the condition is false. __Block #2__ emits
-a ```nop```, as the condition is true. The fals condition value in __Block #3__ moves code
-parsing to the ```#else``` branch, so it emits a ```ld b,c``` instruction.
+a `nop`, as the condition is true. The fals condition value in __Block #3__ moves code
+parsing to the `#else` branch, so it emits a `ld b,c` instruction.
 
 ### The #IFDEF and #IFNDEF Directives
 
@@ -891,8 +898,8 @@ Start:
     jp RetAddr
 ```
 
-You can use only these identifiers with this pragma (case-insensitively): ```SPECTRUM48```, 
-```SPECTRUM128```, ```SPECTRUMP3```, ```NEXT```.
+You can use only these identifiers with this pragma (case-insensitively): `SPECTRUM48`, 
+`SPECTRUM128`, `SPECTRUMP3`, `NEXT`.
 
 ### The #DEFINE and #UNDEF Directives
 
@@ -917,8 +924,8 @@ just its existence. With __#UNDEF__ you may declare a symbol undefined.
 #endif
 ```
 
-According to this definition, the first block emits a ```ld, a,b``` instruction, the second one a
-```ld b,c``` instruction.
+According to this definition, the first block emits a `ld, a,b` instruction, the second one a
+`ld b,c` instruction.
 
 ### The #INCLUDE Directive
 
@@ -928,7 +935,7 @@ __#INCLUDE__ accepts a string that names a file with its extension. The file nam
 an absolute or a relative path. When a relative path is provided, its strating point is always
 the source file that holds the __#INCLUDE__ directive.
 
-Assume that this code is in the ```C:\Work``` folder:
+Assume that this code is in the `C:\Work` folder:
 
 ```
 #include "Symbol.z80Asm"

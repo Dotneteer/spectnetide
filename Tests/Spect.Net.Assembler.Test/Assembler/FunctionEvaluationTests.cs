@@ -1055,5 +1055,73 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0200);
         }
+
+        [TestMethod]
+        [DataRow("int(true)", 1)]
+        [DataRow("int(false)", 0)]
+        public void IntWithBoolWorks(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("int(2)", 2)]
+        [DataRow("int(3)", 3)]
+        public void IntWithIntWorks(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("int(2.0)", 2)]
+        [DataRow("int(3.0)", 3)]
+        [DataRow("int(3.25)", 3)]
+        [DataRow("int(3.75)", 3)]
+        public void IntWithRealWorks(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("int(\"fail\")")]
+        [DataRow("int(\"\")")]
+        public void IntWithStringFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("frac(true)", 0.0)]
+        [DataRow("frac(false)", 0.0)]
+        public void FracWithBoolWorks(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("frac(2)", 0.0)]
+        [DataRow("frac(3)", 0.0)]
+        public void FracWithIntWorks(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("frac(2.0)", 0.0)]
+        [DataRow("frac(3.0)", 0.0)]
+        [DataRow("frac(3.25)", 0.25)]
+        [DataRow("frac(3.75)", 0.75)]
+        public void FracWithRealWorks(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("int(\"fail\")")]
+        [DataRow("int(\"\")")]
+        public void FracWithStringFails(string source)
+        {
+            EvalFails(source);
+        }
     }
 }

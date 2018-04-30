@@ -482,6 +482,18 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                         ExpressionValueType.String,
                         ExpressionValueType.Integer)
                 }
+            },
+            { "int", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsLong()), ExpressionValueType.Real)
+                }
+            },
+            { "frac", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsReal() - args[0].AsLong()), ExpressionValueType.Real)
+                }
             }
         };
     }
