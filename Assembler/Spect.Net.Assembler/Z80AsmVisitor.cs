@@ -11,6 +11,7 @@ using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
+using Spect.Net.Assembler.SyntaxTree.Statements;
 
 // ReSharper disable PossibleNullReferenceException
 // ReSharper disable UsePatternMatching
@@ -684,6 +685,60 @@ namespace Spect.Net.Assembler
                 op.Expression = (ExpressionNode)VisitExpr(context.expr());
             }
             return op;
+        }
+
+        #endregion
+
+        #region Statement handling
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitMacroInvocation(Z80AsmParser.MacroInvocationContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new MacroInvocation(context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList()),
+                    context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitMacroStatement(Z80AsmParser.MacroStatementContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new MacroStatement(context.IDENTIFIER().Select(id => id.NormalizeToken()).ToList()),
+                    context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroEndMarker"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitMacroEndMarker(Z80AsmParser.MacroEndMarkerContext context)
+        {
+            return IsInvalidContext(context) 
+                ? null 
+                : AddLine(new MacroEndStatement(), context);
         }
 
         #endregion

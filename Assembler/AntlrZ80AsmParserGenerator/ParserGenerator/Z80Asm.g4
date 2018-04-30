@@ -10,7 +10,7 @@ compileUnit
 	;
 
 asmline
-	:	label? (pragma | operation | macroParam) comment?
+	:	label? (pragma | operation | macroParam | statement | macroInvocation) comment?
 	|	directive comment?
 	|	comment
 	|   label comment?
@@ -53,6 +53,17 @@ directive
 	|	IF expr
 	|	INCLUDE (STRING | FSTRING)
 	;	
+
+statement
+	:	macroStatement
+	|	macroEndMarker
+	;
+
+macroStatement: MACRO '(' (IDENTIFIER (COMMA IDENTIFIER)*)? ')'	;
+macroEndMarker: ENDMACRO ;
+
+
+macroInvocation: IDENTIFIER '(' (expr (COMMA expr)*)? ')'	;
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
@@ -471,6 +482,10 @@ TRACE	: '.trace' | '.TRACE' | 'trace' | 'TRACE' ;
 TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;
 RNDSEED	: '.rndseed' | 'rndseed' | '.RNDSEED' | 'RNDSEED' ;
 DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
+
+// --- Compiler statements
+MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
+ENDMACRO: '.endm' | '.ENDM' | 'endm' | 'ENDM' | '.mend' | '.MEND' | 'mend' | 'MEND' ;
 
 // --- Other tokens
 COLON	: ':' ;

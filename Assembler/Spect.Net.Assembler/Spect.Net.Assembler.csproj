@@ -59,7 +59,9 @@
     <Compile Include="Assembler\Errors.cs" />
     <Compile Include="Assembler\FixupEntry.cs" />
     <Compile Include="Assembler\FixupType.cs" />
+    <Compile Include="Assembler\MacroDefinition.cs" />
     <Compile Include="Assembler\OperandRule.cs" />
+    <Compile Include="Assembler\ResolutionScopeBase.cs" />
     <Compile Include="Assembler\SourceFileItem.cs" />
     <Compile Include="Assembler\SpectrumModelType.cs" />
     <Compile Include="Assembler\Z80Assembler.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="SyntaxTree\Expressions\UnaryExpressionNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
+    <Compile Include="SyntaxTree\ILabelSetter.cs" />
     <Compile Include="SyntaxTree\IncludeDirective.cs" />
     <Compile Include="SyntaxTree\IndexedAddress.cs" />
     <Compile Include="SyntaxTree\MacroParamLine.cs" />
@@ -115,6 +118,7 @@
     <Compile Include="SyntaxTree\OperationBase.cs" />
     <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
     <Compile Include="SyntaxTree\Operations\EmittingOperationBase.cs" />
+    <Compile Include="SyntaxTree\Operations\MacroInvocation.cs" />
     <Compile Include="SyntaxTree\Operations\TrivialNextOperation.cs" />
     <Compile Include="SyntaxTree\Operations\TrivialOperation.cs" />
     <Compile Include="SyntaxTree\ParserErrorLine.cs" />
@@ -139,6 +143,11 @@
     <Compile Include="SyntaxTree\Pragmas\VarPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\XentPragma.cs" />
     <Compile Include="SyntaxTree\SourceLineBase.cs" />
+    <Compile Include="SyntaxTree\StatementBase.cs" />
+    <Compile Include="SyntaxTree\Statements\BlockStatementBase.cs" />
+    <Compile Include="SyntaxTree\Statements\EndStatementBase.cs" />
+    <Compile Include="SyntaxTree\Statements\MacroEndStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\MacroStatement.cs" />
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />
     <Compile Include="SyntaxTree\TextSpan.cs" />
     <Compile Include="SyntaxTree\Z80AsmParserErrorInfo.cs" />

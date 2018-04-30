@@ -269,6 +269,41 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void EquPragmaWorksWithImmediateEvaluation2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol: .equ 100+100
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Symbols["MYSYMBOL"].Value.ShouldBe((ushort)200);
+        }
+
+        [TestMethod]
+        public void EquPragmaWorksWithImmediateEvaluation3()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol
+                    .equ 100+100
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Symbols["MYSYMBOL"].Value.ShouldBe((ushort)200);
+        }
+
+        [TestMethod]
         public void EquPragmaWorksWithRedefinition()
         {
             // --- Arrange

@@ -2,12 +2,86 @@
 using Shouldly;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
+using Spect.Net.Assembler.SyntaxTree.Statements;
 
 namespace Spect.Net.Assembler.Test.Parser
 {
     [TestClass]
-    public class MacroParamsTests : ParserTestBed
+    public class MacroTests : ParserTestBed
     {
+        [TestMethod]
+        [DataRow(".macro()")]
+        [DataRow("macro()")]
+        [DataRow(".MACRO()")]
+        [DataRow("MACRO()")]
+        public void MacroWithNoParameterWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as MacroStatement;
+            line.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".macro(arg1)", "ARG1")]
+        [DataRow("macro(arg1)", "ARG1")]
+        [DataRow(".MACRO(arg1)", "ARG1")]
+        [DataRow(".MACRO(arg1)", "ARG1")]
+        public void MacroWithArgumentsWorks(string source, string arg1)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as MacroStatement;
+            line.ShouldNotBeNull();
+            line.Arguments.Count.ShouldBe(1);
+            line.Arguments[0].ShouldBe(arg1);
+        }
+
+        [TestMethod]
+        [DataRow(".macro(arg1, secondArg)", "ARG1", "SECONDARG")]
+        [DataRow("macro(arg1, secondArg)", "ARG1", "SECONDARG")]
+        [DataRow(".MACRO(arg1, secondArg)", "ARG1", "SECONDARG")]
+        [DataRow("MACRO(arg1, secondArg)", "ARG1", "SECONDARG")]
+        public void MacroWithTwoArgumentsWorks(string source, string arg1, string arg2)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as MacroStatement;
+            line.ShouldNotBeNull();
+            line.Arguments.Count.ShouldBe(2);
+            line.Arguments[0].ShouldBe(arg1);
+            line.Arguments[1].ShouldBe(arg2);
+        }
+
+        [TestMethod]
+        [DataRow(".macro(arg1, secondArg, third)", "ARG1", "SECONDARG", "THIRD")]
+        [DataRow("macro(arg1, secondArg, third)", "ARG1", "SECONDARG", "THIRD")]
+        [DataRow(".MACRO(arg1, secondArg, third)", "ARG1", "SECONDARG", "THIRD")]
+        [DataRow("MACRO(arg1, secondArg, third)", "ARG1", "SECONDARG", "THIRD")]
+        public void MacroWithThreeArgumentsWorks(string source, string arg1, string arg2, string arg3)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as MacroStatement;
+            line.ShouldNotBeNull();
+            line.Arguments.Count.ShouldBe(3);
+            line.Arguments[0].ShouldBe(arg1);
+            line.Arguments[1].ShouldBe(arg2);
+            line.Arguments[2].ShouldBe(arg3);
+        }
+
         [TestMethod]
         public void MacroParamOperationWorks()
         {
@@ -118,6 +192,9 @@ namespace Spect.Net.Assembler.Test.Parser
         [DataRow("jr nz,{{MyMacroParam}}")]
         [DataRow("jp nz,{{MyMacroParam}}")]
         [DataRow("call nz,{{MyMacroParam}}")]
+        [DataRow("bit 2,{{MyMacroParam}}")]
+        [DataRow("set 2,{{MyMacroParam}}")]
+        [DataRow("res 2,{{MyMacroParam}}")]
         public void MacroParamInFirstOperandWorks(string source)
         {
             // --- Act
@@ -163,6 +240,23 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Operand2.Type.ShouldBe(OperandType.Expr);
         }
+
+        [TestMethod]
+        [DataRow("bit {{MyMacroParam}},b")]
+        [DataRow("set {{MyMacroParam}},b")]
+        [DataRow("res {{MyMacroParam}},b")]
+        public void MacroParamInBitOperationsWork(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
+            line.ShouldNotBeNull();
+            line.BitIndex.HasMacroParameter.ShouldBeTrue();
+        }
+
 
         [TestMethod]
         [DataRow("{{par}}")]

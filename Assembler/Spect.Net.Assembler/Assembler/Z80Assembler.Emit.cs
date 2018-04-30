@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Xml.Schema;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
+using Spect.Net.Assembler.SyntaxTree.Statements;
 
 // ReSharper disable InlineOutVariableDeclaration
 // ReSharper disable UsePatternMatching
@@ -28,6 +28,11 @@ namespace Spect.Net.Assembler.Assembler
         /// The current source line being processed
         /// </summary>
         public SourceLineBase CurrentSourceLine { get; private set; }
+
+        /// <summary>
+        /// A lable that overflew from a label-only line
+        /// </summary>
+        public NoInstructionLine OverflowLabelLine { get; private set; }
 
         /// <summary>
         /// Gets the current assembly address (represented by the "$" sign
@@ -52,28 +57,38 @@ namespace Spect.Net.Assembler.Assembler
             _output.Segments.Clear();
             EnsureCodeSegment();
 
-            foreach (var asmLine in lines)
+            // --- Iterate through all parsed lines
+            var currentLineIndex = 0;
+            while (currentLineIndex < lines.Count)
             {
+                var asmLine = lines[currentLineIndex];
                 CurrentSourceLine = asmLine;
+
+                // --- Record the label of a label-only line
+                if (asmLine is NoInstructionLine noInstrLine && noInstrLine.Label != null)
+                {
+                    if (OverflowLabelLine != null)
+                    {
+                        CreateCurrentPointLabel(noInstrLine);
+                    }
+                    OverflowLabelLine = noInstrLine;
+                }
 
                 // --- Store the label information, provided there is any
                 // --- except VAR and EQU pragma labels
-                if (asmLine.Label != null && !(asmLine is LabelSetterPragmaBase))
+                if (asmLine.Label != null && !(asmLine is ILabelSetter))
                 {
-                    if (_output.Symbols.ContainsKey(asmLine.Label))
-                    {
-                        ReportError(Errors.Z0040, asmLine, asmLine.Label);
-                    }
-                    else
-                    {
-                        _output.Symbols.Add(asmLine.Label, new ExpressionValue(GetCurrentAssemblyAddress()));
-                    }
+                    CreateCurrentPointLabel(asmLine);
                 }
 
-                var pragmaLine = asmLine as PragmaBase;
-                if (pragmaLine != null)
+                if (asmLine is PragmaBase pragmaLine)
                 {
                     ApplyPragma(pragmaLine);
+                }
+                else if (asmLine is MacroStatement macroStatement)
+                {
+                    // --- Check macro definition
+                    CollectMacroDefinition(macroStatement, lines, ref currentLineIndex);
                 }
                 else
                 {
@@ -89,9 +104,47 @@ namespace Spect.Net.Assembler.Assembler
                         _output.AddressMap[sourceInfo] = addr;
                     }
                 }
+
+                // --- Next line
+                currentLineIndex++;
             }
             return _output.ErrorCount == 0;
         }
+
+        /// <summary>
+        /// Creates a label at the current point
+        /// </summary>
+        /// <param name="asmLine">Assembly line with a label</param>
+        private void CreateCurrentPointLabel(SourceLineBase asmLine)
+        {
+            if (_output.Symbols.ContainsKey(asmLine.Label))
+            {
+                ReportError(Errors.Z0040, asmLine, asmLine.Label);
+            }
+            else
+            {
+                _output.Symbols.Add(asmLine.Label, new ExpressionValue(GetCurrentAssemblyAddress()));
+            }
+        }
+
+        #region Statement processing
+
+        /// <summary>
+        /// Checks and collects the current macro definition
+        /// </summary>
+        /// <param name="macro">Statement for the macro</param>
+        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="currentLineIndex">Index of the macro definition line</param>
+        private void CollectMacroDefinition(MacroStatement macro, List<SourceLineBase> lines, ref int currentLineIndex)
+        {
+            if (macro.Label == null)
+            {
+                ReportError(Errors.Z0400, macro);
+            }
+            // TODO: Implement this method
+        }
+
+        #endregion
 
         #region Pragma processing
 

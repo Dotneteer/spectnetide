@@ -100,7 +100,7 @@
     <Compile Include="Parser\TrivialOperationTests.cs" />
     <Compile Include="Parser\SpectrumStringTests.cs" />
     <Compile Include="Parser\LiteralParserTests.cs" />
-    <Compile Include="Parser\MacroParamsTests.cs" />
+    <Compile Include="Parser\MacroTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

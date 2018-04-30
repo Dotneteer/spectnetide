@@ -98,6 +98,50 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitDirective([NotNull] Z80AsmParser.DirectiveContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStatement([NotNull] Z80AsmParser.StatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStatement([NotNull] Z80AsmParser.StatementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMacroStatement([NotNull] Z80AsmParser.MacroStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.macroStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMacroStatement([NotNull] Z80AsmParser.MacroStatementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroEndMarker"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMacroEndMarker([NotNull] Z80AsmParser.MacroEndMarkerContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.macroEndMarker"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMacroEndMarker([NotNull] Z80AsmParser.MacroEndMarkerContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMacroInvocation([NotNull] Z80AsmParser.MacroInvocationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMacroInvocation([NotNull] Z80AsmParser.MacroInvocationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.orgPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
