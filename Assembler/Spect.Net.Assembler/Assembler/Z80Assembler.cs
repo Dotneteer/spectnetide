@@ -433,7 +433,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="errorCode">Code of error</param>
         /// <param name="line">Source line associated with the error</param>
         /// <param name="parameters">Optiona error message parameters</param>
-        private void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
+        public void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
         {
             var sourceItem = line != null 
                 ? _output.SourceFileList[line.FileIndex] 

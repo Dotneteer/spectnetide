@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.SyntaxTree.Statements
 {
@@ -21,12 +22,22 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// <summary>
         /// Searches the assembly lines for the end of the block
         /// </summary>
+        /// <param name="asm">Assembler instance</param>
         /// <param name="lines"></param>
         /// <param name="currentLineIndex"></param>
         /// <returns></returns>
-        public bool SearchForEnd(List<SourceLineBase> lines, ref int currentLineIndex)
+        public bool SearchForEnd(Z80Assembler asm, List<SourceLineBase> lines, ref int currentLineIndex)
         {
+            if (currentLineIndex >= lines.Count)
+            {
+                return false;
+            }
+
+            // --- Store the start line for error reference
+            var startLine = lines[currentLineIndex];
             currentLineIndex++;
+
+            // --- Iterate through lines
             while (currentLineIndex < lines.Count)
             {
                 var curLine = lines[currentLineIndex];
@@ -37,10 +48,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
                 }
                 if (curLine is BlockStatementBase blockStmt)
                 {
-                    var success = blockStmt.SearchForEnd(lines, ref currentLineIndex);
+                    var success = blockStmt.SearchForEnd(asm, lines, ref currentLineIndex);
                     if (!success)
                     {
-                        // TODO: Report issue
+                        asm.ReportError(Errors.Z0400, startLine, blockStmt.EndStatementName);
                         return false;
                     }
                 }

@@ -16,12 +16,47 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Act
             var output = compiler.Compile(@"
-                macro()
+                .macro()
+                .endm
                 ");
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0400);
         }
+
+        [TestMethod]
+        public void MacroWithLabelWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyMacro: .macro()
+                    .endm
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void MacroWithHangingLabelWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyMacro: 
+                    .macro()
+                    .endm
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+        }
+
     }
 }

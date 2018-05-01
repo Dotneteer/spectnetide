@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
@@ -77,11 +78,6 @@ namespace Spect.Net.Assembler.Assembler
                         OverflowLabelLine = noInstrLine;
                     }
                 }
-                else if (asmLine is MacroStatement macroStatement)
-                {
-                    // --- Check macro definition
-                    CollectMacroDefinition(macroStatement, lines, ref currentLineIndex);
-                }
                 else
                 {
                     string currentLabel;
@@ -128,6 +124,11 @@ namespace Spect.Net.Assembler.Assembler
                     {
                         // --- Process a pragma
                         ApplyPragma(pragmaLine, currentLabel);
+                    }
+                    else if (asmLine is MacroStatement macroStatement)
+                    {
+                        // --- Check macro definition
+                        CollectMacroDefinition(macroStatement, currentLabel, lines, ref currentLineIndex);
                     }
                     else
                     {
@@ -182,15 +183,34 @@ namespace Spect.Net.Assembler.Assembler
         /// Checks and collects the current macro definition
         /// </summary>
         /// <param name="macro">Statement for the macro</param>
+        /// <param name="label">Label of the macro</param>
         /// <param name="lines">Parsed assembly lines</param>
         /// <param name="currentLineIndex">Index of the macro definition line</param>
-        private void CollectMacroDefinition(MacroStatement macro, List<SourceLineBase> lines, ref int currentLineIndex)
+        private void CollectMacroDefinition(MacroStatement macro, string label,
+            List<SourceLineBase> lines, ref int currentLineIndex)
         {
-            if (macro.Label == null)
+            if (label == null)
             {
                 ReportError(Errors.Z0400, macro);
             }
-            // TODO: Implement this method
+            else if (_output.Macros.ContainsKey(label))
+            {
+                ReportError(Errors.Z0402, macro, label);
+            }
+
+            // --- Search for the end of the macro
+            var firstLine = currentLineIndex;
+            var success = macro.SearchForEnd(this, lines, ref currentLineIndex);
+            if (success)
+            {
+                // --- Store macro definition
+                if (label != null)
+                {
+                    _output.Macros[label] = new MacroDefinition(label, firstLine, currentLineIndex);
+                }
+
+                // --- Check each macro line for invalid macro parameter names
+            }
         }
 
         #endregion
@@ -1142,6 +1162,11 @@ namespace Spect.Net.Assembler.Assembler
                 else if (op.Operand2.Register == "IY")
                 {
                     spCode = 0xFDF9;
+                }
+                else if (op.Operand2.Register != "HL")
+                {
+                    asm.ReportInvalidLoadOp(op, op.Operand.Register, op.Operand2.Register);
+                    return;
                 }
                 asm.EmitDoubleByte(spCode);
                 return;

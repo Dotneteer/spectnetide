@@ -66,6 +66,8 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0307 = "Z0307";
 
         public const string Z0400 = "Z0400";
+        public const string Z0401 = "Z0401";
+        public const string Z0402 = "Z0402";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -124,6 +126,8 @@ namespace Spect.Net.Assembler.Assembler
             { Z0306, "A string value is expected." },
             { Z0307, "Cannot use an empty string with DEFG pragma." },
             { Z0400, "You cannot define a macro without a name." },
+            { Z0401, "Missing {0} statement." },
+            { Z0402, "Macro with name '{0}' has already been declared." },
         };
 
         /// <summary>
