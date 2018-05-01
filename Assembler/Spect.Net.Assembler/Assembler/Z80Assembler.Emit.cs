@@ -64,26 +64,18 @@ namespace Spect.Net.Assembler.Assembler
                 var asmLine = lines[currentLineIndex];
                 CurrentSourceLine = asmLine;
 
-                // --- Record the label of a label-only line
-                if (asmLine is NoInstructionLine noInstrLine && noInstrLine.Label != null)
+                if (asmLine is NoInstructionLine noInstrLine)
                 {
-                    if (OverflowLabelLine != null)
+                    if (noInstrLine.Label != null)
                     {
-                        CreateCurrentPointLabel(noInstrLine);
+                        // --- This is a label-only line
+                        if (OverflowLabelLine != null)
+                        {
+                            // --- Create a label point for the previous label
+                            CreateCurrentPointLabel(OverflowLabelLine);
+                        }
+                        OverflowLabelLine = noInstrLine;
                     }
-                    OverflowLabelLine = noInstrLine;
-                }
-
-                // --- Store the label information, provided there is any
-                // --- except VAR and EQU pragma labels
-                if (asmLine.Label != null && !(asmLine is ILabelSetter))
-                {
-                    CreateCurrentPointLabel(asmLine);
-                }
-
-                if (asmLine is PragmaBase pragmaLine)
-                {
-                    ApplyPragma(pragmaLine);
                 }
                 else if (asmLine is MacroStatement macroStatement)
                 {
@@ -92,22 +84,79 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else
                 {
-                    if (asmLine is OperationBase opLine)
+                    string currentLabel;
+                    if (OverflowLabelLine == null)
                     {
-                        // --- Emit the code output
-                        var addr = GetCurrentAssemblyAddress();
-                        EmitAssemblyOperationCode(opLine);
+                        // --- No hanging label, use the one in the current line
+                        currentLabel = asmLine.Label;
+                    }
+                    else
+                    {
+                        if (asmLine.Label == null)
+                        {
+                            // --- No current label, use the hanging label
+                            currentLabel = OverflowLabelLine.Label;
+                        }
+                        else
+                        {
+                            // --- Create a point for the hanging label, and use the current label
+                            CreateCurrentPointLabel(OverflowLabelLine);
+                            currentLabel = asmLine.Label;
+                            OverflowLabelLine = null;
+                        }
+                    }
 
-                        // --- Generate source map information
-                        var sourceInfo = (opLine.FileIndex, opLine.SourceLine);
-                        _output.SourceMap[addr] = sourceInfo;
-                        _output.AddressMap[sourceInfo] = addr;
+                    // --- Check if there's a label to create
+                    if (currentLabel != null)
+                    {
+                        // --- There's a label, we clear the previous hanging label
+                        OverflowLabelLine = null;
+                        if (!(asmLine is ILabelSetter))
+                        {
+                            // --- Create the label unless the current pragma does it
+                            if (_output.Symbols.ContainsKey(currentLabel))
+                            {
+                                ReportError(Errors.Z0040, asmLine, currentLabel);
+                            }
+                            else
+                            {
+                                _output.Symbols.Add(currentLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                            }
+                        }
+                    }
+                    if (asmLine is PragmaBase pragmaLine)
+                    {
+                        // --- Process a pragma
+                        ApplyPragma(pragmaLine, currentLabel);
+                    }
+                    else
+                    {
+                        if (asmLine is OperationBase opLine)
+                        {
+                            // --- Emit the code output
+                            var addr = GetCurrentAssemblyAddress();
+                            EmitAssemblyOperationCode(opLine);
+
+                            // --- Generate source map information
+                            var sourceInfo = (opLine.FileIndex, opLine.SourceLine);
+                            _output.SourceMap[addr] = sourceInfo;
+                            _output.AddressMap[sourceInfo] = addr;
+                        }
                     }
                 }
 
                 // --- Next line
                 currentLineIndex++;
             }
+
+            // --- Handle the orphan hanging label
+            if (OverflowLabelLine != null)
+            {
+                CreateCurrentPointLabel(OverflowLabelLine);
+                OverflowLabelLine = null;
+            }
+
+            // --- Ok, it's time to return with the result
             return _output.ErrorCount == 0;
         }
 
@@ -151,15 +200,14 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Applies a pragma in the assembly source code
         /// </summary>
-        /// <param name="pragmaLine">
-        /// Assembly line that represents a pragma
-        /// </param>
-        private void ApplyPragma(PragmaBase pragmaLine)
+        /// <param name="pragmaLine">Assembly line that represents a pragma</param>
+        /// <param name="label">Label to use with the pragme</param>
+        private void ApplyPragma(PragmaBase pragmaLine, string label)
         {
             switch (pragmaLine)
             {
                 case OrgPragma orgPragma:
-                    ProcessOrgPragma(orgPragma);
+                    ProcessOrgPragma(orgPragma, label);
                     return;
                 case EntPragma entPragma:
                     ProcessEntPragma(entPragma);
@@ -171,10 +219,10 @@ namespace Spect.Net.Assembler.Assembler
                     ProcessDispPragma(dispPragma);
                     return;
                 case EquPragma equPragma:
-                    ProcessEquPragma(equPragma);
+                    ProcessEquPragma(equPragma, label);
                     return;
                 case VarPragma varPragma:
-                    ProcessVarPragma(varPragma);
+                    ProcessVarPragma(varPragma, label);
                     return;
                 case SkipPragma skipPragma:
                     ProcessSkipPragma(skipPragma);
@@ -216,7 +264,8 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the ORG pragma
         /// </summary>
         /// <param name="pragma">Assembly line of ORG pragma</param>
-        private void ProcessOrgPragma(OrgPragma pragma)
+        /// <param name="label">Label to use</param>
+        private void ProcessOrgPragma(OrgPragma pragma, string label)
         {
             var value = EvalImmediate(pragma, pragma.Expr);
             if (!value.IsValid) return;
@@ -236,18 +285,18 @@ namespace Spect.Net.Assembler.Assembler
                 CurrentSegment.StartAddress = value.Value;
             }
 
-            if (pragma.Label == null)
+            if (label == null)
             {
                 return;
             }
 
             // --- There is a label, set its value
-            if (_output.Symbols.ContainsKey(pragma.Label))
+            if (_output.Symbols.ContainsKey(label))
             {
-                ReportError(Errors.Z0040, pragma, pragma.Label);
+                ReportError(Errors.Z0040, pragma, label);
                 return;
             }
-            _output.Symbols.Add(pragma.Label, value);
+            _output.Symbols.Add(label, value);
         }
 
         /// <summary>
@@ -297,27 +346,28 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the EQU pragma
         /// </summary>
         /// <param name="pragma">Assembly line of EQU pragma</param>
-        private void ProcessEquPragma(EquPragma pragma)
+        /// <param name="label">Label to use</param>
+        private void ProcessEquPragma(EquPragma pragma, string label)
         {
-            if (pragma.Label == null)
+            if (label == null)
             {
                 ReportError(Errors.Z0082, pragma);
                 return;
             }
-            if (_output.Symbols.ContainsKey(pragma.Label))
+            if (_output.Symbols.ContainsKey(label))
             {
-                ReportError(Errors.Z0040, pragma, pragma.Label);
+                ReportError(Errors.Z0040, pragma, label);
                 return;
             }
 
             var value = Eval(pragma, pragma.Expr);
             if (value.IsNonEvaluated)
             {
-                RecordFixup(pragma, FixupType.Equ, pragma.Expr, pragma.Label);
+                RecordFixup(pragma, FixupType.Equ, pragma.Expr, label);
             }
             else
             {
-                _output.Symbols.Add(pragma.Label, value);
+                _output.Symbols.Add(label, value);
             }
         }
 
@@ -325,9 +375,10 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the VAR pragma
         /// </summary>
         /// <param name="pragma">Assembly line of VAR pragma</param>
-        private void ProcessVarPragma(VarPragma pragma)
+        /// <param name="label">Label to use</param>
+        private void ProcessVarPragma(VarPragma pragma, string label)
         {
-            if (pragma.Label == null)
+            if (label == null)
             {
                 ReportError(Errors.Z0086, pragma);
                 return;
@@ -337,12 +388,12 @@ namespace Spect.Net.Assembler.Assembler
             if (!value.IsValid) return;
 
             // --- Allow reusing a symbol already declared
-            if (_output.Symbols.ContainsKey(pragma.Label))
+            if (_output.Symbols.ContainsKey(label))
             {
                 ReportError(Errors.Z0087, pragma);
                 return;
             }
-            _output.Vars[pragma.Label] = value;
+            _output.Vars[label] = value;
         }
 
         /// <summary>
