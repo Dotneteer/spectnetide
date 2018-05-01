@@ -26,6 +26,20 @@ namespace Spect.Net.Assembler.Assembler
         /// </returns>
         ExpressionValue IEvaluationContext.GetSymbolValue(string symbol)
         {
+            // --- Check the local scope in stack order
+            foreach (var scope in _output.LocalScopes)
+            {
+                if (scope.Symbols.TryGetValue(symbol, out var localSymbolValue))
+                {
+                    return localSymbolValue;
+                }
+                if (scope.Vars.TryGetValue(symbol, out var localVarValue))
+                {
+                    return localVarValue;
+                }
+            }
+
+            // --- Check the global scope
             if (_output.Symbols.TryGetValue(symbol, out var symbolValue))
             {
                 return symbolValue;
@@ -34,6 +48,41 @@ namespace Spect.Net.Assembler.Assembler
                 ? varValue
                 : null;
         }
+
+        #region Symbol handler methods
+
+        /// <summary>
+        /// Tests if the current assembly instruction is in the global scope
+        /// </summary>
+        public bool IsInGlobalScope => _output.LocalScopes.Count == 0;
+
+        /// <summary>
+        /// Checks if the specified symbol exists
+        /// </summary>
+        /// <param name="symbol">Symbol to check</param>
+        /// <returns></returns>
+        public bool SymbolExists(string symbol)
+        {
+            var lookup = _output.LocalScopes.Count > 0
+                ? _output.LocalScopes.Peek().Symbols
+                : _output.Symbols;
+            return lookup.ContainsKey(symbol);
+        }
+
+        /// <summary>
+        /// Adds a symbol to the current scope
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="value"></param>
+        public void AddSymbol(string symbol, ExpressionValue value)
+        {
+            var lookup = _output.LocalScopes.Count > 0
+                ? _output.LocalScopes.Peek().Symbols
+                : _output.Symbols;
+            lookup.Add(symbol, value);
+        }
+
+        #endregion
 
         #region Evaluation methods
 
@@ -114,8 +163,14 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="label">Optional EQU label</param>
         private void RecordFixup(SourceLineBase opLine, FixupType type, ExpressionNode expression, string label = null)
         {
-            _output.Fixups.Add(new FixupEntry(opLine, type, _output.Segments.Count - 1,
-                CurrentSegment.CurrentOffset, expression, label));
+            var localScope = IsInGlobalScope ? null : _output.LocalScopes.Peek();
+            var fixup = new FixupEntry(this, localScope, opLine, type, _output.Segments.Count - 1,
+                CurrentSegment.CurrentOffset, expression, label);
+            foreach (var scope in _output.LocalScopes)
+            {
+                scope.Fixups.Add(fixup);
+            }
+            _output.Fixups.Add(fixup);
         }
 
         /// <summary>
@@ -126,12 +181,11 @@ namespace Spect.Net.Assembler.Assembler
         {
             // --- First, fix the .equ values
             var success = true;
-            foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ))
+            foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ && !f.Resolved))
             {
                 if (EvaluateFixupExpression(equ, false, out var value))
                 {
                     _output.Symbols[equ.Label] = value;
-                    equ.Resolved = true;
                 }
                 else
                 {
@@ -140,13 +194,12 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Second, fix all the other values
-            foreach (var fixup in _output.Fixups.Where(f => f.Type != FixupType.Equ))
+            foreach (var fixup in _output.Fixups.Where(f => f.Type != FixupType.Equ && !f.Resolved))
             {
                 if (EvaluateFixupExpression(fixup, true, out var value))
                 {
                     var segment = _output.Segments[fixup.SegmentIndex];
                     var emittedCode = segment.EmittedCode;
-                    fixup.Resolved = true;
                     switch (fixup.Type)
                     {
                         case FixupType.Bit8:
@@ -205,7 +258,12 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0201, fixup.SourceLine);
                 return false;
             }
+
+            // --- Now resolve the fixup
             exprValue = fixup.Expression.Evaluate(this);
+            fixup.Resolved = true;
+
+            // --- Check, if resolution was successful
             if (fixup.Expression.EvaluationError != null)
             {
                 ReportError(Errors.Z0200, fixup.SourceLine, fixup.Expression.EvaluationError);
@@ -216,6 +274,8 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0305, fixup.SourceLine);
                 return false;
             }
+
+            // --- Ok, no error
             return true;
         }
 

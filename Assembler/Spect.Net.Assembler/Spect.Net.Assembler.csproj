@@ -64,6 +64,7 @@
     <Compile Include="Assembler\ResolutionScopeBase.cs" />
     <Compile Include="Assembler\SourceFileItem.cs" />
     <Compile Include="Assembler\SpectrumModelType.cs" />
+    <Compile Include="Assembler\SymbolScope.cs" />
     <Compile Include="Assembler\Z80Assembler.cs" />
     <Compile Include="Assembler\Z80Assembler.Emit.cs" />
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />

@@ -27,15 +27,20 @@ namespace Spect.Net.Assembler.Assembler
             new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
+        /// The list of fixups to carry out as the last phase of the compilation
+        /// </summary>
+        public List<FixupEntry> Fixups { get; } = new List<FixupEntry>();
+
+        /// <summary>
+        /// Local symbol scopes
+        /// </summary>
+        public Stack<SymbolScope> LocalScopes = new Stack<SymbolScope>();
+
+        /// <summary>
         /// The macro table
         /// </summary>
         public Dictionary<string, MacroDefinition> Macros { get; } =
             new Dictionary<string, MacroDefinition>(StringComparer.InvariantCultureIgnoreCase);
-
-        /// <summary>
-        /// The list of fixups to carry out as the last phase of the compilation
-        /// </summary>
-        public List<FixupEntry> Fixups { get; } = new List<FixupEntry>();
 
         /// <summary>
         /// The errors found during the compilation

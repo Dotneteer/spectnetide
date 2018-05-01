@@ -109,13 +109,13 @@ namespace Spect.Net.Assembler.Assembler
                         if (!(asmLine is ILabelSetter))
                         {
                             // --- Create the label unless the current pragma does it
-                            if (_output.Symbols.ContainsKey(currentLabel))
+                            if (SymbolExists(currentLabel))
                             {
                                 ReportError(Errors.Z0040, asmLine, currentLabel);
                             }
                             else
                             {
-                                _output.Symbols.Add(currentLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                                AddSymbol(currentLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
                             }
                         }
                     }
@@ -166,13 +166,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="asmLine">Assembly line with a label</param>
         private void CreateCurrentPointLabel(SourceLineBase asmLine)
         {
-            if (_output.Symbols.ContainsKey(asmLine.Label))
+            if (SymbolExists(asmLine.Label))
             {
                 ReportError(Errors.Z0040, asmLine, asmLine.Label);
             }
             else
             {
-                _output.Symbols.Add(asmLine.Label, new ExpressionValue(GetCurrentAssemblyAddress()));
+               AddSymbol(asmLine.Label, new ExpressionValue(GetCurrentAssemblyAddress()));
             }
         }
 
@@ -333,12 +333,12 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- There is a label, set its value
-            if (_output.Symbols.ContainsKey(label))
+            if (SymbolExists(label))
             {
                 ReportError(Errors.Z0040, pragma, label);
                 return;
             }
-            _output.Symbols.Add(label, value);
+            AddSymbol(label, value);
         }
 
         /// <summary>
@@ -396,7 +396,7 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0082, pragma);
                 return;
             }
-            if (_output.Symbols.ContainsKey(label))
+            if (SymbolExists(label))
             {
                 ReportError(Errors.Z0040, pragma, label);
                 return;
@@ -409,7 +409,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             else
             {
-                _output.Symbols.Add(label, value);
+                AddSymbol(label, value);
             }
         }
 
@@ -430,7 +430,7 @@ namespace Spect.Net.Assembler.Assembler
             if (!value.IsValid) return;
 
             // --- Allow reusing a symbol already declared
-            if (_output.Symbols.ContainsKey(label))
+            if (SymbolExists(label))
             {
                 ReportError(Errors.Z0087, pragma);
                 return;

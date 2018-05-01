@@ -10,6 +10,16 @@ namespace Spect.Net.Assembler.Assembler
     public class FixupEntry
     {
         /// <summary>
+        /// The parent evaluation context
+        /// </summary>
+        public IEvaluationContext ParentContext { get; }
+
+        /// <summary>
+        /// Gets the optional local scope of the fixup
+        /// </summary>
+        public SymbolScope LocalScope { get; }
+
+        /// <summary>
         /// The source line that belongs to the fixup
         /// </summary>
         public SourceLineBase SourceLine { get; }
@@ -44,9 +54,15 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public string Label { get; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public FixupEntry(SourceLineBase sourceLine, FixupType type, int segmentIndex, int offset, ExpressionNode expression, string label = null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        public FixupEntry(IEvaluationContext parentContext, SymbolScope localScope,
+            SourceLineBase sourceLine, FixupType type, 
+            int segmentIndex, int offset, ExpressionNode expression, string label = null)
         {
+            ParentContext = parentContext;
+            LocalScope = localScope;
             SourceLine = sourceLine;
             Type = type;
             SegmentIndex = segmentIndex;
