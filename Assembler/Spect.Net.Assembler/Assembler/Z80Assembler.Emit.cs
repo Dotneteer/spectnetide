@@ -210,6 +210,9 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Check each macro line for invalid macro parameter names
+                for (var i = firstLine + 1; i < currentLineIndex; i++)
+                {
+                }
             }
         }
 

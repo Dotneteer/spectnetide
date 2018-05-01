@@ -39,6 +39,12 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
+            output.Macros.ContainsKey("MyMacro").ShouldBeTrue();
+            var def = output.Macros["MyMacro"];
+            def.ShouldNotBeNull();
+            def.MacroDefLine.ShouldBe(0);
+            def.MacroEndLine.ShouldBe(1);
+            def.MacroName.ShouldBe("MYMACRO");
         }
 
         [TestMethod]
@@ -56,6 +62,12 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
+            output.Macros.ContainsKey("MyMacro").ShouldBeTrue();
+            var def = output.Macros["MyMacro"];
+            def.ShouldNotBeNull();
+            def.MacroDefLine.ShouldBe(1);
+            def.MacroEndLine.ShouldBe(2);
+            def.MacroName.ShouldBe("MYMACRO");
         }
 
     }

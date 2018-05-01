@@ -19,5 +19,13 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError("ld sp,bc", Errors.Z0021);
             CodeRaisesError("ld sp,de", Errors.Z0021);
         }
+
+        //[TestMethod]
+        //public void LoadWithIndexedAddressWorks()
+        //{
+        //    CodeEmitWorks(@"
+        //        MySymbol: 
+        //            ld (ix+MySymbol+1),h", 0x3E, 0x30);
+        //}
     }
 }

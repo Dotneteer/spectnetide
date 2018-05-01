@@ -70,6 +70,10 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// </summary>
         public List<TextSpan> MacroParams { get; set; }
 
+        /// <summary>
+        /// Macro parameter names in the source line
+        /// </summary>
+        public List<string> MacroParamNames { get; set; }
 
         /// <summary>
         /// Comment information

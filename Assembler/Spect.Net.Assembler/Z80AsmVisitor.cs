@@ -35,6 +35,7 @@ namespace Spect.Net.Assembler
         private readonly List<TextSpan> _strings = new List<TextSpan>();
         private readonly List<TextSpan> _functions = new List<TextSpan>();
         private readonly List<TextSpan> _macroParams = new List<TextSpan>();
+        private readonly List<string> _macroParamNames = new List<string>();
         private TextSpan _commentSpan;
 
         /// <summary>
@@ -61,6 +62,7 @@ namespace Spect.Net.Assembler
             _functions.Clear();
             _strings.Clear();
             _macroParams.Clear();
+            _macroParamNames.Clear();
             _sourceLine = context.Start.Line;
             _firstPos = context.Start.Column;
             _comment = null;
@@ -1214,6 +1216,7 @@ namespace Spect.Net.Assembler
             line.Strings = _strings;
             line.Functions = _functions;
             line.MacroParams = _macroParams;
+            line.MacroParamNames = _macroParamNames;
             line.Identifiers = _identifiers;
             line.Comment = _comment;
             line.CommentSpan = _commentSpan;

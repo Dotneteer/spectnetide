@@ -1,4 +1,5 @@
 // ReSharper disable ArrangeAccessorOwnerBody
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
