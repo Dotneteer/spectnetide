@@ -212,4 +212,57 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         }
     }
 
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly instruction
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80MacroParam")]
+    [Name("Z80MacroParam")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80MacroParamFormat : ClassificationFormatDefinition
+    {
+        public Z80MacroParamFormat()
+        {
+            DisplayName = "Z80 Asm - Macro Parameter";
+            ForegroundColor = Colors.DarkOrchid;
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly instruction
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Statement")]
+    [Name("Z80Statement")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80StatementFormat : ClassificationFormatDefinition
+    {
+        public Z80StatementFormat()
+        {
+            DisplayName = "Z80 Asm - Statement";
+            ForegroundColor = Colors.OliveDrab;
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly instruction
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80MacroInvocation")]
+    [Name("Z80MacroInvocation")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80MacroInvocationFormat : ClassificationFormatDefinition
+    {
+        public Z80MacroInvocationFormat()
+        {
+            DisplayName = "Z80 Asm - Invoke macro";
+            ForegroundColor = Colors.OliveDrab;
+            IsItalic = true;
+        }
+    }
 }

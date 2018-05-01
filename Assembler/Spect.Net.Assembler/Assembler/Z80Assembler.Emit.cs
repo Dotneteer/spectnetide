@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
@@ -189,30 +188,50 @@ namespace Spect.Net.Assembler.Assembler
         private void CollectMacroDefinition(MacroStatement macro, string label,
             List<SourceLineBase> lines, ref int currentLineIndex)
         {
+            var errorFound = false;
             if (label == null)
             {
+                errorFound = true;
                 ReportError(Errors.Z0400, macro);
             }
             else if (_output.Macros.ContainsKey(label))
             {
+                errorFound = true;
                 ReportError(Errors.Z0402, macro, label);
             }
 
             // --- Search for the end of the macro
             var firstLine = currentLineIndex;
-            var success = macro.SearchForEnd(this, lines, ref currentLineIndex);
-            if (success)
+            if (!macro.SearchForEnd(this, macro, lines, ref currentLineIndex)) return;
+
+            // --- Create macro definition
+            var macroDef = new MacroDefinition(label, firstLine, currentLineIndex);
+
+            // --- Check each macro line for invalid macro parameter names
+            // --- or nested macro
+            for (var i = firstLine + 1; i < currentLineIndex; i++)
             {
-                // --- Store macro definition
-                if (label != null)
+                var macroLine = lines[i];
+                if (macroLine is MacroStatement)
                 {
-                    _output.Macros[label] = new MacroDefinition(label, firstLine, currentLineIndex);
+                    ReportError(Errors.Z0404, macroLine);
+                    errorFound = true;
+                    continue;
                 }
 
-                // --- Check each macro line for invalid macro parameter names
-                for (var i = firstLine + 1; i < currentLineIndex; i++)
+                foreach (var paramName in macroLine.MacroParamNames)
                 {
+                    if (macro.Arguments.Contains(paramName)) continue;
+
+                    errorFound = true;
+                    ReportError(Errors.Z0403, macroLine, paramName);
                 }
+            }
+
+            // --- If macro is OK, store it
+            if (!errorFound)
+            {
+                _output.Macros[label] = macroDef;
             }
         }
 

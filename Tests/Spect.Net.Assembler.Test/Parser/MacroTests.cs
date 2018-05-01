@@ -93,6 +93,8 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as MacroParamLine;
             line.ShouldNotBeNull();
             line.Identifier.ShouldBe("MYMACROPARAM");
+            line.MacroParamNames.Count.ShouldBe(1);
+            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
         }
 
         [TestMethod]
@@ -205,6 +207,45 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Operand.Type.ShouldBe(OperandType.Expr);
+            line.MacroParamNames.Count.ShouldBe(1);
+            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
+        }
+
+        [TestMethod]
+        [DataRow("ld {{MyMacroParam}},{{par}}")]
+        [DataRow("ex {{MyMacroParam}},{{par}}")]
+        [DataRow("add {{MyMacroParam}},{{par}}")]
+        [DataRow("adc {{MyMacroParam}},{{par}}")]
+        [DataRow("sub {{MyMacroParam}},{{par}}")]
+        [DataRow("sbc {{MyMacroParam}},{{par}}")]
+        [DataRow("and {{MyMacroParam}},{{par}}")]
+        [DataRow("xor {{MyMacroParam}},{{par}}")]
+        [DataRow("or {{MyMacroParam}},{{par}}")]
+        [DataRow("cp {{MyMacroParam}},{{par}}")]
+        [DataRow("in {{MyMacroParam}},{{par}}")]
+        [DataRow("out {{MyMacroParam}},{{par}}")]
+        [DataRow("rlc {{MyMacroParam}},{{par}}")]
+        [DataRow("rl {{MyMacroParam}},{{par}}")]
+        [DataRow("rrc {{MyMacroParam}},{{par}}")]
+        [DataRow("rr {{MyMacroParam}},{{par}}")]
+        [DataRow("sla {{MyMacroParam}},{{par}}")]
+        [DataRow("sra {{MyMacroParam}},{{par}}")]
+        [DataRow("sll {{MyMacroParam}},{{par}}")]
+        [DataRow("srl {{MyMacroParam}},{{par}}")]
+        [DataRow("nextreg {{MyMacroParam}},{{par}}")]
+        public void MacroParamInBothOperandsWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
+            line.ShouldNotBeNull();
+            line.Operand.Type.ShouldBe(OperandType.Expr);
+            line.MacroParamNames.Count.ShouldBe(2);
+            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
+            line.MacroParamNames[1].ShouldBe("PAR");
         }
 
         [TestMethod]
@@ -239,6 +280,8 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Operand2.Type.ShouldBe(OperandType.Expr);
+            line.MacroParamNames.Count.ShouldBe(1);
+            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
         }
 
         [TestMethod]
@@ -255,6 +298,8 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.BitIndex.HasMacroParameter.ShouldBeTrue();
+            line.MacroParamNames.Count.ShouldBe(1);
+            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
         }
 
 
@@ -275,6 +320,8 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Operand2.Type.ShouldBe(OperandType.Expr);
             line.Operand2.Expression.HasMacroParameter.ShouldBeTrue();
+            line.MacroParamNames.Count.ShouldBe(1);
+            line.MacroParamNames[0].ShouldBe("PAR");
         }
     }
 }

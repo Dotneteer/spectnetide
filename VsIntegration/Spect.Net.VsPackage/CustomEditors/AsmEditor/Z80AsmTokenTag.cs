@@ -38,6 +38,9 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         Breakpoint,
         CurrentBreakpoint,
         String,
-        Function
+        Function,
+        MacroParam,
+        Statement,
+        MacroInvocation
     }
 }

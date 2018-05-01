@@ -256,7 +256,7 @@ memIndirect
 	;
 
 indexedAddr
-	:	'(' reg16Idx (('+' | '-') (literalExpr | symbolExpr | '[' expr ']'))? ')'
+	:	'(' reg16Idx (('+' | '-') expr)? ')'
 	;
 
 condition
@@ -314,6 +314,7 @@ unaryExpr
 	| '-' unaryExpr
 	| '~' unaryExpr
 	| '[' expr ']'
+	| '(' expr ')'
 	| literalExpr
 	| symbolExpr
 	;

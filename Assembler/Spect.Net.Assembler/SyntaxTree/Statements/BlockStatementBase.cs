@@ -23,10 +23,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// Searches the assembly lines for the end of the block
         /// </summary>
         /// <param name="asm">Assembler instance</param>
+        /// <param name="outerBlock">The block to search an end for</param>
         /// <param name="lines"></param>
         /// <param name="currentLineIndex"></param>
         /// <returns></returns>
-        public bool SearchForEnd(Z80Assembler asm, List<SourceLineBase> lines, ref int currentLineIndex)
+        public bool SearchForEnd(Z80Assembler asm, BlockStatementBase outerBlock, 
+            List<SourceLineBase> lines, ref int currentLineIndex)
         {
             if (currentLineIndex >= lines.Count)
             {
@@ -48,15 +50,16 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
                 }
                 if (curLine is BlockStatementBase blockStmt)
                 {
-                    var success = blockStmt.SearchForEnd(asm, lines, ref currentLineIndex);
+                    var success = blockStmt.SearchForEnd(asm, blockStmt, lines, ref currentLineIndex);
                     if (!success)
                     {
-                        asm.ReportError(Errors.Z0400, startLine, blockStmt.EndStatementName);
+                        asm.ReportError(Errors.Z0401, startLine, blockStmt.EndStatementName);
                         return false;
                     }
                 }
                 currentLineIndex++;
             }
+            asm.ReportError(Errors.Z0401, startLine, outerBlock.EndStatementName);
             return false;
         }
     }

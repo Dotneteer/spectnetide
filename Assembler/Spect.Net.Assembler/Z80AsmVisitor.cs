@@ -30,12 +30,12 @@ namespace Spect.Net.Assembler
         private string _comment;
         private TextSpan _labelSpan;
         private TextSpan _keywordSpan;
-        private readonly List<TextSpan> _numbers = new List<TextSpan>();
-        private readonly List<TextSpan> _identifiers = new List<TextSpan>();
-        private readonly List<TextSpan> _strings = new List<TextSpan>();
-        private readonly List<TextSpan> _functions = new List<TextSpan>();
-        private readonly List<TextSpan> _macroParams = new List<TextSpan>();
-        private readonly List<string> _macroParamNames = new List<string>();
+        private List<TextSpan> _numbers = new List<TextSpan>();
+        private List<TextSpan> _identifiers = new List<TextSpan>();
+        private List<TextSpan> _strings = new List<TextSpan>();
+        private List<TextSpan> _functions = new List<TextSpan>();
+        private List<TextSpan> _macroParams = new List<TextSpan>();
+        private List<string> _macroParamNames = new List<string>();
         private TextSpan _commentSpan;
 
         /// <summary>
@@ -57,12 +57,12 @@ namespace Spect.Net.Assembler
             _label = null;
             _labelSpan = null;
             _keywordSpan = null;
-            _numbers.Clear();
-            _identifiers.Clear();
-            _functions.Clear();
-            _strings.Clear();
-            _macroParams.Clear();
-            _macroParamNames.Clear();
+            _numbers = new List<TextSpan>();
+            _identifiers = new List<TextSpan>();
+            _functions = new List<TextSpan>();
+            _strings = new List<TextSpan>();
+            _macroParams = new List<TextSpan>();
+            _macroParamNames = new List<string>();
             _sourceLine = context.Start.Line;
             _firstPos = context.Start.Column;
             _comment = null;
@@ -668,13 +668,7 @@ namespace Spect.Net.Assembler
                 var indexedAddrContext = context.indexedAddr();
                 if (indexedAddrContext.ChildCount > 3)
                 {
-                    op.Expression = indexedAddrContext.literalExpr() != null
-                        ? (ExpressionNode)VisitLiteralExpr(
-                            indexedAddrContext.literalExpr())
-                        : indexedAddrContext.expr() != null
-                            ? (ExpressionNode)VisitExpr(indexedAddrContext.expr())
-                            : (ExpressionNode)VisitSymbolExpr(
-                                indexedAddrContext.symbolExpr());
+                    op.Expression = (ExpressionNode)VisitExpr(indexedAddrContext.expr());
                 }
                 op.Register = indexedAddrContext.reg16Idx().NormalizeToken();
                 op.Sign = indexedAddrContext.ChildCount > 3
@@ -694,6 +688,42 @@ namespace Spect.Net.Assembler
         #region Statement handling
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.statement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitStatement(Z80AsmParser.StatementContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            return base.VisitStatement(context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroParam"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitMacroParam(Z80AsmParser.MacroParamContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            _macroParams.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+            if (context.IDENTIFIER() != null)
+            {
+                _macroParamNames.Add(context.IDENTIFIER().NormalizeToken());
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -704,9 +734,9 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitMacroInvocation(Z80AsmParser.MacroInvocationContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new MacroInvocation(context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList()),
+            if (IsInvalidContext(context)) return null;
+            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            return AddLine(new MacroInvocation(context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList()),
                     context);
         }
 
@@ -721,9 +751,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitMacroStatement(Z80AsmParser.MacroStatementContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new MacroStatement(context.IDENTIFIER().Select(id => id.NormalizeToken()).ToList()),
+            if (IsInvalidContext(context)) return null;
+            _identifiers.AddRange(context.IDENTIFIER()
+                .Select(id => new TextSpan(id.Symbol.StartIndex, id.Symbol.StopIndex + 1)));           
+            return AddLine(new MacroStatement(context.IDENTIFIER().Select(id => id.NormalizeToken()).ToList()),
                     context);
         }
 
@@ -1028,6 +1059,11 @@ namespace Spect.Net.Assembler
             }
             if (context.macroParam() != null)
             {
+                _macroParams.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+                if (context.macroParam().IDENTIFIER() != null)
+                {
+                    _macroParamNames.Add(context.macroParam().IDENTIFIER().NormalizeToken());
+                }
                 return new MacroParamNode(context.macroParam().IDENTIFIER()?.NormalizeToken());
             }
 

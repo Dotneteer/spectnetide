@@ -59,6 +59,20 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80CurrentBreakpoint")]
         internal static ClassificationTypeDefinition currentBreakpointDefinition;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80MacroParam")]
+        internal static ClassificationTypeDefinition macroParam;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80Statement")]
+        internal static ClassificationTypeDefinition statement;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80MacroInvocation")]
+        internal static ClassificationTypeDefinition macroInvocation;
+
+
     }
 }
 

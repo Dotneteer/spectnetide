@@ -1,3 +1,11 @@
+### Version under development
+
+__FIX__: The Z80 assembler did not accepted the `ld (ix+MySymbol+2),h` expression, you had to write 
+`ld (ix+[MySymbol+2]),h`. Now, the assembler does not have this restriction, so the first instruction also correct.  
+__FEATURE__: The Z80 assembler now accepts `(` and `)` as expression delimiters, not only `[` and `]`.  
+__FIX__: The Z80 assembler took the `ld sp,de` and `ld sp,bc` instructions into account as if they were 
+`ld sp,hl`. Now, the assembler recognizes that they are invalid, and raises an error message.  
+
 ### Version 1.6.0
 
 __FEATURE__: The Z80 Assembler now allows using floating point numbers and functions.  
