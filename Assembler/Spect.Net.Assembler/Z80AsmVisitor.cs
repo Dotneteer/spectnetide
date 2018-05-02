@@ -24,8 +24,10 @@ namespace Spect.Net.Assembler
     public class Z80AsmVisitor: Z80AsmBaseVisitor<object>
     {
         private int _sourceLine;
-        private int _firstPos;
+        private int _firstColumn;
         private int _lastPos;
+        private int _firstIndex;
+        private int _lastIndex;
         private string _label;
         private string _comment;
         private TextSpan _labelSpan;
@@ -64,7 +66,9 @@ namespace Spect.Net.Assembler
             _macroParams = new List<TextSpan>();
             _macroParamNames = new List<string>();
             _sourceLine = context.Start.Line;
-            _firstPos = context.Start.Column;
+            _firstColumn = context.Start.Column;
+            _firstIndex = context.Start.StartIndex;
+            _lastIndex = context.Stop.StopIndex;
             _comment = null;
             _commentSpan = null;
 
@@ -1243,7 +1247,9 @@ namespace Spect.Net.Assembler
         private SourceLineBase AddLine(SourceLineBase line, ParserRuleContext context)
         {
             line.SourceLine = _sourceLine;
-            line.Position = _firstPos;
+            line.FirstColumn = _firstColumn;
+            line.FirstPosition = _firstIndex;
+            line.LastPosition = _lastIndex;
             line.ParserException = context.exception;
             line.Label = _label;
             line.LabelSpan = _labelSpan;

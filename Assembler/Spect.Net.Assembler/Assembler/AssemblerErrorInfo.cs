@@ -48,7 +48,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             ErrorCode = errorCode;
             Line = line?.SourceLine ?? 0;
-            Column = line?.Position ?? 0;
+            Column = line?.FirstColumn ?? 0;
             Message = Errors.GetMessage(ErrorCode, parameters);
             Filename = sourceItem?.Filename;
         }

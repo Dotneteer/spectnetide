@@ -209,6 +209,11 @@ namespace Spect.Net.Assembler.Assembler
                 else if (processOps)
                 {
                     line.FileIndex = fileIndex;
+                    if (line.MacroParams.Count > 0)
+                    {
+                        line.SourceText = sourceText.Substring(line.FirstPosition,
+                            line.LastPosition - line.FirstPosition + 1);
+                    }
                     parsedLines.Add(line);
                 }
                 currentLineIndex++;

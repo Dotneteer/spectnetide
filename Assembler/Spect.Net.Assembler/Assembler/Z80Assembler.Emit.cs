@@ -62,88 +62,7 @@ namespace Spect.Net.Assembler.Assembler
             while (currentLineIndex < lines.Count)
             {
                 var asmLine = lines[currentLineIndex];
-                CurrentSourceLine = asmLine;
-
-                if (asmLine is NoInstructionLine noInstrLine)
-                {
-                    if (noInstrLine.Label != null)
-                    {
-                        // --- This is a label-only line
-                        if (OverflowLabelLine != null)
-                        {
-                            // --- Create a label point for the previous label
-                            CreateCurrentPointLabel(OverflowLabelLine);
-                        }
-                        OverflowLabelLine = noInstrLine;
-                    }
-                }
-                else
-                {
-                    string currentLabel;
-                    if (OverflowLabelLine == null)
-                    {
-                        // --- No hanging label, use the one in the current line
-                        currentLabel = asmLine.Label;
-                    }
-                    else
-                    {
-                        if (asmLine.Label == null)
-                        {
-                            // --- No current label, use the hanging label
-                            currentLabel = OverflowLabelLine.Label;
-                        }
-                        else
-                        {
-                            // --- Create a point for the hanging label, and use the current label
-                            CreateCurrentPointLabel(OverflowLabelLine);
-                            currentLabel = asmLine.Label;
-                            OverflowLabelLine = null;
-                        }
-                    }
-
-                    // --- Check if there's a label to create
-                    if (currentLabel != null)
-                    {
-                        // --- There's a label, we clear the previous hanging label
-                        OverflowLabelLine = null;
-                        if (!(asmLine is ILabelSetter))
-                        {
-                            // --- Create the label unless the current pragma does it
-                            if (SymbolExists(currentLabel))
-                            {
-                                ReportError(Errors.Z0040, asmLine, currentLabel);
-                            }
-                            else
-                            {
-                                AddSymbol(currentLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                            }
-                        }
-                    }
-                    if (asmLine is PragmaBase pragmaLine)
-                    {
-                        // --- Process a pragma
-                        ApplyPragma(pragmaLine, currentLabel);
-                    }
-                    else if (asmLine is MacroStatement macroStatement)
-                    {
-                        // --- Check macro definition
-                        CollectMacroDefinition(macroStatement, currentLabel, lines, ref currentLineIndex);
-                    }
-                    else
-                    {
-                        if (asmLine is OperationBase opLine)
-                        {
-                            // --- Emit the code output
-                            var addr = GetCurrentAssemblyAddress();
-                            EmitAssemblyOperationCode(opLine);
-
-                            // --- Generate source map information
-                            var sourceInfo = (opLine.FileIndex, opLine.SourceLine);
-                            _output.SourceMap[addr] = sourceInfo;
-                            _output.AddressMap[sourceInfo] = addr;
-                        }
-                    }
-                }
+                EmitSingleLine(lines, asmLine, ref currentLineIndex);
 
                 // --- Next line
                 currentLineIndex++;
@@ -158,6 +77,114 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Ok, it's time to return with the result
             return _output.ErrorCount == 0;
+        }
+
+        /// <summary>
+        /// Emits a single line
+        /// </summary>
+        /// <param name="lines">All parsed lines</param>
+        /// <param name="asmLine">The line to emit</param>
+        /// <param name="currentLineIndex">The index of the line to emit</param>
+        /// <returns></returns>
+        private void EmitSingleLine(List<SourceLineBase> lines, SourceLineBase asmLine, ref int currentLineIndex)
+        {
+            CurrentSourceLine = asmLine;
+
+            if (asmLine is NoInstructionLine noInstrLine)
+            {
+                if (noInstrLine.Label != null)
+                {
+                    // --- This is a label-only line
+                    if (OverflowLabelLine != null)
+                    {
+                        // --- Create a label point for the previous label
+                        CreateCurrentPointLabel(OverflowLabelLine);
+                    }
+
+                    OverflowLabelLine = noInstrLine;
+                }
+            }
+            else
+            {
+                string currentLabel;
+                if (OverflowLabelLine == null)
+                {
+                    // --- No hanging label, use the one in the current line
+                    currentLabel = asmLine.Label;
+                }
+                else
+                {
+                    if (asmLine.Label == null)
+                    {
+                        // --- No current label, use the hanging label
+                        currentLabel = OverflowLabelLine.Label;
+                    }
+                    else
+                    {
+                        // --- Create a point for the hanging label, and use the current label
+                        CreateCurrentPointLabel(OverflowLabelLine);
+                        currentLabel = asmLine.Label;
+                        OverflowLabelLine = null;
+                    }
+                }
+
+                // --- Check if there's a label to create
+                if (currentLabel != null)
+                {
+                    // --- There's a label, we clear the previous hanging label
+                    OverflowLabelLine = null;
+                    if (!(asmLine is ILabelSetter))
+                    {
+                        // --- Create the label unless the current pragma does it
+                        if (SymbolExists(currentLabel))
+                        {
+                            ReportError(Errors.Z0040, asmLine, currentLabel);
+                        }
+                        else
+                        {
+                            AddSymbol(currentLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                        }
+                    }
+                }
+
+                if (asmLine is PragmaBase pragmaLine)
+                {
+                    // --- Process a pragma
+                    ApplyPragma(pragmaLine, currentLabel);
+                }
+                else if (asmLine is StatementBase statement)
+                {
+                    ProcessStatement(lines, statement, currentLabel, ref currentLineIndex);
+                }
+                else if (asmLine is OperationBase opLine)
+                {
+                    // --- Emit the code output
+                    var addr = GetCurrentAssemblyAddress();
+                    EmitAssemblyOperationCode(opLine);
+
+                    // --- Generate source map information
+                    var sourceInfo = (opLine.FileIndex, opLine.SourceLine);
+                    _output.SourceMap[addr] = sourceInfo;
+                    _output.AddressMap[sourceInfo] = addr;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Processes a compiler statement
+        /// </summary>
+        /// <param name="lines">All parsed assembly lines</param>
+        /// <param name="stmt">Statement to process</param>
+        /// <param name="label">Label to process</param>
+        /// <param name="currentLineIndex">Current line index</param>
+        private void ProcessStatement(List<SourceLineBase> lines, StatementBase stmt, string label, ref int currentLineIndex)
+        {
+            switch (stmt)
+            {
+                case MacroStatement macroStmt:
+                    CollectMacroDefinition(macroStmt, label, lines, ref currentLineIndex);
+                    break;
+            }
         }
 
         /// <summary>

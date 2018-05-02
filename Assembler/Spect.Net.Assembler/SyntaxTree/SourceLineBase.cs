@@ -21,9 +21,19 @@ namespace Spect.Net.Assembler.SyntaxTree
         public int SourceLine { get; set; }
 
         /// <summary>
-        /// The first position within a source code line
+        /// The first column within a source code line
         /// </summary>
-        public int Position { get; set; }
+        public int FirstColumn { get; set; }
+
+        /// <summary>
+        /// The first position within a source code
+        /// </summary>
+        public int FirstPosition { get; set; }
+
+        /// <summary>
+        /// The last position within a source code
+        /// </summary>
+        public int LastPosition { get; set; }
 
         /// <summary>
         /// Exception detected by the parser
@@ -89,6 +99,14 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// The Z80 assembly instruction span
         /// </summary>
         public TextSpan InstructionSpan { get; set; }
+
+        /// <summary>
+        /// The source text of the line
+        /// </summary>
+        /// <remarks>
+        /// Contains value only when the line has a macro parameter
+        /// </remarks>
+        public string SourceText { get; set; }
 
         /// <summary>
         /// Indicates whether this line has an error

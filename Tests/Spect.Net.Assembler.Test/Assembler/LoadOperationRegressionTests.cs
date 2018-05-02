@@ -25,13 +25,13 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             CodeEmitWorks(@"
                 MySymbol: 
+                    ld (ix+[MySymbol+1]),h", 0xDD, 0x74, 0x01);
+            CodeEmitWorks(@"
+                MySymbol: 
                     ld (ix+MySymbol+1),h", 0xDD, 0x74, 0x01);
             CodeEmitWorks(@"
                 MySymbol: 
                     ld (ix+(MySymbol+1)),h", 0xDD, 0x74, 0x01);
-            CodeEmitWorks(@"
-                MySymbol: 
-                    ld (ix+[MySymbol+1]),h", 0xDD, 0x74, 0x01);
         }
     }
 }
