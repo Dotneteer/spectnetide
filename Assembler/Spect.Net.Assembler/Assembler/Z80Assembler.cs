@@ -429,7 +429,9 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="error">Error information</param>
         private void ReportError(SourceFileItem sourceItem, Z80AsmParserErrorInfo error)
         {
-            _output.Errors.Add(new AssemblerErrorInfo(sourceItem, error));
+            var errInfo = new AssemblerErrorInfo(sourceItem, error);
+            _output.Errors.Add(errInfo);
+            ReportScopeError(errInfo.ErrorCode);
         }
 
         /// <summary>
@@ -444,6 +446,17 @@ namespace Spect.Net.Assembler.Assembler
                 ? _output.SourceFileList[line.FileIndex] 
                 : null;
             _output.Errors.Add(new AssemblerErrorInfo(sourceItem, errorCode, line, parameters));
+            ReportScopeError(errorCode);
+        }
+
+        /// <summary>
+        /// Administers the error in the local scope
+        /// </summary>
+        /// <param name="errorCode"></param>
+        private void ReportScopeError(string errorCode)
+        {
+            if (_output.LocalScopes.Count == 0) return;
+            _output.LocalScopes.Peek().ReportError(errorCode);
         }
 
         #endregion Helpers

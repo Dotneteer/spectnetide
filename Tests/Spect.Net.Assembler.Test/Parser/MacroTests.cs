@@ -10,6 +10,25 @@ namespace Spect.Net.Assembler.Test.Parser
     public class MacroTests : ParserTestBed
     {
         [TestMethod]
+        [DataRow(".endm")]
+        [DataRow("endm")]
+        [DataRow(".ENDM")]
+        [DataRow("ENDM")]
+        [DataRow(".mend")]
+        [DataRow("mend")]
+        [DataRow(".MEND")]
+        [DataRow("MEND")]
+        public void EndMacroParsingWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            visitor.Compilation.Lines[0].ShouldBeOfType<MacroEndStatement>();
+        }
+
+        [TestMethod]
         [DataRow(".macro()")]
         [DataRow("macro()")]
         [DataRow(".MACRO()")]

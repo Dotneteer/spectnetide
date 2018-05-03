@@ -1,9 +1,9 @@
 ﻿namespace Spect.Net.Assembler.SyntaxTree.Statements
 {
     /// <summary>
-    /// Represents the ENDM/MEND statement
+    /// Represents the ENDL/LEND statement
     /// </summary>
-    public sealed class MacroEndStatement : EndStatementBase
+    public sealed class LoopEndStatement : EndStatementBase
     {
     }
 }

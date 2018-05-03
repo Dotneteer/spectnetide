@@ -168,6 +168,26 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0401);
         }
 
+        [TestMethod]
+        [DataRow(".endm")]
+        [DataRow("endm")]
+        [DataRow(".ENDM")]
+        [DataRow("ENDM")]
+        [DataRow(".mend")]
+        [DataRow("mend")]
+        [DataRow(".MEND")]
+        [DataRow("MEND")]
+        public void EndMacroWithoutOpenTagFails(string source)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
 
+            // --- Act
+            var output = compiler.Compile(source);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0405);
+        }
     }
 }

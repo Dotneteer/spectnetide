@@ -57,11 +57,14 @@ directive
 statement
 	:	macroStatement
 	|	macroEndMarker
+	|	loopStatement
+	|	loopEndMarker
 	;
 
 macroStatement: MACRO '(' (IDENTIFIER (COMMA IDENTIFIER)*)? ')'	;
 macroEndMarker: ENDMACRO ;
-
+loopStatement: LOOP expr ;
+loopEndMarker: ENDLOOP ;
 
 macroInvocation: IDENTIFIER '(' (expr (COMMA expr)*)? ')'	;
 
@@ -487,6 +490,8 @@ DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
 ENDMACRO: '.endm' | '.ENDM' | 'endm' | 'ENDM' | '.mend' | '.MEND' | 'mend' | 'MEND' ;
+LOOP	: '.loop' | '.LOOP' | 'loop' | 'LOOP' ;
+ENDLOOP	: '.endl' | '.ENDL' | 'endl' | 'ENDL' | '.lend' | '.LEND' | 'lend' | 'LEND' ;
 
 // --- Other tokens
 COLON	: ':' ;

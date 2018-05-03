@@ -23,13 +23,13 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// Searches the assembly lines for the end of the block
         /// </summary>
         /// <param name="asm">Assembler instance</param>
-        /// <param name="outerBlock">The block to search an end for</param>
         /// <param name="lines"></param>
         /// <param name="currentLineIndex"></param>
+        /// <param name="endLabel">Optional end label</param>
         /// <returns></returns>
-        public bool SearchForEnd(Z80Assembler asm, BlockStatementBase outerBlock, 
-            List<SourceLineBase> lines, ref int currentLineIndex)
+        public bool SearchForEnd(Z80Assembler asm, List<SourceLineBase> lines, ref int currentLineIndex, out string endLabel)
         {
+            endLabel = null;
             if (currentLineIndex >= lines.Count)
             {
                 return false;
@@ -45,12 +45,19 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
                 var curLine = lines[currentLineIndex];
                 if (curLine.GetType() == EndType)
                 {
-                    // --- We have found the end line
+                    // --- We have found the end line, get its label
+                    endLabel = curLine.Label ?? endLabel;
                     return true;
                 }
-                if (curLine is BlockStatementBase blockStmt)
+
+                if (curLine is NoInstructionLine noinstrLine)
                 {
-                    var success = blockStmt.SearchForEnd(asm, blockStmt, lines, ref currentLineIndex);
+                    // --- Record the last hanging label
+                    endLabel = noinstrLine.Label;
+                }
+                else if (curLine is BlockStatementBase blockStmt)
+                {
+                    var success = blockStmt.SearchForEnd(asm, lines, ref currentLineIndex, out endLabel);
                     if (!success)
                     {
                         asm.ReportError(Errors.Z0401, startLine, blockStmt.EndStatementName);
@@ -59,7 +66,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
                 }
                 currentLineIndex++;
             }
-            asm.ReportError(Errors.Z0401, startLine, outerBlock.EndStatementName);
+            asm.ReportError(Errors.Z0401, startLine, EndStatementName);
             return false;
         }
     }

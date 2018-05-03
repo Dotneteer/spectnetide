@@ -147,6 +147,8 @@
     <Compile Include="SyntaxTree\StatementBase.cs" />
     <Compile Include="SyntaxTree\Statements\BlockStatementBase.cs" />
     <Compile Include="SyntaxTree\Statements\EndStatementBase.cs" />
+    <Compile Include="SyntaxTree\Statements\LoopEndStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\LoopStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroStatement.cs" />
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />

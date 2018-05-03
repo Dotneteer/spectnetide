@@ -171,23 +171,6 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
-        /// Processes a compiler statement
-        /// </summary>
-        /// <param name="lines">All parsed assembly lines</param>
-        /// <param name="stmt">Statement to process</param>
-        /// <param name="label">Label to process</param>
-        /// <param name="currentLineIndex">Current line index</param>
-        private void ProcessStatement(List<SourceLineBase> lines, StatementBase stmt, string label, ref int currentLineIndex)
-        {
-            switch (stmt)
-            {
-                case MacroStatement macroStmt:
-                    CollectMacroDefinition(macroStmt, label, lines, ref currentLineIndex);
-                    break;
-            }
-        }
-
-        /// <summary>
         /// Creates a label at the current point
         /// </summary>
         /// <param name="asmLine">Assembly line with a label</param>
@@ -204,6 +187,36 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         #region Statement processing
+
+        /// <summary>
+        /// Processes a compiler statement
+        /// </summary>
+        /// <param name="lines">All parsed assembly lines</param>
+        /// <param name="stmt">Statement to process</param>
+        /// <param name="label">Label to process</param>
+        /// <param name="currentLineIndex">Current line index</param>
+        private void ProcessStatement(List<SourceLineBase> lines, StatementBase stmt, string label, ref int currentLineIndex)
+        {
+            switch (stmt)
+            {
+                case MacroStatement macroStmt:
+                    CollectMacroDefinition(macroStmt, label, lines, ref currentLineIndex);
+                    break;
+
+                case MacroEndStatement macroEndStmt:
+                    ReportError(Errors.Z0405, macroEndStmt, "ENDM/MEND", "MACRO");
+                    break;
+
+                case LoopStatement loopStatement:
+                    ProcessLoopStatement(loopStatement, lines, ref currentLineIndex);
+                    break;
+
+                case LoopEndStatement loopEndStmt:
+                    ReportError(Errors.Z0405, loopEndStmt, "ENDL/LEND", "LOOP");
+                    break;
+
+            }
+        }
 
         /// <summary>
         /// Checks and collects the current macro definition
@@ -229,7 +242,7 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Search for the end of the macro
             var firstLine = currentLineIndex;
-            if (!macro.SearchForEnd(this, macro, lines, ref currentLineIndex)) return;
+            if (!macro.SearchForEnd(this, lines, ref currentLineIndex, out var _)) return;
 
             // --- Create macro definition
             var macroDef = new MacroDefinition(label, firstLine, currentLineIndex);
@@ -259,6 +272,68 @@ namespace Spect.Net.Assembler.Assembler
             if (!errorFound)
             {
                 _output.Macros[label] = macroDef;
+            }
+        }
+
+        /// <summary>
+        /// Processes the LOOP statement
+        /// </summary>
+        /// <param name="loop">Loop statement</param>
+        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        private void ProcessLoopStatement(LoopStatement loop, List<SourceLineBase> lines, ref int currentLineIndex)
+        {
+            // --- Search for the end of the loop
+            var firstLine = currentLineIndex;
+            if (!loop.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+
+            // --- End found
+            var lastLine = currentLineIndex;
+
+            // --- Now, we can process the loop
+            var loopCounter = EvalImmediate(loop, loop.Expr);
+            if (!loopCounter.IsValid) return;
+
+            // --- Check the loop counter
+            var counter = loopCounter.AsLong();
+            if (counter >= 0x10000)
+            {
+                ReportError(Errors.Z0406, loop);
+            }
+
+            for (var i = 0; i < counter; i++)
+            {
+                // --- Create a local scope for the loop body
+                var localScope = new SymbolScope();
+                _output.LocalScopes.Push(localScope);
+
+                for (var j = firstLine + 1; j < lastLine; j++)
+                {
+                    var tmpLineIndex = j;
+                    var curLine = lines[j];
+                    EmitSingleLine(lines, curLine, ref tmpLineIndex);
+                }
+
+                // --- Add the end label to the local scope
+                if (endLabel != null)
+                {
+                    // --- Add the end label to the loop scope
+                    var endLine = lines[currentLineIndex];
+                    if (SymbolExists(endLabel))
+                    {
+                        ReportError(Errors.Z0040, endLine, endLabel);
+                    }
+                    else
+                    {
+                        AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                    }
+                }
+
+                // --- Clean up the hanging label
+                OverflowLabelLine = null;
+
+                // --- Remove the local scope
+                _output.LocalScopes.Pop();
             }
         }
 
@@ -374,6 +449,10 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of ENT pragma</param>
         private void ProcessEntPragma(EntPragma pragma)
         {
+            if (!IsInGlobalScope && ShouldReportErrorInCurrentScope(Errors.Z0407))
+            {
+                ReportError(Errors.Z0407, pragma, "ENT");
+            }
             var value = Eval(pragma, pragma.Expr);
             if (value.IsNonEvaluated)
             {

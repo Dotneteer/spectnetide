@@ -70,6 +70,9 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0402 = "Z0402";
         public const string Z0403 = "Z0403";
         public const string Z0404 = "Z0404";
+        public const string Z0405 = "Z0405";
+        public const string Z0406 = "Z0406";
+        public const string Z0407 = "Z0407";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -132,6 +135,9 @@ namespace Spect.Net.Assembler.Assembler
             { Z0402, "Macro with name '{0}' has already been declared." },
             { Z0403, "Unknown macro argument is used '{0}' macro definition." },
             { Z0404, "Macro definition cannot be nested into another macro definition." },
+            { Z0405, "Orphan '{0}' statement found without a corresponding '{1}' statement." },
+            { Z0406, "Loop counter cannot be greater than 65535 (#FFFF)." },
+            { Z0407, "The {0} pragma can be used only in the global scope." },
         };
 
         /// <summary>

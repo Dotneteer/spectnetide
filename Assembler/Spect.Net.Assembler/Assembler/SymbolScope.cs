@@ -9,6 +9,9 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public class SymbolScope
     {
+        // --- The errors reported in this scope
+        private readonly HashSet<string> _errorsReported = new HashSet<string>();
+
         /// <summary>
         /// The symbol table with properly defined symbols
         /// </summary>
@@ -25,5 +28,21 @@ namespace Spect.Net.Assembler.Assembler
         /// The list of fixups to carry out as the last phase of the compilation
         /// </summary>
         public List<FixupEntry> Fixups { get; } = new List<FixupEntry>();
+
+        /// <summary>
+        /// Signs that the specified error has been reported
+        /// </summary>
+        /// <param name="errorCode"></param>
+        public void ReportError(string errorCode)
+        {
+            _errorsReported.Add(errorCode);
+        }
+
+        /// <summary>
+        /// Checks if the specified error has been reported
+        /// </summary>
+        /// <param name="errorCode">Error code</param>
+        /// <returns></returns>
+        public bool IsErrorReported(string errorCode) => _errorsReported.Contains(errorCode);
     }
 }

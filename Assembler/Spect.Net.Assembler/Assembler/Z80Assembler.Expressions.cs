@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
@@ -55,6 +56,17 @@ namespace Spect.Net.Assembler.Assembler
         /// Tests if the current assembly instruction is in the global scope
         /// </summary>
         public bool IsInGlobalScope => _output.LocalScopes.Count == 0;
+
+        /// <summary>
+        /// Checks is the specified error should be reported in the local scope
+        /// </summary>
+        /// <param name="errorCode">Error code to check</param>
+        /// <returns></returns>
+        public bool ShouldReportErrorInCurrentScope(string errorCode)
+        {
+            if (IsInGlobalScope) return true;
+            return !_output.LocalScopes.Peek().IsErrorReported(errorCode);
+        }
 
         /// <summary>
         /// Checks if the specified symbol exists
@@ -179,13 +191,35 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns></returns>
         private bool FixupSymbols()
         {
+            // --- Go through all scopes from inside to outside
+            foreach (var scope in _output.LocalScopes)
+            {
+                if (FixupSymbols(scope.Fixups, scope.Symbols, false))
+                {
+                    // --- Successful fixup in the local scope
+                    return true;
+                }
+            }
+
+            return FixupSymbols(_output.Fixups, _output.Symbols, true);
+        }
+
+        /// <summary>
+        /// Tries to create fixups in the specified scope
+        /// </summary>
+        /// <param name="fixups">Fixup entries in the scope</param>
+        /// <param name="symbols">Symbols in the scope</param>
+        /// <param name="signNotEvaluable">Raise error if the symbol is not evaluable</param>
+        /// <returns></returns>
+        private bool FixupSymbols(List<FixupEntry> fixups, Dictionary<string, ExpressionValue> symbols, bool signNotEvaluable)
+        {
             // --- First, fix the .equ values
             var success = true;
-            foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ && !f.Resolved))
+            foreach (var equ in fixups.Where(f => f.Type == FixupType.Equ && !f.Resolved))
             {
-                if (EvaluateFixupExpression(equ, false, out var value))
+                if (EvaluateFixupExpression(equ, false, signNotEvaluable, out var value))
                 {
-                    _output.Symbols[equ.Label] = value;
+                    symbols[equ.Label] = value;
                 }
                 else
                 {
@@ -194,9 +228,9 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Second, fix all the other values
-            foreach (var fixup in _output.Fixups.Where(f => f.Type != FixupType.Equ && !f.Resolved))
+            foreach (var fixup in fixups.Where(f => f.Type != FixupType.Equ && !f.Resolved))
             {
-                if (EvaluateFixupExpression(fixup, true, out var value))
+                if (EvaluateFixupExpression(fixup, true, signNotEvaluable, out var value))
                 {
                     var segment = _output.Segments[fixup.SegmentIndex];
                     var emittedCode = segment.EmittedCode;
@@ -213,7 +247,7 @@ namespace Spect.Net.Assembler.Assembler
 
                         case FixupType.Jr:
                             // --- Check for Relative address
-                            var currentAssemblyAddress = segment.StartAddress 
+                            var currentAssemblyAddress = segment.StartAddress
                                 + (segment.Displacement ?? 0)
                                 + fixup.Offset;
                             var dist = value.AsWord() - (currentAssemblyAddress + 2);
@@ -223,7 +257,7 @@ namespace Spect.Net.Assembler.Assembler
                                 success = false;
                                 break;
                             }
-                            emittedCode[fixup.Offset + 1] = (byte) dist;
+                            emittedCode[fixup.Offset + 1] = (byte)dist;
                             break;
 
                         case FixupType.Ent:
@@ -248,19 +282,24 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="fixup"></param>
         /// <param name="numericOnly">Signs if only numeric expressions are accepted</param>
+        /// <param name="signNotEvaluable">Raise error if the symbol is not evaluable</param>
         /// <param name="exprValue">The value of the expression</param>
         /// <returns>True, if evaluation successful; otherwise, false</returns>
-        private bool EvaluateFixupExpression(FixupEntry fixup, bool numericOnly, out ExpressionValue exprValue)
+        private bool EvaluateFixupExpression(FixupEntry fixup, bool numericOnly, bool signNotEvaluable, 
+            out ExpressionValue exprValue)
         {
             exprValue = new ExpressionValue(0L);
-            if (!fixup.Expression.ReadyToEvaluate(this))
+            if (!fixup.Expression.ReadyToEvaluate(fixup))
             {
-                ReportError(Errors.Z0201, fixup.SourceLine);
+                if (signNotEvaluable)
+                {
+                    ReportError(Errors.Z0201, fixup.SourceLine);
+                }
                 return false;
             }
 
             // --- Now resolve the fixup
-            exprValue = fixup.Expression.Evaluate(this);
+            exprValue = fixup.Expression.Evaluate(fixup);
             fixup.Resolved = true;
 
             // --- Check, if resolution was successful

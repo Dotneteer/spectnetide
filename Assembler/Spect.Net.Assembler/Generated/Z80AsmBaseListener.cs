@@ -153,6 +153,32 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitMacroEndMarker([NotNull] Z80AsmParser.MacroEndMarkerContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

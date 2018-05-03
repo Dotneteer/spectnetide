@@ -131,6 +131,28 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitMacroEndMarker([NotNull] Z80AsmParser.MacroEndMarkerContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
