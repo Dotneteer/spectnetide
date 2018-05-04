@@ -301,17 +301,23 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0406, loop);
             }
 
+            // --- Create a scope for the loop
+            var loopScope = new SymbolScope();
+            _output.LocalScopes.Push(loopScope);
+            var errorsBefore = _output.ErrorCount;
+
             for (var i = 0; i < counter; i++)
             {
                 // --- Create a local scope for the loop body
-                var localScope = new SymbolScope();
+                var localScope = new SymbolScope(loopScope);
                 _output.LocalScopes.Push(localScope);
 
-                for (var j = firstLine + 1; j < lastLine; j++)
+                var loopLineIndex = firstLine + 1;
+                while (loopLineIndex < lastLine)
                 {
-                    var tmpLineIndex = j;
-                    var curLine = lines[j];
-                    EmitSingleLine(lines, curLine, ref tmpLineIndex);
+                    var curLine = lines[loopLineIndex];
+                    EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    loopLineIndex++;
                 }
 
                 // --- Add the end label to the local scope
@@ -332,9 +338,22 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Clean up the hanging label
                 OverflowLabelLine = null;
 
+                // --- Fixup the symbols locally
+                FixupSymbols(localScope.Fixups, localScope.Symbols, false);
+
                 // --- Remove the local scope
                 _output.LocalScopes.Pop();
+
+                // --- Check for the maximum number of error
+                if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
+                {
+                    ReportError(Errors.Z0408, loop);
+                    break;
+                }
             }
+
+            // --- Clean up the loop's scope
+            _output.LocalScopes.Pop();
         }
 
         #endregion
@@ -468,6 +487,10 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of XENT pragma</param>
         private void ProcessXentPragma(XentPragma pragma)
         {
+            if (!IsInGlobalScope && ShouldReportErrorInCurrentScope(Errors.Z0407))
+            {
+                ReportError(Errors.Z0407, pragma, "XENT");
+            }
             var value = Eval(pragma, pragma.Expr);
             if (value.IsNonEvaluated)
             {

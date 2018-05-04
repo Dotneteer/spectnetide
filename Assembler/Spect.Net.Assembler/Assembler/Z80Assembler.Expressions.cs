@@ -65,7 +65,12 @@ namespace Spect.Net.Assembler.Assembler
         public bool ShouldReportErrorInCurrentScope(string errorCode)
         {
             if (IsInGlobalScope) return true;
-            return !_output.LocalScopes.Peek().IsErrorReported(errorCode);
+            var localScope = _output.LocalScopes.Peek();
+            if (localScope.OwnerScope != null)
+            {
+                localScope = localScope.OwnerScope;
+            }
+            return !localScope.IsErrorReported(errorCode);
         }
 
         /// <summary>

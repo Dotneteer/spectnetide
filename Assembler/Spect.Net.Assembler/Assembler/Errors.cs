@@ -73,6 +73,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0405 = "Z0405";
         public const string Z0406 = "Z0406";
         public const string Z0407 = "Z0407";
+        public const string Z0408 = "Z0408";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -138,6 +139,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0405, "Orphan '{0}' statement found without a corresponding '{1}' statement." },
             { Z0406, "Loop counter cannot be greater than 65535 (#FFFF)." },
             { Z0407, "The {0} pragma can be used only in the global scope." },
+            { Z0408, "Too many errors detected while compiling a loop, further processing aborted." },
         };
 
         /// <summary>

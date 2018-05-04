@@ -13,6 +13,11 @@ namespace Spect.Net.Assembler.Assembler
         private readonly HashSet<string> _errorsReported = new HashSet<string>();
 
         /// <summary>
+        /// Optional owner scope of this local scope
+        /// </summary>
+        public SymbolScope OwnerScope { get; }
+
+        /// <summary>
         /// The symbol table with properly defined symbols
         /// </summary>
         public Dictionary<string, ExpressionValue> Symbols { get; } =
@@ -44,5 +49,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="errorCode">Error code</param>
         /// <returns></returns>
         public bool IsErrorReported(string errorCode) => _errorsReported.Contains(errorCode);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        public SymbolScope(SymbolScope ownerScope = null)
+        {
+            OwnerScope = ownerScope;
+        }
     }
 }

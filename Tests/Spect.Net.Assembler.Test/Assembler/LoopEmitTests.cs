@@ -25,7 +25,23 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0407);
         }
 
+        [TestMethod]
+        public void XentPragmaCannotBeUsedInLoop()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
 
+            // --- Act
+            var output = compiler.Compile(@"
+                .loop 3
+                .xent #8000;
+                .endl
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0407);
+        }
 
         [TestMethod]
         [DataRow(".endl")]
@@ -302,5 +318,115 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeEmitWorks(SOURCE, 0x01, 0x08, 0x80, 0x00, 0x01, 0x08, 0x80, 0x00, 0x00);
         }
+
+        [TestMethod]
+        public void TooManyErrorsStopProcessing()
+        {
+            // --- Arrange
+            var options = new AssemblerOptions
+            {
+                MaxLoopErrorsToReport = 3
+            };
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                    .loop 100
+                        Value: .var 100 + Other;
+                    .endl
+                ", options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(4);
+            output.Errors[3].ErrorCode.ShouldBe(Errors.Z0408);
+        }
+
+        [TestMethod]
+        public void NestedLoopEmitWithSingleLineAndNoInternalLabelWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                .loop 2
+                    ld bc,#1234
+                    .loop 3
+                        inc a
+                    .endl
+                .endl
+                ";
+
+            CodeEmitWorks(SOURCE, 0x01, 0x34, 0x12, 0x3C, 0x3C, 0x3C, 0x01, 0x34, 0x12, 0x3C, 0x3C, 0x3C);
+        }
+
+        [TestMethod]
+        public void NestedLoopWithLabelsWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                .loop 1
+                    inc a
+                    .loop 2
+                        ld hl,EndLabel
+                        ld bc,NopLabel
+                    EndLabel: .endl
+                    NopLabel: nop
+                .endl
+                ";
+
+            CodeEmitWorks(SOURCE,
+                0x3C, 0x21, 0x07, 0x80, 0x01, 0x0D, 0x80, 0x21, 0x0D, 0x80, 0x01, 0x0D, 0x80, 0x00);
+        }
+
+        [TestMethod]
+        public void LoopWithVarWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                index = 1;
+                .loop 2
+                    ld a,index
+                    index = index + 1
+                    nop
+                EndLabel: .endl
+                ";
+
+            CodeEmitWorks(SOURCE, 0x3E, 0x01, 0x00, 0x3E, 0x02, 0x00);
+        }
+
+        [TestMethod]
+        public void LoopWithNestedVarWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                index = 1;
+                .loop 2
+                    index = 5
+                    ld a,index
+                    index := index + 1
+                    nop
+                EndLabel: .endl
+                ";
+
+            CodeEmitWorks(SOURCE, 0x3E, 0x05, 0x00, 0x3E, 0x05, 0x00);
+        }
+
+        [TestMethod]
+        public void NestedLoopWithVarWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                index = 1;
+                .loop 2
+                    ld a,index
+                    .loop 3
+                        index = index + 1
+                    nop
+                    .endl
+                EndLabel: .endl
+                ";
+
+            CodeEmitWorks(SOURCE, 0x3E, 0x01, 0x00, 0x00, 0x00, 0x3E, 0x04, 0x00, 0x00, 0x00);
+        }
+
+
     }
 }

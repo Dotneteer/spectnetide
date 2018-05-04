@@ -456,7 +456,12 @@ namespace Spect.Net.Assembler.Assembler
         private void ReportScopeError(string errorCode)
         {
             if (_output.LocalScopes.Count == 0) return;
-            _output.LocalScopes.Peek().ReportError(errorCode);
+            var localScope = _output.LocalScopes.Peek();
+            if (localScope.OwnerScope != null)
+            {
+                localScope = localScope.OwnerScope;
+            }
+            localScope.ReportError(errorCode);
         }
 
         #endregion Helpers
