@@ -59,12 +59,20 @@ statement
 	|	macroEndMarker
 	|	loopStatement
 	|	loopEndMarker
+	|	repeatStatement
+	|	untilStatement
+	|	whileStatement
+	|	whileEndMarker
 	;
 
 macroStatement: MACRO '(' (IDENTIFIER (COMMA IDENTIFIER)*)? ')'	;
 macroEndMarker: ENDMACRO ;
 loopStatement: LOOP expr ;
 loopEndMarker: ENDLOOP ;
+repeatStatement: REPEAT ;
+untilStatement: UNTIL expr ;
+whileStatement: WHILE expr ;
+whileEndMarker: ENDWHILE ;
 
 macroInvocation: IDENTIFIER '(' (expr (COMMA expr)*)? ')'	;
 
@@ -492,6 +500,10 @@ MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
 ENDMACRO: '.endm' | '.ENDM' | 'endm' | 'ENDM' | '.mend' | '.MEND' | 'mend' | 'MEND' ;
 LOOP	: '.loop' | '.LOOP' | 'loop' | 'LOOP' ;
 ENDLOOP	: '.endl' | '.ENDL' | 'endl' | 'ENDL' | '.lend' | '.LEND' | 'lend' | 'LEND' ;
+REPEAT	: '.repeat' | '.REPEAT' | 'repeat' | 'REPEAT' ;
+UNTIL	: '.until' | '.UNTIL' | 'until' | 'UNTIL' ;
+WHILE	: '.while' | '.WHILE' | 'while' | 'WHILE' ;
+ENDWHILE: '.endw' | '.ENDW' | 'endw' | 'ENDW' | '.wend' | '.WEND' | 'wend' | 'WEND' ;
 
 // --- Other tokens
 COLON	: ':' ;

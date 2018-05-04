@@ -6,40 +6,40 @@ using Spect.Net.Assembler.SyntaxTree.Statements;
 namespace Spect.Net.Assembler.Test.Parser
 {
     [TestClass]
-    public class LoopTests : ParserTestBed
+    public class WhileTests: ParserTestBed
     {
         [TestMethod]
-        [DataRow(".endl")]
-        [DataRow("endl")]
-        [DataRow(".ENDL")]
-        [DataRow("ENDL")]
-        [DataRow(".lend")]
-        [DataRow("lend")]
-        [DataRow(".LEND")]
-        [DataRow("LEND")]
-        public void EndLoopParsingWorks(string source)
+        [DataRow(".endw")]
+        [DataRow("endw")]
+        [DataRow(".ENDW")]
+        [DataRow("ENDW")]
+        [DataRow(".wend")]
+        [DataRow("wend")]
+        [DataRow(".WEND")]
+        [DataRow("WEND")]
+        public void EndWhileParsingWorks(string source)
         {
             // --- Act
             var visitor = Parse(source);
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            visitor.Compilation.Lines[0].ShouldBeOfType<LoopEndStatement>();
+            visitor.Compilation.Lines[0].ShouldBeOfType<WhileEndStatement>();
         }
 
         [TestMethod]
-        [DataRow(".loop #3")]
-        [DataRow("loop 123")]
-        [DataRow(".LOOP #34")]
-        [DataRow("LOOP %1111")]
-        public void LoopParsingWorks(string source)
+        [DataRow(".while #3")]
+        [DataRow("while 123")]
+        [DataRow(".WHILE #34")]
+        [DataRow("WHILE %1111")]
+        public void WhileParsingWorks(string source)
         {
             // --- Act
             var visitor = Parse(source);
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoopStatement;
+            var line = visitor.Compilation.Lines[0] as WhileStatement;
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
         }

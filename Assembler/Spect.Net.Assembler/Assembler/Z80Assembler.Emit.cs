@@ -215,6 +215,21 @@ namespace Spect.Net.Assembler.Assembler
                     ReportError(Errors.Z0405, loopEndStmt, "ENDL/LEND", "LOOP");
                     break;
 
+                case RepeatStatement repeatStatement:
+                    ProcessRepeatStatement(repeatStatement, lines, ref currentLineIndex);
+                    break;
+
+                case UntilStatement untilStmt:
+                    ReportError(Errors.Z0405, untilStmt, "UNTIL", "REPEAT");
+                    break;
+
+                case WhileStatement whileStatement:
+                    ProcessWhileStatement(whileStatement, lines, ref currentLineIndex);
+                    break;
+
+                case WhileEndStatement whileEndStmt:
+                    ReportError(Errors.Z0405, whileEndStmt, "ENDW/WEND", "WHILE");
+                    break;
             }
         }
 
@@ -293,12 +308,18 @@ namespace Spect.Net.Assembler.Assembler
             // --- Now, we can process the loop
             var loopCounter = EvalImmediate(loop, loop.Expr);
             if (!loopCounter.IsValid) return;
+            if (loopCounter.Type == ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0305, loop);
+                return;
+            }
 
             // --- Check the loop counter
             var counter = loopCounter.AsLong();
             if (counter >= 0x10000)
             {
                 ReportError(Errors.Z0406, loop);
+                counter = 1;
             }
 
             // --- Create a scope for the loop
@@ -348,6 +369,190 @@ namespace Spect.Net.Assembler.Assembler
                 if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
                 {
                     ReportError(Errors.Z0408, loop);
+                    break;
+                }
+            }
+
+            // --- Clean up the loop's scope
+            _output.LocalScopes.Pop();
+        }
+
+        /// <summary>
+        /// Processes the REPEAT statement
+        /// </summary>
+        /// <param name="repeat">Repeat statement</param>
+        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        private void ProcessRepeatStatement(RepeatStatement repeat, List<SourceLineBase> lines, ref int currentLineIndex)
+        {
+            // --- Search for the end of the loop
+            var firstLine = currentLineIndex;
+            if (!repeat.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+
+            // --- End found
+            var lastLine = currentLineIndex;
+            var untilStmt = lines[lastLine] as UntilStatement;
+
+            // --- Create a scope for the repeat loop
+            var loopScope = new SymbolScope();
+            _output.LocalScopes.Push(loopScope);
+            var errorsBefore = _output.ErrorCount;
+
+            // --- Execute the REPEAT body
+            var loopCount = 0;
+            bool condition;
+            do
+            {
+                // --- Create a local scope for the repeat body
+                var localScope = new SymbolScope(loopScope);
+                _output.LocalScopes.Push(localScope);
+
+                var loopLineIndex = firstLine + 1;
+                while (loopLineIndex < lastLine)
+                {
+                    var curLine = lines[loopLineIndex];
+                    EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    loopLineIndex++;
+                }
+
+                // --- Add the end label to the local scope
+                if (endLabel != null)
+                {
+                    // --- Add the end label to the loop scope
+                    var endLine = lines[currentLineIndex];
+                    if (SymbolExists(endLabel))
+                    {
+                        ReportError(Errors.Z0040, endLine, endLabel);
+                    }
+                    else
+                    {
+                        AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                    }
+                }
+
+                // --- Clean up the hanging label
+                OverflowLabelLine = null;
+
+                // --- Fixup the symbols locally
+                FixupSymbols(localScope.Fixups, localScope.Symbols, false);
+
+                // --- Remove the local scope
+                _output.LocalScopes.Pop();
+
+                // --- Check for the maximum number of error
+                if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
+                {
+                    ReportError(Errors.Z0408, repeat);
+                    break;
+                }
+
+                // --- Evaluate the loop expression
+                var loopExitCondition = EvalImmediate(untilStmt, untilStmt?.Expr);
+                if (!loopExitCondition.IsValid) return;
+                if (loopExitCondition.Type == ExpressionValueType.String)
+                {
+                    ReportError(Errors.Z0305, untilStmt);
+                    break;
+                }
+                condition = loopExitCondition.AsBool();
+
+                // --- Increment counter, check loop safety
+                loopCount++;
+                if (loopCount >= 0x10000)
+                {
+                    ReportError(Errors.Z0409, repeat);
+                    break;
+                }
+            } while (!condition);
+
+            // --- Clean up the loop's scope
+            _output.LocalScopes.Pop();
+        }
+
+        /// <summary>
+        /// Processes the WHILE statement
+        /// </summary>
+        /// <param name="whileStmt">While statement</param>
+        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        private void ProcessWhileStatement(WhileStatement whileStmt, List<SourceLineBase> lines, ref int currentLineIndex)
+        {
+            // --- Search for the end of the loop
+            var firstLine = currentLineIndex;
+            if (!whileStmt.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+
+            // --- End found
+            var lastLine = currentLineIndex;
+            
+            // --- Create a scope for the while loop
+            var loopScope = new SymbolScope();
+            _output.LocalScopes.Push(loopScope);
+            var errorsBefore = _output.ErrorCount;
+
+            // --- Execute the WHILE body
+            var loopCount = 0;
+            while (true)
+            {
+                // --- Evaluate the loop expression
+                var loopCondition = EvalImmediate(whileStmt, whileStmt.Expr);
+                if (!loopCondition.IsValid) return;
+                if (loopCondition.Type == ExpressionValueType.String)
+                {
+                    ReportError(Errors.Z0305, whileStmt);
+                    break;
+                }
+
+                // --- Exit if while condition fails
+                if (!loopCondition.AsBool()) break;
+
+                // --- Increment counter, check loop safety
+                loopCount++;
+                if (loopCount >= 0x10000)
+                {
+                    ReportError(Errors.Z0409, whileStmt);
+                    break;
+                }
+
+                // --- Create a local scope for the repeat body
+                var localScope = new SymbolScope(loopScope);
+                _output.LocalScopes.Push(localScope);
+
+                var loopLineIndex = firstLine + 1;
+                while (loopLineIndex < lastLine)
+                {
+                    var curLine = lines[loopLineIndex];
+                    EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    loopLineIndex++;
+                }
+
+                // --- Add the end label to the local scope
+                if (endLabel != null)
+                {
+                    // --- Add the end label to the loop scope
+                    var endLine = lines[currentLineIndex];
+                    if (SymbolExists(endLabel))
+                    {
+                        ReportError(Errors.Z0040, endLine, endLabel);
+                    }
+                    else
+                    {
+                        AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                    }
+                }
+
+                // --- Clean up the hanging label
+                OverflowLabelLine = null;
+
+                // --- Fixup the symbols locally
+                FixupSymbols(localScope.Fixups, localScope.Symbols, false);
+
+                // --- Remove the local scope
+                _output.LocalScopes.Pop();
+
+                // --- Check for the maximum number of error
+                if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
+                {
+                    ReportError(Errors.Z0408, whileStmt);
                     break;
                 }
             }

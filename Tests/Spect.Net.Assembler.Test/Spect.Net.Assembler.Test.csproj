@@ -83,6 +83,8 @@
     <Compile Include="Assembler\EmitTests.cs" />
     <Compile Include="Assembler\MacroEmitTests.cs" />
     <Compile Include="Assembler\LoopEmitTests.cs" />
+    <Compile Include="Assembler\RepeatTests.cs" />
+    <Compile Include="Assembler\WhileTests.cs" />
     <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />
@@ -104,6 +106,8 @@
     <Compile Include="Parser\LiteralParserTests.cs" />
     <Compile Include="Parser\MacroTests.cs" />
     <Compile Include="Parser\LoopTests.cs" />
+    <Compile Include="Parser\RepeatTests.cs" />
+    <Compile Include="Parser\WhileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -151,6 +151,10 @@
     <Compile Include="SyntaxTree\Statements\LoopStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\RepeatStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\UntilStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\WhileEndStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\WhileStatement.cs" />
     <Compile Include="SyntaxTree\SyntaxHelper.cs" />
     <Compile Include="SyntaxTree\TextSpan.cs" />
     <Compile Include="SyntaxTree\Z80AsmParserErrorInfo.cs" />

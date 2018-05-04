@@ -6,42 +6,39 @@ using Spect.Net.Assembler.SyntaxTree.Statements;
 namespace Spect.Net.Assembler.Test.Parser
 {
     [TestClass]
-    public class LoopTests : ParserTestBed
+    public class RepeatTests : ParserTestBed
     {
         [TestMethod]
-        [DataRow(".endl")]
-        [DataRow("endl")]
-        [DataRow(".ENDL")]
-        [DataRow("ENDL")]
-        [DataRow(".lend")]
-        [DataRow("lend")]
-        [DataRow(".LEND")]
-        [DataRow("LEND")]
-        public void EndLoopParsingWorks(string source)
+        [DataRow(".repeat")]
+        [DataRow("repeat")]
+        [DataRow(".REPEAT")]
+        [DataRow("REPEAT")]
+        public void RepeatParsingWorks(string source)
         {
             // --- Act
             var visitor = Parse(source);
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            visitor.Compilation.Lines[0].ShouldBeOfType<LoopEndStatement>();
+            visitor.Compilation.Lines[0].ShouldBeOfType<RepeatStatement>();
         }
 
         [TestMethod]
-        [DataRow(".loop #3")]
-        [DataRow("loop 123")]
-        [DataRow(".LOOP #34")]
-        [DataRow("LOOP %1111")]
-        public void LoopParsingWorks(string source)
+        [DataRow(".until false")]
+        [DataRow("until false")]
+        [DataRow(".UNTIL false")]
+        [DataRow("UNTIL false")]
+        public void UntilParsingWorks(string source)
         {
             // --- Act
             var visitor = Parse(source);
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as LoopStatement;
+            var line = visitor.Compilation.Lines[0] as UntilStatement;
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
+
     }
 }

@@ -5,19 +5,19 @@ using Spect.Net.Assembler.Assembler;
 namespace Spect.Net.Assembler.Test.Assembler
 {
     [TestClass]
-    public class LoopEmitTests : AssemblerTestBed
+    public class RepeatTests : AssemblerTestBed
     {
         [TestMethod]
-        public void EntPragmaCannotBeUsedInLoop()
+        public void EntPragmaCannotBeUsedInRepeat()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                .loop 3
-                .ent #8000;
-                .endl
+                .repeat
+                .ent #8000
+                .until true
                 ");
 
             // --- Assert
@@ -33,9 +33,9 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Act
             var output = compiler.Compile(@"
-                .loop 3
-                .xent #8000;
-                .endl
+                .repeat
+                .xent #8000
+                .until true
                 ");
 
             // --- Assert
@@ -44,15 +44,11 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        [DataRow(".endl")]
-        [DataRow("endl")]
-        [DataRow(".ENDL")]
-        [DataRow("ENDL")]
-        [DataRow(".lend")]
-        [DataRow("lend")]
-        [DataRow(".LEND")]
-        [DataRow("LEND")]
-        public void EndLoopWithoutOpenTagFails(string source)
+        [DataRow(".until true")]
+        [DataRow("until true")]
+        [DataRow(".UNTIL true")]
+        [DataRow("UNTIL true")]
+        public void UntilWithoutRepeatFails(string source)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -66,15 +62,15 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void LoopFailsWithString()
+        public void UntilFailsWithString()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                .loop ""hello""
-                .endl
+                .repeat 
+                .until ""Hello""
                 ");
 
             // --- Assert
@@ -83,15 +79,56 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void LoopWithEmptyBodyWorks()
+        public void RepeatFailsWithTooLongLoop()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                .loop 3
-                .endl
+                .repeat 
+                .until false
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0409);
+        }
+
+        [TestMethod]
+        public void TooManyErrorsStopProcessing()
+        {
+            // --- Arrange
+            var options = new AssemblerOptions
+            {
+                MaxLoopErrorsToReport = 3
+            };
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                    counter = 0;
+                    .repeat
+                        Value: .var 100 + Other;
+                        counter = counter + 1;
+                    .until counter >= 100
+                ", options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(4);
+            output.Errors[3].ErrorCode.ShouldBe(Errors.Z0408);
+        }
+
+        [TestMethod]
+        public void RepeatWithEmptyBodyWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .repeat
+                .until true
                 ");
 
             // --- Assert
@@ -99,52 +136,71 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void LabeledLoopWithEmptyBodyWorks()
+        public void RepeatExecutesOnce()
+        {
+            const string SOURCE = @"
+                .repeat
+                    inc a
+                .until true
+                ";
+
+            // --- Assert
+            CodeEmitWorks(SOURCE, 0x3C);
+        }
+
+        [TestMethod]
+        public void LabeledRepeatWithEmptyBodyWorks()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                MyLoop: .loop 3
-                    .endl
+                counter = 1;
+                MyLoop: .repeat
+                    counter = counter + 1
+                    .until counter > 3
                 ");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Symbols.ContainsKey("MYLOOP").ShouldBeTrue();
-            output.Symbols["MYLOOP"].Value.ShouldBe((ushort) 0x8000);
+            output.Symbols["MYLOOP"].Value.ShouldBe((ushort)0x8000);
         }
 
         [TestMethod]
-        public void HangingLabeledLoopWithEmptyBodyWorks()
+        public void HangingLabeledRepeatWithEmptyBodyWorks()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
+                counter = 1;
                 MyLoop: 
-                    .loop 3
-                    .endl
+                    .repeat
+                        counter = counter + 1
+                    .until counter > 3
                 ");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Symbols.ContainsKey("MYLOOP").ShouldBeTrue();
-            output.Symbols["MYLOOP"].Value.ShouldBe((ushort) 0x8000);
+            output.Symbols["MYLOOP"].Value.ShouldBe((ushort)0x8000);
         }
 
         [TestMethod]
-        public void EndLabeledLoopWithEmptyBodyWorks()
+        public void EndLabeledRepeatWithEmptyBodyWorks()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                .loop 3
-                MyEnd: .endl
+                counter = 1;
+                    .repeat
+                        counter = counter + 1
+                    MyEnd: .until counter > 3
                 ");
 
             // --- Assert
@@ -153,16 +209,18 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void HangingEndLabeledLoopWithEmptyBodyWorks()
+        public void HangingEndLabeledRepeatWithEmptyBodyWorks()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                    .loop 3
-                MyEnd: 
-                    .endl
+                counter = 1;
+                    .repeat
+                        counter = counter + 1
+                    MyEnd: 
+                        .until counter > 3
                 ");
 
             // --- Assert
@@ -171,15 +229,15 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void InvalidCounterIsCaught()
+        public void InvalidConditionIsCaught()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                .loop 3+unknown
-                .endl
+                .repeat
+                .until 3+unknown
                 ");
 
             // --- Assert
@@ -195,8 +253,10 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Act
             var output = compiler.Compile(@"
-                    .loop 3+later
-                    .endl
+                count = 1
+                .repeat
+                    count = count + 1
+                .until count > later
                 later: .equ 5");
 
             // --- Assert
@@ -212,124 +272,122 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Act
             var output = compiler.Compile(@"
-                value: .equ 5
-                    .loop 3+value
-                    .endl
-                ");
+                later: .equ 5
+                count = 1
+                .repeat
+                    count = count + 1
+                .until count > later");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
         }
 
         [TestMethod]
-        public void TooGreatCounterIsCaught()
-        {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile(@"
-                    .loop #FFFF + 1
-                    .endl
-                ");
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0406);
-        }
-
-        [TestMethod]
-        public void LoopEmitWithSingleLineAndNoInternalLabelWorks()
+        public void RepeatEmitWithSingleLineAndNoInternalLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                .loop 2
+                counter = 0
+                .repeat
                     ld bc,#1234
-                .endl
+                    counter = counter + 1
+                .until counter == 2
                 ";
 
             CodeEmitWorks(SOURCE, 0x01, 0x34, 0x12, 0x01, 0x34, 0x12);
         }
 
         [TestMethod]
-        public void LoopEmitWithMultipleLineAndNoInternalLabelWorks()
+        public void RepeatEmitWithMultipleLineAndNoInternalLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                .loop 2
+                counter = 0
+                .repeat
                     inc b
                     inc c
                     inc d
-                .endl
+                    counter = counter + 1
+                .until counter == 2
                 ";
 
             CodeEmitWorks(SOURCE, 0x04, 0x0C, 0x14, 0x04, 0x0C, 0x14);
         }
 
         [TestMethod]
-        public void LoopWithInternalLabelWorks()
+        public void RepeatWithInternalLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                .loop 2
+                counter = 0
+                .repeat
                     ThisLabel: ld bc,ThisLabel
-                .endl
+                    counter = counter + 1
+                .until counter == 2
                 ";
 
             CodeEmitWorks(SOURCE, 0x01, 0x00, 0x80, 0x01, 0x03, 0x80);
         }
 
         [TestMethod]
-        public void LoopWithInternalFixupLabelWorks()
+        public void RepeatWithInternalFixupLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                .loop 2
+                counter = 0
+                .repeat
                     ld bc,ThisLabel
                     ThisLabel: nop
-                .endl
+                    counter = counter + 1
+                .until counter == 2
                 ";
 
             CodeEmitWorks(SOURCE, 0x01, 0x03, 0x80, 0x00, 0x01, 0x07, 0x80, 0x00);
         }
 
         [TestMethod]
-        public void LoopWithStartLabelWorks()
+        public void RepeatWithStartLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                StartLabel: .loop 2
+                counter = 0
+                StartLabel: .repeat
                     ld bc,StartLabel
                     nop
-                .endl
+                    counter = counter + 1
+                .until counter == 2
                 ";
 
             CodeEmitWorks(SOURCE, 0x01, 0x00, 0x80, 0x00, 0x01, 0x00, 0x80, 0x00);
         }
 
         [TestMethod]
-        public void LoopWithEndLabelWorks()
+        public void RepeatWithEndLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                .loop 2
+                counter = 0
+                .repeat
                     ld bc,EndLabel
                     nop
-                EndLabel: .endl
+                    counter = counter + 1
+                EndLabel .until counter == 2
                 ";
 
             CodeEmitWorks(SOURCE, 0x01, 0x04, 0x80, 0x00, 0x01, 0x08, 0x80, 0x00);
         }
 
         [TestMethod]
-        public void LoopWithExternalFixupLabelWorks()
+        public void RepeatWithExternalFixupLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                .loop 2
+                counter = 0
+                .repeat
                     ld bc,OuterLabel
                     nop
-                .endl
+                    counter = counter + 1
+                .until counter == 2
             OuterLabel: nop
                 ";
 
@@ -337,56 +395,58 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void TooManyErrorsStopProcessing()
-        {
-            // --- Arrange
-            var options = new AssemblerOptions
-            {
-                MaxLoopErrorsToReport = 3
-            };
-            var compiler = new Z80Assembler();
-
-            // --- Act
-            var output = compiler.Compile(@"
-                    .loop 100
-                        Value: .var 100 + Other;
-                    .endl
-                ", options);
-
-            // --- Assert
-            output.ErrorCount.ShouldBe(4);
-            output.Errors[3].ErrorCode.ShouldBe(Errors.Z0408);
-        }
-
-        [TestMethod]
-        public void NestedLoopEmitWithSingleLineAndNoInternalLabelWorks()
+        public void RepeatNestedLoopEmitWithSingleLineAndNoInternalLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                .loop 2
+                counter = 0
+                .repeat
                     ld bc,#1234
                     .loop 3
                         inc a
                     .endl
-                .endl
+                    counter = counter + 1
+                .until counter == 2
                 ";
 
             CodeEmitWorks(SOURCE, 0x01, 0x34, 0x12, 0x3C, 0x3C, 0x3C, 0x01, 0x34, 0x12, 0x3C, 0x3C, 0x3C);
         }
 
         [TestMethod]
-        public void NestedLoopWithLabelsWorks()
+        public void RepeatNestedRepeatEmitWithSingleLineAndNoInternalLabelWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                .loop 1
+                counter = 0
+                .repeat
+                    ld bc,#1234
+                    counter1 = 0
+                    .repeat
+                        inc a
+                        counter1 = counter1 + 1
+                    .until counter1 == 3
+                    counter = counter + 1
+                .until counter == 2
+                ";
+
+            CodeEmitWorks(SOURCE, 0x01, 0x34, 0x12, 0x3C, 0x3C, 0x3C, 0x01, 0x34, 0x12, 0x3C, 0x3C, 0x3C);
+        }
+
+        [TestMethod]
+        public void RepeatNestedLoopWithLabelsWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                counter = 0
+                .repeat
                     inc a
                     .loop 2
                         ld hl,EndLabel
                         ld bc,NopLabel
                     EndLabel: .endl
                     NopLabel: nop
-                .endl
+                    counter = counter + 1
+                .until counter == 1
                 ";
 
             CodeEmitWorks(SOURCE,
@@ -394,56 +454,26 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void LoopWithVarWorks()
+        public void RepeatNestedRepeatWithLabelsWorks()
         {
             // --- Arrange
             const string SOURCE = @"
-                index = 1;
-                .loop 2
-                    ld a,index
-                    index = index + 1
-                    nop
-                EndLabel: .endl
+                counter = 0
+                .repeat
+                    inc a
+                    counter1 = 0
+                    .repeat
+                        ld hl,EndLabel
+                        ld bc,NopLabel
+                        counter1 = counter1 + 1
+                    EndLabel:.until counter1 == 2
+                    NopLabel: nop
+                    counter = counter + 1
+                .until counter == 1
                 ";
 
-            CodeEmitWorks(SOURCE, 0x3E, 0x01, 0x00, 0x3E, 0x02, 0x00);
+            CodeEmitWorks(SOURCE,
+                0x3C, 0x21, 0x07, 0x80, 0x01, 0x0D, 0x80, 0x21, 0x0D, 0x80, 0x01, 0x0D, 0x80, 0x00);
         }
-
-        [TestMethod]
-        public void LoopWithNestedVarWorks()
-        {
-            // --- Arrange
-            const string SOURCE = @"
-                index = 1;
-                .loop 2
-                    index = 5
-                    ld a,index
-                    index := index + 1
-                    nop
-                EndLabel: .endl
-                ";
-
-            CodeEmitWorks(SOURCE, 0x3E, 0x05, 0x00, 0x3E, 0x05, 0x00);
-        }
-
-        [TestMethod]
-        public void NestedLoopWithVarWorks()
-        {
-            // --- Arrange
-            const string SOURCE = @"
-                index = 1;
-                .loop 2
-                    ld a,index
-                    .loop 3
-                        index = index + 1
-                    nop
-                    .endl
-                EndLabel: .endl
-                ";
-
-            CodeEmitWorks(SOURCE, 0x3E, 0x01, 0x00, 0x00, 0x00, 0x3E, 0x04, 0x00, 0x00, 0x00);
-        }
-
-
     }
 }

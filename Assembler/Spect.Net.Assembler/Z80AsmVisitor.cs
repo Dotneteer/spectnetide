@@ -811,6 +811,70 @@ namespace Spect.Net.Assembler
                 : AddLine(new LoopEndStatement(), context);
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitRepeatStatement(Z80AsmParser.RepeatStatementContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new RepeatStatement(), context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitUntilStatement(Z80AsmParser.UntilStatementContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new UntilStatement((ExpressionNode)VisitExpr(context.expr())),
+                context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitWhileStatement(Z80AsmParser.WhileStatementContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new WhileStatement((ExpressionNode)VisitExpr(context.expr())),
+                context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitWhileEndMarker(Z80AsmParser.WhileEndMarkerContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new WhileEndStatement(), context);
+        }
+
         #endregion
 
         #region Expression handling

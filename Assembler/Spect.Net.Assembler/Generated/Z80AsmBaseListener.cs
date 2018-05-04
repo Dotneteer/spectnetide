@@ -179,6 +179,58 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRepeatStatement([NotNull] Z80AsmParser.RepeatStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRepeatStatement([NotNull] Z80AsmParser.RepeatStatementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWhileEndMarker([NotNull] Z80AsmParser.WhileEndMarkerContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWhileEndMarker([NotNull] Z80AsmParser.WhileEndMarkerContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

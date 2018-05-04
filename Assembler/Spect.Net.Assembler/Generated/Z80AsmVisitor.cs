@@ -110,6 +110,34 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRepeatStatement([NotNull] Z80AsmParser.RepeatStatementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhileEndMarker([NotNull] Z80AsmParser.WhileEndMarkerContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
