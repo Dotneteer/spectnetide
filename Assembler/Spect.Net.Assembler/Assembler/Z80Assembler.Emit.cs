@@ -230,6 +230,22 @@ namespace Spect.Net.Assembler.Assembler
                 case WhileEndStatement whileEndStmt:
                     ReportError(Errors.Z0405, whileEndStmt, "ENDW/WEND", "WHILE");
                     break;
+
+                case IfStatement ifStatement:
+                    ProcessIfStatement(ifStatement, lines, ref currentLineIndex);
+                    break;
+
+                case ElifStatement elifStmt:
+                    ReportError(Errors.Z0405, elifStmt, "ELIF", "IF");
+                    break;
+
+                case ElseStatement elseStmt:
+                    ReportError(Errors.Z0405, elseStmt, "ELSE", "IF");
+                    break;
+
+                case IfEndStatement ifEndStmt:
+                    ReportError(Errors.Z0405, ifEndStmt, "ENDIF", "IF");
+                    break;
             }
         }
 
@@ -559,6 +575,16 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Clean up the loop's scope
             _output.LocalScopes.Pop();
+        }
+
+        /// <summary>
+        /// Processes the if statement
+        /// </summary>
+        /// <param name="ifStmt">If statement</param>
+        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        private void ProcessIfStatement(IfStatement ifStmt, List<SourceLineBase> lines, ref int currentLineIndex)
+        {
         }
 
         #endregion

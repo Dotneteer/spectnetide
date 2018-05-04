@@ -1,5 +1,7 @@
 ### Version under development
 
+__FEATURE__: The Z80 assembler now supports loop statements: `LOOP`, `REPEAT`..`UNTIL`
+`WHILE`..`WEND`.  
 __FIX__: The Z80 assembler did not accepted the `ld (ix+MySymbol+2),h` expression, you had to write 
 `ld (ix+[MySymbol+2]),h`. Now, the assembler does not have this restriction, so the first instruction also correct.  
 __FEATURE__: The Z80 assembler now accepts `(` and `)` as expression delimiters, not only `[` and `]`.  

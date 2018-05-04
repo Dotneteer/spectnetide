@@ -146,7 +146,11 @@
     <Compile Include="SyntaxTree\SourceLineBase.cs" />
     <Compile Include="SyntaxTree\StatementBase.cs" />
     <Compile Include="SyntaxTree\Statements\BlockStatementBase.cs" />
+    <Compile Include="SyntaxTree\Statements\ElifStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\ElseStatement.cs" />
     <Compile Include="SyntaxTree\Statements\EndStatementBase.cs" />
+    <Compile Include="SyntaxTree\Statements\IfEndStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\IfStatement.cs" />
     <Compile Include="SyntaxTree\Statements\LoopEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\LoopStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroEndStatement.cs" />

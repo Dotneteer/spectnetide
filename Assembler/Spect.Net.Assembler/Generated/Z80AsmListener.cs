@@ -197,6 +197,50 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitWhileEndMarker([NotNull] Z80AsmParser.WhileEndMarkerContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.ifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIfStatement([NotNull] Z80AsmParser.IfStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.ifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIfStatement([NotNull] Z80AsmParser.IfStatementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterElifStatement([NotNull] Z80AsmParser.ElifStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitElifStatement([NotNull] Z80AsmParser.ElifStatementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.elseStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterElseStatement([NotNull] Z80AsmParser.ElseStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.elseStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitElseStatement([NotNull] Z80AsmParser.ElseStatementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.endifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEndifStatement([NotNull] Z80AsmParser.EndifStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.endifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEndifStatement([NotNull] Z80AsmParser.EndifStatementContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

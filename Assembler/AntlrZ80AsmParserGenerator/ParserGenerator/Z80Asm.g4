@@ -63,6 +63,10 @@ statement
 	|	untilStatement
 	|	whileStatement
 	|	whileEndMarker
+	|	ifStatement
+	|	elifStatement
+	|	elseStatement
+	|	endifStatement
 	;
 
 macroStatement: MACRO '(' (IDENTIFIER (COMMA IDENTIFIER)*)? ')'	;
@@ -73,6 +77,10 @@ repeatStatement: REPEAT ;
 untilStatement: UNTIL expr ;
 whileStatement: WHILE expr ;
 whileEndMarker: ENDWHILE ;
+ifStatement: IFSTMT expr ;
+elifStatement: ELIF expr ;
+elseStatement: ELSESTMT ;
+endifStatement: ENDIFSTMT ;
 
 macroInvocation: IDENTIFIER '(' (expr (COMMA expr)*)? ')'	;
 
@@ -504,6 +512,10 @@ REPEAT	: '.repeat' | '.REPEAT' | 'repeat' | 'REPEAT' ;
 UNTIL	: '.until' | '.UNTIL' | 'until' | 'UNTIL' ;
 WHILE	: '.while' | '.WHILE' | 'while' | 'WHILE' ;
 ENDWHILE: '.endw' | '.ENDW' | 'endw' | 'ENDW' | '.wend' | '.WEND' | 'wend' | 'WEND' ;
+IFSTMT	: '.if' | '.IF' | 'if' | 'IF' ;
+ELIF	: '.elif' | '.ELIF' | 'elif' | 'ELIF' ;
+ELSESTMT: '.else' | '.ELSE' | 'else' | 'ELSE' ;
+ENDIFSTMT: '.endif' | '.ENDIF' | 'endif' | 'ENDIF' ;
 
 // --- Other tokens
 COLON	: ':' ;

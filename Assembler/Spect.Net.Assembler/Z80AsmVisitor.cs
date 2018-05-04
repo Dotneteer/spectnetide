@@ -778,7 +778,6 @@ namespace Spect.Net.Assembler
                 : AddLine(new MacroEndStatement(), context);
         }
 
-
         /// <summary>
         /// Visit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
         /// <para>
@@ -873,6 +872,71 @@ namespace Spect.Net.Assembler
             return IsInvalidContext(context)
                 ? null
                 : AddLine(new WhileEndStatement(), context);
+        }
+
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.ifStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitIfStatement(Z80AsmParser.IfStatementContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new IfStatement((ExpressionNode)VisitExpr(context.expr())),
+                context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitElifStatement(Z80AsmParser.ElifStatementContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new ElifStatement((ExpressionNode)VisitExpr(context.expr())), 
+                context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.elseStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitElseStatement(Z80AsmParser.ElseStatementContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new ElseStatement(), context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.endifStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitEndifStatement(Z80AsmParser.EndifStatementContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new IfEndStatement(), context);
         }
 
         #endregion

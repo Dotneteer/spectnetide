@@ -107,6 +107,7 @@
     <Compile Include="Parser\MacroTests.cs" />
     <Compile Include="Parser\LoopTests.cs" />
     <Compile Include="Parser\RepeatTests.cs" />
+    <Compile Include="Parser\IfTests.cs" />
     <Compile Include="Parser\WhileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
