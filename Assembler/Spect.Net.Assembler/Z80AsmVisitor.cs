@@ -1270,9 +1270,14 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
 
             var token = context.NormalizeToken();
-            if (token == "$" || token == ".")
+            if (context.CURADDR() != null)
             {
                 return new CurrentAddressNode();
+            }
+
+            if (context.CURCNT() != null)
+            {
+                return new CurrentLoopCounterNode();
             }
 
             // --- Check for Boolean values

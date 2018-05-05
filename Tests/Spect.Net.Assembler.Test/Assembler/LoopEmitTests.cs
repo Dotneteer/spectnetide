@@ -464,5 +464,48 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeEmitWorks(SOURCE, 0x3E, 0x01, 0x00, 0x00, 0x00, 0x3E, 0x04, 0x00, 0x00, 0x00);
         }
+
+        [TestMethod]
+        public void LoopCounterWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                .loop 3
+                    .db $cnt
+                .endl
+                ";
+
+            CodeEmitWorks(SOURCE, 0x01, 0x02, 0x03);
+        }
+
+        [TestMethod]
+        public void LoopCounterFailsInGlobalScope()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                .db $cnt
+                .loop 3
+                    nop
+                .endl
+                ";
+
+            CodeRaisesError(SOURCE, Errors.Z0412);
+        }
+
+        [TestMethod]
+        public void NestedLoopCountersWork()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                .loop 3
+                    .db $cnt
+                    .loop 2
+                        .db $cnt
+                    .endl
+                .endl
+                ";
+
+            CodeEmitWorks(SOURCE, 0x01, 0x01, 0x02, 0x02, 0x01, 0x02, 0x03, 0x01, 0x02);
+        }
     }
 }

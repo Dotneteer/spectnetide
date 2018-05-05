@@ -64,7 +64,7 @@ public partial class Z80AsmParser : Parser {
 		IFSTMT=218, ELIF=219, ELSESTMT=220, ENDIFSTMT=221, COLON=222, COMMA=223, 
 		HEXNUM=224, BINNUM=225, DECNUM=226, REALNUM=227, CHAR=228, STRING=229, 
 		FSTRING=230, BOOLLIT=231, TRUE=232, FALSE=233, IDENTIFIER=234, IDSTART=235, 
-		IDCONT=236, CURADDR=237, ErrorCharacter=238;
+		IDCONT=236, CURADDR=237, CURCNT=238, ErrorCharacter=239;
 	public const int
 		RULE_compileUnit = 0, RULE_asmline = 1, RULE_label = 2, RULE_comment = 3, 
 		RULE_pragma = 4, RULE_directive = 5, RULE_statement = 6, RULE_macroStatement = 7, 
@@ -150,7 +150,8 @@ public partial class Z80AsmParser : Parser {
 		"ENDMACRO", "LOOP", "ENDLOOP", "REPEAT", "UNTIL", "WHILE", "ENDWHILE", 
 		"IFSTMT", "ELIF", "ELSESTMT", "ENDIFSTMT", "COLON", "COMMA", "HEXNUM", 
 		"BINNUM", "DECNUM", "REALNUM", "CHAR", "STRING", "FSTRING", "BOOLLIT", 
-		"TRUE", "FALSE", "IDENTIFIER", "IDSTART", "IDCONT", "CURADDR", "ErrorCharacter"
+		"TRUE", "FALSE", "IDENTIFIER", "IDSTART", "IDCONT", "CURADDR", "CURCNT", 
+		"ErrorCharacter"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -1927,7 +1928,7 @@ public partial class Z80AsmParser : Parser {
 			State = 293;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__56) | (1L << T__57))) != 0) || ((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (T__87 - 88)) | (1L << (T__88 - 88)) | (1L << (T__90 - 88)))) != 0) || ((((_la - 224)) & ~0x3f) == 0 && ((1L << (_la - 224)) & ((1L << (HEXNUM - 224)) | (1L << (BINNUM - 224)) | (1L << (DECNUM - 224)) | (1L << (REALNUM - 224)) | (1L << (CHAR - 224)) | (1L << (STRING - 224)) | (1L << (BOOLLIT - 224)) | (1L << (IDENTIFIER - 224)) | (1L << (CURADDR - 224)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__56) | (1L << T__57))) != 0) || ((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (T__87 - 88)) | (1L << (T__88 - 88)) | (1L << (T__90 - 88)))) != 0) || ((((_la - 224)) & ~0x3f) == 0 && ((1L << (_la - 224)) & ((1L << (HEXNUM - 224)) | (1L << (BINNUM - 224)) | (1L << (DECNUM - 224)) | (1L << (REALNUM - 224)) | (1L << (CHAR - 224)) | (1L << (STRING - 224)) | (1L << (BOOLLIT - 224)) | (1L << (IDENTIFIER - 224)) | (1L << (CURADDR - 224)) | (1L << (CURCNT - 224)))) != 0)) {
 				{
 				State = 285; expr();
 				State = 290;
@@ -2768,7 +2769,7 @@ public partial class Z80AsmParser : Parser {
 			State = 362;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__56) | (1L << T__57))) != 0) || ((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (T__87 - 88)) | (1L << (T__88 - 88)) | (1L << (T__90 - 88)))) != 0) || ((((_la - 224)) & ~0x3f) == 0 && ((1L << (_la - 224)) & ((1L << (HEXNUM - 224)) | (1L << (BINNUM - 224)) | (1L << (DECNUM - 224)) | (1L << (REALNUM - 224)) | (1L << (CHAR - 224)) | (1L << (STRING - 224)) | (1L << (BOOLLIT - 224)) | (1L << (IDENTIFIER - 224)) | (1L << (CURADDR - 224)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__56) | (1L << T__57))) != 0) || ((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (T__87 - 88)) | (1L << (T__88 - 88)) | (1L << (T__90 - 88)))) != 0) || ((((_la - 224)) & ~0x3f) == 0 && ((1L << (_la - 224)) & ((1L << (HEXNUM - 224)) | (1L << (BINNUM - 224)) | (1L << (DECNUM - 224)) | (1L << (REALNUM - 224)) | (1L << (CHAR - 224)) | (1L << (STRING - 224)) | (1L << (BOOLLIT - 224)) | (1L << (IDENTIFIER - 224)) | (1L << (CURADDR - 224)) | (1L << (CURCNT - 224)))) != 0)) {
 				{
 				State = 361; expr();
 				}
@@ -2901,7 +2902,7 @@ public partial class Z80AsmParser : Parser {
 			State = 375;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__56) | (1L << T__57))) != 0) || ((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (T__87 - 88)) | (1L << (T__88 - 88)) | (1L << (T__90 - 88)))) != 0) || ((((_la - 224)) & ~0x3f) == 0 && ((1L << (_la - 224)) & ((1L << (HEXNUM - 224)) | (1L << (BINNUM - 224)) | (1L << (DECNUM - 224)) | (1L << (REALNUM - 224)) | (1L << (CHAR - 224)) | (1L << (STRING - 224)) | (1L << (BOOLLIT - 224)) | (1L << (IDENTIFIER - 224)) | (1L << (CURADDR - 224)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__56) | (1L << T__57))) != 0) || ((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (T__87 - 88)) | (1L << (T__88 - 88)) | (1L << (T__90 - 88)))) != 0) || ((((_la - 224)) & ~0x3f) == 0 && ((1L << (_la - 224)) & ((1L << (HEXNUM - 224)) | (1L << (BINNUM - 224)) | (1L << (DECNUM - 224)) | (1L << (REALNUM - 224)) | (1L << (CHAR - 224)) | (1L << (STRING - 224)) | (1L << (BOOLLIT - 224)) | (1L << (IDENTIFIER - 224)) | (1L << (CURADDR - 224)) | (1L << (CURCNT - 224)))) != 0)) {
 				{
 				State = 374; expr();
 				}
@@ -5465,6 +5466,7 @@ public partial class Z80AsmParser : Parser {
 		public ITerminalNode BOOLLIT() { return GetToken(Z80AsmParser.BOOLLIT, 0); }
 		public ITerminalNode STRING() { return GetToken(Z80AsmParser.STRING, 0); }
 		public ITerminalNode CURADDR() { return GetToken(Z80AsmParser.CURADDR, 0); }
+		public ITerminalNode CURCNT() { return GetToken(Z80AsmParser.CURCNT, 0); }
 		public LiteralExprContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -5495,7 +5497,7 @@ public partial class Z80AsmParser : Parser {
 			{
 			State = 751;
 			_la = _input.La(1);
-			if ( !(((((_la - 224)) & ~0x3f) == 0 && ((1L << (_la - 224)) & ((1L << (HEXNUM - 224)) | (1L << (BINNUM - 224)) | (1L << (DECNUM - 224)) | (1L << (REALNUM - 224)) | (1L << (CHAR - 224)) | (1L << (STRING - 224)) | (1L << (BOOLLIT - 224)) | (1L << (CURADDR - 224)))) != 0)) ) {
+			if ( !(((((_la - 224)) & ~0x3f) == 0 && ((1L << (_la - 224)) & ((1L << (HEXNUM - 224)) | (1L << (BINNUM - 224)) | (1L << (DECNUM - 224)) | (1L << (REALNUM - 224)) | (1L << (CHAR - 224)) | (1L << (STRING - 224)) | (1L << (BOOLLIT - 224)) | (1L << (CURADDR - 224)) | (1L << (CURCNT - 224)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			} else {
 				if (_input.La(1) == TokenConstants.Eof) {
@@ -5607,7 +5609,7 @@ public partial class Z80AsmParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xF0\x2FA\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xF1\x2FA\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -5676,7 +5678,7 @@ public partial class Z80AsmParser : Parser {
 		"\x2\x15\x5\x2\xB6\xB7\xBA\xBB\xBE\xBF\x3\x2\xE7\xE8\x3\x2\xD0\xD1\x4\x2"+
 		"\x62km\x84\x4\x2\xA6\xA7\xAC\xB5\x3\x2\x5\x12\x3\x2\x13&\x3\x2\'*\x3\x2"+
 		"+\x32\x3\x2\x33\x36\x3\x2\x37:\x3\x2\t\n\x3\x2;<\x4\x2\t\n=J\x3\x2OP\x3"+
-		"\x2QT\x3\x2UV\x3\x2WY\x5\x2\xE2\xE7\xE9\xE9\xEF\xEF\x34A\x2\xA7\x3\x2"+
+		"\x2QT\x3\x2UV\x3\x2WY\x5\x2\xE2\xE7\xE9\xE9\xEF\xF0\x34A\x2\xA7\x3\x2"+
 		"\x2\x2\x4\xBF\x3\x2\x2\x2\x6\xC1\x3\x2\x2\x2\b\xC5\x3\x2\x2\x2\n\xDA\x3"+
 		"\x2\x2\x2\f\xE4\x3\x2\x2\x2\xE\xF2\x3\x2\x2\x2\x10\xF4\x3\x2\x2\x2\x12"+
 		"\x102\x3\x2\x2\x2\x14\x104\x3\x2\x2\x2\x16\x107\x3\x2\x2\x2\x18\x109\x3"+

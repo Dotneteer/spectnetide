@@ -85,7 +85,7 @@
     <Compile Include="Assembler\LoopEmitTests.cs" />
     <Compile Include="Assembler\RepeatTests.cs" />
     <Compile Include="Assembler\IfEmitTests.cs" />
-    <Compile Include="Assembler\WhileTests.cs" />
+    <Compile Include="Assembler\WhileEmitTests.cs" />
     <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />

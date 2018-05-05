@@ -348,6 +348,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Create a local scope for the loop body
                 var localScope = new SymbolScope(loopScope);
                 _output.LocalScopes.Push(localScope);
+                localScope.LoopCounter = i + 1;
 
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
@@ -422,6 +423,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Create a local scope for the repeat body
                 var localScope = new SymbolScope(loopScope);
                 _output.LocalScopes.Push(localScope);
+                localScope.LoopCounter = loopCount + 1;
 
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
@@ -523,7 +525,7 @@ namespace Spect.Net.Assembler.Assembler
 
                 // --- Increment counter, check loop safety
                 loopCount++;
-                if (loopCount >= 0x10000)
+                if (loopCount >= 0xFFFF)
                 {
                     ReportError(Errors.Z0409, whileStmt);
                     break;
@@ -532,6 +534,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Create a local scope for the repeat body
                 var localScope = new SymbolScope(loopScope);
                 _output.LocalScopes.Push(localScope);
+                localScope.LoopCounter = loopCount;
 
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)

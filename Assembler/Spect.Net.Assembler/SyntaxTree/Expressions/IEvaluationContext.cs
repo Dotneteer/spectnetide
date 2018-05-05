@@ -19,5 +19,10 @@
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
         ExpressionValue GetSymbolValue(string symbol);
+
+        /// <summary>
+        /// Gets the current loop counter value
+        /// </summary>
+        ExpressionValue GetLoopCounterValue();
     }
 }

@@ -352,6 +352,7 @@ literalExpr
 	| BOOLLIT
 	| STRING
 	| CURADDR
+	| CURCNT
 	;
 
 symbolExpr
@@ -550,6 +551,7 @@ IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 CURADDR	: '$' | '.' ;
+CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
 
 // --- Any invalid charecter should be converted into an ErrorCharacter token.
 ErrorCharacter

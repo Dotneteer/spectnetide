@@ -100,5 +100,10 @@ namespace Spect.Net.Assembler.Assembler
             }
             return ParentContext.GetSymbolValue(symbol);
         }
+
+        /// <summary>
+        /// Gets the current loop counter value
+        /// </summary>
+        public ExpressionValue GetLoopCounterValue() => ParentContext.GetLoopCounterValue();
     }
 }

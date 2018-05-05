@@ -18,6 +18,16 @@ namespace Spect.Net.Assembler.Assembler
         public SymbolScope OwnerScope { get; }
 
         /// <summary>
+        /// Indicates that this scope is for a loop
+        /// </summary>
+        public bool IsLoopScope { get; set; } = true;
+
+        /// <summary>
+        /// The current loop counter in the scope
+        /// </summary>
+        public int LoopCounter { get; set; } = 0;
+
+        /// <summary>
         /// The symbol table with properly defined symbols
         /// </summary>
         public Dictionary<string, ExpressionValue> Symbols { get; } =

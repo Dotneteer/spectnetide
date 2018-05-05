@@ -50,6 +50,27 @@ namespace Spect.Net.Assembler.Assembler
                 : null;
         }
 
+        /// <summary>
+        /// Gets the current loop counter value
+        /// </summary>
+        public ExpressionValue GetLoopCounterValue()
+        {
+            if (IsInGlobalScope)
+            {
+                ReportError(Errors.Z0412, CurrentSourceLine);
+                return ExpressionValue.Error;
+            }
+
+            var scope = _output.LocalScopes.Peek();
+            if (!scope.IsLoopScope)
+            {
+                ReportError(Errors.Z0412, CurrentSourceLine);
+                return ExpressionValue.Error;
+            }
+
+            return new ExpressionValue(scope.LoopCounter);
+        }
+
         #region Symbol handler methods
 
         /// <summary>

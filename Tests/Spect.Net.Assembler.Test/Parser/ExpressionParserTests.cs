@@ -519,13 +519,30 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        public void CurrentAssemblyAddressParsingWorks()
+        [DataRow("$")]
+        [DataRow(".")]
+        public void CurrentAssemblyAddressParsingWorks(string source)
         {
             // --- Act
-            var expr = ParseExpr("$");
+            var expr = ParseExpr(source);
 
             // --- Assert
             var ident = expr as CurrentAddressNode;
+            ident.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".cnt")]
+        [DataRow(".CNT")]
+        [DataRow("$cnt")]
+        [DataRow("$CNT")]
+        public void CurrentLoopCounterParsingWorks(string source)
+        {
+            // --- Act
+            var expr = ParseExpr(source);
+
+            // --- Assert
+            var ident = expr as CurrentLoopCounterNode;
             ident.ShouldNotBeNull();
         }
 

@@ -86,6 +86,7 @@
     <Compile Include="SyntaxTree\Expressions\BitwiseXorOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ConditionalExpressionNode.cs" />
     <Compile Include="SyntaxTree\Expressions\CurrentAddressNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\CurrentLoopCounterNode.cs" />
     <Compile Include="SyntaxTree\Expressions\DivideOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\EqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ExpressionNode.cs" />

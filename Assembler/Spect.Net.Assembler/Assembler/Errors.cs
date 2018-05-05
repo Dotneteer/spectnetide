@@ -77,6 +77,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0409 = "Z0409";
         public const string Z0410 = "Z0410";
         public const string Z0411 = "Z0411";
+        public const string Z0412 = "Z0412";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -146,6 +147,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0409, "Loop counter exceeded the maximum value of 65535 (#FFFF)." },
             { Z0410, "IF cannot have an {0} section after a detected ELSE section." },
             { Z0411, "{0} section in IF cannot have a label." },
+            { Z0412, "$CNT cannot be used outside of loop constructs." },
         };
 
         /// <summary>

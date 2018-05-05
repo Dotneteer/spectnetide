@@ -5,7 +5,7 @@ using Spect.Net.Assembler.Assembler;
 namespace Spect.Net.Assembler.Test.Assembler
 {
     [TestClass]
-    public class WhileTests : AssemblerTestBed
+    public class WhileEmitTests : AssemblerTestBed
     {
         [TestMethod]
         public void EntPragmaCannotBeUsedInWhile()
@@ -464,5 +464,39 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(SOURCE,
                 0x3C, 0x21, 0x07, 0x80, 0x01, 0x0D, 0x80, 0x21, 0x0D, 0x80, 0x01, 0x0D, 0x80, 0x00);
         }
+
+        [TestMethod]
+        public void WhileCounterWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                counter = 0;
+                .while counter < 3
+                    .db $cnt
+                    counter = counter + 1                    
+                .endw
+                ";
+
+            CodeEmitWorks(SOURCE, 0x01, 0x02, 0x03);
+        }
+
+        [TestMethod]
+        public void NestedLoopCountersWork()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                counter = 0;
+                .while counter < 3
+                    .db $cnt
+                    .loop 2
+                        .db $cnt
+                    .endl
+                    counter = counter + 1                    
+                .endw
+                ";
+
+            CodeEmitWorks(SOURCE, 0x01, 0x01, 0x02, 0x02, 0x01, 0x02, 0x03, 0x01, 0x02);
+        }
+
     }
 }

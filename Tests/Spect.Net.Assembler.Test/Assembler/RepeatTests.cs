@@ -492,5 +492,39 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(SOURCE,
                 0x3C, 0x21, 0x07, 0x80, 0x01, 0x0D, 0x80, 0x21, 0x0D, 0x80, 0x01, 0x0D, 0x80, 0x00);
         }
+
+        [TestMethod]
+        public void RepeatCounterWorks()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                counter = 0
+                .repeat
+                    .db $cnt
+                    counter = counter + 1
+                .until counter == 3
+                ";
+
+            CodeEmitWorks(SOURCE, 0x01, 0x02, 0x03);
+        }
+
+        [TestMethod]
+        public void NestedLoopCountersWork()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                counter = 0
+                .repeat
+                    .db $cnt
+                    .loop 2
+                        .db $cnt
+                    .endl
+                    counter = counter + 1
+                .until counter == 3
+                ";
+
+            CodeEmitWorks(SOURCE, 0x01, 0x01, 0x02, 0x02, 0x01, 0x02, 0x03, 0x01, 0x02);
+        }
+
     }
 }
