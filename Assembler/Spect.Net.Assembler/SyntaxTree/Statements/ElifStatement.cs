@@ -8,7 +8,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
     public sealed class ElifStatement : StatementBase
     {
         /// <summary>
-        /// IF expression
+        /// ELIF expression
         /// </summary>
         public ExpressionNode Expr { get; }
 

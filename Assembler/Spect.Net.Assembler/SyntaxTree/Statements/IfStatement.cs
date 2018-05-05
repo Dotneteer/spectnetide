@@ -6,7 +6,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
     /// <summary>
     /// This class represents an IF statement
     /// </summary>
-    public sealed class IfStatement : BlockStatementBase
+    public class IfStatement : BlockStatementBase
     {
         /// <summary>
         /// Type of end statement

@@ -315,6 +315,23 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void RepeatEmitWithMultipleLineAndNoInternalLabelWorks2()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                counter = 3
+                .repeat
+                    inc b
+                    inc c
+                    inc d
+                    counter = counter + 1
+                .until counter == 5
+                ";
+
+            CodeEmitWorks(SOURCE, 0x04, 0x0C, 0x14, 0x04, 0x0C, 0x14);
+        }
+
+        [TestMethod]
         public void RepeatWithInternalLabelWorks()
         {
             // --- Arrange

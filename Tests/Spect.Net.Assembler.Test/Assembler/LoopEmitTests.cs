@@ -394,6 +394,27 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void NestedLoopWithLabelsWorks2()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                .loop 1
+                    inc a
+                    .loop 2
+                        ld hl,EndLabel
+                        ld bc,NopLabel
+                    EndLabel: 
+                        nop
+                        .endl
+                    NopLabel: nop
+                .endl
+                ";
+
+            CodeEmitWorks(SOURCE,
+                0x3C, 0x21, 0x07, 0x80, 0x01, 0x0F, 0x80, 0x00, 0x21, 0x0E, 0x80, 0x01, 0x0F, 0x80, 0x00, 0x00);
+        }
+
+        [TestMethod]
         public void LoopWithVarWorks()
         {
             // --- Arrange
@@ -443,7 +464,5 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeEmitWorks(SOURCE, 0x3E, 0x01, 0x00, 0x00, 0x00, 0x3E, 0x04, 0x00, 0x00, 0x00);
         }
-
-
     }
 }

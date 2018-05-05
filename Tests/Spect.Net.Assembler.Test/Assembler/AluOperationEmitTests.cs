@@ -261,6 +261,8 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void InvalidOpsRaiseError()
         {
+            CodeRaisesError("sbc ix,de", Errors.Z0001);
+            CodeRaisesError("sbc iy,de", Errors.Z0001);
             CodeRaisesError("add a,(bc)", Errors.Z0008);
             CodeRaisesError("add a,(de)", Errors.Z0008);
             CodeRaisesError("adc a,(bc)", Errors.Z0008);

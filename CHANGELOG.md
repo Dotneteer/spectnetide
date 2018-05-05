@@ -1,9 +1,13 @@
 ### Version under development
 
+__FEATURE__: The Z80 assembler supports the `IF`..`ELIF`..`ELSE`..`ENDIF` statement.  
 __FEATURE__: The Z80 assembler now supports loop statements: `LOOP`, `REPEAT`..`UNTIL`
 `WHILE`..`WEND`.  
+__FIX__: The Z80 assembler accepted the invalid `sbc ix,de` and `sbc iy,de` operations without an error
+message &mdash; and compiled `add ix,de` and `add iy,de` operations. Now, it raises an error message.  
 __FIX__: The Z80 assembler did not accepted the `ld (ix+MySymbol+2),h` expression, you had to write 
-`ld (ix+[MySymbol+2]),h`. Now, the assembler does not have this restriction, so the first instruction also correct.  
+`ld (ix+[MySymbol+2]),h`. Now, the assembler does not have this restriction, so the first instruction 
+is also correct.  
 __FEATURE__: The Z80 assembler now accepts `(` and `)` as expression delimiters, not only `[` and `]`.  
 __FIX__: The Z80 assembler took the `ld sp,de` and `ld sp,bc` instructions into account as if they were 
 `ld sp,hl`. Now, the assembler recognizes that they are invalid, and raises an error message.  

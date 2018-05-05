@@ -11,21 +11,15 @@
         public string MacroName { get; }
 
         /// <summary>
-        /// The index of the line that defines the macro
+        /// Macro definition section
         /// </summary>
-        public int MacroDefLine { get; }
-
-        /// <summary>
-        /// The index of the line that signs the end of the macro
-        /// </summary>
-        public int MacroEndLine { get; }
+        public DefinitionSection Section { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public MacroDefinition(string macroName, int macroDefLine, int macroEndLine)
         {
             MacroName = macroName;
-            MacroDefLine = macroDefLine;
-            MacroEndLine = macroEndLine;
+            Section = new DefinitionSection(macroDefLine, macroEndLine);
         }
     }
 }

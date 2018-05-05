@@ -41,8 +41,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Macros.ContainsKey("MyMacro").ShouldBeTrue();
             var def = output.Macros["MyMacro"];
             def.ShouldNotBeNull();
-            def.MacroDefLine.ShouldBe(0);
-            def.MacroEndLine.ShouldBe(1);
+            def.Section.FirstLine.ShouldBe(0);
+            def.Section.LastLine.ShouldBe(1);
             def.MacroName.ShouldBe("MYMACRO");
         }
 
@@ -64,8 +64,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Macros.ContainsKey("MyMacro").ShouldBeTrue();
             var def = output.Macros["MyMacro"];
             def.ShouldNotBeNull();
-            def.MacroDefLine.ShouldBe(1);
-            def.MacroEndLine.ShouldBe(2);
+            def.Section.FirstLine.ShouldBe(1);
+            def.Section.LastLine.ShouldBe(2);
             def.MacroName.ShouldBe("MYMACRO");
         }
 
@@ -86,8 +86,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Macros.ContainsKey("MyMacro").ShouldBeTrue();
             var def = output.Macros["MyMacro"];
             def.ShouldNotBeNull();
-            def.MacroDefLine.ShouldBe(0);
-            def.MacroEndLine.ShouldBe(1);
+            def.Section.FirstLine.ShouldBe(0);
+            def.Section.LastLine.ShouldBe(1);
             def.MacroName.ShouldBe("MYMACRO");
         }
 

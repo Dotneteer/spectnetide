@@ -55,13 +55,17 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
                     // --- Record the last hanging label
                     endLabel = noinstrLine.Label;
                 }
-                else if (curLine is BlockStatementBase blockStmt)
+                else
                 {
-                    var success = blockStmt.SearchForEnd(asm, lines, ref currentLineIndex, out endLabel);
-                    if (!success)
+                    endLabel = null;
+                    if (curLine is BlockStatementBase blockStmt)
                     {
-                        asm.ReportError(Errors.Z0401, startLine, blockStmt.EndStatementName);
-                        return false;
+                        var success = blockStmt.SearchForEnd(asm, lines, ref currentLineIndex, out endLabel);
+                        if (!success)
+                        {
+                            asm.ReportError(Errors.Z0401, startLine, blockStmt.EndStatementName);
+                            return false;
+                        }
                     }
                 }
                 currentLineIndex++;

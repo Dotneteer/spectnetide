@@ -9,6 +9,70 @@ I've implemented in the __SpectNetIde__ assembler were suggested by the communit
 Simon's outstanding [Zeus Z80 Assembler](http://www.desdes.com/products/oldfiles/zeus.htm).
 I honor his ideas and work.
 
+## How the Assembler Works
+
+The assembler compiles the code in three phases:
+
+1. It takes the source code and runs a preprocessor that parses the entire code, and applies the
+*directives* in the code. You can easily recognize directives, as they start with `#`, such as
+`#ifdef`, `#endif`, `#define`, `#include` and others. During the preprocessing phase,
+the assembler detects the syntax errors, loads and processes the included files. The result is 
+a *digested syntax tree* that does not contain directives anymore, only *instructions*, *pragmas*,
+and *statements*.
+
+1. The assembler goes through the digested syntax tree and emits code. During this operation, it needs
+to evaluate expressions, resolve symbols and identifiers to their actual values. Because the assembler 
+progresses from the first line to the last, it may happen that it cannot get the value of an identifier
+which is defined somewhere later in the code. When the assembler detects such a situation, it makes 
+a note of it &mdash; it creates a *fixup* entry.
+
+1. The assembler goes through all fixup entries and resolves symbols that were not defined in
+the previous phase. Of course, it might find unknows symbols. If this happens, the assembler reports
+an error.
+
+> Several pragmas and statements intend to evaluate an expression in phase #2. If they find an
+> unresolved symbol during that phase, they do not create a fixup entry but immediately report an error.
+
+### Language Structure
+
+Each line of the source code is a declaration unit and is parsed in its own context. Such a 
+source code line can be one of these constructs:
+* A Z80 *instruction*, which can be directly compiled to binary code (such as ```ld bc,#12AC```)
+* A *directive* that is used by the preprocessor of the compiler (e.g. ```#include```, ```#if```, etc.)
+* A *pragma* that emits binary output or instructs the compiler for about code emission (```.org```, ```.defb```, etc.)
+* A *compiler statement* (or shortly, a *statement*) that implements control flow operations for the compiler
+(e.g. `.loop`, `.repeat`..`.until`, `.if`..`.elif`..`.else`..`.endif`)
+* A *comment* that helps the understanding of the code.
+
+### The Two Set of Symbols
+
+The compiler works with two set of symbols. It uses the first set during the preprocessing phase in the
+only in the directives. For example, with the `#define` directive, you define a symbol, with `#undef`
+you remove it. Within the expressions you use in directives (such as `#if`), you can refer only to these symbols.
+
+The __SpectNetIde__ option pages provide two options to declare your predefined symbols. When you compile
+the code in the IDE, it will use these symbols as if you'd declare them with `#define`.
+
+![Predefined symbols](Figures/PredefinedSymbols.png)
+
+> You can declare multiple symbols and separate them with the `;` character.
+
+The other set of symbols are the one you declare as *labels*, or with the `.equ` or `.var` pragmas
+You can use this set everywhere except directives.
+
+This duality is related to the way the compiler works: in the first, preprocessing phase it only
+analyses directives. In the second, code emission phase, the compiler does not have any information
+about directives, and thus it does not accesses the symbols used in the preprocessor.
+
+### Assembly Language Flavors
+
+I've designed the assembler with supporting multiple syntax flavors in mind. You do not have 
+to explicitly declare the type of the syntax you intend to use, just use the flavor you prefer
+&mdash; or mix muliple flavors, as you wish.
+
+For example, you can use several mnemonics for defining a series of bytes, such as `.db`, `.defb`,
+`db`, `defb`, and both lowecase or uppercase versions are welcome.
+
 ## Syntax Basics
 
 The assembler language uses a special way of case-sensitivity. You can write the reserved
@@ -46,14 +110,7 @@ each other:
     ld hl,errNo
 ```
 
-### Language Structure
-
-Each line of the source code is a declaration unit and is parsed in its own context. Such a 
-source code line can be one of these constructs:
-* A Z80 instruction can be directly compiled to binary code (such as ```ld bc,#12AC```)
-* A directive that is used by the preprocessor of the compiler (e.g ```#include```, ```#if```, etc.)
-* A pragma that emits binary output or instructs the compiler for something (```.org```, ```.defb```, etc)
-* A comment that helps the understanding of the code.
+> In the future, I might implement a compiler option that allows turning off case-insensitivity.
 
 ### Comments
 
@@ -188,9 +245,12 @@ escape sequence pairs are equivalent:
 ```
 
 ## Expressions
-The Z80 assembler has a rich syntax for evaluating expressions. You can use operands 
-and operators just like in most programming languages. Nevertheless, the __SpectNetIde__
-implementation has its particular way of evaluating expressions:
+
+The __SpectNetIde__ assembler has a rich syntax for evaluating expressions. You can use the very
+same syntax with the `#if` directives, the Z80 instructions, and the compiler statements.
+
+You can use operands and operators just like in most programming languages. Nevertheless, 
+the __SpectNetIde__ implementation has its particular way of evaluating expressions:
 
 * Expressions can be one of these types: 
   * *Booleans* (`true` or `false`)
@@ -211,14 +271,14 @@ rightmost 8 bits.
 > In the future, these compiler features may change by issuing a warning in case of
 > arithmetic overflow.
 
-* Instead of parentheses &mdash; `(` and `)` &mdash; you can use square brackets 
+* Besides the parentheses &mdash; `(` and `)` &mdash; you can use square brackets 
 &mdash; `[` and `]` &mdash; to group operations and change operator precedence.
 
 ```
-; This is a syntax error
+; This is valid
 ld hl,(Offset+#20)*2+BaseAddr
 
-; This is valid
+; Just like this
 ld hl,[Offset+#20]*2+BaseAddr
 ```
 
@@ -227,7 +287,7 @@ You can use the following operands in epressions:
 * Boolean, Decimal and hexadecimal literals
 * Character literals
 * Identifiers
-* The ```$``` token
+* The `$` token
 
 > String literals cannot be used as operands.
 
@@ -297,7 +357,7 @@ Operator token | Precedence | Description
 ```+``` | 9 | Unary plus
 ```-``` | 9 | Unary minus
 
-> Do not forget, you can change the defult precendence with ```[``` and ```]```.
+> Do not forget, you can change the defult precendence with `(` and `)`, or with `[` and `]`.
 
 ### Functions
 
@@ -828,6 +888,141 @@ Here are a few samples:
 .dg "....OOOO ..OO"    ; #0F, #30
 .dg ">....OO OO..OOOO" ; #03, #CF
 ```
+
+## Statements
+
+Statements are __SpectNetIde__ specific control flow constructs &mdash; thanks again for the inspiration by
+[Simon Brattel](http://www.desdes.com/index.htm) &mdash; that instruct the compiler about loop-like and
+conditional compilation.
+
+> While *directives* help you to organize your code and include code files optionally according to the
+> compilation context, *statements* provide you more useful tools to shorten the way you can declare Z80
+> assembly code.
+
+Each statement can be written with a leading dot, or without it, and the compiler accepts both lowercase 
+and uppercase versions. For example all of these version are valid: `.if`, `if`, `.IF`, and `IF`.
+
+### The LOOP Block
+
+With LOOP block, you can organize a cycle to emit code. Here is a sample that tells the gist:
+
+```
+.loop 6
+  add hl,hl 
+.endl
+```
+
+This is a shorter way to multiply __HL__ with 64. It is equivalent with the following code:
+
+```
+  add hl,hl
+  add hl,hl
+  add hl,hl
+  add hl,hl
+  add hl,hl
+  add hl,hl
+```
+
+The `.loop` statement accepts an expression. The compiler repeats the instructions within the 
+loop's body according to the value of the expression. The `.endl` statement marks the end of the loop.
+
+> You can use many flavors for the `.endl` block closing statement. `.endl`, `endl`, `.lend`, `lend`
+> are all accepted &mdash; with fully uppercase letters, too.
+
+Look at this code:
+
+```
+counter .equ 2
+; do something (code omitted)
+.loop counter + 1
+  .db #80, #00
+.endl
+```
+
+This is as if you wrote this:
+
+```
+  .db #80, #00
+  .db #80, #00
+  .db #80, #00
+```
+
+### The LOOP Scope
+
+The `.loop` statement declares a scope for all labels, symbols, and variables declared in the loop's
+body. It provides special behavior: 
+When the assembler resolves symbols, it starts from the scope of the loop, and tries to resolve the 
+value of a symbol. If it fails, steps out to the outer scope, and goes on with the resolution.
+
+Check this code:
+
+```
+value .equ 2
+; do something (code omitted)
+.loop 2
+    value .equ 5
+    ld a,value
+.endl
+```
+
+The compiler takes it into account as if you wrote this:
+
+```
+    ld a,5
+    ld a,5
+```
+
+The `value` symbol declared within the loop, overrides `value` in the outer scope, and
+thus 5 is used instead of 5.
+
+Nonetheless, you when you utilize a different construct, it seems a bit strange at first:
+
+```
+value .equ 2
+; do something (code omitted)
+.loop 2
+    ld a,value
+    value .equ 5
+    ld b,value
+.endl
+```
+
+The strangeness is that the compiler creates this:
+
+```
+    ld a,2
+    ld b,5
+    ld a,2
+    ld b,5
+```
+
+When the assembler resolves `value` in the `ld a,value` instruction, if finds `value` 
+in the outer scope only, as it is not declared yet within the loop's scope. In the `ld b,value`
+instruction `value` gets resolved from the inner scope, so it takes 5.
+
+### Variables and Scopes
+
+*tbd*
+
+### Labels and Scopes
+
+*tbd*
+
+### Nesting LOOPs
+
+*tbd*
+
+### The REPEAT..UNTIL Block
+
+*tbd*
+
+### The WHILE..ENDW Block
+
+*tbd*
+
+### The IF..ELIF..ELSE..ENDIF Statement
+
+*tbd*
 
 ## Directives
 

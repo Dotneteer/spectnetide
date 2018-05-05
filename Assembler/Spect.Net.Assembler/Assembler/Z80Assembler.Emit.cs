@@ -231,12 +231,12 @@ namespace Spect.Net.Assembler.Assembler
                     ReportError(Errors.Z0405, whileEndStmt, "ENDW/WEND", "WHILE");
                     break;
 
-                case IfStatement ifStatement:
-                    ProcessIfStatement(ifStatement, lines, ref currentLineIndex);
-                    break;
-
                 case ElifStatement elifStmt:
                     ReportError(Errors.Z0405, elifStmt, "ELIF", "IF");
+                    break;
+
+                case IfStatement ifStatement:
+                    ProcessIfStatement(ifStatement, lines, ref currentLineIndex);
                     break;
 
                 case ElseStatement elseStmt:
@@ -585,6 +585,189 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="currentLineIndex">Index of the LOOP definition line</param>
         private void ProcessIfStatement(IfStatement ifStmt, List<SourceLineBase> lines, ref int currentLineIndex)
         {
+            // --- Search for the end of the loop
+            var ifDef = GetIfSections(ifStmt, lines, ref currentLineIndex, out var endLabel);
+            if (ifDef == null) return;
+
+            // --- Process the IF definition
+            IfSection sectionToCompile = null;
+            foreach (var ifSection in ifDef.IfSections)
+            {
+                // --- Evaluate the condition
+                var expr = ifSection.IfStatement is ElifStatement elifStmt 
+                    ? elifStmt.Expr 
+                    : ifStmt.Expr;
+                var exprValue = EvalImmediate(ifSection.IfStatement, expr);
+
+                // --- Handle evaluation errors
+                if (!exprValue.IsValid) continue;
+                if (exprValue.Type == ExpressionValueType.String)
+                {
+                    ReportError(Errors.Z0305, ifSection.IfStatement);
+                    continue;
+                }
+
+                // --- Check the condition
+                if (exprValue.AsBool())
+                {
+                    sectionToCompile = ifSection;
+                }
+            }
+
+            // --- Check if there is any section to compile
+            sectionToCompile = sectionToCompile ?? ifDef.ElseSection;
+            if (sectionToCompile == null)
+            {
+                // --- No matching IF, ELIF, and no ELSE, so there's nothing to emit
+                return;
+            }
+
+            // --- Emit the matching section
+            var loopLineIndex = sectionToCompile.Section.FirstLine + 1;
+            while (loopLineIndex < sectionToCompile.Section.LastLine)
+            {
+                var curLine = lines[loopLineIndex];
+                EmitSingleLine(lines, curLine, ref loopLineIndex);
+                loopLineIndex++;
+            }
+
+            // --- Add the end label to the local scope
+            if (endLabel != null)
+            {
+                // --- Add the end label to the loop scope
+                var endLine = lines[currentLineIndex];
+                if (SymbolExists(endLabel))
+                {
+                    ReportError(Errors.Z0040, endLine, endLabel);
+                }
+                else
+                {
+                    AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                }
+            }
+
+            // --- Clean up the hanging label
+            OverflowLabelLine = null;
+        }
+
+        /// <summary>
+        /// Collects the strcuture information of an IF statement and makes fundamental syntax checks
+        /// </summary>
+        /// <param name="ifStmt">IF statement</param>
+        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        /// <param name="endLabel">Optional label of the ENDIF statement</param>
+        /// <returns></returns>
+        private IfDefinition GetIfSections(IfStatement ifStmt, List<SourceLineBase> lines, ref int currentLineIndex, out string endLabel)
+        {
+            endLabel = null;
+            if (currentLineIndex >= lines.Count)
+            {
+                return null;
+            }
+
+            var ifDef = new IfDefinition();
+            var firstLine = currentLineIndex;
+            var sectionStart = firstLine;
+            var sectionStmt = lines[sectionStart] as StatementBase;
+            var elseDetected = false;
+            var errorDetected = false;
+            currentLineIndex++;
+
+            // --- Iterate through lines
+            while (currentLineIndex < lines.Count)
+            {
+                var curLine = lines[currentLineIndex];
+
+                // --- Check for ENDIF
+                if (curLine is IfEndStatement)
+                {
+                    // --- We have found the end line, get its label
+                    endLabel = curLine.Label ?? endLabel;
+                    if (elseDetected)
+                    {
+                        // --- Store the ELSE section
+                        ifDef.ElseSection = new IfSection(null, sectionStart, currentLineIndex);
+                    }
+                    else
+                    {
+                        // --- Store the IF/ELIF section
+                        ifDef.IfSections.Add(new IfSection(sectionStmt, sectionStart, currentLineIndex));
+                    }
+
+                    // --- Calculate the entire IF section and return with it
+                    ifDef.FullSection = new DefinitionSection(firstLine, currentLineIndex);
+                    return errorDetected ? null : ifDef;
+                }
+
+                // --- Check for ELIF section
+                if (curLine is ElifStatement elifStmt)
+                {
+                    endLabel = curLine.Label ?? endLabel;
+                    if (endLabel != null)
+                    {
+                        ReportError(Errors.Z0411, sectionStmt, "ELIF");
+                    }
+                    if (elseDetected)
+                    {
+                        errorDetected = true;
+                        ReportError(Errors.Z0410, curLine, "ELIF");
+                    }
+                    else
+                    {
+                        // --- Store the previous section
+                        ifDef.IfSections.Add(new IfSection(sectionStmt, sectionStart, currentLineIndex));
+                        sectionStmt = elifStmt;
+                        sectionStart = currentLineIndex;
+                    }
+                }
+
+                // --- Check for ELSE section
+                else if (curLine is ElseStatement)
+                {
+                    endLabel = curLine.Label ?? endLabel;
+                    if (endLabel != null)
+                    {
+                        ReportError(Errors.Z0411, sectionStmt, "ELSE");
+                    }
+                    if (elseDetected)
+                    {
+                        errorDetected = true;
+                        ReportError(Errors.Z0410, curLine, "ELSE");
+                    }
+                    else
+                    {
+                        // --- Store the previous section
+                        ifDef.IfSections.Add(new IfSection(sectionStmt, sectionStart, currentLineIndex));
+                        sectionStart = currentLineIndex;
+                    }
+                    elseDetected = true;
+                }
+
+                if (curLine is NoInstructionLine noinstrLine)
+                {
+                    // --- Record the last hanging label
+                    endLabel = noinstrLine.Label;
+                }
+                else
+                {
+                    endLabel = null;
+                    if (curLine is BlockStatementBase blockStmt)
+                    {
+                        // --- Search for the end of an embedded block statement
+                        var success = blockStmt.SearchForEnd(this, lines, ref currentLineIndex, out endLabel);
+                        if (!success)
+                        {
+                            ReportError(Errors.Z0401, lines[firstLine], blockStmt.EndStatementName);
+                            return null;
+                        }
+                    }
+                }
+
+                currentLineIndex++;
+            }
+            ReportError(Errors.Z0401, lines[firstLine], ifStmt.EndStatementName);
+            return null;
         }
 
         #endregion
@@ -1983,8 +2166,14 @@ namespace Spect.Net.Assembler.Assembler
                 }
             }
 
-                if (op.Operand.Type == OperandType.Reg16Idx)
+            if (op.Operand.Type == OperandType.Reg16Idx)
             {
+                if (op.Mnemonic != "ADD")
+                {
+                    asm.ReportError(Errors.Z0001, op, op.Mnemonic);
+                    return;
+                }
+
                 var opCode = op.Operand.Register == "IX" ? 0xDD09 : 0xFD09;
                 if (op.Operand2.Type == OperandType.Reg16)
                 {
