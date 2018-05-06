@@ -1,4 +1,4 @@
-### Version under development
+### Version 1.7.0
 
 __FEATURE__: The Z80 assembler supports the `IF`..`ELIF`..`ELSE`..`ENDIF` statement.  
 __FEATURE__: The Z80 assembler now supports loop statements: `LOOP`, `REPEAT`..`UNTIL`
