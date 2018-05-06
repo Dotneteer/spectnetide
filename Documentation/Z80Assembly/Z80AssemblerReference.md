@@ -950,9 +950,9 @@ This is as if you wrote this:
 ### The LOOP Scope
 
 The `.loop` statement declares a scope for all labels, symbols, and variables declared in the loop's
-body. It provides special behavior: 
-When the assembler resolves symbols, it starts from the scope of the loop, and tries to resolve the 
-value of a symbol. If it fails, steps out to the outer scope, and goes on with the resolution.
+body. Every iteration has its separate local scope. When the assembler resolves symbols, it starts 
+from the scope of the loop, and tries to resolve the value of a symbol. If it fails, steps out to 
+the outer scope, and goes on with the resolution.
 
 Check this code:
 
@@ -1002,27 +1002,439 @@ instruction `value` gets resolved from the inner scope, so it takes 5.
 
 ### Variables and Scopes
 
-*tbd*
+Unlike symbols that work as constant values, variables (declared with the `.var` pragma, or its syntactical 
+equivalents, the `=` or `:=` tokens) can change their values.
+
+Take a look at this code:
+
+```
+counter = 4
+.loop 3
+    innercounter = 4
+    ld a,counter + innercounter
+    counter = counter + 1
+.endl
+```
+
+Here, the `counter` variable is defined in the global scope (out of the loop's scope), while `innercounter` in
+the local scope of the loop. When evaluating the `counter = counter + 1` statement, the compiler finds `counter` in
+the outer scope, so it uses that variable to increment its value. This code emits machine code for this source:
+
+```
+ld a,#08
+ld a,#09
+ld a,#0A
+```
+
+Now, add a single line to the loop's code:
+
+```
+counter = 4
+.loop 3
+    innercounter = 4
+    ld a,counter + innercounter
+    counter = counter + 1
+.endl
+ld b,innercounter
+```
+
+The compiler will not compile this code, as it cannot find the value for `innercounter` in the `ld b,innercount` 
+instruction. Because `innercounter` is defined in the local scope of the loop, this scope is immediately disposed as
+the loop is completed. When the compiler processes the `ld b,innercounter` instruction, the local scope is not 
+available.
 
 ### Labels and Scopes
 
-*tbd*
+Labels behave like symbols, and they work similarly. When you create a label within a loop, that label is created in
+the local scope of the loop. The following code helps you understand which labels are the part of the global scope, and
+which are created in the loop's scope:
+
+```
+.org #8000
+MyLoop: .loop 2
+    ld bc,MyLoop
+Inner: 
+    ld de,MyEnd
+    ld hl,Inner
+    ld ix,Outer
+MyEnd: .endl
+Outer: nop
+```
+
+The label of the `.loop` statement is part of the outer (global) scope, just like the label that *follows* the 
+`.endl` statement. However, all labels declared within the loop's body, including the label of the `.endl`
+statement belongs to the local scope of the loop.
+
+Thus, the compiler translates the code above into this one:
+
+```
+         (#8000): ld bc,#8000 (MyLoop)
+Inner_1  (#8003): ld de,#800D (MyEnd_1)
+         (#8006): ld hl,#8003 (Inner_1)
+         (#8009): ld ix,#801A (Outer)
+MyEnd_1  (#800D): ld bc,#8000 (MyLoop)
+Inner_2  (#8010): ld de,#801A (MyEnd_2)
+         (#8013): ld hl,#8010 (Inner_2)
+         (#8016): ld ix,#801A (Outer)
+MyEnd_2
+Outer    (#801A): nop
+```
+
+Here, `Inner_1`, `Inner_2`, `MyEnd_1`, and `MyEnd_2` represents the labels created in the local scope of the
+loop. The `_1` and `_2` suffixes indicate that each loop iteration has a separate local scope. As you can see,
+the last iteration of `MyLabel` points to the first outer address (`Outer` label).
 
 ### Nesting LOOPs
 
-*tbd*
+Of course, you can nest loops, such as in this code:
+
+```
+.loop 3
+  nop
+  .loop 2
+    ld a,b
+  .endl
+  inc b
+.endl
+```
+
+This code snippet translates to this:
+
+```
+nop
+ld a,b
+ld a,b
+inc b
+nop
+ld a,b
+ld a,b
+inc b
+nop
+ld a,b
+ld a,b
+inc b
+```
+
+When you nest loops, each loop has its separate scope.
+
+### The $CNT value
+
+It is very useful to use the `$cnt` value that represents the current loop counter. It starts from 
+1 and increments to the maximum number of loops. This sample demonstrates how you can use it:
+
+```
+.loop 2
+  outerCount = $cnt
+  .loop 3
+     .db #10 * outerCount + $cnt
+  .endl
+.endl
+```
+
+This code translates to this:
+
+```
+.db #11
+.db #12
+.db #13
+.db #21
+.db #22
+.db #23
+```
+
+You can observe that each loop has its spearate `$cnt` value.
+
+> The `$ctn` value has several syntax versions that the compiler accepts: `$CNT`, 
+> `.cnt`, and `.CNT`.
 
 ### The REPEAT..UNTIL Block
 
-*tbd*
+While the `.loop` statement works with an expression that specified the loop counter,
+the `.repeat`..`.until` block uses an exit condition to create more flexible loops.
+Here is a sample:
+
+```
+counter = 0
+.repeat 
+    .db counter
+    counter = counter + 3
+.until counter % 7 == 0
+```
+
+Observe, the `counter % 7 == 0` condition specifies when *to exit* the loop. Because the
+exit condition is examined only at the end of the loop, the `.repeat` blocks executes 
+at least once.
+
+The sample above translates to this:
+
+```
+.db 0
+.db 3
+.db 6
+.db 9
+.db 12
+.db 15
+.db 18
+```
+
+The `.repeat` block uses the same approach to handle its local scope, symbols, labels, and
+variables as the `.loop` block. The block also provides the `$cnt` loop counter that starts 
+from 1 and increments in every loop cycle. 
+
+This sample demontrates the `.repeat` block in action:
+
+```
+.org #8000
+counter = 0
+.repeat 
+    .db low(EndLabel), high(Endlabel), $cnt
+    counter = counter + 3
+EndLabel: .until counter % 7 == 0
+```
+
+The compiler translates the code to this:
+
+```
+.db #03, #80, #01
+.db #06, #80, #02
+.db #09, #80, #03
+.db #0C, #80, #04
+.db #0F, #80, #05
+.db #12, #80, #06
+.db #15, #80, #07
+```
 
 ### The WHILE..ENDW Block
 
-*tbd*
+With `.while` loop, you can create another kind of block, which uses entry condition. For example,
+the following code snippet generates instructions to create the sum of numbers from 1 to 9:
+
+```
+counter = 1
+    ld a,0
+.while counter < 10
+    add a,counter
+    counter = counter + 1
+.endw
+```
+
+The `.while`..`.endw` block uses an entry condition declared in the `.while` statement. Provided, this
+condition is true, the compiler enters into the body of the loop, and compiles all instructions and statements
+until it reaches the `.endw` statement. Observe, it may happen that the body of the loop is never reached.
+
+The compiler translates the code snippet above to the following:
+
+```
+ld a,0
+add a,1
+add a,2
+add a,3
+add a,4
+add a,5
+add a,6
+add a,7
+add a,8
+add a,9
+```
+
+Just like the `.loop` and the `.repeat` blocks, `.while` uses the same approach to handle its local scope, 
+symbols, labels, and variables. This block also provides the `$cnt` loop counter that starts  from 1 and increments 
+in every loop cycle.
+
+This code demonstrates the `.while` block with labels and using `$cnt` value:
+
+```
+counter = 0
+.while counter < 21 
+    .db low(EndLabel), high(Endlabel), $cnt
+    counter = counter + 3
+EndLabel: .endw
+```
+
+The compiler translates the code to this:
+
+```
+.db #03, #80, #01
+.db #06, #80, #02
+.db #09, #80, #03
+.db #0C, #80, #04
+.db #0F, #80, #05
+.db #12, #80, #06
+.db #15, #80, #07
+```
+
+> You can use many flavors for the `.endw` block closing statement. `.endw`, `endw`, `.wend`, `wend`
+> are all accepted &mdash; with fully uppercase letters, too.
+
+
+### Maximum Loop Count
+
+It's pretty easy to create an infinite (or at least a very long) loop. For example, these loops are
+obviously infinite ones:
+
+```
+.repeat
+.until false
+
+.while true
+.wend 
+```
+
+The assembler checks the loop counter during compilation. Whenever it exceeds #FFFF (65535), it raises an error.
 
 ### The IF..ELIF..ELSE..ENDIF Statement
 
-*tbd*
+You can use the `.if` statement to create branches with conditions. For example, this code emits `inc b`
+or `inc c` statement depending on whether the value of `branch` is even or odd:
+
+```
+.if branch % 2 == 0
+  inc b
+.else
+  inc c
+.endif
+```
+
+You do not have to specify an `.else` branch, so this statement is entirely valid:
+
+```
+.if branch % 2 == 0
+  inc b
+.endif
+```
+
+You can nest if statements like this to manage four different code branches according to the value of `branch`:
+
+```
+.if branch == 1
+  inc b
+.else
+  .if branch == 2
+    inc c
+  .else 
+    .if branch == 3
+      inc d
+    .else
+      inc e
+    .endif
+  .endif
+.endif
+```
+
+Nonetheless, you can use the `.elif` statement to create the code snippet above in clearer way:
+
+```
+.if branch == 1
+  inc b
+.elif branch == 2
+  inc c
+.elif branch == 3
+  inc d
+.else
+  inc e
+.endif
+```
+
+### IF and Scopes
+
+Unlike the loop statements, `.if` does not provide its local scope. Whenever you create a symbol, a label or
+a variable, those get into the current scope. This code defines a label with the same name in each branches. Because
+the compiler evaluates the `.if` branches from top to down, it either compiles one of the `.elif` branches &mdash;
+the first with a matching condition &mdash; or the else branch. Thus, this code does not define `MyLabel` twice:
+
+```
+branch = 4 ; Try to set up a different value
+; Do something (omitted from code)
+    ld hl,MyLabel
+.if branch == 1
+  inc b
+  MyLabel ld a,20
+.elif branch > 2
+  MyLabel ld a,30
+  inc c
+.elif branch < 6
+  inc d
+  MyLabel ld a,40
+.else
+  MyLabel ld a,50
+  inc e
+.endif
+```
+
+Generally, you can decorate any statement with labels. The `.elif` and `.else` statements are exception. If you
+do so, the compiler raises an error:
+
+```
+.if branch == 1
+  inc b
+  MyLabel ld a,20
+.elif branch > 2
+  MyLabel ld a,30
+  inc c
+Other .elif branch < 6 ; ERROR: ELIF section cannot have a label
+  inc d
+  MyLabel ld a,40
+Another .else          ; ERROR: ELSE section cannot have a label
+  MyLabel ld a,50
+  inc e
+.endif
+```
+
+### IF Nesting
+
+When you nest `.if` statements, take care that each of them has a corresponding `.endif`. Whenever
+the compiler finds an `.endif`, is associates it with the closest `.if` statement before `.endif`.
+I suggest you use indentation to make the structure more straightforward, as the following code snippet shows:
+
+```
+row = 2
+col = 2
+; Change row and col (omitted from code)
+.if row == 0
+  .if col == 0
+    .db #00
+  .elif col == 1
+    .db #01
+  .else
+    .db #02
+  .endif
+.elif row == 1
+  .if col == 0
+    .db #03
+  .elif col == 1
+    .db #04
+  .else
+    .db #05
+  .endif
+.elif row == 2
+  .if col == 0
+    .db #06
+  .elif col == 1
+    .db #07
+  .else
+    .db #08
+  .endif
+.else
+  .if col == 0
+    .db #09
+  .elif col == 1
+    .db #0A
+  .else
+    .db #0B
+  .endif
+.endif
+```
+
+### Block Statements without a Closing Statement
+
+The compiler automatically recognizes if a block does not have a closing statement, and provides an
+error message accordingly.
+
+### Orphan Closing Statements
+
+When the compiler finds a closing statement (such as `.endw`, `.endl`, `.until`, `.endif`, etc.) it will
+issue an error.
+
 
 ## Directives
 

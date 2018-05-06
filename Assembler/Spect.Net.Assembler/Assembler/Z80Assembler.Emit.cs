@@ -981,7 +981,7 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0087, pragma);
                 return;
             }
-            _output.Vars[label] = value;
+            SetVariable(label, value);
         }
 
         /// <summary>

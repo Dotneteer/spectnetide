@@ -120,6 +120,37 @@ namespace Spect.Net.Assembler.Assembler
             lookup.Add(symbol, value);
         }
 
+        /// <summary>
+        /// Sets the value of a variable
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="value">Variable value</param>
+        public void SetVariable(string name, ExpressionValue value)
+        {
+            // --- Search for the variable from inside out
+            foreach (var scope in _output.LocalScopes)
+            {
+                if (scope.Vars.ContainsKey(name))
+                {
+                    scope.Vars[name] = value;
+                    return;
+                }
+            }
+
+            // --- Check the global scope
+            if (_output.Vars.ContainsKey(name))
+            {
+                _output.Vars[name] = value;
+                return;
+            }
+
+            // --- The variable does not exist, create it in the current scope
+            var vars = _output.LocalScopes.Count > 0
+                ? _output.LocalScopes.Peek().Vars
+                : _output.Vars;
+            vars[name] = value;
+        }
+
         #endregion
 
         #region Evaluation methods
