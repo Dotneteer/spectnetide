@@ -152,12 +152,14 @@
     <Compile Include="SyntaxTree\Statements\ElifStatement.cs" />
     <Compile Include="SyntaxTree\Statements\ElseStatement.cs" />
     <Compile Include="SyntaxTree\Statements\EndStatementBase.cs" />
+    <Compile Include="SyntaxTree\Statements\ForStatement.cs" />
     <Compile Include="SyntaxTree\Statements\IfEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\IfStatement.cs" />
     <Compile Include="SyntaxTree\Statements\LoopEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\LoopStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\NextStatement.cs" />
     <Compile Include="SyntaxTree\Statements\RepeatStatement.cs" />
     <Compile Include="SyntaxTree\Statements\UntilStatement.cs" />
     <Compile Include="SyntaxTree\Statements\WhileEndStatement.cs" />

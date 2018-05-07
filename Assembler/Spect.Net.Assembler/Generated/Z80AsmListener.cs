@@ -241,6 +241,28 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitEndifStatement([NotNull] Z80AsmParser.EndifStatementContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.forStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForStatement([NotNull] Z80AsmParser.ForStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.forStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForStatement([NotNull] Z80AsmParser.ForStatementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.nextStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNextStatement([NotNull] Z80AsmParser.NextStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.nextStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNextStatement([NotNull] Z80AsmParser.NextStatementContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

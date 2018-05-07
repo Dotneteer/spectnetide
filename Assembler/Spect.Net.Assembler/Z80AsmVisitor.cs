@@ -430,9 +430,19 @@ namespace Spect.Net.Assembler
         public override object VisitModelPragma(Z80AsmParser.ModelPragmaContext context)
         {
             if (IsInvalidContext(context)) return null;
+
+            string id = null;
+            if (context.IDENTIFIER() != null)
+            {
+                id = context.IDENTIFIER().NormalizeToken();
+            }
+            else if (context.NEXT() != null)
+            {
+                id = context.NEXT().NormalizeToken();
+            }
             return AddLine(new ModelPragma
             {
-                Model = context.GetChild(1).NormalizeToken()
+                Model = id
             }, context);
         }
 
@@ -937,6 +947,41 @@ namespace Spect.Net.Assembler
             return IsInvalidContext(context)
                 ? null
                 : AddLine(new IfEndStatement(), context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.forStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitForStatement(Z80AsmParser.ForStatementContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new ForStatement(context.IDENTIFIER()?.NormalizeToken(),
+                (ExpressionNode) VisitExpr(context.expr()[0]),
+                (ExpressionNode) VisitExpr(context.expr()[1]),
+                context.expr()[2] == null ? null : (ExpressionNode) VisitExpr(context.expr()[2])),
+                context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.nextStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitNextStatement(Z80AsmParser.NextStatementContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new NextStatement(), context);
         }
 
         #endregion

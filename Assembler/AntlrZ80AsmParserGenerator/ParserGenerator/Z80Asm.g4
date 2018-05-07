@@ -67,9 +67,11 @@ statement
 	|	elifStatement
 	|	elseStatement
 	|	endifStatement
+	|	forStatement
+	|	nextStatement
 	;
 
-macroStatement: MACRO '(' (IDENTIFIER (COMMA IDENTIFIER)*)? ')'	;
+macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
 macroEndMarker: ENDMACRO ;
 loopStatement: LOOP expr ;
 loopEndMarker: ENDLOOP ;
@@ -81,8 +83,10 @@ ifStatement: IFSTMT expr ;
 elifStatement: ELIF expr ;
 elseStatement: ELSESTMT ;
 endifStatement: ENDIFSTMT ;
+forStatement: FOR IDENTIFIER ASSIGN expr TO expr (STEP expr)? ;
+nextStatement: (NEXT | FORNEXT) ;
 
-macroInvocation: IDENTIFIER '(' (expr (COMMA expr)*)? ')'	;
+macroInvocation: IDENTIFIER LPAR (expr (COMMA expr)*)? RPAR	;
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
@@ -98,7 +102,7 @@ externPragma: EXTPRAG ;
 defsPragma	: DSPRAG expr ;
 fillbPragma	: FBPRAG expr COMMA expr ;
 fillwPragma : FWPRAG expr COMMA expr ;
-modelPragma : MODPRAG IDENTIFIER ;
+modelPragma : MODPRAG (IDENTIFIER | NEXT) ;
 alignPragma : ALGPRAG expr? ;
 tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
 rndSeedPragma: RNDSEED expr? ;
@@ -263,19 +267,19 @@ reg16Spec
 	;
 
 regIndirect
-	:	'(' (reg16) ')'
+	:	LPAR (reg16) RPAR
 	;
 
 cPort
-	:	'(' ('c'|'C') ')'
+	:	LPAR ('c'|'C') RPAR
 	;
 
 memIndirect
-	:	'(' expr ')'
+	:	LPAR expr RPAR
 	;
 
 indexedAddr
-	:	'(' reg16Idx (('+' | '-') expr)? ')'
+	:	LPAR reg16Idx (('+' | '-') expr)? RPAR
 	;
 
 condition
@@ -333,14 +337,14 @@ unaryExpr
 	| '-' unaryExpr
 	| '~' unaryExpr
 	| '[' expr ']'
-	| '(' expr ')'
+	| LPAR expr RPAR
 	| literalExpr
 	| symbolExpr
 	;
 
 functionInvocation
-	: IDENTIFIER '(' ')'
-	| IDENTIFIER '(' expr (COMMA expr)* ')'
+	: IDENTIFIER LPAR RPAR
+	| IDENTIFIER LPAR expr (COMMA expr)* RPAR
 	;
 
 literalExpr
@@ -487,7 +491,7 @@ ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
 ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT' ;
 XENTPRAG: '.xent' | '.XENT' | 'xent' | 'XENT' ;
 EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
-VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' | '=' | ':=' ;
+VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' | ASSIGN | ':=' ;
 DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
 DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' | 'db' | '.db' | 'DB' | '.DB' ;
 DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' | 'dw' | '.dw' | 'DW' | '.DW' ;
@@ -517,10 +521,18 @@ IFSTMT	: '.if' | '.IF' | 'if' | 'IF' ;
 ELIF	: '.elif' | '.ELIF' | 'elif' | 'ELIF' ;
 ELSESTMT: '.else' | '.ELSE' | 'else' | 'ELSE' ;
 ENDIFSTMT: '.endif' | '.ENDIF' | 'endif' | 'ENDIF' ;
+FOR		: '.for' | '.FOR' | 'for' | 'FOR' ;
+TO		: '.to' | '.TO' | 'to' | 'TO' ;
+STEP	: '.step' | '.STEP' | 'step' | 'STEP' ;
+FORNEXT	: '.next' | '.NEXT' ;
+NEXT	: 'next' | 'NEXT' ;
 
 // --- Other tokens
 COLON	: ':' ;
 COMMA	: ',' ;
+ASSIGN	: '=' ;
+LPAR	: '(' ;
+RPAR	: ')' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?
