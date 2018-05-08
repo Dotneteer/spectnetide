@@ -961,10 +961,11 @@ namespace Spect.Net.Assembler
         public override object VisitForStatement(Z80AsmParser.ForStatementContext context)
         {
             if (IsInvalidContext(context)) return null;
-            return AddLine(new ForStatement(context.IDENTIFIER()?.NormalizeToken(),
-                (ExpressionNode) VisitExpr(context.expr()[0]),
-                (ExpressionNode) VisitExpr(context.expr()[1]),
-                context.expr()[2] == null ? null : (ExpressionNode) VisitExpr(context.expr()[2])),
+            var id = context.IDENTIFIER()?.NormalizeToken();
+            var fromExpr = context.expr().Length > 0 ? (ExpressionNode) VisitExpr(context.expr()[0]) : null;
+            var toExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
+            var stepExpr = context.expr().Length > 2 ? (ExpressionNode)VisitExpr(context.expr()[2]) : null;
+            return AddLine(new ForStatement(id, fromExpr, toExpr, stepExpr),
                 context);
         }
 

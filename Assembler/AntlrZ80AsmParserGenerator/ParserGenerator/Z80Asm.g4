@@ -93,7 +93,7 @@ entPragma	: ENTPRAG expr ;
 xentPragma	: XENTPRAG expr ;
 dispPragma	: DISPRAG expr ;
 equPragma	: EQUPRAG expr ;
-varPragma	: VARPRAG expr ;
+varPragma	: (VARPRAG | ASSIGN) expr ;
 defbPragma	: DBPRAG expr (COMMA expr)* ;
 defwPragma	: DWPRAG expr (COMMA expr)* ;
 defmPragma	: DMPRAG expr ;
@@ -279,7 +279,7 @@ memIndirect
 	;
 
 indexedAddr
-	:	LPAR reg16Idx (('+' | '-') expr)? RPAR
+	:	LPAR reg16Idx ((PLUS | MINUS) expr)? RPAR
 	;
 
 condition
@@ -295,48 +295,48 @@ condition
 
 // --- Expressions
 expr
-	: orExpr ('?' expr ':' expr)?
+	: orExpr (QMARK expr COLON expr)?
 	; 
 
 orExpr
-	: xorExpr ('|' xorExpr)*
+	: xorExpr (VBAR xorExpr)*
 	;
 
 xorExpr
-	: andExpr ('^' andExpr)*
+	: andExpr (UPARR andExpr)*
 	;
 
 andExpr
-	: equExpr ('&' equExpr)*
+	: equExpr (AMP equExpr)*
 	;
 
 equExpr
-	: relExpr (('=='|'!=') relExpr)*
+	: relExpr ((EQOP | NEQOP) relExpr)*
 	;
 
 relExpr
-	: shiftExpr (('<'|'<='|'>'|'>=') shiftExpr)*
+	: shiftExpr ((LTOP | LTEOP | GTOP | GTEOP) shiftExpr)*
 	;
 
 shiftExpr
-	: addExpr (('<<' | '>>' ) addExpr)*
+	: addExpr ((LSHOP | RSHOP) addExpr)*
 	;
 
 addExpr
-	: multExpr (('+' | '-' ) multExpr)*
+	: multExpr ((PLUS | MINUS ) multExpr)*
 	;
 
 multExpr
-	: unaryExpr (('*' | '/' | '%') unaryExpr)*
+	: unaryExpr ((MULOP | DIVOP | MODOP) unaryExpr)*
 	;
 
 unaryExpr
 	: functionInvocation
 	| macroParam
-	| '+' unaryExpr
-	| '-' unaryExpr
-	| '~' unaryExpr
-	| '[' expr ']'
+	| PLUS unaryExpr
+	| MINUS unaryExpr
+	| TILDE unaryExpr
+	| LSBRAC expr RSBRAC
 	| LPAR expr RPAR
 	| literalExpr
 	| symbolExpr
@@ -372,7 +372,7 @@ macroParam
  */
 
 COMMENT
-	:	';' ~('\r' | '\n')*
+	:	SCOLON ~('\r' | '\n')*
 	;
 
 WS
@@ -382,6 +382,35 @@ WS
 NEWLINE
 	:	('\r'? '\n' | '\r')+
 	;
+
+// --- Common tokens
+// --- Other tokens
+COLON	: ':' ;
+SCOLON	: ';' ;
+COMMA	: ',' ;
+ASSIGN	: '=' ;
+LPAR	: '(' ;
+RPAR	: ')' ;
+LSBRAC	: '[' ;
+RSBRAC	: ']' ;
+QMARK	: '?' ;
+PLUS	: '+' ;
+MINUS	: '-' ;
+VBAR	: '|' ;
+UPARR	: '^' ;
+AMP		: '&' ;
+EQOP	: '==' ;
+NEQOP	: '!=' ;
+LTOP	: '<' ;
+LTEOP	: '<=' ;
+GTOP	: '>' ;
+GTEOP	: '>=' ;
+LSHOP	: '<<' ;
+RSHOP	: '>>' ;
+MULOP	: '*' ;
+DIVOP	: '/' ;
+MODOP	: '%' ;
+TILDE	: '~';
 
 // --- Trivial instruction tokens
 
@@ -491,7 +520,7 @@ ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
 ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT' ;
 XENTPRAG: '.xent' | '.XENT' | 'xent' | 'XENT' ;
 EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
-VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' | ASSIGN | ':=' ;
+VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' | ':=' ;
 DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
 DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' | 'db' | '.db' | 'DB' | '.DB' ;
 DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' | 'dw' | '.dw' | 'DW' | '.DW' ;
@@ -526,13 +555,6 @@ TO		: '.to' | '.TO' | 'to' | 'TO' ;
 STEP	: '.step' | '.STEP' | 'step' | 'STEP' ;
 FORNEXT	: '.next' | '.NEXT' ;
 NEXT	: 'next' | 'NEXT' ;
-
-// --- Other tokens
-COLON	: ':' ;
-COMMA	: ',' ;
-ASSIGN	: '=' ;
-LPAR	: '(' ;
-RPAR	: ')' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?
@@ -612,6 +634,6 @@ fragment BinDigit
 	;
 
 fragment ExponentPart
-	: [eE] ('+' | '-')? [0-9]+
+	: [eE] (PLUS | MINUS)? [0-9]+
 	;
 
