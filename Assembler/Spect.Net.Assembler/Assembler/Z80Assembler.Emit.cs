@@ -231,6 +231,14 @@ namespace Spect.Net.Assembler.Assembler
                     ReportError(Errors.Z0405, whileEndStmt, "ENDW/WEND", "WHILE");
                     break;
 
+                case ForStatement forStatement:
+                    ProcessForStatement(forStatement, lines, ref currentLineIndex);
+                    break;
+
+                case NextStatement ifEndStmt:
+                    ReportError(Errors.Z0405, ifEndStmt, "NEXT", "FOR");
+                    break;
+
                 case ElifStatement elifStmt:
                     ReportError(Errors.Z0405, elifStmt, "ELIF", "IF");
                     break;
@@ -309,7 +317,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Processes the LOOP statement
         /// </summary>
-        /// <param name="loop">Loop statement</param>
+        /// <param name="loop">LOOP statement</param>
         /// <param name="lines">Parsed assembly lines</param>
         /// <param name="currentLineIndex">Index of the LOOP definition line</param>
         private void ProcessLoopStatement(LoopStatement loop, List<SourceLineBase> lines, ref int currentLineIndex)
@@ -397,7 +405,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Processes the REPEAT statement
         /// </summary>
-        /// <param name="repeat">Repeat statement</param>
+        /// <param name="repeat">REPEAT statement</param>
         /// <param name="lines">Parsed assembly lines</param>
         /// <param name="currentLineIndex">Index of the LOOP definition line</param>
         private void ProcessRepeatStatement(RepeatStatement repeat, List<SourceLineBase> lines, ref int currentLineIndex)
@@ -490,7 +498,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Processes the WHILE statement
         /// </summary>
-        /// <param name="whileStmt">While statement</param>
+        /// <param name="whileStmt">WHILE statement</param>
         /// <param name="lines">Parsed assembly lines</param>
         /// <param name="currentLineIndex">Index of the LOOP definition line</param>
         private void ProcessWhileStatement(WhileStatement whileStmt, List<SourceLineBase> lines, ref int currentLineIndex)
@@ -581,9 +589,139 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
+        /// Processes the FOR statement
+        /// </summary>
+        /// <param name="forStmt">FOR statement</param>
+        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        private void ProcessForStatement(ForStatement forStmt, List<SourceLineBase> lines, ref int currentLineIndex)
+        {
+            // --- Search for the end of the loop
+            var firstLine = currentLineIndex;
+            if (!forStmt.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+
+            // --- End found
+            var lastLine = currentLineIndex;
+
+            // --- Evaluate FROM, TO, and STEP expressions
+            var fromValue = EvalImmediate(forStmt, forStmt.From);
+            if (!fromValue.IsValid) return;
+            if (fromValue.Type == ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0305, forStmt);
+                return;
+            }
+
+            var toValue = EvalImmediate(forStmt, forStmt.To);
+            if (!toValue.IsValid) return;
+            if (toValue.Type == ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0305, forStmt);
+                return;
+            }
+
+            var stepValue = new ExpressionValue(1);
+            if (forStmt.Step != null)
+            {
+                stepValue = EvalImmediate(forStmt, forStmt.Step);
+                if (!stepValue.IsValid) return;
+                if (stepValue.Type == ExpressionValueType.String)
+                {
+                    ReportError(Errors.Z0305, forStmt);
+                    return;
+                }
+                if (Math.Abs(stepValue.AsReal()) < double.Epsilon)
+                {
+                    ReportError(Errors.Z0413, forStmt);
+                    return;
+                }
+            }
+
+            // --- Create a scope for the FOR loop
+            var loopScope = new SymbolScope();
+            _output.LocalScopes.Push(loopScope);
+
+            // --- Init the FOR variable
+            loopScope.Vars[forStmt.ForVariable] = fromValue;
+            var errorsBefore = _output.ErrorCount;
+
+            var loopValue = fromValue.AsReal();
+            var endValue = toValue.AsReal();
+            var incValue = stepValue.AsReal();
+
+            // --- Execute the WHILE body
+            var loopCount = 0;
+            while (true)
+            {
+                // --- Check the loop's exit condition
+                if (incValue > 0 && loopValue > endValue) break;
+                if (incValue < 0 && loopValue < endValue) break;
+
+                // --- Increment counter, check loop safety
+                loopCount++;
+                if (loopCount >= 0xFFFF)
+                {
+                    ReportError(Errors.Z0409, forStmt);
+                    break;
+                }
+
+                // --- Create a local scope for the FOR body
+                var localScope = new SymbolScope(loopScope);
+                _output.LocalScopes.Push(localScope);
+                localScope.LoopCounter = loopCount;
+
+                var loopLineIndex = firstLine + 1;
+                while (loopLineIndex < lastLine)
+                {
+                    var curLine = lines[loopLineIndex];
+                    EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    loopLineIndex++;
+                }
+
+                // --- Add the end label to the local scope
+                if (endLabel != null)
+                {
+                    // --- Add the end label to the loop scope
+                    var endLine = lines[currentLineIndex];
+                    if (SymbolExists(endLabel))
+                    {
+                        ReportError(Errors.Z0040, endLine, endLabel);
+                    }
+                    else
+                    {
+                        AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                    }
+                }
+
+                // --- Clean up the hanging label
+                OverflowLabelLine = null;
+
+                // --- Fixup the symbols locally
+                FixupSymbols(localScope.Fixups, localScope.Symbols, false);
+
+                // --- Remove the local scope
+                _output.LocalScopes.Pop();
+
+                // --- Check for the maximum number of error
+                if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
+                {
+                    ReportError(Errors.Z0408, forStmt);
+                    break;
+                }
+
+                // --- Increment cycle variable
+                loopValue += incValue;
+                loopScope.Vars[forStmt.ForVariable] = new ExpressionValue(loopValue);
+            }
+
+            // --- Clean up the loop's scope
+            _output.LocalScopes.Pop();
+        }
+
+        /// <summary>
         /// Processes the if statement
         /// </summary>
-        /// <param name="ifStmt">If statement</param>
+        /// <param name="ifStmt">IF statement</param>
         /// <param name="lines">Parsed assembly lines</param>
         /// <param name="currentLineIndex">Index of the LOOP definition line</param>
         private void ProcessIfStatement(IfStatement ifStmt, List<SourceLineBase> lines, ref int currentLineIndex)

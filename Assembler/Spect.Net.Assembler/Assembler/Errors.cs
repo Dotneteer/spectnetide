@@ -78,6 +78,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0410 = "Z0410";
         public const string Z0411 = "Z0411";
         public const string Z0412 = "Z0412";
+        public const string Z0413 = "Z0413";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -148,6 +149,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0410, "IF cannot have an {0} section after a detected ELSE section." },
             { Z0411, "{0} section in IF cannot have a label." },
             { Z0412, "$CNT cannot be used outside of loop constructs." },
+            { Z0413, "The STEP value ina FOR-loop cannot be zero." },
         };
 
         /// <summary>

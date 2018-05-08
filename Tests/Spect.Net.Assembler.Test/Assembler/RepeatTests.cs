@@ -62,6 +62,23 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void MissingLoopEndIsDetected()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .repeat
+                ld a,b
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0401);
+        }
+
+        [TestMethod]
         public void UntilFailsWithString()
         {
             // --- Arrange

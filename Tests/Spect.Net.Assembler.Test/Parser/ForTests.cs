@@ -42,5 +42,25 @@ namespace Spect.Net.Assembler.Test.Parser
             line.To.ShouldBeOfType<LiteralNode>();
             line.Step.ShouldBeNull();
         }
+
+        [TestMethod]
+        [DataRow("for myVar = 0 to 100 step 2")]
+        [DataRow(".for myVar = 0 .to 100 .step 2")]
+        [DataRow("FOR myVar = 0 TO 100 STEP 2")]
+        [DataRow(".FOR myVar = 0 .TO 100 .STEP 2")]
+        public void ForParsingWorkWithStep(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ForStatement;
+            line.ShouldNotBeNull();
+            line.ForVariable.ShouldBe("MYVAR");
+            line.From.ShouldBeOfType<LiteralNode>();
+            line.To.ShouldBeOfType<LiteralNode>();
+            line.Step.ShouldBeOfType<LiteralNode>();
+        }
     }
 }

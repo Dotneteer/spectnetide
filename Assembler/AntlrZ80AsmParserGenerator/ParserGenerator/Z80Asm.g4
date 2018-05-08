@@ -223,75 +223,17 @@ operand
 	|	condition
 	;
 
-reg8
-	:	'a'|'A'
-	|	'b'|'B'
-	|	'c'|'C'
-	|	'd'|'D'
-	|	'e'|'E'
-	|	'h'|'H'
-	|	'l'|'L'
-	;
-
-reg8Idx
-	:	'xl'|'XL'
-	|	'xh'|'XH'
-	|	'yl'|'YL'
-	|	'yh'|'YH'
-	|	'ixl'|'IXL'|'IXl'
-	|	'ixh'|'IXH'|'IXh'
-	|	'iyl'|'IYL'|'IYl'
-	|	'iyh'|'IYH'|'IYh'
-	;
-
-reg8Spec
-	:	'i'|'I'
-	|	'r'|'R'
-	;
-
-reg16
-	:	'bc'|'BC'
-	|	'de'|'DE'
-	|	'hl'|'HL'
-	|	'sp'|'SP'
-	;
-
-reg16Idx
-	:	'ix'|'IX'
-	|	'iy'|'IY'
-	;
-
-reg16Spec
-	:	'af\''|'AF\''
-	|	'af'|'AF'
-	;
-
-regIndirect
-	:	LPAR (reg16) RPAR
-	;
-
-cPort
-	:	LPAR ('c'|'C') RPAR
-	;
-
-memIndirect
-	:	LPAR expr RPAR
-	;
-
-indexedAddr
-	:	LPAR reg16Idx ((PLUS | MINUS) expr)? RPAR
-	;
-
-condition
-	:	'z'|'Z'
-	|	'nz'|'NZ'
-	|	'c'|'C'
-	|	'nc'|'NC'
-	|	'po'|'PO'
-	|	'pe'|'PE'
-	|	'p'|'P'
-	|	'm'|'M'
-	;
+reg8: A | B | C | D | E | H | L ;
+reg8Idx: XL | XH | YL | YH ;
+reg8Spec: I | R ;
+reg16: BC | DE | HL | SP ;
+reg16Idx: IX | IY ;
+reg16Spec: AF | AF_ ;
+regIndirect: LPAR (reg16) RPAR ;
+cPort: LPAR C RPAR ;
+memIndirect: LPAR expr RPAR ;
+indexedAddr: LPAR reg16Idx ((PLUS | MINUS) expr)? RPAR ;
+condition: Z | NZ |	C | NC | PO | PE | P | M ;
 
 // --- Expressions
 expr
@@ -411,6 +353,38 @@ MULOP	: '*' ;
 DIVOP	: '/' ;
 MODOP	: '%' ;
 TILDE	: '~';
+LDBRAC	: '{{' ;
+RDBRAC	: '}}' ;
+
+// --- Register and flag tokens
+A	: 'a'|'A' ;
+B	: 'b'|'B' ;
+C	: 'c'|'C' ;
+D	: 'd'|'D' ;
+E	: 'e'|'E' ;
+H	: 'h'|'H' ;
+L	: 'l'|'L' ;
+I	: 'i'|'I' ;
+R	: 'r'|'R' ;
+XL	: 'xl'|'XL'|'ixl'|'IXL'|'IXl' ;
+XH	: 'xh'|'XH'|'ixh'|'IXH'|'IXh' ;
+YL	: 'yl'|'YL'|'iyl'|'IYL'|'IYl' ;
+YH	: 'yh'|'YH'|'iyh'|'IYH'|'IYh' ;
+BC	: 'bc'|'BC' ;
+DE	: 'de'|'DE' ;
+HL	: 'hl'|'HL' ;
+SP	: 'sp'|'SP' ;
+IX	: 'ix'|'IX' ;
+IY	: 'iy'|'IY' ;
+AF	: 'af'|'AF' ;
+AF_	: 'af\''|'AF\'' ;
+Z	: 'z'|'Z' ;
+NZ	: 'nz'|'NZ' ;
+NC	: 'nc'|'NC' ;
+PO	: 'po'|'PO' ;
+PE	: 'pe'|'PE' ;
+P	: 'p'|'P' ;
+M	: 'm'|'M' ;
 
 // --- Trivial instruction tokens
 
