@@ -637,6 +637,13 @@ namespace Spect.Net.Assembler.Assembler
                 }
             }
 
+            // --- Check the FOR variable
+            if (VariableExists(forStmt.ForVariable))
+            {
+                ReportError(Errors.Z0414, forStmt, forStmt.ForVariable);
+                return;
+            }
+
             // --- Create a scope for the FOR loop
             var loopScope = new SymbolScope();
             _output.LocalScopes.Push(loopScope);
@@ -645,17 +652,33 @@ namespace Spect.Net.Assembler.Assembler
             loopScope.Vars[forStmt.ForVariable] = fromValue;
             var errorsBefore = _output.ErrorCount;
 
-            var loopValue = fromValue.AsReal();
-            var endValue = toValue.AsReal();
-            var incValue = stepValue.AsReal();
+            var isIntLoop =
+                (fromValue.Type == ExpressionValueType.Bool || fromValue.Type == ExpressionValueType.Integer)
+                && (toValue.Type == ExpressionValueType.Bool || toValue.Type == ExpressionValueType.Integer)
+                && (stepValue.Type == ExpressionValueType.Bool || stepValue.Type == ExpressionValueType.Integer);
+
+            var loopIntValue = fromValue.AsLong();
+            var endIntValue = toValue.AsLong();
+            var incIntValue = stepValue.AsLong();
+            var loopRealValue = fromValue.AsReal();
+            var endRealValue = toValue.AsReal();
+            var incRealValue = stepValue.AsReal();
 
             // --- Execute the WHILE body
             var loopCount = 0;
             while (true)
             {
                 // --- Check the loop's exit condition
-                if (incValue > 0 && loopValue > endValue) break;
-                if (incValue < 0 && loopValue < endValue) break;
+                if (isIntLoop)
+                {
+                    if (incIntValue > 0 && loopIntValue > endIntValue) break;
+                    if (incIntValue < 0 && loopIntValue < endIntValue) break;
+                }
+                else
+                {
+                    if (incRealValue > 0 && loopRealValue > endRealValue) break;
+                    if (incRealValue < 0 && loopRealValue < endRealValue) break;
+                }
 
                 // --- Increment counter, check loop safety
                 loopCount++;
@@ -710,8 +733,16 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Increment cycle variable
-                loopValue += incValue;
-                loopScope.Vars[forStmt.ForVariable] = new ExpressionValue(loopValue);
+                if (isIntLoop)
+                {
+                    loopIntValue += incIntValue;
+                    loopScope.Vars[forStmt.ForVariable] = new ExpressionValue(loopIntValue);
+                }
+                else
+                {
+                    loopRealValue += incRealValue;
+                    loopScope.Vars[forStmt.ForVariable] = new ExpressionValue(loopRealValue);
+                }
             }
 
             // --- Clean up the loop's scope

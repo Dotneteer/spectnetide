@@ -121,6 +121,26 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
+        /// Checks if the variable with the specified name exisits
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool VariableExists(string name)
+        {
+            // --- Search for the variable from inside out
+            foreach (var scope in _output.LocalScopes)
+            {
+                if (scope.Vars.ContainsKey(name))
+                {
+                    return true;
+                }
+            }
+
+            // --- Check the global scope
+            return _output.Vars.ContainsKey(name);
+        }
+
+        /// <summary>
         /// Sets the value of a variable
         /// </summary>
         /// <param name="name">Variable name</param>

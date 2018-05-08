@@ -1266,6 +1266,112 @@ The compiler translates the code to this:
 > You can use many flavors for the `.endw` block closing statement. `.endw`, `endw`, `.wend`, `wend`
 > are all accepted &mdash; with fully uppercase letters, too.
 
+### The FOR..NEXT Loop
+
+Tou can use the traditional `.for`..`.next` loop to create a loop:
+
+```
+.for myVar = 2 .to 5
+  .db 1 << int(myVar)
+.next
+```
+
+This loop uses the `myVar` variable as its *iteration variable*, which iterates from 1 to 4. As you expect, 
+the compiler translates the for-loop into this:
+
+```
+.db #04
+.db #08
+.db #10
+.db #20
+```
+
+You can specify a `.step` close to change the loop increment value:
+
+```
+.for myVar = 1 .to 7 .step 2
+  .db 1 << int(myVar)
+.next
+```
+
+Now, the code translates to this:
+
+```
+.db #02
+.db #08
+.db #20
+.db #80
+```
+
+You can create a loop with decrementing iteration variable value:
+
+```
+.for myVar = 7 .to 1 .step -2
+  .db 1 << int(myVar)
+.next
+```
+
+As you expect, now you get this translation:
+
+```
+.db #80
+.db #20
+.db #08
+.db #02
+```
+
+> Just as with the other statements, you can use the `.for`, `.to`, and `.step` keywords without the `.`
+> prefix, so `for`, `to`, and `step` are also valid.
+
+The for-loop can do the same stunts as the other kind of loops; it handles labels, symbols, and variables exactly 
+the same way. There's only one exception, the loop iteration variable. If this variable is found in an outer scope,
+instead of using that value, the compiler raises an error. You can us the for-loop only with a freshly created
+variable.
+
+So both cases in this code raise an error:
+
+```
+myVar = 0
+.for myVar = 1 .to 4 ; ERROR: Variable myVar is already declared
+  ; ...
+.next
+
+.for _i = 1 .to 3
+  .for _i = 3 .to 8 ; ; ERROR: Variable _i is already declared
+    ; ...
+  .next
+.next
+```
+
+> As `i` is a reserved token (it represents the `I` register), you cannot use `i` as a variable name. Nonetheless,
+> `_i` is a valid variable name.
+
+The for-loop works with both integer and float variables. If any of the initial value, the last value (the one after `.to`), 
+or the increment value (the one after `.step`) is a float value, the for-loop uses float operations; otherwise it uses
+integer operations.
+
+This code snippet demonstrates the difference:
+
+```
+.for myVar = 1 .to 4 .step 1
+  .db 1 << myVar
+.next
+
+.for myVar = 1 .to 4 .step 1.4
+  .db 1 << myVar ; ERROR: Right operand of the shift left operator must be integral
+.next
+```
+
+Nonetheless, you can solve this issue with applying the `int()` function:
+
+```
+.for myVar = 1 .to 4 .step 1.4
+  .db 1 << int(myVar) ; Now, it's OK.
+.next
+```
+
+> You can still use the `$cnt` value in for loops. Just like with other loop, it indicates the count of
+> cycles strating from one and incremented by one in each iteration.
 
 ### Maximum Loop Count
 

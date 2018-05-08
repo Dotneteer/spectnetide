@@ -8,6 +8,7 @@ using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
+using Spect.Net.Assembler.SyntaxTree.Statements;
 using Spect.Net.VsPackage.ProjectStructure;
 
 #pragma warning disable 649
@@ -186,6 +187,22 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     // --- Retrieve a number
                     yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Identifier);
+                }
+
+                if (asmline is ForStatement forStmt)
+                {
+                    if (forStmt.IdSpan != null)
+                    {
+                        yield return CreateSpan(currentLine, forStmt.IdSpan, Z80AsmTokenType.Identifier);
+                    }
+                    if (forStmt.ToKeywordSpan != null)
+                    {
+                        yield return CreateSpan(currentLine, forStmt.ToKeywordSpan, Z80AsmTokenType.Statement);
+                    }
+                    if (forStmt.StepKeywordSpan != null)
+                    {
+                        yield return CreateSpan(currentLine, forStmt.StepKeywordSpan, Z80AsmTokenType.Statement);
+                    }
                 }
             }
         }

@@ -961,11 +961,21 @@ namespace Spect.Net.Assembler
         public override object VisitForStatement(Z80AsmParser.ForStatementContext context)
         {
             if (IsInvalidContext(context)) return null;
+            var idSpan = context.IDENTIFIER() != null 
+                ? new TextSpan(context.IDENTIFIER().Symbol.StartIndex,
+                    context.IDENTIFIER().Symbol.StopIndex + 1)
+                : null;
+            var toSpan = context.TO() != null 
+                ? new TextSpan(context.TO().Symbol.StartIndex, context.TO().Symbol.StopIndex + 1)
+                : null;
+            var stepSpan = context.STEP() != null 
+                ? new TextSpan(context.STEP().Symbol.StartIndex, context.STEP().Symbol.StopIndex + 1) 
+                : null;
             var id = context.IDENTIFIER()?.NormalizeToken();
             var fromExpr = context.expr().Length > 0 ? (ExpressionNode) VisitExpr(context.expr()[0]) : null;
             var toExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
             var stepExpr = context.expr().Length > 2 ? (ExpressionNode)VisitExpr(context.expr()[2]) : null;
-            return AddLine(new ForStatement(id, fromExpr, toExpr, stepExpr),
+            return AddLine(new ForStatement(idSpan, toSpan, stepSpan, id, fromExpr, toExpr, stepExpr),
                 context);
         }
 

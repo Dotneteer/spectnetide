@@ -79,6 +79,44 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void ForVariableInGlobalScopeCannotBeUsedAgain()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                _i = 0
+                .for _i = 1 .to 3
+                .next
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0414);
+        }
+
+        [TestMethod]
+        public void ForVariableInLocalScopeCannotBeUsedAgain()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                _i = 0
+                .for _i = 1 .to 3
+                    .for _i = 1 to 2
+                    .next
+                .next
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0414);
+        }
+
+        [TestMethod]
         public void ForLoopFailsWithStringInFromValue()
         {
             // --- Arrange
@@ -693,7 +731,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void LoopvariableWork()
+        public void LoopVariableWorks()
         {
             // --- Arrange
             const string SOURCE = @"
@@ -704,6 +742,22 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeEmitWorks(SOURCE, 0x06, 0x07, 0x08);
         }
+
+        [TestMethod]
+        public void NestedLoopVariablesWork()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                .for _i = 6 to 8
+                  .for _j = 1 to 2
+                    .db #10 * _i + _j
+                  .next
+                .next
+                ";
+
+            CodeEmitWorks(SOURCE, 0x61, 0x62, 0x71, 0x72, 0x81, 0x82);
+        }
+
 
     }
 }
