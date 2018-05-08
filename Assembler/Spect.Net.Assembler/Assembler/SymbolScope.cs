@@ -45,6 +45,16 @@ namespace Spect.Net.Assembler.Assembler
         public List<FixupEntry> Fixups { get; } = new List<FixupEntry>();
 
         /// <summary>
+        /// Indicates if a BREAK statement has been reached in this scope
+        /// </summary>
+        public bool BreakReached { get; set; } = false;
+
+        /// <summary>
+        /// Indicates if a CONTINUE statement has been reached in this scope
+        /// </summary>
+        public bool ContinueReached { get; set; } = false;
+
+        /// <summary>
         /// Signs that the specified error has been reported
         /// </summary>
         /// <param name="errorCode"></param>

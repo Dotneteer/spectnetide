@@ -43,5 +43,35 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
+
+        [TestMethod]
+        [DataRow(".break")]
+        [DataRow("break")]
+        [DataRow(".BREAK")]
+        [DataRow("BREAK")]
+        public void BreakParsingWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            visitor.Compilation.Lines[0].ShouldBeOfType<BreakStatement>();
+        }
+
+        [TestMethod]
+        [DataRow(".continue")]
+        [DataRow("continue")]
+        [DataRow(".CONTINUE")]
+        [DataRow("CONTINUE")]
+        public void ContinueParsingWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            visitor.Compilation.Lines[0].ShouldBeOfType<ContinueStatement>();
+        }
     }
 }

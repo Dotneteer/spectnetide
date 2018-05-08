@@ -120,6 +120,30 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        [DataRow("!0", 0x0001)]
+        [DataRow("!#aa55", 0x0000)]
+        public void UnaryLogicalNotWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, (ushort)expected);
+        }
+
+        [TestMethod]
+        [DataRow("!true", 0x0000)]
+        [DataRow("!false", 0x0001)]
+        public void UnaryLogicalNotWithBoolWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, (ushort)expected);
+        }
+
+        [TestMethod]
+        [DataRow("!3.14")]
+        [DataRow("!\"abc\"")]
+        public void UnaryLogicalNotFailsWithRealAndString(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
         [DataRow("0 + 3", 3)]
         [DataRow("12 + 23", 35)]
         [DataRow("#8000 + #4000", 0xC000)]

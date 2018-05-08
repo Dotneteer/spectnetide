@@ -80,6 +80,8 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0412 = "Z0412";
         public const string Z0413 = "Z0413";
         public const string Z0414 = "Z0414";
+        public const string Z0415 = "Z0415";
+        public const string Z0416 = "Z0416";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -152,6 +154,8 @@ namespace Spect.Net.Assembler.Assembler
             { Z0412, "$CNT cannot be used outside of loop constructs." },
             { Z0413, "The STEP value in a FOR-loop cannot be zero." },
             { Z0414, "Variable {0} is already declared, it cannot be used as a FOR-loop variable again." },
+            { Z0415, "BREAK cannot be used outside of loop constructs." },
+            { Z0416, "CONTINUE cannot be used outside of loop constructs." },
         };
 
         /// <summary>

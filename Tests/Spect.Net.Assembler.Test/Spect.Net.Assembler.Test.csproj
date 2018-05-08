@@ -58,6 +58,7 @@
     <Compile Include="AssemblerTestBed.cs" />
     <Compile Include="Assembler\AluOperationEmitTests.cs" />
     <Compile Include="Assembler\BitOperationEmitTests.cs" />
+    <Compile Include="Assembler\ContinueTests.cs" />
     <Compile Include="Assembler\ControlFlowOperationEmitTests.cs" />
     <Compile Include="Assembler\DirectiveTests.cs" />
     <Compile Include="Assembler\ErrorMessageTests.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Assembler\RepeatTests.cs" />
     <Compile Include="Assembler\IfEmitTests.cs" />
     <Compile Include="Assembler\ForEmitTests.cs" />
+    <Compile Include="Assembler\BreakTests.cs" />
     <Compile Include="Assembler\WhileEmitTests.cs" />
     <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />

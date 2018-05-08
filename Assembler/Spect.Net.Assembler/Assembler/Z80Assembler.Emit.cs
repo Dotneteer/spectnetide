@@ -254,6 +254,14 @@ namespace Spect.Net.Assembler.Assembler
                 case IfEndStatement ifEndStmt:
                     ReportError(Errors.Z0405, ifEndStmt, "ENDIF", "IF");
                     break;
+
+                case BreakStatement breakStmt:
+                    ProcessBreakStatement(breakStmt);
+                    break;
+
+                case ContinueStatement continueStmt:
+                    ProcessContinueStatement(continueStmt);
+                    break;
             }
         }
 
@@ -354,15 +362,19 @@ namespace Spect.Net.Assembler.Assembler
             for (var i = 0; i < counter; i++)
             {
                 // --- Create a local scope for the loop body
-                var localScope = new SymbolScope(loopScope);
-                _output.LocalScopes.Push(localScope);
-                localScope.LoopCounter = i + 1;
+                var iterationScope = new SymbolScope(loopScope);
+                _output.LocalScopes.Push(iterationScope);
+                iterationScope.LoopCounter = i + 1;
 
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
                 {
                     var curLine = lines[loopLineIndex];
                     EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    if (iterationScope.BreakReached || iterationScope.ContinueReached)
+                    {
+                        break;
+                    }
                     loopLineIndex++;
                 }
 
@@ -385,7 +397,7 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
 
                 // --- Fixup the symbols locally
-                FixupSymbols(localScope.Fixups, localScope.Symbols, false);
+                FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
                 // --- Remove the local scope
                 _output.LocalScopes.Pop();
@@ -394,6 +406,12 @@ namespace Spect.Net.Assembler.Assembler
                 if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
                 {
                     ReportError(Errors.Z0408, loop);
+                    break;
+                }
+
+                // --- BREAK reached, exit the loop
+                if (iterationScope.BreakReached)
+                {
                     break;
                 }
             }
@@ -407,7 +425,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="repeat">REPEAT statement</param>
         /// <param name="lines">Parsed assembly lines</param>
-        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        /// <param name="currentLineIndex">Index of the REPEAT definition line</param>
         private void ProcessRepeatStatement(RepeatStatement repeat, List<SourceLineBase> lines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop
@@ -424,20 +442,24 @@ namespace Spect.Net.Assembler.Assembler
             var errorsBefore = _output.ErrorCount;
 
             // --- Execute the REPEAT body
-            var loopCount = 0;
+            var loopCount = 1;
             bool condition;
             do
             {
                 // --- Create a local scope for the repeat body
-                var localScope = new SymbolScope(loopScope);
-                _output.LocalScopes.Push(localScope);
-                localScope.LoopCounter = loopCount + 1;
+                var iterationScope = new SymbolScope(loopScope);
+                _output.LocalScopes.Push(iterationScope);
+                iterationScope.LoopCounter = loopCount;
 
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
                 {
                     var curLine = lines[loopLineIndex];
                     EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    if (iterationScope.BreakReached || iterationScope.ContinueReached)
+                    {
+                        break;
+                    }
                     loopLineIndex++;
                 }
 
@@ -460,10 +482,7 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
 
                 // --- Fixup the symbols locally
-                FixupSymbols(localScope.Fixups, localScope.Symbols, false);
-
-                // --- Remove the local scope
-                _output.LocalScopes.Pop();
+                FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
                 // --- Check for the maximum number of error
                 if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
@@ -484,9 +503,19 @@ namespace Spect.Net.Assembler.Assembler
 
                 // --- Increment counter, check loop safety
                 loopCount++;
+                iterationScope.LoopCounter = loopCount;
                 if (loopCount >= 0x10000)
                 {
                     ReportError(Errors.Z0409, repeat);
+                    break;
+                }
+
+                // --- Remove the local scope
+                _output.LocalScopes.Pop();
+
+                // --- BREAK reached, exit the loop
+                if (iterationScope.BreakReached)
+                {
                     break;
                 }
             } while (!condition);
@@ -500,7 +529,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="whileStmt">WHILE statement</param>
         /// <param name="lines">Parsed assembly lines</param>
-        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        /// <param name="currentLineIndex">Index of the WHILE definition line</param>
         private void ProcessWhileStatement(WhileStatement whileStmt, List<SourceLineBase> lines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop
@@ -516,9 +545,14 @@ namespace Spect.Net.Assembler.Assembler
             var errorsBefore = _output.ErrorCount;
 
             // --- Execute the WHILE body
-            var loopCount = 0;
+            var loopCount = 1;
             while (true)
             {
+                // --- Create a local scope for the repeat body
+                var iterationScope = new SymbolScope(loopScope);
+                _output.LocalScopes.Push(iterationScope);
+                iterationScope.LoopCounter = loopCount;
+
                 // --- Evaluate the loop expression
                 var loopCondition = EvalImmediate(whileStmt, whileStmt.Expr);
                 if (!loopCondition.IsValid) return;
@@ -531,24 +565,15 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Exit if while condition fails
                 if (!loopCondition.AsBool()) break;
 
-                // --- Increment counter, check loop safety
-                loopCount++;
-                if (loopCount >= 0xFFFF)
-                {
-                    ReportError(Errors.Z0409, whileStmt);
-                    break;
-                }
-
-                // --- Create a local scope for the repeat body
-                var localScope = new SymbolScope(loopScope);
-                _output.LocalScopes.Push(localScope);
-                localScope.LoopCounter = loopCount;
-
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
                 {
                     var curLine = lines[loopLineIndex];
                     EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    if (iterationScope.BreakReached || iterationScope.ContinueReached)
+                    {
+                        break;
+                    }
                     loopLineIndex++;
                 }
 
@@ -571,7 +596,7 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
 
                 // --- Fixup the symbols locally
-                FixupSymbols(localScope.Fixups, localScope.Symbols, false);
+                FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
                 // --- Remove the local scope
                 _output.LocalScopes.Pop();
@@ -580,6 +605,20 @@ namespace Spect.Net.Assembler.Assembler
                 if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
                 {
                     ReportError(Errors.Z0408, whileStmt);
+                    break;
+                }
+
+                // --- Increment counter, check loop safety
+                loopCount++;
+                if (loopCount >= 0xFFFF)
+                {
+                    ReportError(Errors.Z0409, whileStmt);
+                    break;
+                }
+
+                // --- BREAK reached, exit the loop
+                if (iterationScope.BreakReached)
+                {
                     break;
                 }
             }
@@ -593,7 +632,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="forStmt">FOR statement</param>
         /// <param name="lines">Parsed assembly lines</param>
-        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        /// <param name="currentLineIndex">Index of the FOR definition line</param>
         private void ProcessForStatement(ForStatement forStmt, List<SourceLineBase> lines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop
@@ -689,15 +728,19 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Create a local scope for the FOR body
-                var localScope = new SymbolScope(loopScope);
-                _output.LocalScopes.Push(localScope);
-                localScope.LoopCounter = loopCount;
+                var iterationScope = new SymbolScope(loopScope);
+                _output.LocalScopes.Push(iterationScope);
+                iterationScope.LoopCounter = loopCount;
 
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
                 {
                     var curLine = lines[loopLineIndex];
                     EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    if (iterationScope.BreakReached || iterationScope.ContinueReached)
+                    {
+                        break;
+                    }
                     loopLineIndex++;
                 }
 
@@ -720,7 +763,7 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
 
                 // --- Fixup the symbols locally
-                FixupSymbols(localScope.Fixups, localScope.Symbols, false);
+                FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
                 // --- Remove the local scope
                 _output.LocalScopes.Pop();
@@ -729,6 +772,12 @@ namespace Spect.Net.Assembler.Assembler
                 if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
                 {
                     ReportError(Errors.Z0408, forStmt);
+                    break;
+                }
+
+                // --- BREAK reached, exit the loop
+                if (iterationScope.BreakReached)
+                {
                     break;
                 }
 
@@ -750,11 +799,39 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
+        /// Processes the BREAK statement
+        /// </summary>
+        /// <param name="breakStmt">BREAK statement</param>
+        private void ProcessBreakStatement(SourceLineBase breakStmt)
+        {
+            if (IsInGlobalScope || !_output.LocalScopes.Peek().IsLoopScope)
+            {
+                ReportError(Errors.Z0415, breakStmt);
+                return;
+            }
+            _output.LocalScopes.Peek().BreakReached = true;
+        }
+
+        /// <summary>
+        /// Processes the CONTINUE statement
+        /// </summary>
+        /// <param name="continueStmt">CONTINUE statement</param>
+        private void ProcessContinueStatement(SourceLineBase continueStmt)
+        {
+            if (IsInGlobalScope || !_output.LocalScopes.Peek().IsLoopScope)
+            {
+                ReportError(Errors.Z0416, continueStmt);
+                return;
+            }
+            _output.LocalScopes.Peek().ContinueReached = true;
+        }
+
+        /// <summary>
         /// Processes the if statement
         /// </summary>
         /// <param name="ifStmt">IF statement</param>
         /// <param name="lines">Parsed assembly lines</param>
-        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        /// <param name="currentLineIndex">Index of the IF definition line</param>
         private void ProcessIfStatement(IfStatement ifStmt, List<SourceLineBase> lines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop

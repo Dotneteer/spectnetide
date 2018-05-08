@@ -109,6 +109,7 @@
     <Compile Include="SyntaxTree\Expressions\SubtractOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryBitwiseNotNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryExpressionNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\UnaryLogicalNotNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\Expressions\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\ILabelSetter.cs" />
@@ -149,6 +150,8 @@
     <Compile Include="SyntaxTree\SourceLineBase.cs" />
     <Compile Include="SyntaxTree\StatementBase.cs" />
     <Compile Include="SyntaxTree\Statements\BlockStatementBase.cs" />
+    <Compile Include="SyntaxTree\Statements\BreakStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\ContinueStatement.cs" />
     <Compile Include="SyntaxTree\Statements\ElifStatement.cs" />
     <Compile Include="SyntaxTree\Statements\ElseStatement.cs" />
     <Compile Include="SyntaxTree\Statements\EndStatementBase.cs" />

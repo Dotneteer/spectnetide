@@ -300,11 +300,11 @@ you will learn about them. I will introduce them in descending order of their pr
 
 The assembler supports using only one ternary operator, the conditional operator:
 
-_conditional-expression_ __```?```__ _true-value_ __```:```__ _false-value_
+_conditional-expression_ __`?`__ _true-value_ __`:`__ _false-value_
 
 This operation results in -1:
 
-```2 > 3 ? 2 : -1```
+`2 > 3 ? 2 : -1`
 
 When the _conditional-expression_ evaluates to true, the operation results 
 in _true-value_; otherwise in _false-value_.
@@ -316,20 +316,20 @@ in _true-value_; otherwise in _false-value_.
 
 Operator token | Precedence | Description
 ---------------|------------|------------
-```|``` | 1 | Bitwise OR
-```^``` | 2 | Bitwise XOR
-```&``` | 3 | Bitwise AND
+`|` | 1 | Bitwise OR
+`^` | 2 | Bitwise XOR
+`&` | 3 | Bitwise AND
 
 #### Relational Operators
 
 Operator token | Precedence | Description
 ---------------|------------|------------
-```==``` | 4 | Equality
-```!=``` | 4 | Non-equality
-```<```  | 5 | Less than
-```<=``` | 5 | Less than or equal
-```>```  | 5 | Greater than
-```>=``` | 5 | Greater than or equal
+`==` | 4 | Equality
+`!=` | 4 | Non-equality
+`<`  | 5 | Less than
+`<=` | 5 | Less than or equal
+`>`  | 5 | Greater than
+`>=` | 5 | Greater than or equal
 
 #### Shift Operators
 
@@ -337,25 +337,27 @@ The bits of the left operand are shifted by the number of bits given by the righ
 
 Operator token | Precedence | Description
 ---------------|------------|------------
-```<<``` | 6 | Shift left
-```>>``` | 6 | Shift right
+`<<` | 6 | Shift left
+`>>` | 6 | Shift right
 
 #### Basic Arithmetic Operators
 
 Operator token | Precedence | Description
 ---------------|------------|------------
-```+``` | 7 | Addition
-```-``` | 7 | Subtraction
-```*``` | 8 | Multiplication
-```/``` | 8 | Division
-```%``` | 8 | Modulo calculation
+`+` | 7 | Addition
+`-` | 7 | Subtraction
+`*` | 8 | Multiplication
+`/` | 8 | Division
+`%` | 8 | Modulo calculation
 
 #### Unary operators
 
 Operator token | Precedence | Description
 ---------------|------------|------------
-```+``` | 9 | Unary plus
-```-``` | 9 | Unary minus
+`+` | 9 | Unary plus
+`-` | 9 | Unary minus
+`~` | 9 | Unary bitwise NOT
+`!` | 9 | Unary logical NOT
 
 > Do not forget, you can change the defult precendence with `(` and `)`, or with `[` and `]`.
 
@@ -1541,6 +1543,105 @@ error message accordingly.
 When the compiler finds a closing statement (such as `.endw`, `.endl`, `.until`, `.endif`, etc.) it will
 issue an error.
 
+### The BREAK statement
+
+You can exit the loop &mdash; independently of the loop's exit condition &mdash; with the `.break` statement:
+
+```
+; LOOP sample
+.loop 5
+  .if $cnt == 4
+    .break
+  .endif
+  .db $cnt
+.endl
+
+; REPEAT sample
+.repeat
+  .if $cnt == 4
+    .break
+  .endif
+  .db $cnt
+.until $cnt == 5
+
+; WHILE sample
+.while $cnt < 5
+  .if $cnt == 4
+    .break
+  .endif
+  .db $cnt
+.endw
+
+; FOR-loop sample
+.for value = 1 to 5
+  .if value == 4
+    .break
+  .endif
+  .db value
+.next
+```
+
+Because all these loops are exited at the beginning of the 4th iteration, they produce this output:
+
+```
+.db #01
+.db #02
+.db #03
+```
+
+> You cannot use the `.break` statement outside of a loop construct. If you do so, the compiler 
+> raises an error.
+
+### The CONTINUE Statement
+
+You can interrupt the current iteration of the loop and carry on the next iteration with the `.continue` statement:
+
+```
+; LOOP sample
+.loop 5
+  .if $cnt == 4
+    .continue
+  .endif
+  .db $cnt
+.endl
+
+; REPEAT sample
+.repeat
+  .if $cnt == 4
+    .continue
+  .endif
+  .db $cnt
+.until $cnt == 5
+
+; WHILE sample
+.while $cnt <= 5 
+  .if $cnt == 4
+    .continue
+  .endif
+  .db $cnt
+.endw
+
+; FOR-loop sample
+.for value = 1 to 5
+  .if value == 4
+    .continue
+  .endif
+  .db value
+.next
+```
+
+Because all these loops skip the 4th iteration, they produce this output:
+
+```
+.db #01
+.db #02
+.db #03
+; #04 is skipped
+.db #05
+```
+
+> You cannot use the `.continue` statement outside of a loop construct. If you do so, the compiler 
+> raises an error.
 
 ## Directives
 

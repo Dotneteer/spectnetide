@@ -995,6 +995,38 @@ namespace Spect.Net.Assembler
                 : AddLine(new NextStatement(), context);
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.breakStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitBreakStatement(Z80AsmParser.BreakStatementContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new BreakStatement(), context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.continueStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitContinueStatement(Z80AsmParser.ContinueStatementContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new ContinueStatement(), context);
+        }
+
         #endregion
 
         #region Expression handling
@@ -1309,6 +1341,13 @@ namespace Spect.Net.Assembler
             if (child0.GetText() == "~")
             {
                 return new UnaryBitwiseNotNode()
+                {
+                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext)
+                };
+            }
+            if (child0.GetText() == "!")
+            {
+                return new UnaryLogicalNotNode()
                 {
                     Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext)
                 };

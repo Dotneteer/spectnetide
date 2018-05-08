@@ -69,6 +69,8 @@ statement
 	|	endifStatement
 	|	forStatement
 	|	nextStatement
+	|	breakStatement
+	|	continueStatement
 	;
 
 macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
@@ -85,6 +87,8 @@ elseStatement: ELSESTMT ;
 endifStatement: ENDIFSTMT ;
 forStatement: FOR IDENTIFIER ASSIGN expr TO expr (STEP expr)? ;
 nextStatement: (NEXT | FORNEXT) ;
+breakStatement: BREAK ;
+continueStatement: CONTINUE ;
 
 macroInvocation: IDENTIFIER LPAR (expr (COMMA expr)*)? RPAR	;
 
@@ -278,6 +282,7 @@ unaryExpr
 	| PLUS unaryExpr
 	| MINUS unaryExpr
 	| TILDE unaryExpr
+	| EXCLM unaryExpr
 	| LSBRAC expr RSBRAC
 	| LPAR expr RPAR
 	| literalExpr
@@ -355,6 +360,7 @@ MODOP	: '%' ;
 TILDE	: '~';
 LDBRAC	: '{{' ;
 RDBRAC	: '}}' ;
+EXCLM	: '!' ;
 
 // --- Register and flag tokens
 A	: 'a'|'A' ;
@@ -529,6 +535,8 @@ TO		: '.to' | '.TO' | 'to' | 'TO' ;
 STEP	: '.step' | '.STEP' | 'step' | 'STEP' ;
 FORNEXT	: '.next' | '.NEXT' ;
 NEXT	: 'next' | 'NEXT' ;
+BREAK	: '.break' | 'break' | '.BREAK' | 'BREAK' ;
+CONTINUE: '.continue' | 'continue' | '.CONTINUE' | 'CONTINUE' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?

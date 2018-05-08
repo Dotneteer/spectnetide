@@ -1,3 +1,8 @@
+### Version under developement
+
+__FEATURE__: The Z80 assembler now supports the `FOR`..`NEXT` loop.
+__FEATURE__: Unary logical NOT operator (`!`) added to the language.
+
 ### Version 1.7.0
 
 __FEATURE__: The Z80 assembler supports the `IF`..`ELIF`..`ELSE`..`ENDIF` statement.  
