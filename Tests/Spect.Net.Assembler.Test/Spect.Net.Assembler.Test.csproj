@@ -88,6 +88,7 @@
     <Compile Include="Assembler\IfEmitTests.cs" />
     <Compile Include="Assembler\ForEmitTests.cs" />
     <Compile Include="Assembler\BreakTests.cs" />
+    <Compile Include="Assembler\MacroArgumentEmitTests.cs" />
     <Compile Include="Assembler\WhileEmitTests.cs" />
     <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
@@ -19,6 +20,8 @@ namespace Spect.Net.Assembler.Assembler
     /// </summary>
     public partial class Z80Assembler
     {
+        public static readonly Regex MacroParamRegex = new Regex(@"{{\s*([_a-zA-Z][_a-zA-Z0-9]*)\s*}}");
+
         /// <summary>
         /// The current output segment of the emitted code
         /// </summary>
@@ -147,6 +150,13 @@ namespace Spect.Net.Assembler.Assembler
                     }
                 }
 
+                // --- Let's handle assembly lines with macro parameters
+                if (asmLine.MacroParams != null && asmLine.MacroParams.Count > 0)
+                {
+                    HandleLineWithMacroParameters(asmLine);
+                    return;
+                }
+
                 if (asmLine is PragmaBase pragmaLine)
                 {
                     // --- Process a pragma
@@ -167,6 +177,37 @@ namespace Spect.Net.Assembler.Assembler
                     _output.SourceMap[addr] = sourceInfo;
                     _output.AddressMap[sourceInfo] = addr;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Handles the line with macro parameters
+        /// </summary>
+        /// <param name="asmLine">Assembly line to handle</param>
+        private void HandleLineWithMacroParameters(SourceLineBase asmLine)
+        {
+            // --- Macro parameters cannot be used in the global scope
+            if (IsInGlobalScope)
+            {
+                ReportError(Errors.Z0420, asmLine);
+                return;
+            }
+
+            // --- Macro argument used outside of a macro definition
+            var scope = _output.LocalScopes.Peek();
+            if (scope.MacroArguments == null)
+            {
+                if (ShouldReportErrorInCurrentScope(Errors.Z0420))
+                {
+                    ReportError(Errors.Z0420, asmLine);
+                }
+                return;
+            }
+
+            // --- Replace all macro arguments by their actual value
+            foreach (var arg in scope.MacroArguments.Keys)
+            {
+
             }
         }
 
