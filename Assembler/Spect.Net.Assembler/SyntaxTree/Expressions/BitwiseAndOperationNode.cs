@@ -35,8 +35,15 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                             return ExpressionValue.Error;
                     }
 
-                case ExpressionValueType.Real:
                 case ExpressionValueType.String:
+                    if (right.Type == ExpressionValueType.String)
+                    {
+                        return new ExpressionValue($"{left.AsString()}\r\n{right.AsString()}");
+                    }
+                    EvaluationError = LEFT_OPER_ERROR;
+                    return ExpressionValue.Error;
+
+                case ExpressionValueType.Real:
                     EvaluationError = LEFT_OPER_ERROR;
                     return ExpressionValue.Error;
 

@@ -750,7 +750,8 @@ namespace Spect.Net.Assembler
         {
             if (IsInvalidContext(context)) return null;
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
-            return AddLine(new MacroInvocation(context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList()),
+            return AddLine(new MacroInvocation(context.IDENTIFIER().NormalizeToken(), 
+                    context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList()),
                     context);
         }
 

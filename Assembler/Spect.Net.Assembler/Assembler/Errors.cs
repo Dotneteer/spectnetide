@@ -82,6 +82,9 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0414 = "Z0414";
         public const string Z0415 = "Z0415";
         public const string Z0416 = "Z0416";
+        public const string Z0417 = "Z0417";
+        public const string Z0418 = "Z0418";
+        public const string Z0419 = "Z0419";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -156,6 +159,9 @@ namespace Spect.Net.Assembler.Assembler
             { Z0414, "Variable {0} is already declared, it cannot be used as a FOR-loop variable again." },
             { Z0415, "BREAK cannot be used outside of loop constructs." },
             { Z0416, "CONTINUE cannot be used outside of loop constructs." },
+            { Z0417, "Duplicated MACRO argument: {0}." },
+            { Z0418, "Unknown MACRO: {0}." },
+            { Z0419, "The declaration of MACRO {0} contains {1} argument(s), but it is invoked with {2}." },
         };
 
         /// <summary>

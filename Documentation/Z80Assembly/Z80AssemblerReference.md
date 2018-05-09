@@ -9,6 +9,8 @@ I've implemented in the __SpectNetIde__ assembler were suggested by the communit
 Simon's outstanding [Zeus Z80 Assembler](http://www.desdes.com/products/oldfiles/zeus.htm).
 I honor his ideas and work.
 
+## Main Features
+
 ## How the Assembler Works
 
 The assembler compiles the code in three phases:
@@ -318,8 +320,10 @@ Operator token | Precedence | Description
 ---------------|------------|------------
 `|` | 1 | Bitwise OR
 `^` | 2 | Bitwise XOR
-`&` | 3 | Bitwise AND
+`&` | 3 | Bitwise AND &mdash; string concatenation with new line
 
+> The `&` operator can be applied on two strings. If you do so, the compiler concatenates the two 
+> strings and puts a `\r\n` (next line) character pair between them. 
 #### Relational Operators
 
 Operator token | Precedence | Description
@@ -344,7 +348,7 @@ Operator token | Precedence | Description
 
 Operator token | Precedence | Description
 ---------------|------------|------------
-`+` | 7 | Addition
+`+` | 7 | Addition &mdash; string concatenation
 `-` | 7 | Subtraction
 `*` | 8 | Multiplication
 `/` | 8 | Division
@@ -1642,6 +1646,10 @@ Because all these loops skip the 4th iteration, they produce this output:
 
 > You cannot use the `.continue` statement outside of a loop construct. If you do so, the compiler 
 > raises an error.
+
+## Macros
+
+* Macro names serve as the start label for the macro, too.
 
 ## Directives
 

@@ -55,6 +55,11 @@ namespace Spect.Net.Assembler.Assembler
         public bool ContinueReached { get; set; } = false;
 
         /// <summary>
+        /// Optional macro arguments
+        /// </summary>
+        public Dictionary<string, ExpressionValue> MacroArguments { get; set; }
+
+        /// <summary>
         /// Signs that the specified error has been reported
         /// </summary>
         /// <param name="errorCode"></param>

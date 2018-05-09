@@ -9,12 +9,18 @@ namespace Spect.Net.Assembler.SyntaxTree.Operations
     public class MacroInvocation : StatementBase
     {
         /// <summary>
+        /// Name of the macro to invoke
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
         /// Actual parameters of the macro invocation
         /// </summary>
         public List<ExpressionNode> Parameters { get; }
 
-        public MacroInvocation(List<ExpressionNode> parameters)
+        public MacroInvocation(string name, List<ExpressionNode> parameters)
         {
+            Name = name;
             Parameters = parameters;
         }
     }

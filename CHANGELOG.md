@@ -1,7 +1,10 @@
 ### Version under developement
 
-__FEATURE__: The Z80 assembler now supports the `FOR`..`NEXT` loop.
-__FEATURE__: Unary logical NOT operator (`!`) added to the language.
+__FEATURE__: The Z80 assembler now supports the `FOR`..`NEXT` loop.  
+__FEATURE__: Unary logical NOT operator (`!`) added to the language.  
+__FEATURE__: The `&` operator can be used with two string values. The result is the concatenation
+of the two strings with a `\r\n` (next line) character pair inserted between them.  
+
 
 ### Version 1.7.0
 

@@ -262,6 +262,10 @@ namespace Spect.Net.Assembler.Assembler
                 case ContinueStatement continueStmt:
                     ProcessContinueStatement(continueStmt);
                     break;
+
+                case MacroInvocation macroInvokeStmt:
+                    ProcessMacroInvocation(macroInvokeStmt, lines);
+                    break;
             }
         }
 
@@ -276,6 +280,18 @@ namespace Spect.Net.Assembler.Assembler
             List<SourceLineBase> lines, ref int currentLineIndex)
         {
             var errorFound = false;
+            // --- Check for parameter uniqueness
+            var args = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+            foreach (var macroArg in macro.Arguments)
+            {
+                if (args.Contains(macroArg))
+                {
+                    ReportError(Errors.Z0417, macro, macroArg);
+                    errorFound = true;
+                }
+                args.Add(macroArg);
+            }
+
             if (label == null)
             {
                 errorFound = true;
@@ -289,10 +305,11 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Search for the end of the macro
             var firstLine = currentLineIndex;
-            if (!macro.SearchForEnd(this, lines, ref currentLineIndex, out var _)) return;
+            if (!macro.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
 
             // --- Create macro definition
-            var macroDef = new MacroDefinition(label, firstLine, currentLineIndex);
+            var macroDef = new MacroDefinition(label, firstLine, currentLineIndex, 
+                macro.Arguments, endLabel);
 
             // --- Check each macro line for invalid macro parameter names
             // --- or nested macro
@@ -1017,6 +1034,87 @@ namespace Spect.Net.Assembler.Assembler
             }
             ReportError(Errors.Z0401, lines[firstLine], ifStmt.EndStatementName);
             return null;
+        }
+
+        /// <summary>
+        /// Handles the invocation of a MACRO
+        /// </summary>
+        /// <param name="macroStmt">MACRO invocation statement</param>
+        /// <param name="lines">Parsed assembly lines</param>
+        private void ProcessMacroInvocation(MacroInvocation macroStmt, List<SourceLineBase> lines)
+        {
+            // --- Check if macro definition exists
+            if (!_output.Macros.TryGetValue(macroStmt.Name, out var macroDef))
+            {
+                ReportError(Errors.Z0418, macroStmt, macroStmt.Name);
+                return;
+            }
+
+            // --- Match parameters
+            if (macroDef.ArgumentNames.Count != macroStmt.Parameters.Count)
+            {
+                ReportError(Errors.Z0419, macroStmt, macroDef.MacroName, macroDef.ArgumentNames.Count, macroStmt.Parameters.Count);
+                return;
+            }
+
+            // --- Evaluate arguments
+            var arguments = new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
+            var errorFound = false;
+            for (var i = 0; i < macroDef.ArgumentNames.Count; i++)
+            {
+                var argValue = EvalImmediate(macroStmt, macroStmt.Parameters[i]);
+                if (!argValue.IsValid)
+                {
+                    errorFound = true;
+                    continue;
+                }
+                arguments.Add(macroDef.ArgumentNames[i], argValue);
+            }
+            if (errorFound) return;
+
+            // --- Create a scope for the macro
+            var macroScope = new SymbolScope
+            {
+                MacroArguments = arguments
+            };
+            _output.LocalScopes.Push(macroScope);
+
+            // --- The macro name will serve as its starting label
+            macroScope.Symbols.Add(macroDef.MacroName, new ExpressionValue(GetCurrentAssemblyAddress()));
+
+            var lineIndex = macroDef.Section.FirstLine + 1;
+            var lastLine = macroDef.Section.LastLine;
+            while (lineIndex < lastLine)
+            {
+                var curLine = lines[lineIndex];
+                EmitSingleLine(lines, curLine, ref lineIndex);
+                lineIndex++;
+            }
+
+            // --- Add the end label to the local scope
+            var endLabel = macroDef.EndLabel;
+            if (endLabel != null)
+            {
+                // --- Add the end label to the loop scope
+                var endLine = lines[lastLine];
+                if (SymbolExists(endLabel))
+                {
+                    ReportError(Errors.Z0040, endLine, endLabel);
+                }
+                else
+                {
+                    AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                }
+            }
+
+            // --- Clean up the hanging label
+            OverflowLabelLine = null;
+
+            // --- Fixup the symbols locally
+            FixupSymbols(macroScope.Fixups, macroScope.Symbols, false);
+
+            // --- Remove the macro's scope
+            _output.LocalScopes.Pop();
         }
 
         #endregion

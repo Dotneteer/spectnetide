@@ -551,6 +551,15 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        [DataRow("\"a\" & \"b\"", "a\r\nb")]
+        [DataRow("\"\" & \"b\"", "\r\nb")]
+        [DataRow("\"a\" & \"\"", "a\r\n")]
+        public void BitwiseAndWorksWithStrings(string source, string expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
         [DataRow("0 | 3", 3)]
         [DataRow("23 | 12", 31)]
         [DataRow("#8000 | #4000", 0xC000)]
