@@ -514,7 +514,8 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
             line.Operand.Register.ShouldBe(reg);
-            line.BitIndex.ShouldBeNull();
+            line.Operand2.ShouldBeNull();
+            line.Operand3.ShouldBeNull();
         }
 
         protected void RegisterIndexedBitOpWorks(string instruction, string type, string reg, string indexReg, string sign)
@@ -527,7 +528,6 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.BitIndex.ShouldBeNull();
             line.Operand.Register.ShouldBe(indexReg);
             line.Operand.Sign.ShouldBe(sign);
             if (line.Operand.Sign == null)
@@ -550,8 +550,8 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Operand.Register.ShouldBe(reg);
-            line.BitIndex.ShouldNotBeNull();
+            line.Operand.Expression.ShouldNotBeNull();
+            line.Operand2.Register.ShouldBe(reg);
         }
 
         protected void IndexedBitManipWorks(string instruction, string type, string idxReg, string sign, string reg = null)
@@ -564,23 +564,20 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Mnemonic.ShouldBe(type);
-            line.Operand.Register.ShouldBe(idxReg);
-            line.BitIndex.ShouldNotBeNull();
-            line.Operand.Sign.ShouldBe(sign);
+            line.Operand2.Register.ShouldBe(idxReg);
+            line.Operand2.Sign.ShouldBe(sign);
             if (sign == null)
             {
-                line.Operand.Expression.ShouldBeNull();
+                line.Operand2.Expression.ShouldBeNull();
             }
             else
             {
-                line.Operand.Expression.ShouldNotBeNull();
+                line.Operand2.Expression.ShouldNotBeNull();
             }
             if (reg != null)
             {
-                line.Operand2.Register.ShouldBe(reg);
+                line.Operand3.Register.ShouldBe(reg);
             }
         }
-
-
     }
 }

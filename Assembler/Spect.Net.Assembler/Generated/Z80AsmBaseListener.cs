@@ -348,6 +348,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitMacroInvocation([NotNull] Z80AsmParser.MacroInvocationContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroArgument"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMacroArgument([NotNull] Z80AsmParser.MacroArgumentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.macroArgument"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMacroArgument([NotNull] Z80AsmParser.MacroArgumentContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.orgPragma"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

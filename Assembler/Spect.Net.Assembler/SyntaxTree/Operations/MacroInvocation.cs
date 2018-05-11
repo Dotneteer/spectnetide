@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Operations
 {
@@ -16,9 +15,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Operations
         /// <summary>
         /// Actual parameters of the macro invocation
         /// </summary>
-        public List<ExpressionNode> Parameters { get; }
+        public List<Operand> Parameters { get; }
 
-        public MacroInvocation(string name, List<ExpressionNode> parameters)
+        public MacroInvocation(string name, List<Operand> parameters)
         {
             Name = name;
             Parameters = parameters;

@@ -210,9 +210,6 @@ namespace Spect.Net.Assembler.Test.Parser
         [DataRow("jr {{MyMacroParam}}")]
         [DataRow("jp {{MyMacroParam}}")]
         [DataRow("call {{MyMacroParam}}")]
-        [DataRow("jr nz,{{MyMacroParam}}")]
-        [DataRow("jp nz,{{MyMacroParam}}")]
-        [DataRow("call nz,{{MyMacroParam}}")]
         [DataRow("bit 2,{{MyMacroParam}}")]
         [DataRow("set 2,{{MyMacroParam}}")]
         [DataRow("res 2,{{MyMacroParam}}")]
@@ -226,6 +223,24 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
             line.Operand.Type.ShouldBe(OperandType.Expr);
+            line.MacroParamNames.Count.ShouldBe(1);
+            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
+        }
+
+        [TestMethod]
+        [DataRow("jr nz,{{MyMacroParam}}")]
+        [DataRow("jp nz,{{MyMacroParam}}")]
+        [DataRow("call nz,{{MyMacroParam}}")]
+        public void MacroParamInJumpOperandWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompoundOperation;
+            line.ShouldNotBeNull();
+            line.Operand.Type.ShouldBe(OperandType.Condition);
             line.MacroParamNames.Count.ShouldBe(1);
             line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
         }
@@ -316,7 +331,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as CompoundOperation;
             line.ShouldNotBeNull();
-            line.BitIndex.HasMacroParameter.ShouldBeTrue();
+            line.Operand.Expression.HasMacroParameter.ShouldBeTrue();
             line.MacroParamNames.Count.ShouldBe(1);
             line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
         }

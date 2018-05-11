@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Antlr4.Runtime;
+using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
@@ -153,7 +155,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Let's handle assembly lines with macro parameters
                 if (asmLine.MacroParams != null && asmLine.MacroParams.Count > 0)
                 {
-                    HandleLineWithMacroParameters(asmLine);
+                    HandleLineWithMacroParameters(lines, asmLine, ref currentLineIndex);
                     return;
                 }
 
@@ -183,8 +185,10 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Handles the line with macro parameters
         /// </summary>
+        /// <param name="lines">All parsed lines</param>
         /// <param name="asmLine">Assembly line to handle</param>
-        private void HandleLineWithMacroParameters(SourceLineBase asmLine)
+        /// <param name="currentLineIndex">The index of the line to emit</param>
+        private void HandleLineWithMacroParameters(List<SourceLineBase> lines, SourceLineBase asmLine, ref int currentLineIndex)
         {
             // --- Macro parameters cannot be used in the global scope
             if (IsInGlobalScope)
@@ -205,9 +209,51 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Replace all macro arguments by their actual value
-            foreach (var arg in scope.MacroArguments.Keys)
+            var origText = asmLine.SourceText;
+            var matches = MacroParamRegex.Matches(origText);
+            foreach (Match match in matches)
             {
+                var toReplace = match.Groups[0].Value;
+                var argName = match.Groups[1].Value;
+                if (!scope.MacroArguments.TryGetValue(argName, out var argValue))
+                {
+                    continue;
+                }
+                origText = origText.Replace(toReplace, argValue.AsString());
+            }
 
+            // --- Now we have the source text to compile
+            var inputStream = new AntlrInputStream(origText);
+            var lexer = new Z80AsmLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new Z80AsmParser(tokenStream);
+            var context = parser.compileUnit();
+            var visitor = new Z80AsmVisitor();
+            visitor.Visit(context);
+            var visitedLines = visitor.Compilation;
+
+            // --- Store any tasks defined by the user
+            StoreTasks(_output.SourceItem, visitedLines.Lines);
+
+            // --- Collect syntax errors
+            var errorFound = false;
+            foreach (var error in parser.SyntaxErrors)
+            {
+                ReportError(_output.SourceItem, error);
+                errorFound = true;
+            }
+
+            if (errorFound)
+            {
+                // --- Stop compilation, if macro contains error
+                return;
+            }
+
+            // --- Now, emit the comiled lines
+            var lineIndex = currentLineIndex;
+            foreach (var line in visitedLines.Lines)
+            {
+                EmitSingleLine(lines, line, ref lineIndex);
             }
         }
 
@@ -1103,12 +1149,58 @@ namespace Spect.Net.Assembler.Assembler
             var errorFound = false;
             for (var i = 0; i < macroDef.ArgumentNames.Count; i++)
             {
-                var argValue = EvalImmediate(macroStmt, macroStmt.Parameters[i]);
-                if (!argValue.IsValid)
+                var op = macroStmt.Parameters[i];
+                ExpressionValue argValue;
+                switch (op.Type)
                 {
-                    errorFound = true;
-                    continue;
+                    case OperandType.Reg8:
+                    case OperandType.Reg8Idx:
+                    case OperandType.Reg8Spec:
+                    case OperandType.Reg16:
+                    case OperandType.Reg16Idx:
+                    case OperandType.Reg16Spec:
+                    case OperandType.RegIndirect:
+                        argValue = new ExpressionValue(op.Register);
+                        break;
+                    case OperandType.Expr:
+                        argValue = EvalImmediate(macroStmt, op.Expression);
+                        if (!argValue.IsValid) errorFound = true;
+                        break;
+                    case OperandType.MemIndirect:
+                        argValue = EvalImmediate(macroStmt, op.Expression);
+                        if (!argValue.IsValid) errorFound = true;
+                        else
+                        {
+                            argValue = new ExpressionValue($"({argValue.AsString()})");
+                        } 
+                        break;
+                    case OperandType.CPort:
+                        argValue = new ExpressionValue("(C)");
+                        break;
+                    case OperandType.IndexedAddress:
+                        if (op.Expression == null)
+                        {
+                            argValue = new ExpressionValue($"({op.Register})");
+                        }
+                        else
+                        {
+                            argValue = EvalImmediate(macroStmt, op.Expression);
+                            if (!argValue.IsValid) errorFound = true;
+                            else
+                            {
+                                argValue = new ExpressionValue($"({op.Register}{op.Sign}{argValue.AsString()})");
+                            }
+                        }
+                        break;
+                    case OperandType.Condition:
+                        argValue = new ExpressionValue(op.Condition);
+                        break;
+                    default:
+                        argValue = new ExpressionValue("");
+                        break;
                 }
+                if (errorFound) continue;
+
                 arguments.Add(macroDef.ArgumentNames[i], argValue);
             }
             if (errorFound) return;
@@ -2188,7 +2280,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Check the bit index
-            var bitIndex = asm.EvalImmediate(op, op.BitIndex);
+            var bitIndex = asm.EvalImmediate(op, op.Operand.Expression);
             if (!bitIndex.IsValid)
             {
                 return;
@@ -2199,30 +2291,34 @@ namespace Spect.Net.Assembler.Assembler
                 return;
             }
 
-            if (op.Operand.Type == OperandType.IndexedAddress)
+            if (op.Operand2.Type == OperandType.IndexedAddress)
             {
-                if (op.Operand2 == null)
+                if (op.Operand3 == null)
                 {
                     opByte |= 0x06;
                 }
-                else if (op.Operand2.Type == OperandType.Reg8)
+                else if (op.Operand3.Type == OperandType.Reg8)
                 {
-                    opByte |= (byte)s_Reg8Order.IndexOf(op.Operand2.Register);
+                    opByte |= (byte)s_Reg8Order.IndexOf(op.Operand3.Register);
                 }
-                asm.EmitIndexedBitOperation(op, op.Operand.Register, op.Operand.Sign, op.Operand.Expression, 
+                else
+                {
+                    asm.ReportError(Errors.Z0001, op, op.Mnemonic);
+                }
+                asm.EmitIndexedBitOperation(op, op.Operand2.Register, op.Operand2.Sign, op.Operand2.Expression, 
                     (byte)(opByte + (bitIndex.Value << 3)));
                 return;
             }
 
-            if (op.Operand.Type == OperandType.Reg8)
+            if (op.Operand2.Type == OperandType.Reg8)
             {
-                opByte |= (byte)s_Reg8Order.IndexOf(op.Operand.Register);
+                opByte |= (byte)s_Reg8Order.IndexOf(op.Operand2.Register);
             }
-            else if (op.Operand.Type == OperandType.RegIndirect)
+            else if (op.Operand2.Type == OperandType.RegIndirect)
             {
-                if (op.Operand.Register != "(HL)")
+                if (op.Operand2.Register != "(HL)")
                 {
-                    asm.ReportError(Errors.Z0004, op, op.Mnemonic, op.Operand.Register);
+                    asm.ReportError(Errors.Z0004, op, op.Mnemonic, op.Operand2.Register);
                     return;
                 }
                 opByte |= 0x06;
@@ -2666,13 +2762,32 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessRet(Z80Assembler asm, CompoundOperation op)
         {
-            var opCode = 0xC9;
-            var condIndex = s_ConditionOrder.IndexOf(op.Condition);
-            if (condIndex >= 0)
+            if (op.Operand == null)
             {
-                opCode = 0xC0 + condIndex * 8;
+                asm.EmitByte(0xC9);
+                return;
             }
-            asm.EmitByte((byte)opCode);
+
+            if (op.Operand.Type == OperandType.Reg8)
+            {
+                if (op.Operand.Register == "C")
+                {
+                    asm.EmitByte(0xD8);
+                    return;
+                }
+                asm.ReportError(Errors.Z0001, op, op.Mnemonic);
+                return;
+            }
+            if (op.Operand.Type == OperandType.Condition)
+            {
+                var condIndex = s_ConditionOrder.IndexOf(op.Operand.Condition);
+                    var opCode = 0xC0 + condIndex * 8;
+                asm.EmitByte((byte)opCode);
+            }
+            else
+            {
+                asm.ReportError(Errors.Z0001, op, op.Mnemonic);
+            }
         }
 
         /// <summary>
@@ -2680,14 +2795,30 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessCall(Z80Assembler asm, CompoundOperation op)
         {
-            var opCode = 0xCD;
-            var condIndex = s_ConditionOrder.IndexOf(op.Condition);
-            if (condIndex >= 0)
+            if (op.Operand.Type == OperandType.Reg8)
             {
-                opCode = 0xC4 + condIndex * 8;
+                if (op.Operand.Register == "C")
+                {
+                    asm.EmitByte(0xDC);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    return;
+                }
+                asm.ReportError(Errors.Z0001, op, op.Mnemonic);
+                return;
             }
-            asm.EmitByte((byte)opCode);
-            asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit16);
+
+            if (op.Operand.Type == OperandType.Condition)
+            {
+                var condIndex = s_ConditionOrder.IndexOf(op.Operand.Condition);
+                var opCode = 0xC4 + condIndex * 8;
+                asm.EmitByte((byte) opCode);
+                asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
+            }
+            else
+            {
+                asm.EmitByte(0xCD);
+                asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit16);
+            }
         }
 
         /// <summary>
@@ -2695,16 +2826,31 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessJp(Z80Assembler asm, CompoundOperation op)
         {
+            if (op.Operand.Type == OperandType.Reg8)
+            {
+                if (op.Operand.Register == "C")
+                {
+                    asm.EmitByte(0xDA);
+                    asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                    return;
+                }
+                asm.ReportError(Errors.Z0001, op, op.Mnemonic);
+                return;
+            }
+
+            if (op.Operand.Type == OperandType.Condition)
+            {
+                var condIndex = s_ConditionOrder.IndexOf(op.Operand.Condition);
+                var opCode = 0xC2 + condIndex * 8;
+                asm.EmitByte((byte)opCode);
+                asm.EmitumNumericExpression(op, op.Operand2.Expression, FixupType.Bit16);
+                return;
+            }
+
             if (op.Operand.Type == OperandType.Expr)
             {
                 // --- Jump to a direct address
-                var opCode = 0xC3;
-                var condIndex = s_ConditionOrder.IndexOf(op.Condition);
-                if (condIndex >= 0)
-                {
-                    opCode = 0xC2 + condIndex * 8;
-                }
-                asm.EmitByte((byte)opCode);
+                asm.EmitByte(0xC3);
                 asm.EmitumNumericExpression(op, op.Operand.Expression, FixupType.Bit16);
                 return;
             }
@@ -2714,11 +2860,6 @@ namespace Spect.Net.Assembler.Assembler
             {
                 asm.ReportError(Errors.Z0016, op);
                 return;
-            }
-
-            if (op.Condition != null)
-            {
-                asm.ReportError(Errors.Z0017, op);
             }
 
             // --- Jump to a register address
@@ -2744,13 +2885,29 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessJr(Z80Assembler asm, CompoundOperation op)
         {
-            var opCode = 0x18;
-            var condIndex = s_ConditionOrder.IndexOf(op.Condition);
-            if (condIndex >= 0)
+            if (op.Operand.Type == OperandType.Reg8)
             {
-                opCode = 0x20 + condIndex * 8;
+                if (op.Operand.Register == "C")
+                {
+                    asm.EmitJumpRelativeOp(op, op.Operand2.Expression, 0x38);
+                    return;
+                }
+                asm.ReportError(Errors.Z0001, op, op.Mnemonic);
+                return;
             }
-            asm.EmitJumpRelativeOp(op, op.Operand.Expression, opCode);
+
+            if (op.Operand.Type == OperandType.Condition)
+            {
+                var condIndex = s_ConditionOrder.IndexOf(op.Operand.Condition);
+                var opCode = 0x20 + condIndex * 8;
+                asm.EmitJumpRelativeOp(op, op.Operand2.Expression, opCode);
+                return;
+            }
+
+            if (op.Operand.Type != OperandType.Expr) return;
+
+            // --- Jump to a direct address
+            asm.EmitJumpRelativeOp(op, op.Operand.Expression, 0x18);
         }
 
         /// <summary>
@@ -3319,6 +3476,17 @@ namespace Spect.Net.Assembler.Assembler
             };
 
         /// <summary>
+        /// Represents a single expression rule
+        /// </summary>
+        private static readonly List<OperandRule> s_JumpRule =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Reg8, OperandType.Expr),
+                new OperandRule(OperandType.Condition, OperandType.Expr),
+                new OperandRule(OperandType.Expr)
+            };
+
+        /// <summary>
         /// Stack operation rule set
         /// </summary>
         private static readonly List<OperandRule> s_StackOpRules =
@@ -3399,13 +3567,24 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Shift and rotate operations rule set
         /// </summary>
-        private static readonly List<OperandRule> s_BitManipRules =
+        private static readonly List<OperandRule> s_ShiftRotateRules =
             new List<OperandRule>
             {
                 new OperandRule(OperandType.Reg8),
                 new OperandRule(OperandType.RegIndirect),
                 new OperandRule(OperandType.IndexedAddress),
-                new OperandRule(OperandType.IndexedAddress, OperandType.Reg8),
+                new OperandRule(OperandType.IndexedAddress, OperandType.Reg8)
+            };
+
+        /// <summary>
+        /// BIT, SET, RES rules
+        /// </summary>
+        private static readonly List<OperandRule> s_BitManipRules =
+            new List<OperandRule>
+            {
+                new OperandRule(OperandType.Expr, OperandType.Reg8),
+                new OperandRule(OperandType.Expr, OperandType.RegIndirect),
+                new OperandRule(OperandType.Expr, OperandType.IndexedAddress),
             };
 
         /// <summary>
@@ -3414,6 +3593,8 @@ namespace Spect.Net.Assembler.Assembler
         private static readonly List<OperandRule> s_JpOpRules =
             new List<OperandRule>
             {
+                new OperandRule(OperandType.Reg8, OperandType.Expr),
+                new OperandRule(OperandType.Condition, OperandType.Expr),
                 new OperandRule(OperandType.Expr),
                 new OperandRule(OperandType.Reg16),
                 new OperandRule(OperandType.Reg16Idx),
@@ -3427,7 +3608,8 @@ namespace Spect.Net.Assembler.Assembler
         private static readonly List<OperandRule> s_RetOpRules =
             new List<OperandRule>
             {
-                new OperandRule(OperandType.Expr),
+                new OperandRule(OperandType.Reg8),
+                new OperandRule(OperandType.Condition),
                 new OperandRule(OperandType.None)
             };
 
@@ -3504,7 +3686,7 @@ namespace Spect.Net.Assembler.Assembler
                 { "ADD", new CompoundOperationDescriptor(s_ExtAddRules, ProcessAlu1) },
                 { "AND", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
                 { "BIT", new CompoundOperationDescriptor(s_BitManipRules, ProcessBit) },
-                { "CALL", new CompoundOperationDescriptor(s_SingleExprRule, ProcessCall) },
+                { "CALL", new CompoundOperationDescriptor(s_JumpRule, ProcessCall) },
                 { "CP", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
                 { "DEC", new CompoundOperationDescriptor(s_IncDecOpRules, ProcessIncDec) },
                 { "DJNZ", new CompoundOperationDescriptor(s_SingleExprRule, ProcessDjnz) },
@@ -3513,7 +3695,7 @@ namespace Spect.Net.Assembler.Assembler
                 { "IN", new CompoundOperationDescriptor(s_InOpRules, ProcessIn) },
                 { "INC", new CompoundOperationDescriptor(s_IncDecOpRules, ProcessIncDec) },
                 { "JP", new CompoundOperationDescriptor(s_JpOpRules, ProcessJp) },
-                { "JR", new CompoundOperationDescriptor(s_SingleExprRule, ProcessJr) },
+                { "JR", new CompoundOperationDescriptor(s_JumpRule, ProcessJr) },
                 { "LD", new CompoundOperationDescriptor(s_LoadRules, ProcessLd) },
                 { "MIRROR", new CompoundOperationDescriptor(s_MirrorOpRules, ProcessMirrorOp) },
                 { "NEXTREG", new CompoundOperationDescriptor(s_NextRegOpRules, ProcessNextRegOp) },
@@ -3523,17 +3705,17 @@ namespace Spect.Net.Assembler.Assembler
                 { "PUSH", new CompoundOperationDescriptor(s_StackOpRules, ProcessStackOp) },
                 { "RES", new CompoundOperationDescriptor(s_BitManipRules, ProcessBit) },
                 { "RET", new CompoundOperationDescriptor(s_RetOpRules, ProcessRet) },
-                { "RL", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
-                { "RLC", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
-                { "RR", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
-                { "RRC", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "RL", new CompoundOperationDescriptor(s_ShiftRotateRules, ProcessShiftRotate) },
+                { "RLC", new CompoundOperationDescriptor(s_ShiftRotateRules, ProcessShiftRotate) },
+                { "RR", new CompoundOperationDescriptor(s_ShiftRotateRules, ProcessShiftRotate) },
+                { "RRC", new CompoundOperationDescriptor(s_ShiftRotateRules, ProcessShiftRotate) },
                 { "RST", new CompoundOperationDescriptor(s_SingleExprRule, ProcessRst) },
                 { "SBC", new CompoundOperationDescriptor(s_RsDoubleArgAluRules, ProcessAlu1) },
                 { "SET", new CompoundOperationDescriptor(s_BitManipRules, ProcessBit) },
-                { "SLA", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
-                { "SLL", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
-                { "SRA", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
-                { "SRL", new CompoundOperationDescriptor(s_BitManipRules, ProcessShiftRotate) },
+                { "SLA", new CompoundOperationDescriptor(s_ShiftRotateRules, ProcessShiftRotate) },
+                { "SLL", new CompoundOperationDescriptor(s_ShiftRotateRules, ProcessShiftRotate) },
+                { "SRA", new CompoundOperationDescriptor(s_ShiftRotateRules, ProcessShiftRotate) },
+                { "SRL", new CompoundOperationDescriptor(s_ShiftRotateRules, ProcessShiftRotate) },
                 { "SUB", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },
                 { "TEST", new CompoundOperationDescriptor(s_TestOpRules, ProcessTestOp) },
                 { "XOR", new CompoundOperationDescriptor(s_SingleArgAluRules, ProcessAlu2) },

@@ -1,6 +1,4 @@
-﻿using Spect.Net.Assembler.SyntaxTree.Expressions;
-
-namespace Spect.Net.Assembler.SyntaxTree.Operations
+﻿namespace Spect.Net.Assembler.SyntaxTree.Operations
 {
     /// <summary>
     /// This class represents a compound instruction that contains 
@@ -19,13 +17,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Operations
         public Operand Operand2 { get; set; }
 
         /// <summary>
-        /// Condition (flow control operations)
+        /// First operands
         /// </summary>
-        public string Condition { get; set; }
-
-        /// <summary>
-        /// Bit index expression (bit manipulation operations)
-        /// </summary>
-        public ExpressionNode BitIndex { get; set; }
+        public Operand Operand3 { get; set; }
     }
 }

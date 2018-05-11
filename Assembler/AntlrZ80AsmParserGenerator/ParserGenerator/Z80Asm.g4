@@ -90,7 +90,8 @@ nextStatement: (NEXT | FORNEXT) ;
 breakStatement: BREAK ;
 continueStatement: CONTINUE ;
 
-macroInvocation: IDENTIFIER LPAR (expr (COMMA expr)*)? RPAR	;
+macroInvocation: IDENTIFIER LPAR (macroArgument (COMMA macroArgument)*)? RPAR	;
+macroArgument: operand ;
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
@@ -169,10 +170,10 @@ compoundOperation
 	|	OR (operand COMMA)? operand
 	|	CP (operand COMMA)? operand
 	|	DJNZ operand
-	|	JR (condition COMMA)? operand
-	|	JP (condition COMMA)? operand
-	|	CALL (condition COMMA)? operand
-	|	RET condition?
+	|	JR (operand COMMA)? operand
+	|	JP (operand COMMA)? operand
+	|	CALL (operand COMMA)? operand
+	|	RET operand?
 	|	RST operand
 	|	PUSH operand
 	|	POP operand
@@ -187,9 +188,9 @@ compoundOperation
 	|	SRA (operand COMMA)? operand
 	|	SLL (operand COMMA)? operand
 	|	SRL (operand COMMA)? operand
-	|	BIT expr COMMA operand
-	|	RES expr COMMA (operand COMMA)? operand
-	|	SET expr COMMA (operand COMMA)? operand
+	|	BIT operand COMMA operand
+	|	RES operand COMMA (operand COMMA)? operand
+	|	SET operand COMMA (operand COMMA)? operand
 	// --- Next operation
 	|	MIRROR operand
 	|	TEST operand

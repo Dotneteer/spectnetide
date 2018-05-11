@@ -28,5 +28,10 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// if there's no displacement
         /// </summary>
         public string Sign { get; set; }
+
+        /// <summary>
+        /// Condition value
+        /// </summary>
+        public string Condition { get; set; }
     }
 }

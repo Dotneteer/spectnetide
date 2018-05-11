@@ -201,6 +201,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMacroInvocation([NotNull] Z80AsmParser.MacroInvocationContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.macroArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMacroArgument([NotNull] Z80AsmParser.MacroArgumentContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.orgPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -586,35 +586,24 @@ namespace Spect.Net.Assembler
                 Mnemonic = context.GetChild(0).NormalizeToken()
             };
 
-            var operandFound = false;
-            foreach (var child in context.children)
+            var operandCount = 0;
+            foreach (var child in context.operand())
             {
                 // --- Collect operands
-                if (child is Z80AsmParser.OperandContext operandChild)
+                if (operandCount == 0)
                 {
-                    if (!operandFound)
-                    {
-                        op.Operand = (Operand)VisitOperand(operandChild);
-                    }
-                    else
-                    {
-                        op.Operand2 = (Operand)VisitOperand(operandChild);
-                    }
-                    operandFound = true;
-                    continue;
+                    op.Operand = (Operand)VisitOperand(child);
+                    operandCount = 1;
                 }
-
-                // --- Collect condition
-                if (child is Z80AsmParser.ConditionContext)
+                else if (operandCount == 1)
                 {
-                    op.Condition = child.NormalizeToken();
-                    continue;
+                    op.Operand2 = (Operand)VisitOperand(child);
+                    operandCount = 2;
                 }
-
-                // --- Collect optional bit index
-                if (child is Z80AsmParser.ExprContext exprChild)
+                else
                 {
-                    op.BitIndex = (ExpressionNode)VisitExpr(exprChild);
+                    op.Operand3 = (Operand)VisitOperand(child);
+                    operandCount = 2;
                 }
             }
             return AddLine(op, context);
@@ -694,6 +683,11 @@ namespace Spect.Net.Assembler
                 op.Type = OperandType.Expr;
                 op.Expression = (ExpressionNode)VisitExpr(context.expr());
             }
+            else if (context.condition() != null)
+            {
+                op.Type = OperandType.Condition;
+                op.Condition = context.condition().NormalizeToken();
+            }
             return op;
         }
 
@@ -749,9 +743,17 @@ namespace Spect.Net.Assembler
         public override object VisitMacroInvocation(Z80AsmParser.MacroInvocationContext context)
         {
             if (IsInvalidContext(context)) return null;
+            var macroOps = new List<Operand>();
+            foreach (var arg in context.macroArgument())
+            {
+                if (arg.operand() != null)
+                {
+                    macroOps.Add((Operand) VisitOperand(arg.operand()));
+                }
+            }
+
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
-            return AddLine(new MacroInvocation(context.IDENTIFIER().NormalizeToken(), 
-                    context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList()),
+            return AddLine(new MacroInvocation(context.IDENTIFIER().NormalizeToken(), macroOps),
                     context);
         }
 
