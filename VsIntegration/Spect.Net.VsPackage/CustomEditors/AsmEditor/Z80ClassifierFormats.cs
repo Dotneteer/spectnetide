@@ -265,4 +265,40 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             IsItalic = true;
         }
     }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 operand
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Operand")]
+    [Name("Z80Operand")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80OperandClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80OperandClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Operand";
+            ForegroundColor = Colors.NavajoWhite;
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 operand
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80SemiVar")]
+    [Name("Z80SemiVar")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80SemiVarClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80SemiVarClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Semi-variables";
+            ForegroundColor = Colors.LightCoral;
+            IsItalic = true;
+        }
+    }
 }

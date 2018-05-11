@@ -172,6 +172,15 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     }
                 }
 
+                if (asmline.SemiVars != null)
+                {
+                    foreach (var semiVarSpan in asmline.SemiVars)
+                    {
+                        // --- Retrieve a number
+                        yield return CreateSpan(currentLine, semiVarSpan, Z80AsmTokenType.SemiVar);
+                    }
+                }
+
                 if (asmline.MacroParams != null)
                 {
                     foreach (var macroParamSpan in asmline.MacroParams)
@@ -202,6 +211,22 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     if (forStmt.StepKeywordSpan != null)
                     {
                         yield return CreateSpan(currentLine, forStmt.StepKeywordSpan, Z80AsmTokenType.Statement);
+                    }
+                }
+
+                if (asmline is CompoundOperation compOp)
+                {
+                    if (compOp.Operand?.HighlightSpan != null)
+                    {
+                        yield return CreateSpan(currentLine, compOp.Operand.HighlightSpan, Z80AsmTokenType.Operand);
+                    }
+                    if (compOp.Operand2?.HighlightSpan != null)
+                    {
+                        yield return CreateSpan(currentLine, compOp.Operand2.HighlightSpan, Z80AsmTokenType.Operand);
+                    }
+                    if (compOp.Operand3?.HighlightSpan != null)
+                    {
+                        yield return CreateSpan(currentLine, compOp.Operand3.HighlightSpan, Z80AsmTokenType.Operand);
                     }
                 }
             }

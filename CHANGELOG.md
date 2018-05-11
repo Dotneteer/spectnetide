@@ -4,6 +4,9 @@ __FEATURE__: The Z80 assembler now supports the `FOR`..`NEXT` loop.
 __FEATURE__: Unary logical NOT operator (`!`) added to the language.  
 __FEATURE__: The `&` operator can be used with two string values. The result is the concatenation
 of the two strings with a `\r\n` (next line) character pair inserted between them.  
+__FEATURE__: You can exit loops with `.break`, or carry on to the next iteration with `.continue`.  
+__FEATURE__: You can define syntax hightlighting for instruction operands (registers, conditions, etc.),
+and semi-variable literals ($, $cnt, etc.)  
 
 
 ### Version 1.7.0

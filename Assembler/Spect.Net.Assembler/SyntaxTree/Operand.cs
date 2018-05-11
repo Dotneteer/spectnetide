@@ -18,6 +18,11 @@ namespace Spect.Net.Assembler.SyntaxTree
         public string Register { get; set; }
 
         /// <summary>
+        /// Span of a register
+        /// </summary>
+        public TextSpan HighlightSpan { get; set; }
+
+        /// <summary>
         /// The expression to evaluate (Expression, AddressIndirection, 
         /// and IndexedAddress)
         /// </summary>

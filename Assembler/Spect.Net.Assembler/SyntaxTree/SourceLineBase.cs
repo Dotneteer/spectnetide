@@ -86,6 +86,11 @@ namespace Spect.Net.Assembler.SyntaxTree
         public List<string> MacroParamNames { get; set; }
 
         /// <summary>
+        /// Semi-variables spans
+        /// </summary>
+        public List<TextSpan> SemiVars { get; set; }
+
+        /// <summary>
         /// Comment information
         /// </summary>
         public string Comment { get; set; }

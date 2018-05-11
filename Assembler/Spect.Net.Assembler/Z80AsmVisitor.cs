@@ -35,6 +35,7 @@ namespace Spect.Net.Assembler
         private List<TextSpan> _numbers = new List<TextSpan>();
         private List<TextSpan> _identifiers = new List<TextSpan>();
         private List<TextSpan> _strings = new List<TextSpan>();
+        private List<TextSpan> _semiVars = new List<TextSpan>();
         private List<TextSpan> _functions = new List<TextSpan>();
         private List<TextSpan> _macroParams = new List<TextSpan>();
         private List<string> _macroParamNames = new List<string>();
@@ -63,6 +64,7 @@ namespace Spect.Net.Assembler
             _identifiers = new List<TextSpan>();
             _functions = new List<TextSpan>();
             _strings = new List<TextSpan>();
+            _semiVars = new List<TextSpan>();
             _macroParams = new List<TextSpan>();
             _macroParamNames = new List<string>();
             _sourceLine = context.Start.Line;
@@ -620,35 +622,42 @@ namespace Spect.Net.Assembler
 
             // --- The context has exactly one child
             var op = new Operand();
+            ParserRuleContext regContext = null;
             if (context.reg8() != null)
             {
                 op.Type = OperandType.Reg8;
                 op.Register = context.reg8().NormalizeToken();
+                regContext = context.reg8();
             }
             else if (context.reg8Idx() != null)
             {
                 op.Type = OperandType.Reg8Idx;
                 op.Register = context.reg8Idx().NormalizeToken();
+                regContext = context.reg8Idx();
             }
             else if (context.reg8Spec() != null)
             {
                 op.Type = OperandType.Reg8Spec;
                 op.Register = context.reg8Spec().NormalizeToken();
+                regContext = context.reg8Spec();
             }
             else if (context.reg16() != null)
             {
                 op.Type = OperandType.Reg16;
                 op.Register = context.reg16().NormalizeToken();
+                regContext = context.reg16();
             }
             else if (context.reg16Idx() != null)
             {
                 op.Type = OperandType.Reg16Idx;
                 op.Register = context.reg16Idx().NormalizeToken();
+                regContext = context.reg16Idx();
             }
             else if (context.reg16Spec() != null)
             {
                 op.Type = OperandType.Reg16Spec;
                 op.Register = context.reg16Spec().NormalizeToken();
+                regContext = context.reg16Spec();
             }
             else if (context.memIndirect() != null)
             {
@@ -660,15 +669,18 @@ namespace Spect.Net.Assembler
             {
                 op.Type = OperandType.RegIndirect;
                 op.Register = context.regIndirect().NormalizeToken();
+                regContext = context.regIndirect();
             }
             else if (context.cPort() != null)
             {
                 op.Type = OperandType.CPort;
+                regContext = context.cPort();
             }
             else if (context.indexedAddr() != null)
             {
                 op.Type = OperandType.IndexedAddress;
                 var indexedAddrContext = context.indexedAddr();
+                regContext = indexedAddrContext.reg16Idx();
                 if (indexedAddrContext.ChildCount > 3)
                 {
                     op.Expression = (ExpressionNode)VisitExpr(indexedAddrContext.expr());
@@ -687,7 +699,14 @@ namespace Spect.Net.Assembler
             {
                 op.Type = OperandType.Condition;
                 op.Condition = context.condition().NormalizeToken();
+                regContext = context.condition();
             }
+
+            if (regContext != null)
+            {
+                op.HighlightSpan = new TextSpan(regContext.Start.StartIndex, regContext.Stop.StopIndex + 1);
+            }
+
             return op;
         }
 
@@ -1370,11 +1389,13 @@ namespace Spect.Net.Assembler
             var token = context.NormalizeToken();
             if (context.CURADDR() != null)
             {
+                _semiVars.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
                 return new CurrentAddressNode();
             }
 
             if (context.CURCNT() != null)
             {
+                _semiVars.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
                 return new CurrentLoopCounterNode();
             }
 
@@ -1521,6 +1542,7 @@ namespace Spect.Net.Assembler
             line.Numbers = _numbers;
             line.Strings = _strings;
             line.Functions = _functions;
+            line.SemiVars = _semiVars;
             line.MacroParams = _macroParams;
             line.MacroParamNames = _macroParamNames;
             line.Identifiers = _identifiers;

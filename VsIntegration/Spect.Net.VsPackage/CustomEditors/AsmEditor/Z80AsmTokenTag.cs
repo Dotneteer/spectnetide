@@ -41,6 +41,8 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         Function,
         MacroParam,
         Statement,
-        MacroInvocation
+        MacroInvocation,
+        Operand,
+        SemiVar
     }
 }

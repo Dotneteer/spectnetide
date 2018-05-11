@@ -72,7 +72,13 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         [Name("Z80MacroInvocation")]
         internal static ClassificationTypeDefinition macroInvocation;
 
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80Operand")]
+        internal static ClassificationTypeDefinition register;
 
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80SemiVar")]
+        internal static ClassificationTypeDefinition semiVar;
     }
 }
 

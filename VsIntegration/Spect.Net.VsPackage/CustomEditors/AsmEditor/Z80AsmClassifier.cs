@@ -36,6 +36,8 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             _z80AsmTypes.Add(Z80AsmTokenType.MacroParam, typeService.GetClassificationType("Z80MacroParam"));
             _z80AsmTypes.Add(Z80AsmTokenType.Statement, typeService.GetClassificationType("Z80Statement"));
             _z80AsmTypes.Add(Z80AsmTokenType.MacroInvocation, typeService.GetClassificationType("Z80MacroInvocation"));
+            _z80AsmTypes.Add(Z80AsmTokenType.Operand, typeService.GetClassificationType("Z80Operand"));
+            _z80AsmTypes.Add(Z80AsmTokenType.SemiVar, typeService.GetClassificationType("Z80SemiVar"));
         }
 
         /// <summary>
