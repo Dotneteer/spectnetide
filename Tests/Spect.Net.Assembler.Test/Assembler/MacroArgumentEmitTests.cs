@@ -216,6 +216,13 @@ namespace Spect.Net.Assembler.Test.Assembler
 
         [TestMethod]
         [DataRow("z", 0xCC)]
+        [DataRow("nz", 0xC4)]
+        [DataRow("c", 0xDC)]
+        [DataRow("nc", 0xD4)]
+        [DataRow("pe", 0xEC)]
+        [DataRow("po", 0xE4)]
+        [DataRow("m", 0xFC)]
+        [DataRow("p", 0xF4)]
         public void SingleMacroArgumentWithConditionWorks(string cond, int expected)
         {
             var source = @"
@@ -225,6 +232,93 @@ namespace Spect.Net.Assembler.Test.Assembler
                 MyMacro(" + cond + @")";
 
             CodeEmitWorks(source, (byte)expected, 0x00, 0x10);
+        }
+
+        [TestMethod]
+        [DataRow("a", "#A3", 0x3E, 0xA3)]
+        [DataRow("b", "#A4", 0x06, 0xA4)]
+        public void MultipleMacroArgumentWithNumberWorks(string reg, string expr, int exp1, int exp2)
+        {
+            var source = @"
+                MyMacro: .macro(first, second)
+                ld {{first}},{{second}}
+                .endm
+                MyMacro(" + reg + "," + expr + ")";
+
+            CodeEmitWorks(source, (byte)exp1, (byte)exp2);
+        }
+
+        [TestMethod]
+        public void MacroWithInstructionWorks()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(MyArg)
+                {{MyArg}}
+                .endm
+                MyMacro(""ld a,b"")";
+
+            CodeEmitWorks(SOURCE, 0x78);
+        }
+
+        [TestMethod]
+        public void MacroWithMultilineInstructionWorks()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(MyArg)
+                {{MyArg}}
+                .endm
+                MyMacro(""ld a,b"" & ""ld a,c"")";
+
+            CodeEmitWorks(SOURCE, 0x78, 0x79);
+        }
+
+        [TestMethod]
+        public void MacroWithLabeledInstructionWorks()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(MyArg)
+                {{MyArg}}
+                .endm
+                MyMacro(""MyLabel: jp MyLabel"")";
+
+            CodeEmitWorks(SOURCE, 0xC3, 0x00, 0x80);
+        }
+
+        [TestMethod]
+        public void MacroWithDoubleLabeledInstructionFails()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(MyArg)
+                Label: {{MyArg}}
+                .endm
+                MyMacro(""MyLabel: jp MyLabel"")";
+
+            CodeRaisesError(SOURCE, Errors.Z0100);
+        }
+
+        [TestMethod]
+        public void MacroWithLabeledInstructionAndMultipleInvokeWorks()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(MyArg)
+                {{MyArg}}
+                .endm
+                MyMacro(""MyLabel: jp MyLabel"")
+                MyMacro(""MyLabel: jp MyLabel"")";
+
+            CodeEmitWorks(SOURCE, 0xC3, 0x00, 0x80, 0xC3, 0x03, 0x80);
+        }
+
+        [TestMethod]
+        public void MacroWithLoopInjectionWorks()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(MyArg)
+                {{MyArg}}
+                .endm
+                MyMacro("".loop 3"" & ""ld a,b"" & "".endl"")";
+
+            CodeEmitWorks(SOURCE, 0x78, 0x78, 0x78);
         }
 
 

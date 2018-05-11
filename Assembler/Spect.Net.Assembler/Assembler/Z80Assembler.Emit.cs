@@ -155,7 +155,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Let's handle assembly lines with macro parameters
                 if (asmLine.MacroParams != null && asmLine.MacroParams.Count > 0)
                 {
-                    HandleLineWithMacroParameters(lines, asmLine, ref currentLineIndex);
+                    HandleLineWithMacroParameters(asmLine);
                     return;
                 }
 
@@ -185,10 +185,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Handles the line with macro parameters
         /// </summary>
-        /// <param name="lines">All parsed lines</param>
         /// <param name="asmLine">Assembly line to handle</param>
-        /// <param name="currentLineIndex">The index of the line to emit</param>
-        private void HandleLineWithMacroParameters(List<SourceLineBase> lines, SourceLineBase asmLine, ref int currentLineIndex)
+        private void HandleLineWithMacroParameters(SourceLineBase asmLine)
         {
             // --- Macro parameters cannot be used in the global scope
             if (IsInGlobalScope)
@@ -250,10 +248,14 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Now, emit the comiled lines
-            var lineIndex = currentLineIndex;
-            foreach (var line in visitedLines.Lines)
+            var lineIndex = 0;
+            while (lineIndex < visitedLines.Lines.Count)
             {
-                EmitSingleLine(lines, line, ref lineIndex);
+                var macroLine = visitedLines.Lines[lineIndex];
+                EmitSingleLine(visitedLines.Lines, macroLine, ref lineIndex);
+
+                // --- Next line
+                lineIndex++;
             }
         }
 
