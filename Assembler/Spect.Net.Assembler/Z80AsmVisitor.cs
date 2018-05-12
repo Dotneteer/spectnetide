@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -701,6 +702,58 @@ namespace Spect.Net.Assembler
                 op.Condition = context.condition().NormalizeToken();
                 regContext = context.condition();
             }
+            else if (context.reg16Std() != null)
+            {
+                _functions.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+                op.Type = OperandType.Reg8;
+                op.Register = string.Empty;
+                if (context.HREG() != null)
+                {
+                    switch (context.reg16Std().NormalizeToken())
+                    {
+                        case "BC":
+                            op.Register = "B";
+                            break;
+                        case "DE":
+                            op.Register = "D";
+                            break;
+                        case "HL":
+                            op.Register = "H";
+                            break;
+                        case "IX":
+                            op.Register = "IXH";
+                            op.Type = OperandType.Reg8Idx;
+                            break;
+                        case "IY":
+                            op.Register = "IYH";
+                            op.Type = OperandType.Reg8Idx;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (context.reg16Std().NormalizeToken())
+                    {
+                        case "BC":
+                            op.Register = "C";
+                            break;
+                        case "DE":
+                            op.Register = "E";
+                            break;
+                        case "HL":
+                            op.Register = "L";
+                            break;
+                        case "IX":
+                            op.Register = "IXL";
+                            op.Type = OperandType.Reg8Idx;
+                            break;
+                        case "IY":
+                            op.Register = "IYL";
+                            op.Type = OperandType.Reg8Idx;
+                            break;
+                    }
+                }
+            }
 
             if (regContext != null)
             {
@@ -763,11 +816,23 @@ namespace Spect.Net.Assembler
         {
             if (IsInvalidContext(context)) return null;
             var macroOps = new List<Operand>();
-            foreach (var arg in context.macroArgument())
+            if (context.macroArgument().Length > 1 
+                || context.macroArgument().Length > 0 && context.macroArgument()[0].operand() != null)
             {
-                if (arg.operand() != null)
+                foreach (var arg in context.macroArgument())
                 {
-                    macroOps.Add((Operand) VisitOperand(arg.operand()));
+                    if (arg.operand() != null)
+                    {
+                        macroOps.Add((Operand)VisitOperand(arg.operand()));
+                    }
+                    else
+                    {
+                        macroOps.Add(new Operand
+                        {
+                            Type = OperandType.Expr,
+                            Expression = new LiteralNode(string.Empty)
+                        });
+                    }
                 }
             }
 
@@ -1183,9 +1248,23 @@ namespace Spect.Net.Assembler
                 var rightExpr = VisitRelExpr(context.GetChild(nextChildIndex)
                     as Z80AsmParser.RelExprContext);
                 var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
-                var equExpr = opToken == "=="
-                    ? new EqualOperationNode()
-                    : new NotEqualOperationNode() as BinaryOperationNode;
+                BinaryOperationNode equExpr;
+                switch (opToken)
+                {
+                    case "==":
+                        equExpr = new EqualOperationNode();
+                        break;
+                    case "===":
+                        equExpr = new CaseInsensitiveEqualOperationNode();
+                        break;
+                    case "!=":
+                        equExpr = new NotEqualOperationNode();
+                        break;
+                    default:
+                        equExpr = new CaseInsensitiveNotEqualOperationNode();
+                        break;
+
+                }
                 equExpr.LeftOperand = expr;
                 equExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = equExpr;
@@ -1328,10 +1407,17 @@ namespace Spect.Net.Assembler
             {
                 return VisitFunctionInvocation(context.functionInvocation());
             }
+
+            if (context.builtinFunctionInvocation() != null)
+            {
+                return VisitBuiltinFunctionInvocation(context.builtinFunctionInvocation());
+            }
+
             if (context.literalExpr() != null)
             {
                 return VisitLiteralExpr(context.literalExpr());
             }
+
             if (context.macroParam() != null)
             {
                 _macroParams.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
@@ -1511,6 +1597,42 @@ namespace Spect.Net.Assembler
             }
             var args = context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList();
             return new FunctionInvocationNode(funcName, args);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitBuiltinFunctionInvocation(Z80AsmParser.BuiltinFunctionInvocationContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            _functions.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+            if (context.TEXTOF() != null)
+            {
+                var token = context.mnemonic() != null
+                    ? context.mnemonic().NormalizeToken()
+                    : (context.regsAndConds() != null
+                        ? context.regsAndConds().NormalizeToken()
+                        : string.Empty);
+                return new LiteralNode(token);
+            }
+
+            if (context.DEF() != null)
+            {
+                // --- We do this visit just for syntax highlighting
+                if (context.operand() != null)
+                {
+                    VisitOperand(context.operand());
+                }
+                return new LiteralNode(context.operand() != null);
+            }
+
+            return null;
         }
 
         #endregion

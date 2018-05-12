@@ -7,7 +7,12 @@ of the two strings with a `\r\n` (next line) character pair inserted between the
 __FEATURE__: You can exit loops with `.break`, or carry on to the next iteration with `.continue`.  
 __FEATURE__: You can define syntax hightlighting for instruction operands (registers, conditions, etc.),
 and semi-variable literals ($, $cnt, etc.)  
-
+__FEATURE__: The assembler now supports *dynamic macros*, a non-preprocessor way of declaring and applying
+macros in the code.  
+__FEATURE__: The `lreg()` and `hreg()` semi-operations can be applied an 16-bit standard registers and 16-bit
+index registers.  
+__FEATURE__: The `texof()` operator retrieves the compile-time text of a mnemonic, register, or condition.  
+__FEATURE__: New comparison operators, `===` and `!==` now support case-insensitive string comparison.  
 
 ### Version 1.7.0
 

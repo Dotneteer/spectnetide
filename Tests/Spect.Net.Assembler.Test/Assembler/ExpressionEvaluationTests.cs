@@ -737,6 +737,83 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        [DataRow("0 === 0", 1)]
+        [DataRow("0 === 1", 0)]
+        [DataRow("23 === 20+3", 1)]
+        [DataRow("23-3 === 20+3", 0)]
+        public void CiEqualityWithIntWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("false === false", 1)]
+        [DataRow("false === true", 0)]
+        [DataRow("true === false", 0)]
+        [DataRow("true === true", 1)]
+        public void CiEqualityWithBoolWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("0.1 === 0.1", 1)]
+        [DataRow("1e1 === 3.14", 0)]
+        [DataRow("3.14e1 === 0.25", 0)]
+        [DataRow("3e4 === 3e4", 1)]
+        public void CiEqualityWithRealWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("1.0 === 1", 1)]
+        [DataRow("1e1 === 9", 0)]
+        [DataRow("1 === 1e1", 0)]
+        [DataRow("10 === 1e1", 1)]
+        public void CiEqualityWithRealAndIntWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("1.0 === true", 1)]
+        [DataRow("0.0 === false", 1)]
+        [DataRow("1e1 === false", 0)]
+        [DataRow("1e1 === true", 0)]
+        [DataRow("true === 1.0", 1)]
+        [DataRow("false === 0.0", 1)]
+        [DataRow("false === 1e1", 0)]
+        [DataRow("true === 1e1", 0)]
+        public void CiEqualityWithRealAndBoolWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("\"abc\" === \"def\"", 0)]
+        [DataRow("\"abc\" === \"abc\"", 1)]
+        [DataRow("\"\" === \"def\"", 0)]
+        [DataRow("\"\" === \"\"", 1)]
+        [DataRow("\"abc\" === \"ABC\"", 1)]
+        public void CiEqualityWithStringWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("true === \"abc\"")]
+        [DataRow("1 === \"abc\"")]
+        [DataRow("1.1 === \"abc\"")]
+        [DataRow("\"abc\" === false")]
+        [DataRow("\"abc\" === 1")]
+        [DataRow("\"abc\" === 1.1")]
+        public void CiEqualityFailsWithIncompatibleTypes(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
         [DataRow("0 != 0", 0)]
         [DataRow("0 != 1", 1)]
         [DataRow("23 != 20+3", 0)]
@@ -793,6 +870,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         [DataRow("\"abc\" != \"def\"", 1)]
         [DataRow("\"abc\" != \"abc\"", 0)]
+        [DataRow("\"abc\" != \"ABC\"", 1)]
         [DataRow("\"\" != \"def\"", 1)]
         [DataRow("\"\" != \"\"", 0)]
         public void UnequalityWithStringWorkAsExpected(string source, int expected)
@@ -808,6 +886,83 @@ namespace Spect.Net.Assembler.Test.Assembler
         [DataRow("\"abc\" != 1")]
         [DataRow("\"abc\" != 1.1")]
         public void UnequalityFailsWithIncompatibleTypes(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("0 !== 0", 0)]
+        [DataRow("0 !== 1", 1)]
+        [DataRow("23 !== 20+3", 0)]
+        [DataRow("23-3 !== 20+3", 1)]
+        public void CiUnequalityWithIntWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("false !== false", 0)]
+        [DataRow("false !== true", 1)]
+        [DataRow("true !== false", 1)]
+        [DataRow("true !== true", 0)]
+        public void CiUnequalityWithBoolWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("0.1 !== 0.1", 0)]
+        [DataRow("1e1 !== 3.14", 1)]
+        [DataRow("3.14e1 !== 0.25", 1)]
+        [DataRow("3e4 !== 3e4", 0)]
+        public void CiUnequalityWithRealWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("1.0 !== 1", 0)]
+        [DataRow("1e1 !== 9", 1)]
+        [DataRow("1 !== 1e1", 1)]
+        [DataRow("10 !== 1e1", 0)]
+        public void CiUnequalityWithRealAndIntWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("1.0 !== true", 0)]
+        [DataRow("0.0 !== false", 0)]
+        [DataRow("1e1 !== false", 1)]
+        [DataRow("1e1 !== true", 1)]
+        [DataRow("true !== 1.0", 0)]
+        [DataRow("false !== 0.0", 0)]
+        [DataRow("false !== 1e1", 1)]
+        [DataRow("true !== 1e1", 1)]
+        public void CiUneualityWithRealAndBoolWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("\"abc\" !== \"def\"", 1)]
+        [DataRow("\"abc\" !== \"abc\"", 0)]
+        [DataRow("\"abc\" !== \"ABC\"", 0)]
+        [DataRow("\"\" !== \"def\"", 1)]
+        [DataRow("\"\" !== \"\"", 0)]
+        public void CiUnequalityWithStringWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("true !== \"abc\"")]
+        [DataRow("1 !== \"abc\"")]
+        [DataRow("1.1 !== \"abc\"")]
+        [DataRow("\"abc\" !== false")]
+        [DataRow("\"abc\" !== 1")]
+        [DataRow("\"abc\" !== 1.1")]
+        public void CiUnequalityFailsWithIncompatibleTypes(string source)
         {
             EvalFails(source);
         }

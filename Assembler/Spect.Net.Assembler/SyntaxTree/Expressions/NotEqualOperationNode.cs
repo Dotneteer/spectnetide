@@ -5,7 +5,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
     /// <summary>
     /// This class represents the 'not equal' operation
     /// </summary>
-    public sealed class NotEqualOperationNode : BinaryOperationNode
+    public class NotEqualOperationNode : BinaryOperationNode
     {
         /// <summary>
         /// Calculates the result of the binary operation.
@@ -54,7 +54,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                 case ExpressionValueType.String:
                     if (right.Type == ExpressionValueType.String)
                     {
-                        return new ExpressionValue(left.AsString() != right.AsString());
+                        return new ExpressionValue(string.Compare(left.AsString(), right.AsString(), Comparison) != 0);
                     }
 
                     EvaluationError = "String can be compared only to another string";
@@ -64,5 +64,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     return ExpressionValue.Error;
             }
         }
+
+        /// <summary>
+        /// String comparison to apply
+        /// </summary>
+        public virtual StringComparison Comparison => StringComparison.InvariantCulture;
     }
 }

@@ -84,6 +84,7 @@
     <Compile Include="SyntaxTree\Expressions\BitwiseAndOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BitwiseOrOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\BitwiseXorOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\CaseInsensitiveEqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ConditionalExpressionNode.cs" />
     <Compile Include="SyntaxTree\Expressions\CurrentAddressNode.cs" />
     <Compile Include="SyntaxTree\Expressions\CurrentLoopCounterNode.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="SyntaxTree\Expressions\ModuloOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\MultiplyOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\NotEqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\CaseInsensitiveNotEqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ShiftLeftOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ShiftRightOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\SubtractOperationNode.cs" />

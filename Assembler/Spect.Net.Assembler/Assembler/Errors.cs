@@ -162,7 +162,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0416, "CONTINUE cannot be used outside of loop constructs." },
             { Z0417, "Duplicated MACRO argument: {0}." },
             { Z0418, "Unknown MACRO: {0}." },
-            { Z0419, "The declaration of MACRO {0} contains {1} argument(s), but it is invoked with {2}." },
+            { Z0419, "The declaration of MACRO {0} contains {1} argument(s), but it is invoked with more parameters ({2})." },
             { Z0420, "Macro parameter can only be used within a macro declaration." },
         };
 

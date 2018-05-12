@@ -738,6 +738,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitReg16Idx([NotNull] Z80AsmParser.Reg16IdxContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.reg16Std"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterReg16Std([NotNull] Z80AsmParser.Reg16StdContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.reg16Std"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitReg16Std([NotNull] Z80AsmParser.Reg16StdContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.reg16Spec"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -959,6 +972,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitFunctionInvocation([NotNull] Z80AsmParser.FunctionInvocationContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBuiltinFunctionInvocation([NotNull] Z80AsmParser.BuiltinFunctionInvocationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBuiltinFunctionInvocation([NotNull] Z80AsmParser.BuiltinFunctionInvocationContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.literalExpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -996,6 +1022,45 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMacroParam([NotNull] Z80AsmParser.MacroParamContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.regs"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRegs([NotNull] Z80AsmParser.RegsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.regs"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRegs([NotNull] Z80AsmParser.RegsContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.regsAndConds"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRegsAndConds([NotNull] Z80AsmParser.RegsAndCondsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.regsAndConds"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRegsAndConds([NotNull] Z80AsmParser.RegsAndCondsContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.mnemonic"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMnemonic([NotNull] Z80AsmParser.MnemonicContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.mnemonic"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMnemonic([NotNull] Z80AsmParser.MnemonicContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

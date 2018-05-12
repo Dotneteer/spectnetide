@@ -411,6 +411,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitReg16Idx([NotNull] Z80AsmParser.Reg16IdxContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.reg16Std"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitReg16Std([NotNull] Z80AsmParser.Reg16StdContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.reg16Spec"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -530,6 +537,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitFunctionInvocation([NotNull] Z80AsmParser.FunctionInvocationContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBuiltinFunctionInvocation([NotNull] Z80AsmParser.BuiltinFunctionInvocationContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.literalExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -549,5 +563,26 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMacroParam([NotNull] Z80AsmParser.MacroParamContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.regs"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRegs([NotNull] Z80AsmParser.RegsContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.regsAndConds"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRegsAndConds([NotNull] Z80AsmParser.RegsAndCondsContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.mnemonic"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMnemonic([NotNull] Z80AsmParser.MnemonicContext context);
 }
 } // namespace Spect.Net.Assembler.Generated

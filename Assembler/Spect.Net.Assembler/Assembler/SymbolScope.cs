@@ -76,6 +76,11 @@ namespace Spect.Net.Assembler.Assembler
         public bool IsErrorReported(string errorCode) => _errorsReported.Contains(errorCode);
 
         /// <summary>
+        /// Tests if this context is a macro context
+        /// </summary>
+        public bool IsMacroContext => MacroArguments != null;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         public SymbolScope(SymbolScope ownerScope = null)

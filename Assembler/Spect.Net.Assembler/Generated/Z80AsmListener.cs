@@ -626,6 +626,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitReg16Idx([NotNull] Z80AsmParser.Reg16IdxContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.reg16Std"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterReg16Std([NotNull] Z80AsmParser.Reg16StdContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.reg16Std"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitReg16Std([NotNull] Z80AsmParser.Reg16StdContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.reg16Spec"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -813,6 +824,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitFunctionInvocation([NotNull] Z80AsmParser.FunctionInvocationContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBuiltinFunctionInvocation([NotNull] Z80AsmParser.BuiltinFunctionInvocationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBuiltinFunctionInvocation([NotNull] Z80AsmParser.BuiltinFunctionInvocationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.literalExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -844,5 +866,38 @@ public interface IZ80AsmListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMacroParam([NotNull] Z80AsmParser.MacroParamContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.regs"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRegs([NotNull] Z80AsmParser.RegsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.regs"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRegs([NotNull] Z80AsmParser.RegsContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.regsAndConds"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRegsAndConds([NotNull] Z80AsmParser.RegsAndCondsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.regsAndConds"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRegsAndConds([NotNull] Z80AsmParser.RegsAndCondsContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.mnemonic"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMnemonic([NotNull] Z80AsmParser.MnemonicContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.mnemonic"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMnemonic([NotNull] Z80AsmParser.MnemonicContext context);
 }
 } // namespace Spect.Net.Assembler.Generated

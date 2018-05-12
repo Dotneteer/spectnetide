@@ -321,6 +321,20 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(SOURCE, 0x78, 0x78, 0x78);
         }
 
+        [TestMethod]
+        public void MacroLoopWithArgumentInjectionWorks()
+        {
+            const string SOURCE = @"
+                Repeat: .macro(count, body)
+                    .loop {{count}}
+                    {{body}}
+                    .endl
+                .endm
+                Repeat(3, ""ld a,b"")";
+
+            CodeEmitWorks(SOURCE, 0x78, 0x78, 0x78);
+        }
+
 
     }
 }

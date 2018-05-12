@@ -91,7 +91,7 @@ breakStatement: BREAK ;
 continueStatement: CONTINUE ;
 
 macroInvocation: IDENTIFIER LPAR (macroArgument (COMMA macroArgument)*)? RPAR	;
-macroArgument: operand ;
+macroArgument: operand? ;
 
 orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
@@ -226,6 +226,7 @@ operand
 	|	indexedAddr
 	|	expr
 	|	condition
+	|	(HREG | LREG) LPAR reg16Std RPAR
 	;
 
 reg8: A | B | C | D | E | H | L ;
@@ -233,6 +234,7 @@ reg8Idx: XL | XH | YL | YH ;
 reg8Spec: I | R ;
 reg16: BC | DE | HL | SP ;
 reg16Idx: IX | IY ;
+reg16Std: BC | DE | HL | IX | IY ;
 reg16Spec: AF | AF_ ;
 regIndirect: LPAR (reg16) RPAR ;
 cPort: LPAR C RPAR ;
@@ -258,7 +260,7 @@ andExpr
 	;
 
 equExpr
-	: relExpr ((EQOP | NEQOP) relExpr)*
+	: relExpr ((EQOP | NEQOP | CIEQOP | CINEQOP) relExpr)*
 	;
 
 relExpr
@@ -278,7 +280,8 @@ multExpr
 	;
 
 unaryExpr
-	: functionInvocation
+	: builtinFunctionInvocation
+	| functionInvocation
 	| macroParam
 	| PLUS unaryExpr
 	| MINUS unaryExpr
@@ -293,6 +296,11 @@ unaryExpr
 functionInvocation
 	: IDENTIFIER LPAR RPAR
 	| IDENTIFIER LPAR expr (COMMA expr)* RPAR
+	;
+
+builtinFunctionInvocation
+	: TEXTOF LPAR (mnemonic | regsAndConds) RPAR
+	| DEF LPAR operand? RPAR
 	;
 
 literalExpr
@@ -313,6 +321,34 @@ symbolExpr
 
 macroParam
 	: '{{' IDENTIFIER '}}'
+	;
+
+regs
+	: reg8
+	| reg8Idx
+	| reg8Spec
+	| reg16
+	| reg16Idx
+	| reg16Spec
+	;
+
+regsAndConds
+	: regs
+	| regIndirect
+	| cPort
+	| condition
+	;
+
+mnemonic
+	: NOP | RLCA | RRCA | RLA | RRA | DAA | CPL | SCF | CCF | HALT | RET
+	| EXX | DI | EI | NEG | RETN | RETI | RLD | RRD | LDI | CPI | INI
+	| OUTI | LDD | CPD | IND | OUTD | LDIR | CPIR | INIR | OTIR | LDDR
+	| CPDR | INDR | OTDR | LD | INC | DEC | EX | ADD | ADC | SUB | SBC
+	| AND | XOR | OR | CP | DJNZ | JR | JP | CALL | RST | PUSH | POP
+	| IN | OUT | IM | RLC | RRC | RL | RR | SLA | SRA | SLL | SRL | BIT
+	| RES | SET | SWAPNIB | MUL | POPX | MIRROR	| TEST | NEXTREG 
+	| OUTINB | LDIX | LDIRX | LDDX | LDDRX | PIXELDN | PIXELAD | SETAE
+	| LDPIRX
 	;
 
 /*
@@ -348,7 +384,9 @@ VBAR	: '|' ;
 UPARR	: '^' ;
 AMP		: '&' ;
 EQOP	: '==' ;
+CIEQOP	: '===' ;
 NEQOP	: '!=' ;
+CINEQOP	: '!==' ;
 LTOP	: '<' ;
 LTEOP	: '<=' ;
 GTOP	: '>' ;
@@ -538,6 +576,12 @@ FORNEXT	: '.next' | '.NEXT' ;
 NEXT	: 'next' | 'NEXT' ;
 BREAK	: '.break' | 'break' | '.BREAK' | 'BREAK' ;
 CONTINUE: '.continue' | 'continue' | '.CONTINUE' | 'CONTINUE' ;
+
+// --- Built-in function names
+TEXTOF	: 'textof' ;
+HREG	: 'hreg' | 'HREG' ;
+LREG	: 'lreg' | 'LREG' ;
+DEF		: 'def' | 'DEF' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?

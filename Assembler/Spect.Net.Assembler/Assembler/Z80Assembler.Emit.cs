@@ -155,7 +155,22 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Let's handle assembly lines with macro parameters
                 if (asmLine.MacroParams != null && asmLine.MacroParams.Count > 0)
                 {
-                    HandleLineWithMacroParameters(asmLine);
+                    // --- Macro parameters cannot be used in the global scope
+                    if (IsInGlobalScope)
+                    {
+                        ReportError(Errors.Z0420, asmLine);
+                    }
+                    else
+                    {
+                        // --- Macro argument used outside of a macro definition
+                        var scope = _output.LocalScopes.Peek();
+                        if (scope.IsMacroContext) return;
+
+                        if (ShouldReportErrorInCurrentScope(Errors.Z0420))
+                        {
+                            ReportError(Errors.Z0420, asmLine);
+                        }
+                    }
                     return;
                 }
 
@@ -179,83 +194,6 @@ namespace Spect.Net.Assembler.Assembler
                     _output.SourceMap[addr] = sourceInfo;
                     _output.AddressMap[sourceInfo] = addr;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Handles the line with macro parameters
-        /// </summary>
-        /// <param name="asmLine">Assembly line to handle</param>
-        private void HandleLineWithMacroParameters(SourceLineBase asmLine)
-        {
-            // --- Macro parameters cannot be used in the global scope
-            if (IsInGlobalScope)
-            {
-                ReportError(Errors.Z0420, asmLine);
-                return;
-            }
-
-            // --- Macro argument used outside of a macro definition
-            var scope = _output.LocalScopes.Peek();
-            if (scope.MacroArguments == null)
-            {
-                if (ShouldReportErrorInCurrentScope(Errors.Z0420))
-                {
-                    ReportError(Errors.Z0420, asmLine);
-                }
-                return;
-            }
-
-            // --- Replace all macro arguments by their actual value
-            var origText = asmLine.SourceText;
-            var matches = MacroParamRegex.Matches(origText);
-            foreach (Match match in matches)
-            {
-                var toReplace = match.Groups[0].Value;
-                var argName = match.Groups[1].Value;
-                if (!scope.MacroArguments.TryGetValue(argName, out var argValue))
-                {
-                    continue;
-                }
-                origText = origText.Replace(toReplace, argValue.AsString());
-            }
-
-            // --- Now we have the source text to compile
-            var inputStream = new AntlrInputStream(origText);
-            var lexer = new Z80AsmLexer(inputStream);
-            var tokenStream = new CommonTokenStream(lexer);
-            var parser = new Z80AsmParser(tokenStream);
-            var context = parser.compileUnit();
-            var visitor = new Z80AsmVisitor();
-            visitor.Visit(context);
-            var visitedLines = visitor.Compilation;
-
-            // --- Store any tasks defined by the user
-            StoreTasks(_output.SourceItem, visitedLines.Lines);
-
-            // --- Collect syntax errors
-            var errorFound = false;
-            foreach (var error in parser.SyntaxErrors)
-            {
-                ReportError(_output.SourceItem, error);
-                errorFound = true;
-            }
-
-            if (errorFound)
-            {
-                // --- Stop compilation, if macro contains error
-                return;
-            }
-
-            // --- Now, emit the comiled lines
-            var lineIndex = 0;
-            while (lineIndex < visitedLines.Lines.Count)
-            {
-                var macroLine = visitedLines.Lines[lineIndex];
-                EmitSingleLine(visitedLines.Lines, macroLine, ref lineIndex);
-
-                // --- Next line
-                lineIndex++;
             }
         }
 
@@ -1140,7 +1078,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Match parameters
-            if (macroDef.ArgumentNames.Count != macroStmt.Parameters.Count)
+            if (macroDef.ArgumentNames.Count < macroStmt.Parameters.Count)
             {
                 ReportError(Errors.Z0419, macroStmt, macroDef.MacroName, macroDef.ArgumentNames.Count, macroStmt.Parameters.Count);
                 return;
@@ -1149,8 +1087,14 @@ namespace Spect.Net.Assembler.Assembler
             // --- Evaluate arguments
             var arguments = new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
             var errorFound = false;
+            var emptyStrValue = new ExpressionValue(string.Empty);
             for (var i = 0; i < macroDef.ArgumentNames.Count; i++)
             {
+                if (i >= macroStmt.Parameters.Count)
+                {
+                    arguments.Add(macroDef.ArgumentNames[i], emptyStrValue);
+                    continue;
+                }
                 var op = macroStmt.Parameters[i];
                 ExpressionValue argValue;
                 switch (op.Type)
@@ -1219,10 +1163,65 @@ namespace Spect.Net.Assembler.Assembler
 
             var lineIndex = macroDef.Section.FirstLine + 1;
             var lastLine = macroDef.Section.LastLine;
+
+            // --- Setup the macro source
+            var macroSource = new StringBuilder(4096);
             while (lineIndex < lastLine)
             {
+                // --- Replace all macro arguments by their actual value
                 var curLine = lines[lineIndex];
-                EmitSingleLine(lines, curLine, ref lineIndex);
+                var lineText = curLine.SourceText;
+                var matches = MacroParamRegex.Matches(lineText);
+                foreach (Match match in matches)
+                {
+                    var toReplace = match.Groups[0].Value;
+                    var argName = match.Groups[1].Value;
+                    if (!arguments.TryGetValue(argName, out var argValue))
+                    {
+                        continue;
+                    }
+                    lineText = lineText.Replace(toReplace, argValue.AsString());
+                }
+                macroSource.AppendLine(lineText);
+                lineIndex++;
+            }
+
+            // --- At this point we can translate the macro
+
+            // --- Now we have the source text to compile
+            var inputStream = new AntlrInputStream(macroSource.ToString());
+            var lexer = new Z80AsmLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new Z80AsmParser(tokenStream);
+            var context = parser.compileUnit();
+            var visitor = new Z80AsmVisitor();
+            visitor.Visit(context);
+            var visitedLines = visitor.Compilation;
+
+            // --- Store any tasks defined by the user
+            StoreTasks(_output.SourceItem, visitedLines.Lines);
+
+            // --- Collect syntax errors
+            foreach (var error in parser.SyntaxErrors)
+            {
+                ReportError(_output.SourceItem, error);
+                errorFound = true;
+            }
+
+            if (errorFound)
+            {
+                // --- Stop compilation, if macro contains error
+                return;
+            }
+
+            // --- Now, emit the compiled lines
+            lineIndex = 0;
+            while (lineIndex < visitedLines.Lines.Count)
+            {
+                var macroLine = visitedLines.Lines[lineIndex];
+                EmitSingleLine(visitedLines.Lines, macroLine, ref lineIndex);
+
+                // --- Next line
                 lineIndex++;
             }
 

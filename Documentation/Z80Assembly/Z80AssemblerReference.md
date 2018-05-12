@@ -11,6 +11,38 @@ I honor his ideas and work.
 
 ## Main Features
 
+The original goal of the __SpectNetIde__ assembler was to have a simple tool that allows you to compile
+Z80 assembly code and inject it into the ZX Spectrum virtual machine. As the community has started
+using it, I've been receiving feature requests to add some useful capability to the Assembler.
+
+Here is a list of important features the __SpectNetIde__ suports:
+
+* __Full Z80 instruction set__, including the initially undocumented Z80 registers and instructions
+(such as the 8-bit halves of `ix` and `iy`, namely `ixl`, `ixh`, `iyl`, `iyh`).
+* __ZX Spectrum Next extended Z80 instruction set__
+* __Alternate syntax versions__. All directives, pragmas, and statements have multiple versions so that 
+you can use your preferred notation. For example, you can use `.loop`, `loop`, `.LOOP` or `LOOP` to 
+declare a loop. All of the `.defb`, `DEFB`, `.db`, `DB` (and a few other) tokens can be used for defining
+byte data. The `.endw` and `WEND` tokens can close a WHILE-loop.
+* __Z80 Preprocessor__. With preprocessor directives, you can carry out conditional compilation and include
+other source files. You can inject symbols for debug time and run time compilations separately. *In __SpectNetIde__
+you can use powerful macros, too, notheless, they are not preprocessor constructs (see below)*.
+* __Fast compilation__. Of course, it depends on the code, but the compiler can emit code for about 8.000 
+source code lines per second.
+* __Rich expressions__. The compiler can handle most arithmetic and logic operators we have in C, C++, C#
+Java, and JavaScript. You can use integer, float, and string expressions. The language support more than 40
+functions that you can use in the expressions (e.g: `Amp * sin($cnt * Pi() / 16))`)
+* __Rich literal formats__. Decimal, float, hexadecimal, binary, and string literals are at your displosal.
+You can use multiple variants for hexadecimal numbers (`$12ae`, #12AE, 0x12AE, 12AEh), and binary numbers
+(0b00111100, %00111100, %0011_1100). In strings, you can use ZX Spectrum specific escape codes, for example,
+`\i` for INK, `\P` for the pound sign, and many others.
+* __Assembler control flow statements__. You can use loops (`loop`, `repeat`..`until`, `while`..`wend`,
+`for`..`next`) and conditional statements (`if`) to create an assembler control flow. These constructs 
+can be nested and provide local scope for labels, symbols, and variables.
+* __Powerful dynamic Macros__. You can create macros with arguments. In the macro bodies, the current values 
+of arguments can replace entire instructions, operands, or parts of expressions. Moreover, through arguments,
+you can inject multiline instructions and statements into macro declarations.
+
 ## How the Assembler Works
 
 The assembler compiles the code in three phases:
@@ -1648,6 +1680,216 @@ Because all these loops skip the 4th iteration, they produce this output:
 > raises an error.
 
 ## Macros
+
+The __SpectNetIde__ assembler provides you a powerful way to declare macros, and apply them in the code.
+While in most programming languages and assemblers the macros are preprocessor constructs and use simple
+text replacement, the __SpectNetIde__ implementation is different.
+
+### Getting Started with Macros
+
+The best way to show you what macros can do is real code. Let's start with a simple parameterless macro:
+
+```
+Delay: 
+    .macro()    
+    DelayLoop:
+        djnz DelayLoop
+    .endm
+```
+
+You can easily use this macro in your code:
+
+```
+ld b,#24
+Delay()
+; ...and later
+ld b,#44
+Delay()
+```
+
+The assembler will emit the code like this:
+
+```
+ld b,#24
+DelayLoop_1: djnz DelayLoop_1
+; ...and later
+ld b,#44
+DelayLoop_2: djnz DelayLoop_2
+```
+
+As you expect, it takes care that the `DelayLoop` label remains local within the scope of the macro; otherwise
+it would lead to a duplicated label name.
+
+This macro is named `Delay`, and it uses the value of the __B__ register to create a `djnz` loop. 
+You can easily apply this macro 
+
+Now, let's enhance this macro with an argument:
+
+```
+Delay: 
+    .macro(wait)    
+        ld b,{{wait}}
+    DelayLoop:
+        djnz DelayLoop
+    .endm
+```
+
+As the body of the macro suggests, `{{wait}}` is a placeholder for the `wait` argument. While other assemblers do not
+use a separate markup for a placeholder &mdash; they'd just use `wait` &mdash; __SpectNetIde__ applies this markup for 
+two reasons: first, it is visually better and more eye-catching; second, it allows the compiler to provide better
+performance. 
+
+You can use this macro passing an argument value for `wait`:
+
+```
+Delay(#24)
+Delay(d)
+```
+
+As you expect, the compiler now emits this code:
+
+```
+ld b,#24
+DelayLoop_1: djnz DelayLoop_1
+; ...and later
+ld b,d
+DelayLoop_2: djnz DelayLoop_2
+```
+
+Macros allow you to pass anything that could be an operand in a Z80 instruction, so this is entirelly valid:
+
+```
+Delay((ix+23))
+```
+
+As you can imagine, this macro invocation results as if you wrote this:
+
+```
+ld b,(ix+23)
+DelayLoop: djnz DelayLoop
+```
+
+__SpectNetIde__ macros do not stop here. You can define macros that recveive an entire Z80 instruction
+as an argument:
+
+```
+RepeatLight: 
+    .macro(count, body)    
+        ld b,{{count}}
+    DelayLoop:
+        {{body}}
+        djnz DelayLoop
+    .endm
+```
+
+This macro is to repeat the `body` in `count` number of times. This is how you can invoke it:
+
+```
+RepeatLight(4, "add a,c")
+```
+
+Observe, the second argument of the macro is a string that names the `add a,c` operation. The result of this
+macro is this set of instructions:
+
+```
+ld b,4
+DelayLoop_1: 
+  add a,c
+djnz DelayLoop_1
+```
+
+Instead of a run time loop, you can apply a compile time loop within the macro:
+
+```
+RepeatLight: 
+    .macro(count, body)
+      .loop {{count}}
+          {{body}}
+      .endl
+    .endm
+```
+
+The `RepeatLight(3, "add a,c")` line invokes the macro and the macro's body translates to this:
+
+```
+.loop 3
+    add a,c
+.endl
+```
+
+As you already learned, the compiler handles this as if you wrote:
+
+```
+add a,c
+add a,c
+add a,c
+```
+
+__SpectNetIde__ allows you to pass a set of lines as a macro argument. You can invoke `RepeatLight` like this:
+
+```
+RepeatLigth(3, "add a,c" & "add a,10")
+```
+
+Or, you can make it with variables:
+
+```
+FirstOp = "add a,c"
+SecondOp = "add a,10"
+RepeatLight(3, FirstOp & SecondOp)
+```
+
+> The `&` operator between the two string value concatenates them with a next line character set (#0A and #0D). If
+> you'd apply the `+` operator, the above code would fail: the assembler accepts only a single instruction in a
+> text line, and would reject multiple instructions.
+
+### Macro Declaration
+
+Macros must have a name. Each macro is named according to the label preceding its declaration either in the same
+line as the `.macro` token, or before it as a hanging label. Macros can have zero, one, or more named arguments
+separated with a comma. The macro declaration is closed with the `.endm` token:
+
+```
+MacroWithHangingLabel:
+    .macro(myParam, otherParam)
+    ; Macro body
+    .endm
+
+MyMacro: macro()
+    ; Macro body
+    .endm
+```
+
+Even if a macro does not have arguments, its declaration must contain the parentheses.
+
+The macro body can contain Z80 instructions, pragmas, or statements. The only exception are the __ENT__ and __XENT__
+pragmas.
+
+As you already experienced, the assembler supports syntax variants for the macro-related keywords. The compiler
+accepts these tokens: `.macro`, `macro`, `.MACRO`, `MACRO`, `.endm`, `endm`, `.ENDM`, `ENDM`, `.mend`, 
+`mend`, `.MEND`, and `MEND`.
+
+Within the macro's body, you can refer to the arguments of the macros wrapping them into double curly braces:
+
+```
+Mul10:
+    .macro(reg8)
+    push af
+    ld a,{{reg8}}
+    add a,a
+    push bc
+    ld b,a
+    add a,a
+    add a,a
+    add a,b
+    pop bc
+    ld {{reg8}},a
+    .endm
+```
+
+
+### Labels in Macros
+
 
 * Macro names serve as the start label for the macro, too.
 

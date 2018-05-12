@@ -229,6 +229,17 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                         yield return CreateSpan(currentLine, compOp.Operand3.HighlightSpan, Z80AsmTokenType.Operand);
                     }
                 }
+
+                if (asmline is MacroInvocation macroInv)
+                {
+                    foreach (var op in macroInv.Parameters)
+                    {
+                        if (op.HighlightSpan != null)
+                        {
+                            yield return CreateSpan(currentLine, op.HighlightSpan, Z80AsmTokenType.Operand);
+                        }
+                    }
+                }
             }
         }
 

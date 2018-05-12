@@ -260,7 +260,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void MacroInvocationWithArgumentCountIssueFails1()
+        public void MacroInvocationWithLessArgumentWorks()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -274,22 +274,21 @@ namespace Spect.Net.Assembler.Test.Assembler
                 ");
 
             // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0419);
+            output.ErrorCount.ShouldBe(0);
         }
 
         [TestMethod]
-        public void MacroInvocationWithArgumentCountIssueFails2()
+        public void MacroInvocationWithMoreArgumentsFails()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                MyMacro: .macro(first, second)
+                MyMacro: .macro(first)
                     nop
                 .endm
-                MyMacro(12)
+                MyMacro(12, 13)
                 ");
 
             // --- Assert
@@ -1666,6 +1665,46 @@ namespace Spect.Net.Assembler.Test.Assembler
                 Simple()";
 
             CodeEmitWorks(source, (byte)emitted);
+        }
+
+        [TestMethod]
+        public void UnpassedMacroArgumentsGetEmptyString()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                Simple: .macro(arg1, arg2)
+                    .if def({{arg1}})
+                        ld a,b
+                    .endif
+                    .if def({{arg2}})
+                        ld b,a
+                    .endif
+                .endm
+                Simple()
+                Simple(12)
+                Simple(12, 13)
+                Simple("""", 13)";
+
+            CodeEmitWorks(SOURCE, 0x78, 0x78, 0x047, 0x47);
+        }
+
+        [TestMethod]
+        public void UnpassedMacroArgumentsGetEmptyString2()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                Simple: .macro(arg1, arg2)
+                    .if def({{arg1}})
+                        ld a,b
+                    .endif
+                    .if def({{arg2}})
+                        ld b,a
+                    .endif
+                .endm
+                Simple(, 13)
+                Simple(12)";
+
+            CodeEmitWorks(SOURCE, 0x47, 0x78);
         }
     }
 }
