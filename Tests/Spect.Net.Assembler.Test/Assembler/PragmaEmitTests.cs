@@ -426,6 +426,21 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void DefbPragmaFailsWithString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defb ""Hello""");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
+        }
+
+        [TestMethod]
         public void DefwPragmaWorksWithImmediateEvaluation()
         {
             // --- Arrange
@@ -483,6 +498,22 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0200);
         }
+
+        [TestMethod]
+        public void DefwPragmaFailsWithString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defw ""Hello""");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
+        }
+
 
         [TestMethod]
         public void DefmPragmaWorksAsExpected()

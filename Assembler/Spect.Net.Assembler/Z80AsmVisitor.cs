@@ -30,6 +30,7 @@ namespace Spect.Net.Assembler
         private int _lastIndex;
         private string _label;
         private string _comment;
+        private string _emitIssue;
         private List<string> _macroParamNames;
         private TextSpan _labelSpan;
         private TextSpan _keywordSpan;
@@ -49,7 +50,15 @@ namespace Spect.Net.Assembler
         /// </summary>
         public CompilationUnit Compilation { get; } = new CompilationUnit();
 
+        /// <summary>
+        /// The last assembly line parsed
+        /// </summary>
         public object LastAsmLine { get; private set; }
+
+        /// <summary>
+        /// This flag indicates that the parses now works on parsing a macro
+        /// </summary>
+        public bool MacroParsingPhase { get; set; }
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.asmline"/>.
@@ -65,6 +74,7 @@ namespace Spect.Net.Assembler
             _labelSpan = null;
             _keywordSpan = null;
             _commentSpan = null;
+            _emitIssue = null;
             _numbers = null;
             _identifiers = null;
             _strings = null;
@@ -709,11 +719,23 @@ namespace Spect.Net.Assembler
                 op.Condition = context.condition().NormalizeToken();
                 regContext = context.condition();
             }
+            else if (context.macroParam() != null)
+            {
+                // --- LREG or HREG with macro parameter
+                AddFunction(context);
+                AddMacroParam(context.macroParam());
+                if (context.macroParam().IDENTIFIER() != null)
+                {
+                    AddMacroParamName(context.macroParam().IDENTIFIER().NormalizeToken());
+                }
+            }
             else if (context.reg16Std() != null)
             {
+                // --- LREG or HREG with 16-bit register
                 AddFunction(context);
                 op.Type = OperandType.Reg8;
                 op.Register = string.Empty;
+
                 if (context.HREG() != null)
                 {
                     regContext = context.reg16Std();
@@ -768,6 +790,11 @@ namespace Spect.Net.Assembler
                             break;
                     }
                 }
+            }
+            else if (context.NONEARG() != null)
+            {
+                // --- This can happen only as the result of a macro substitution
+                op.Type = OperandType.None;
             }
 
             if (regContext != null)
@@ -1625,6 +1652,15 @@ namespace Spect.Net.Assembler
             string token = null;
             if (context.TEXTOF() != null)
             {
+                if (context.macroParam() != null)
+                {
+                    AddFunction(context);
+                    AddMacroParam(context.macroParam());
+                    if (context.macroParam().IDENTIFIER() != null)
+                    {
+                        AddMacroParamName(context.macroParam().IDENTIFIER().NormalizeToken());
+                    }
+                }
                 if (context.mnemonic() != null)
                 {
                     AddMnemonics(context.mnemonic());
@@ -1643,9 +1679,15 @@ namespace Spect.Net.Assembler
                 // --- We do this visit just for syntax highlighting
                 if (context.operand() != null)
                 {
-                    VisitOperand(context.operand());
+                    var op = (Operand)VisitOperand(context.operand());
+                    if (!MacroParsingPhase && (op.Type != OperandType.Expr || !(op.Expression is MacroParamNode)))
+                    {
+                        // --- DEF can use only macro parameters during the collection phase
+                        _emitIssue = Errors.Z0421;
+                    }
+
                 }
-                return new LiteralNode(context.operand() != null);
+                return new LiteralNode(context.operand() != null && context.operand().NONEARG() == null);
             }
 
             return null;
@@ -1797,6 +1839,7 @@ namespace Spect.Net.Assembler
             line.Mnemonics = _mnemonics;
             line.Comment = _comment;
             line.CommentSpan = _commentSpan;
+            line.EmitIssue = _emitIssue;
             if (_keywordSpan != null)
             {
                 line.InstructionSpan = new TextSpan(_keywordSpan.Start, _lastPos);

@@ -90,8 +90,10 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="lines">All parsed lines</param>
         /// <param name="asmLine">The line to emit</param>
         /// <param name="currentLineIndex">The index of the line to emit</param>
+        /// <param name="fromMacroEmit">Is the method called during macro emit?</param>
         /// <returns></returns>
-        private void EmitSingleLine(List<SourceLineBase> lines, SourceLineBase asmLine, ref int currentLineIndex)
+        private void EmitSingleLine(List<SourceLineBase> lines, SourceLineBase asmLine, ref int currentLineIndex, 
+            bool fromMacroEmit = false)
         {
             CurrentSourceLine = asmLine;
 
@@ -155,9 +157,14 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Let's handle assembly lines with macro parameters
                 if (asmLine.MacroParams != null && asmLine.MacroParams.Count > 0)
                 {
-                    // --- Macro parameters cannot be used in the global scope
+                    if (fromMacroEmit)
+                    {
+                        // --- Macro parameters cannot be passed in macro parameters
+                        ReportError(Errors.Z0422, asmLine);
+                    }
                     if (IsInGlobalScope)
                     {
+                        // --- Macro parameters cannot be used in the global scope
                         ReportError(Errors.Z0420, asmLine);
                     }
                     else
@@ -343,6 +350,13 @@ namespace Spect.Net.Assembler.Assembler
             for (var i = firstLine + 1; i < currentLineIndex; i++)
             {
                 var macroLine = lines[i];
+                if (macroLine.EmitIssue != null)
+                {
+                    ReportError(macroLine.EmitIssue, macroLine);
+                    errorFound = true;
+                    continue;
+                }
+
                 if (macroLine is MacroStatement)
                 {
                     ReportError(Errors.Z0404, macroLine);
@@ -1090,7 +1104,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- Evaluate arguments
             var arguments = new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
             var errorFound = false;
-            var emptyStrValue = new ExpressionValue(string.Empty);
+            var emptyStrValue = new ExpressionValue("$<none>$");
             for (var i = 0; i < macroDef.ArgumentNames.Count; i++)
             {
                 if (i >= macroStmt.Parameters.Count)
@@ -1197,7 +1211,10 @@ namespace Spect.Net.Assembler.Assembler
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new Z80AsmParser(tokenStream);
             var context = parser.compileUnit();
-            var visitor = new Z80AsmVisitor();
+            var visitor = new Z80AsmVisitor
+            {
+                MacroParsingPhase = true
+            };
             visitor.Visit(context);
             var visitedLines = visitor.Compilation;
 
@@ -1222,7 +1239,7 @@ namespace Spect.Net.Assembler.Assembler
             while (lineIndex < visitedLines.Lines.Count)
             {
                 var macroLine = visitedLines.Lines[lineIndex];
-                EmitSingleLine(visitedLines.Lines, macroLine, ref lineIndex);
+                EmitSingleLine(visitedLines.Lines, macroLine, ref lineIndex, true);
 
                 // --- Next line
                 lineIndex++;
@@ -1506,6 +1523,11 @@ namespace Spect.Net.Assembler.Assembler
                 var value = Eval(pragma, expr);
                 if (value.IsValid)
                 {
+                    if (value.Type == ExpressionValueType.String)
+                    {
+                        ReportError(Errors.Z0305, pragma);
+                        return;
+                    }
                     EmitByte((byte) value.Value);
                 }
                 else if (value.IsNonEvaluated)
@@ -1527,6 +1549,11 @@ namespace Spect.Net.Assembler.Assembler
                 var value = Eval(pragma, expr);
                 if (value.IsValid)
                 {
+                    if (value.Type == ExpressionValueType.String)
+                    {
+                        ReportError(Errors.Z0305, pragma);
+                        return;
+                    }
                     EmitWord(value.Value);
                 }
                 else if (value.IsNonEvaluated)

@@ -1706,5 +1706,37 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeEmitWorks(SOURCE, 0x47, 0x78);
         }
+
+        [TestMethod]
+        public void DefAcceptOnlyMacroParameter()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                Simple: .macro(arg1, arg2)
+                    .if def(arg1) ; This is en error
+                        ld a,b
+                    .endif
+                    .if def({{arg2}})
+                        ld b,a
+                    .endif
+                .endm";
+
+            CodeRaisesError(SOURCE, Errors.Z0421);
+        }
+
+        [TestMethod]
+        public void MacroArgCannotAcceptOtherArgument()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                Simple: 
+                    .macro(arg1, arg2)
+                        {{arg2}}
+                    .endm
+                Simple(c, ""ld a,{{arg1}}"")";
+
+            CodeRaisesError(SOURCE, Errors.Z0422);
+        }
+
     }
 }

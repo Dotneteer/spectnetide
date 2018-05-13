@@ -14,6 +14,8 @@ __FEATURE__: The `lreg()` and `hreg()` parse-time functions can be applied an 16
 index registers.  
 __FEATURE__: The `texof()` operator retrieves the compile-time text of a mnemonic, register, or condition.  
 __FEATURE__: New comparison operators, `===` and `!==` now support case-insensitive string comparison.  
+__FIX__: The `.defb` and `.defw` pragma accepted string values. Now, they do not.  
+
 
 ### Version 1.7.0
 

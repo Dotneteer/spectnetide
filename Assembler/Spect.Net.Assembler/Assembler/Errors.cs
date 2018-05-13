@@ -86,6 +86,8 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0418 = "Z0418";
         public const string Z0419 = "Z0419";
         public const string Z0420 = "Z0420";
+        public const string Z0421 = "Z0421";
+        public const string Z0422 = "Z0422";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -164,6 +166,8 @@ namespace Spect.Net.Assembler.Assembler
             { Z0418, "Unknown MACRO: {0}." },
             { Z0419, "The declaration of MACRO {0} contains {1} argument(s), but it is invoked with more parameters ({2})." },
             { Z0420, "Macro parameter can only be used within a macro declaration." },
+            { Z0421, "The DEF() parse time function accepts only macro parameters." },
+            { Z0422, "Cannot pass a macro parameter template in a macro parameter." },
         };
 
         /// <summary>

@@ -1843,6 +1843,35 @@ RepeatLight(3, FirstOp & SecondOp)
 > you'd apply the `+` operator, the above code would fail: the assembler accepts only a single instruction in a
 > text line, and would reject multiple instructions.
 
+In the context of macros, you can use several special functions, such as `lreg()` and `hreg()`. These work during
+parse time, and retrieve the lower register, and higher register of an 16-bit register pair:
+
+```
+LdHl: 
+    .macro(reg16)
+        ld h,hreg({{reg16}})
+        ld l,lreg({{reg16}})
+    .endm
+```
+
+Here, you can apply the `LdHl` macro like this:
+
+```
+LdHl(de)
+LdHl(bc)
+```
+
+The compiler translates these macro invocations into these Z80 instructions:
+
+```
+ld h,d
+ld l,e
+ld h,b
+ld l,c
+```
+
+
+
 ### Macro Declaration
 
 Macros must have a name. Each macro is named according to the label preceding its declaration either in the same

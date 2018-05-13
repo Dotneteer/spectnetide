@@ -226,7 +226,8 @@ operand
 	|	indexedAddr
 	|	expr
 	|	condition
-	|	(HREG | LREG) LPAR reg16Std RPAR
+	|	(HREG | LREG) LPAR (reg16Std | macroParam) RPAR
+	|	NONEARG
 	;
 
 reg8: A | B | C | D | E | H | L ;
@@ -299,7 +300,7 @@ functionInvocation
 	;
 
 builtinFunctionInvocation
-	: TEXTOF LPAR (mnemonic | regsAndConds) RPAR
+	: TEXTOF LPAR (mnemonic | regsAndConds | macroParam) RPAR
 	| DEF LPAR operand? RPAR
 	;
 
@@ -613,6 +614,7 @@ IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 CURADDR	: '$' | '.' ;
 CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
+NONEARG	: '$<none>$' ;
 
 // --- Any invalid charecter should be converted into an ErrorCharacter token.
 ErrorCharacter

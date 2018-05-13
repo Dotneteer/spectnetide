@@ -335,6 +335,19 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(SOURCE, 0x78, 0x78, 0x78);
         }
 
+        [TestMethod]
+        public void LregAndHregWorksWithMacroParam()
+        {
+            const string SOURCE = @"
+                LdHl: .macro(reg16)
+                    ld h,hreg({{reg16}})
+                    ld l,lreg({{reg16}})
+                .endm
+                LdHl(de)";
+
+            CodeEmitWorks(SOURCE, 0x62, 0x6B);
+        }
+
 
     }
 }

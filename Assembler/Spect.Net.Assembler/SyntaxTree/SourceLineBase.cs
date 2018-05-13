@@ -129,9 +129,9 @@ namespace Spect.Net.Assembler.SyntaxTree
         public string SourceText;
 
         /// <summary>
-        /// Indicates whether this line has an error
+        /// Set this value to an error code to emit that issue
         /// </summary>
-        public bool HasError;
+        public string EmitIssue;
 
         /// <summary>
         /// Gets a value indicating whether this line creates a task.
