@@ -34,31 +34,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         public ExpressionNode To { get; }
 
         /// <summary>
-        /// Span of the FOR variable
-        /// </summary>
-        public TextSpan IdSpan { get; }
-
-        /// <summary>
-        /// Span of the TO keyword
-        /// </summary>
-        public TextSpan ToKeywordSpan { get; }
-
-        /// <summary>
-        /// Span of the STEP keyword
-        /// </summary>
-        public TextSpan StepKeywordSpan { get; }
-
-        /// <summary>
         /// Optional STEP expression
         /// </summary>
         public ExpressionNode Step { get; }
 
-        public ForStatement(TextSpan idSpan, TextSpan toKwd, TextSpan stepKwd, 
-            string forVariable, ExpressionNode from, ExpressionNode to, ExpressionNode step)
+        public ForStatement(string forVariable, ExpressionNode from, ExpressionNode to, ExpressionNode step)
         {
-            IdSpan = idSpan;
-            ToKeywordSpan = toKwd;
-            StepKeywordSpan = stepKwd;
             ForVariable = forVariable;
             From = from;
             To = to;

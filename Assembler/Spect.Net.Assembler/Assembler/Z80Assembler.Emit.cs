@@ -350,12 +350,15 @@ namespace Spect.Net.Assembler.Assembler
                     continue;
                 }
 
-                foreach (var paramName in macroLine.MacroParamNames)
+                if (macroLine.MacroParamNames != null)
                 {
-                    if (macro.Arguments.Contains(paramName)) continue;
+                    foreach (var paramName in macroLine.MacroParamNames)
+                    {
+                        if (macro.Arguments.Contains(paramName)) continue;
 
-                    errorFound = true;
-                    ReportError(Errors.Z0403, macroLine, paramName);
+                        errorFound = true;
+                        ReportError(Errors.Z0403, macroLine, paramName);
+                    }
                 }
             }
 

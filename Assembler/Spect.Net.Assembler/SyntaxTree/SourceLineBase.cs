@@ -13,97 +13,112 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// <summary>
         /// The index of the source file this line belongs to
         /// </summary>
-        public int FileIndex { get; set; }
+        public int FileIndex;
 
         /// <summary>
         /// The source line number
         /// </summary>
-        public int SourceLine { get; set; }
+        public int SourceLine;
 
         /// <summary>
         /// The first column within a source code line
         /// </summary>
-        public int FirstColumn { get; set; }
+        public int FirstColumn;
 
         /// <summary>
         /// The first position within a source code
         /// </summary>
-        public int FirstPosition { get; set; }
+        public int FirstPosition;
 
         /// <summary>
         /// The last position within a source code
         /// </summary>
-        public int LastPosition { get; set; }
+        public int LastPosition;
 
         /// <summary>
         /// Exception detected by the parser
         /// </summary>
-        public Exception ParserException { get; set; }
+        public Exception ParserException;
 
         /// <summary>
         /// The optional label
         /// </summary>
-        public string Label { get; set; }
+        public string Label;
 
         /// <summary>
         /// Label span information
         /// </summary>
-        public TextSpan LabelSpan { get; set; }
+        public TextSpan LabelSpan;
 
         /// <summary>
         /// Assembly keyword/pragma/directive span information
         /// </summary>
-        public TextSpan KeywordSpan { get; set; }
+        public TextSpan KeywordSpan;
 
         /// <summary>
         /// Number spans
         /// </summary>
-        public List<TextSpan> Numbers { get; set; }
+        public List<TextSpan> Numbers;
 
         /// <summary>
         /// String spans
         /// </summary>
-        public List<TextSpan> Strings { get; set; }
+        public List<TextSpan> Strings;
 
         /// <summary>
         /// Identifier spans
         /// </summary>
-        public List<TextSpan> Identifiers { get; set; }
+        public List<TextSpan> Identifiers;
 
         /// <summary>
         /// Function spans
         /// </summary>
-        public List<TextSpan> Functions { get; set; }
+        public List<TextSpan> Functions;
 
         /// <summary>
         /// Macro parameters in the source line
         /// </summary>
-        public List<TextSpan> MacroParams { get; set; }
+        public List<TextSpan> MacroParams;
 
         /// <summary>
         /// Macro parameter names in the source line
         /// </summary>
-        public List<string> MacroParamNames { get; set; }
+        public List<string> MacroParamNames;
 
         /// <summary>
         /// Semi-variables spans
         /// </summary>
-        public List<TextSpan> SemiVars { get; set; }
+        public List<TextSpan> SemiVars;
+
+        /// <summary>
+        /// Statement spans
+        /// </summary>
+        public List<TextSpan> Statements;
+
+        /// <summary>
+        /// Operand spans
+        /// </summary>
+        public List<TextSpan> Operands;
+
+        /// <summary>
+        /// Mnemonic spans
+        /// </summary>
+        public List<TextSpan> Mnemonics;
 
         /// <summary>
         /// Comment information
         /// </summary>
-        public string Comment { get; set; }
+        public string Comment;
 
         /// <summary>
         /// Comment span information
         /// </summary>
-        public TextSpan CommentSpan { get; set; }
+        public TextSpan CommentSpan;
 
         /// <summary>
         /// The Z80 assembly instruction span
         /// </summary>
-        public TextSpan InstructionSpan { get; set; }
+        public TextSpan InstructionSpan;
 
         /// <summary>
         /// The source text of the line
@@ -111,12 +126,12 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// <remarks>
         /// Contains value only when the line has a macro parameter
         /// </remarks>
-        public string SourceText { get; set; }
+        public string SourceText;
 
         /// <summary>
         /// Indicates whether this line has an error
         /// </summary>
-        public bool HasError { get; set; }
+        public bool HasError;
 
         /// <summary>
         /// Gets a value indicating whether this line creates a task.

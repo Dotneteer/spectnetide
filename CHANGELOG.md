@@ -1,5 +1,6 @@
-### Version under developement
+### Version 1.8.0
 
+__FEATURE__: Macros are now supported.  
 __FEATURE__: The Z80 assembler now supports the `FOR`..`NEXT` loop.  
 __FEATURE__: Unary logical NOT operator (`!`) added to the language.  
 __FEATURE__: The `&` operator can be used with two string values. The result is the concatenation
@@ -9,7 +10,7 @@ __FEATURE__: You can define syntax hightlighting for instruction operands (regis
 and semi-variable literals ($, $cnt, etc.)  
 __FEATURE__: The assembler now supports *dynamic macros*, a non-preprocessor way of declaring and applying
 macros in the code.  
-__FEATURE__: The `lreg()` and `hreg()` semi-operations can be applied an 16-bit standard registers and 16-bit
+__FEATURE__: The `lreg()` and `hreg()` parse-time functions can be applied an 16-bit standard registers and 16-bit
 index registers.  
 __FEATURE__: The `texof()` operator retrieves the compile-time text of a mnemonic, register, or condition.  
 __FEATURE__: New comparison operators, `===` and `!==` now support case-insensitive string comparison.  

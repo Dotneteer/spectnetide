@@ -90,7 +90,7 @@ nextStatement: (NEXT | FORNEXT) ;
 breakStatement: BREAK ;
 continueStatement: CONTINUE ;
 
-macroInvocation: IDENTIFIER LPAR (macroArgument (COMMA macroArgument)*)? RPAR	;
+macroInvocation: IDENTIFIER LPAR macroArgument (COMMA macroArgument)* RPAR	;
 macroArgument: operand? ;
 
 orgPragma	: ORGPRAG expr ;
@@ -639,6 +639,7 @@ fragment SimpleEscapeSequence
 	| '\\"'
 	| '\\\\'
 	| '\\0'
+	| '\\'
 	;
 
 fragment HexEscapeSequence

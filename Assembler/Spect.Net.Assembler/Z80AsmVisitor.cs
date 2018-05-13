@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Mime;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -31,16 +30,19 @@ namespace Spect.Net.Assembler
         private int _lastIndex;
         private string _label;
         private string _comment;
+        private List<string> _macroParamNames;
         private TextSpan _labelSpan;
         private TextSpan _keywordSpan;
-        private List<TextSpan> _numbers = new List<TextSpan>();
-        private List<TextSpan> _identifiers = new List<TextSpan>();
-        private List<TextSpan> _strings = new List<TextSpan>();
-        private List<TextSpan> _semiVars = new List<TextSpan>();
-        private List<TextSpan> _functions = new List<TextSpan>();
-        private List<TextSpan> _macroParams = new List<TextSpan>();
-        private List<string> _macroParamNames = new List<string>();
         private TextSpan _commentSpan;
+        private List<TextSpan> _numbers;
+        private List<TextSpan> _identifiers;
+        private List<TextSpan> _strings;
+        private List<TextSpan> _semiVars;
+        private List<TextSpan> _functions;
+        private List<TextSpan> _macroParams;
+        private List<TextSpan> _statements;
+        private List<TextSpan> _operands;
+        private List<TextSpan> _mnemonics;
 
         /// <summary>
         /// Access the compilation results through this object
@@ -59,21 +61,25 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
 
             _label = null;
+            _comment = null;
             _labelSpan = null;
             _keywordSpan = null;
-            _numbers = new List<TextSpan>();
-            _identifiers = new List<TextSpan>();
-            _functions = new List<TextSpan>();
-            _strings = new List<TextSpan>();
-            _semiVars = new List<TextSpan>();
-            _macroParams = new List<TextSpan>();
-            _macroParamNames = new List<string>();
+            _commentSpan = null;
+            _numbers = null;
+            _identifiers = null;
+            _strings = null;
+            _functions = null;
+            _semiVars = null;
+            _macroParams = null;
+            _macroParamNames = null;
+            _semiVars = null;
+            _statements = null;
+            _operands = null;
+            _mnemonics = null;
             _sourceLine = context.Start.Line;
             _firstColumn = context.Start.Column;
             _firstIndex = context.Start.StartIndex;
             _lastIndex = context.Stop.StopIndex;
-            _comment = null;
-            _commentSpan = null;
 
             // --- Obtain comments
             var firstChild = context.GetChild(0);
@@ -160,6 +166,7 @@ namespace Spect.Net.Assembler
             var mnemonic = context.GetChild(0).NormalizeToken();
             if (mnemonic == "#INCLUDE")
             {
+                if (context.STRING() != null) AddString(context.STRING());
                 return AddLine(new IncludeDirective
                 {
                     Mnemonic = mnemonic,
@@ -704,11 +711,12 @@ namespace Spect.Net.Assembler
             }
             else if (context.reg16Std() != null)
             {
-                _functions.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+                AddFunction(context);
                 op.Type = OperandType.Reg8;
                 op.Register = string.Empty;
                 if (context.HREG() != null)
                 {
+                    regContext = context.reg16Std();
                     switch (context.reg16Std().NormalizeToken())
                     {
                         case "BC":
@@ -728,10 +736,14 @@ namespace Spect.Net.Assembler
                             op.Register = "IYH";
                             op.Type = OperandType.Reg8Idx;
                             break;
+                        default:
+                            regContext = null;
+                            break;
                     }
                 }
                 else
                 {
+                    regContext = context.reg16Std();
                     switch (context.reg16Std().NormalizeToken())
                     {
                         case "BC":
@@ -751,13 +763,16 @@ namespace Spect.Net.Assembler
                             op.Register = "IYL";
                             op.Type = OperandType.Reg8Idx;
                             break;
+                        default:
+                            regContext = null;
+                            break;
                     }
                 }
             }
 
             if (regContext != null)
             {
-                op.HighlightSpan = new TextSpan(regContext.Start.StartIndex, regContext.Stop.StopIndex + 1);
+                AddOperand(regContext);
             }
 
             return op;
@@ -795,10 +810,10 @@ namespace Spect.Net.Assembler
         public override object VisitMacroParam(Z80AsmParser.MacroParamContext context)
         {
             if (IsInvalidContext(context)) return null;
-            _macroParams.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+            AddMacroParam(context);
             if (context.IDENTIFIER() != null)
             {
-                _macroParamNames.Add(context.IDENTIFIER().NormalizeToken());
+                AddMacroParamName(context.IDENTIFIER().NormalizeToken());
             }
             return null;
         }
@@ -853,8 +868,10 @@ namespace Spect.Net.Assembler
         public override object VisitMacroStatement(Z80AsmParser.MacroStatementContext context)
         {
             if (IsInvalidContext(context)) return null;
-            _identifiers.AddRange(context.IDENTIFIER()
-                .Select(id => new TextSpan(id.Symbol.StartIndex, id.Symbol.StopIndex + 1)));           
+            foreach (var id in context.IDENTIFIER())
+            {
+                AddIdentifier(id);
+            }
             return AddLine(new MacroStatement(context.IDENTIFIER().Select(id => id.NormalizeToken()).ToList()),
                     context);
         }
@@ -1048,21 +1065,15 @@ namespace Spect.Net.Assembler
         public override object VisitForStatement(Z80AsmParser.ForStatementContext context)
         {
             if (IsInvalidContext(context)) return null;
-            var idSpan = context.IDENTIFIER() != null 
-                ? new TextSpan(context.IDENTIFIER().Symbol.StartIndex,
-                    context.IDENTIFIER().Symbol.StopIndex + 1)
-                : null;
-            var toSpan = context.TO() != null 
-                ? new TextSpan(context.TO().Symbol.StartIndex, context.TO().Symbol.StopIndex + 1)
-                : null;
-            var stepSpan = context.STEP() != null 
-                ? new TextSpan(context.STEP().Symbol.StartIndex, context.STEP().Symbol.StopIndex + 1) 
-                : null;
+            if (context.IDENTIFIER() != null) AddIdentifier(context.IDENTIFIER());
+            if (context.TO() != null) AddStatement(context.TO());
+            if (context.STEP() != null) AddStatement(context.STEP());
+
             var id = context.IDENTIFIER()?.NormalizeToken();
             var fromExpr = context.expr().Length > 0 ? (ExpressionNode) VisitExpr(context.expr()[0]) : null;
             var toExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
             var stepExpr = context.expr().Length > 2 ? (ExpressionNode)VisitExpr(context.expr()[2]) : null;
-            return AddLine(new ForStatement(idSpan, toSpan, stepSpan, id, fromExpr, toExpr, stepExpr),
+            return AddLine(new ForStatement(id, fromExpr, toExpr, stepExpr),
                 context);
         }
 
@@ -1420,10 +1431,10 @@ namespace Spect.Net.Assembler
 
             if (context.macroParam() != null)
             {
-                _macroParams.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+                AddMacroParam(context);
                 if (context.macroParam().IDENTIFIER() != null)
                 {
-                    _macroParamNames.Add(context.macroParam().IDENTIFIER().NormalizeToken());
+                    AddMacroParamName(context.macroParam().IDENTIFIER().NormalizeToken());
                 }
                 return new MacroParamNode(context.macroParam().IDENTIFIER()?.NormalizeToken());
             }
@@ -1475,13 +1486,13 @@ namespace Spect.Net.Assembler
             var token = context.NormalizeToken();
             if (context.CURADDR() != null)
             {
-                _semiVars.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddSemiVar(context);
                 return new CurrentAddressNode();
             }
 
             if (context.CURCNT() != null)
             {
-                _semiVars.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddSemiVar(context);
                 return new CurrentLoopCounterNode();
             }
 
@@ -1495,7 +1506,7 @@ namespace Spect.Net.Assembler
             // --- Check for real values
             if (context.REALNUM() != null)
             {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddNumber(context);
                 return double.TryParse(context.REALNUM().GetText(), out var realValue) 
                     ? new LiteralNode(realValue) 
                     : new LiteralNode(ExpressionValue.Error);
@@ -1504,7 +1515,7 @@ namespace Spect.Net.Assembler
             // --- Check for string values
             if (context.STRING() != null)
             {
-                _strings.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddString(context);
                 var stringValue = context.STRING().NormalizeString();
                 return new LiteralNode(stringValue);
             }
@@ -1513,34 +1524,34 @@ namespace Spect.Net.Assembler
             // --- Hexadecimal literals
             if (token.StartsWith("#"))
             {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddNumber(context);
                 value = ushort.Parse(token.Substring(1), NumberStyles.HexNumber);
             }
             else if (token.StartsWith("0X"))
             {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddNumber(context);
                 value = ushort.Parse(token.Substring(2), NumberStyles.HexNumber);
             }
             else if (token.StartsWith("$"))
             {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddNumber(context);
                 value = ushort.Parse(token.Substring(1), NumberStyles.HexNumber);
             }
             else if (token.EndsWith("H", StringComparison.OrdinalIgnoreCase))
             {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddNumber(context);
                 value = (ushort)int.Parse(token.Substring(0, token.Length - 1),
                     NumberStyles.HexNumber);
             }
             // --- Binary literals
             else if (token.StartsWith("%"))
             {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(1).Replace("_", ""), 2);
             }
             else if (token.StartsWith("0B"))
             {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(2).Replace("_", ""), 2);
             }
             // --- Character literals
@@ -1553,7 +1564,7 @@ namespace Spect.Net.Assembler
             // --- Decimal literals
             else
             {
-                _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+                AddNumber(context);
                 value = (ushort)int.Parse(context.NormalizeToken());
             }
 
@@ -1569,7 +1580,7 @@ namespace Spect.Net.Assembler
         {
             if (IsInvalidContext(context)) return null;
 
-            _identifiers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+            AddIdentifier(context);
             return new IdentifierNode
             {
                 SymbolName = context.GetChild(0).NormalizeToken()
@@ -1592,8 +1603,7 @@ namespace Spect.Net.Assembler
             var funcName = context.IDENTIFIER()?.GetText()?.ToLower();
             if (funcName != null)
             {
-                _functions.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
-
+                AddFunction(context);
             }
             var args = context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList();
             return new FunctionInvocationNode(funcName, args);
@@ -1611,14 +1621,20 @@ namespace Spect.Net.Assembler
         public override object VisitBuiltinFunctionInvocation(Z80AsmParser.BuiltinFunctionInvocationContext context)
         {
             if (IsInvalidContext(context)) return null;
-            _functions.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+            AddFunction(context);
+            string token = null;
             if (context.TEXTOF() != null)
             {
-                var token = context.mnemonic() != null
-                    ? context.mnemonic().NormalizeToken()
-                    : (context.regsAndConds() != null
-                        ? context.regsAndConds().NormalizeToken()
-                        : string.Empty);
+                if (context.mnemonic() != null)
+                {
+                    AddMnemonics(context.mnemonic());
+                    token = context.mnemonic().NormalizeToken();
+                }
+                else if (context.regsAndConds() != null)
+                {
+                    AddOperand(context.regsAndConds());
+                    token = context.regsAndConds().NormalizeToken();
+                }
                 return new LiteralNode(token);
             }
 
@@ -1646,6 +1662,114 @@ namespace Spect.Net.Assembler
         private bool IsInvalidContext(ITree context) => context == null || context.ChildCount == 0;
 
         /// <summary>
+        /// Adds a new number text span
+        /// </summary>
+        private void AddNumber(ParserRuleContext context)
+        {
+            if (_numbers == null) _numbers = new List<TextSpan>();
+            _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new string text span
+        /// </summary>
+        private void AddString(ParserRuleContext context)
+        {
+            if (_strings == null) _strings = new List<TextSpan>();
+            _strings.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new string text span
+        /// </summary>
+        private void AddString(ITerminalNode node)
+        {
+            if (_strings == null) _strings = new List<TextSpan>();
+            _strings.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new identifier text span
+        /// </summary>
+        private void AddIdentifier(ParserRuleContext context)
+        {
+            if (_identifiers == null) _identifiers = new List<TextSpan>();
+            _identifiers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new identifier text span
+        /// </summary>
+        private void AddIdentifier(ITerminalNode node)
+        {
+            if (_identifiers == null) _identifiers = new List<TextSpan>();
+            _identifiers.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new statement text span
+        /// </summary>
+        private void AddStatement(ITerminalNode node)
+        {
+            if (_statements == null) _statements = new List<TextSpan>();
+            _statements.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new function text span
+        /// </summary>
+        private void AddFunction(ParserRuleContext context)
+        {
+            if (_functions == null) _functions = new List<TextSpan>();
+            _functions.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new semi-variable text span
+        /// </summary>
+        private void AddSemiVar(ParserRuleContext context)
+        {
+            if (_semiVars == null) _semiVars = new List<TextSpan>();
+            _semiVars.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new semi-variable text span
+        /// </summary>
+        private void AddMacroParam(ParserRuleContext context)
+        {
+            if (_macroParams == null) _macroParams = new List<TextSpan>();
+            _macroParams.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new semi-variable text span
+        /// </summary>
+        private void AddMacroParamName(string name)
+        {
+            if (_macroParamNames == null) _macroParamNames = new List<string>();
+            _macroParamNames.Add(name);
+        }
+
+        /// <summary>
+        /// Adds a new operand text span
+        /// </summary>
+        private void AddOperand(ParserRuleContext context)
+        {
+            if (_operands == null) _operands = new List<TextSpan>();
+            _operands.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new operand text span
+        /// </summary>
+        private void AddMnemonics(ParserRuleContext context)
+        {
+            if (_mnemonics == null) _mnemonics = new List<TextSpan>();
+            _mnemonics.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
         /// Adds an assebmbly line to the compilation
         /// </summary>
         /// <param name="line">Line to add</param>
@@ -1668,6 +1792,9 @@ namespace Spect.Net.Assembler
             line.MacroParams = _macroParams;
             line.MacroParamNames = _macroParamNames;
             line.Identifiers = _identifiers;
+            line.Statements = _statements;
+            line.Operands = _operands;
+            line.Mnemonics = _mnemonics;
             line.Comment = _comment;
             line.CommentSpan = _commentSpan;
             if (_keywordSpan != null)

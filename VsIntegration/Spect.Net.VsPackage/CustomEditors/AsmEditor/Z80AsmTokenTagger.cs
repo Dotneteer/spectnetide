@@ -8,7 +8,6 @@ using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
-using Spect.Net.Assembler.SyntaxTree.Statements;
 using Spect.Net.VsPackage.ProjectStructure;
 
 #pragma warning disable 649
@@ -141,7 +140,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 
                 if (asmline.CommentSpan != null)
                 {
-                    // --- Retrieve a comment
                     yield return CreateSpan(currentLine, asmline.CommentSpan, Z80AsmTokenType.Comment);
                 }
 
@@ -149,7 +147,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     foreach (var numberSpan in asmline.Numbers)
                     {
-                        // --- Retrieve a number
                         yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.Number);
                     }
                 }
@@ -158,7 +155,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     foreach (var stringSpan in asmline.Strings)
                     {
-                        // --- Retrieve a number
                         yield return CreateSpan(currentLine, stringSpan, Z80AsmTokenType.String);
                     }
                 }
@@ -167,7 +163,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     foreach (var functionSpan in asmline.Functions)
                     {
-                        // --- Retrieve a number
                         yield return CreateSpan(currentLine, functionSpan, Z80AsmTokenType.Function);
                     }
                 }
@@ -176,7 +171,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     foreach (var semiVarSpan in asmline.SemiVars)
                     {
-                        // --- Retrieve a number
                         yield return CreateSpan(currentLine, semiVarSpan, Z80AsmTokenType.SemiVar);
                     }
                 }
@@ -185,61 +179,42 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     foreach (var macroParamSpan in asmline.MacroParams)
                     {
-                        // --- Retrieve a number
                         yield return CreateSpan(currentLine, macroParamSpan, Z80AsmTokenType.MacroParam);
                     }
                 }
 
-                if (asmline.Identifiers == null) continue;
-
-                foreach (var idSpan in asmline.Identifiers)
+                if (asmline.Identifiers != null)
                 {
-                    // --- Retrieve a number
-                    yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Identifier);
-                }
-
-                if (asmline is ForStatement forStmt)
-                {
-                    if (forStmt.IdSpan != null)
+                    foreach (var id in asmline.Identifiers)
                     {
-                        yield return CreateSpan(currentLine, forStmt.IdSpan, Z80AsmTokenType.Identifier);
-                    }
-                    if (forStmt.ToKeywordSpan != null)
-                    {
-                        yield return CreateSpan(currentLine, forStmt.ToKeywordSpan, Z80AsmTokenType.Statement);
-                    }
-                    if (forStmt.StepKeywordSpan != null)
-                    {
-                        yield return CreateSpan(currentLine, forStmt.StepKeywordSpan, Z80AsmTokenType.Statement);
+                        yield return CreateSpan(currentLine, id, Z80AsmTokenType.Identifier);
                     }
                 }
 
-                if (asmline is CompoundOperation compOp)
+                if (asmline.Statements != null)
                 {
-                    if (compOp.Operand?.HighlightSpan != null)
+                    foreach (var statement in asmline.Statements)
                     {
-                        yield return CreateSpan(currentLine, compOp.Operand.HighlightSpan, Z80AsmTokenType.Operand);
-                    }
-                    if (compOp.Operand2?.HighlightSpan != null)
-                    {
-                        yield return CreateSpan(currentLine, compOp.Operand2.HighlightSpan, Z80AsmTokenType.Operand);
-                    }
-                    if (compOp.Operand3?.HighlightSpan != null)
-                    {
-                        yield return CreateSpan(currentLine, compOp.Operand3.HighlightSpan, Z80AsmTokenType.Operand);
+                        yield return CreateSpan(currentLine, statement, Z80AsmTokenType.Statement);
                     }
                 }
 
-                if (asmline is MacroInvocation macroInv)
+                if (asmline.Operands != null)
                 {
-                    foreach (var op in macroInv.Parameters)
+                    foreach (var operand in asmline.Operands)
                     {
-                        if (op.HighlightSpan != null)
-                        {
-                            yield return CreateSpan(currentLine, op.HighlightSpan, Z80AsmTokenType.Operand);
-                        }
+                        yield return CreateSpan(currentLine, operand, Z80AsmTokenType.Operand);
                     }
                 }
+
+                if (asmline.Mnemonics != null)
+                {
+                    foreach (var mnemonic in asmline.Mnemonics)
+                    {
+                        yield return CreateSpan(currentLine, mnemonic, Z80AsmTokenType.Instruction);
+                    }
+                }
+
             }
         }
 
