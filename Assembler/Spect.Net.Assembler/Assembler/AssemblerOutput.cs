@@ -90,7 +90,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Source map information that assigns source file info with the address
         /// </summary>
-        public Dictionary<(int FileIndex, int Line), ushort> AddressMap { get; }
+        public Dictionary<(int FileIndex, int Line), List<ushort>> AddressMap { get; }
 
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
@@ -100,7 +100,26 @@ namespace Spect.Net.Assembler.Assembler
                 ?? throw new ArgumentNullException(nameof(sourceItem));
             SourceFileList = new List<SourceFileItem> { sourceItem };
             SourceMap = new Dictionary<ushort, (int FileIndex, int Line)>();
-            AddressMap = new Dictionary<(int FileIndex, int Line), ushort>();
+            AddressMap = new Dictionary<(int FileIndex, int Line), List<ushort>>();
+        }
+
+        /// <summary>
+        /// Adds the specified information to the address map
+        /// </summary>
+        /// <param name="fileIndex">File index</param>
+        /// <param name="sourceLine">Source line index</param>
+        /// <param name="address">Code address</param>
+        public void AddToAddressMap(int fileIndex, int sourceLine, ushort address)
+        {
+            var sourceInfo = (fileIndex, sourceLine);
+            if (AddressMap.TryGetValue(sourceInfo, out var addressList))
+            {
+                addressList.Add(address);
+            }
+            else
+            {
+                AddressMap[sourceInfo] = new List<ushort> {address};
+            }
         }
     }
 }

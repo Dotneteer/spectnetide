@@ -199,7 +199,7 @@ namespace Spect.Net.Assembler.Assembler
                     // --- Generate source map information
                     var sourceInfo = (opLine.FileIndex, opLine.SourceLine);
                     _output.SourceMap[addr] = sourceInfo;
-                    _output.AddressMap[sourceInfo] = addr;
+                    _output.AddToAddressMap(opLine.FileIndex, opLine.SourceLine, addr);
                 }
             }
         }
@@ -1180,6 +1180,11 @@ namespace Spect.Net.Assembler.Assembler
 
             var lineIndex = macroDef.Section.FirstLine + 1;
             var lastLine = macroDef.Section.LastLine;
+
+            // --- Create source info for the macro invocation
+            var currentAddress = GetCurrentAssemblyAddress();
+            _output.AddToAddressMap(macroStmt.FileIndex, macroStmt.SourceLine, currentAddress);
+            _output.SourceMap[currentAddress] = (macroStmt.FileIndex, macroStmt.SourceLine);
 
             // --- We store the original source file information to
             // --- assign it later with the re-parsed macro code

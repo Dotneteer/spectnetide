@@ -191,17 +191,17 @@ namespace Spect.Net.Assembler.Test.Assembler
             var mi = map[0x8000];     // Line #1, Scenario1.z80Asm 
             mi.FileIndex.ShouldBe(0);
             mi.Line.ShouldBe(1);
-            addrMap[(0,1)].ShouldBe((ushort)0x8000);
+            addrMap[(0,1)][0].ShouldBe((ushort)0x8000);
 
             mi = map[0x8001];         // Line #1, Scenario1.inc1.z80Asm
             mi.FileIndex.ShouldBe(1);
             mi.Line.ShouldBe(1);
-            addrMap[(1, 1)].ShouldBe((ushort)0x8001);
+            addrMap[(1, 1)][0].ShouldBe((ushort)0x8001);
 
             mi = map[0x8004];         // Line #3, Scenario1.z80Asm
             mi.FileIndex.ShouldBe(0);
             mi.Line.ShouldBe(3);
-            addrMap[(0, 3)].ShouldBe((ushort)0x8004);
+            addrMap[(0, 3)][0].ShouldBe((ushort)0x8004);
         }
 
         [TestMethod]

@@ -1840,10 +1840,9 @@ namespace Spect.Net.Assembler
             line.Comment = _comment;
             line.CommentSpan = _commentSpan;
             line.EmitIssue = _emitIssue;
-            if (_keywordSpan != null)
-            {
-                line.InstructionSpan = new TextSpan(_keywordSpan.Start, _lastPos);
-            }
+            line.InstructionSpan = _keywordSpan != null 
+                ? new TextSpan(_keywordSpan.Start, _lastPos) 
+                : new TextSpan(_firstColumn, _lastPos);
             Compilation.Lines.Add(line);
             LastAsmLine = line;
             return line;
