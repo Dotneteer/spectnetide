@@ -1181,6 +1181,10 @@ namespace Spect.Net.Assembler.Assembler
             var lineIndex = macroDef.Section.FirstLine + 1;
             var lastLine = macroDef.Section.LastLine;
 
+            // --- We store the original source file information to
+            // --- assign it later with the re-parsed macro code
+            var sourceInfo = new List<(int fileIndex, int line)>();
+
             // --- Setup the macro source
             var macroSource = new StringBuilder(4096);
             while (lineIndex < lastLine)
@@ -1199,11 +1203,16 @@ namespace Spect.Net.Assembler.Assembler
                     }
                     lineText = lineText.Replace(toReplace, argValue.AsString());
                 }
+
+                // --- Store the source information for the currently processed macro line
+                var newLines = lineText.Split(new[] {"\r\n"}, StringSplitOptions.None).Length;
+                for (var i = 0; i < newLines; i++)
+                {
+                    sourceInfo.Add((curLine.FileIndex, curLine.SourceLine));
+                }
                 macroSource.AppendLine(lineText);
                 lineIndex++;
             }
-
-            // --- At this point we can translate the macro
 
             // --- Now we have the source text to compile
             var inputStream = new AntlrInputStream(macroSource.ToString());
@@ -1224,7 +1233,17 @@ namespace Spect.Net.Assembler.Assembler
             // --- Collect syntax errors
             foreach (var error in parser.SyntaxErrors)
             {
-                ReportError(_output.SourceItem, error);
+                // --- Translate the syntax error location
+                if (error.SourceLine > 0 && error.SourceLine < sourceInfo.Count)
+                {
+                    var errorLocation = sourceInfo[error.SourceLine - 1];
+                    error.SourceLine = errorLocation.line;
+                    ReportError(_output.SourceFileList[errorLocation.fileIndex], error);
+                }
+                else
+                {
+                    ReportError(_output.SourceItem, error);
+                }
                 errorFound = true;
             }
 
@@ -1232,6 +1251,18 @@ namespace Spect.Net.Assembler.Assembler
             {
                 // --- Stop compilation, if macro contains error
                 return;
+            }
+
+            // --- Set the source line information
+            for (var i = 0; i < sourceInfo.Count; i++)
+            {
+                if (i < visitedLines.Lines.Count)
+                {
+                    var lineInfo = sourceInfo[i];
+                    var line = visitedLines.Lines[i];
+                    line.FileIndex = lineInfo.fileIndex;
+                    line.SourceLine = lineInfo.line;
+                }
             }
 
             // --- Now, emit the compiled lines
