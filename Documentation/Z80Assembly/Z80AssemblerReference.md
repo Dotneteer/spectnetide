@@ -2189,13 +2189,61 @@ ei
 
 ### Passing Multiple Lines in a Macro Parameter
 
-_TBD_
+If you can pass multiple lines in a macro parameter where the corresponding 
+argument reference is used in stead of an entire instruction line, the compiler
+will apply all those lines. To do that, the individual lines should be separated
+by new line characters (`\r\n`). The `&` operator, when applied for two strings,
+does this step for you, as it concatenates the two strings with `\r\n` between 
+them. Let's assume, you invoke the `ShortDi` macro with this code:
+
+```
+ShortDi("ld a,#7f" & "in a,(#fe)")
+```
+ 
+Now, the compiler will generate this output:
+
+```
+di
+ld a,#7f
+in a,(#fe)
+ei
+```
+
+Because you can pass expressions as macro parameters, you can invoke the macro
+in this way, too:
+
+```
+FirstOp = "ld a,#7f"
+SecondOp = "in a,(#fe)"
+ShortDi(FirstOp & SecondOp)
+```
+
+You can pass not only instructions and pragmas to macros, but also statements:
+
+```
+LoopOp = ".loop 3" & "nop" & ".endl"
+ShortDi(LoopOp)
+```
+
+The compiler will emit this code:
+
+```
+di
+nop
+nop
+nop
+ei
+```
 
 ### Labels in Macros
 
 _TBD_
 
 * Macro names serve as the start label for the macro, too.
+
+### Invoking Macros from Macros
+
+_TBD_
 
 ## Directives
 

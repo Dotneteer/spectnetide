@@ -1760,6 +1760,26 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(SOURCE, 0x11, 0x00, 0x10, 0x21, 0x00, 0x20);
         }
 
+        [TestMethod]
+        public void MacroInMacroWorks1()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                LdHl:
+                    .macro(value)
+                        ld hl,{{value}}    
+                    .endm
+
+                LdHl2:
+                    .macro(value1, value2)
+                        LdHl({{value1}})
+                    .endm
+
+                LdHl2(2,3)";
+
+            CodeEmitWorks(SOURCE, 0x21, 0x02, 0x00);
+        }
+
 
     }
 }
