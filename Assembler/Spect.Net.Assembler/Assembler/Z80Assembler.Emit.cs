@@ -1104,12 +1104,12 @@ namespace Spect.Net.Assembler.Assembler
             // --- Evaluate arguments
             var arguments = new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
             var errorFound = false;
-            var emptyStrValue = new ExpressionValue("$<none>$");
+            var emptyArgValue = new ExpressionValue("$<none>$");
             for (var i = 0; i < macroDef.ArgumentNames.Count; i++)
             {
                 if (i >= macroStmt.Parameters.Count)
                 {
-                    arguments.Add(macroDef.ArgumentNames[i], emptyStrValue);
+                    arguments.Add(macroDef.ArgumentNames[i], emptyArgValue);
                     continue;
                 }
                 var op = macroStmt.Parameters[i];
@@ -1159,7 +1159,7 @@ namespace Spect.Net.Assembler.Assembler
                         argValue = new ExpressionValue(op.Condition);
                         break;
                     default:
-                        argValue = new ExpressionValue("");
+                        argValue = emptyArgValue;
                         break;
                 }
                 if (errorFound) continue;

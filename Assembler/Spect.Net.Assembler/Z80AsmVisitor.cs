@@ -871,8 +871,7 @@ namespace Spect.Net.Assembler
                     {
                         macroOps.Add(new Operand
                         {
-                            Type = OperandType.Expr,
-                            Expression = new LiteralNode(string.Empty)
+                            Type = OperandType.None
                         });
                     }
                 }

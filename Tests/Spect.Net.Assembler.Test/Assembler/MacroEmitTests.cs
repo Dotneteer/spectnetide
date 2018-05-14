@@ -1738,5 +1738,28 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError(SOURCE, Errors.Z0422);
         }
 
+        [TestMethod]
+        public void UnpassedMacroArgumentsGetEmptyString3()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                LdBcDeHl:
+                    .macro(bcVal, deVal, hlVal)
+                        .if def({{bcVal}})
+                            ld bc,{{bcVal}}
+                        .endif
+                        .if def({{deVal}})
+                            ld de,{{deVal}}
+                        .endif
+                        .if def({{hlVal}})
+                            ld hl,{{hlVal}}
+                        .endif
+                .endm
+                LdBcDeHl(,#1000, #2000)";
+
+            CodeEmitWorks(SOURCE, 0x11, 0x00, 0x10, 0x21, 0x00, 0x20);
+        }
+
+
     }
 }

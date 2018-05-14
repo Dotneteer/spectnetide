@@ -1870,6 +1870,48 @@ ld h,b
 ld l,c
 ```
 
+When you invoke a macro, you can pass less parameters than the macro declares. Within the macro body,
+you can use the `def()` function to check whether the specified parameter has been passed:
+
+```
+Push:
+    .macro(r1, r2, r3, r4)
+      .if def({{r1}})
+        push {{r1}}
+      .endif
+      .if def({{r2}})
+        push {{r2}}
+      .endif
+      .if def({{r3}})
+        push {{r3}}
+      .endif
+      .if def({{r4}})
+        push {{r4}}
+      .endif
+    .endm
+```
+
+The `Push` macro in this code snippet allows you to create a `push` instruction for up to 4 register pairs.
+Look at these usages:
+
+```
+Push(af)
+; ... and later
+Push(bc, de, ix)
+```
+
+This is what the compiler generates:
+
+```
+push af
+; ... and later
+push bc
+push de
+push ix
+```
+
+You can opt to not pass a macro parameter for a specific argument. Look at this macro declaration:
+
 
 
 ### Macro Declaration
