@@ -316,6 +316,38 @@ ld hl,(Offset+#20)*2+BaseAddr
 ld hl,[Offset+#20]*2+BaseAddr
 ```
 
+### Instant and Late Expression Evaluation
+
+Depending on the context in which an expression is used, the compiler evaluates it instantly or
+decides to postpone the evaluation. For example, when you use the `.org` pragma, the compiler applies
+immediate evaluation. Let's assume, this is your code:
+
+```
+Start: .org #8000 + Later
+; code body (omitted)
+Later: .db #ff
+```
+
+The value of `Later` depends on the address in `.org`, and the `.org` address depends on `Later`, 
+so this declaration could not be resolved properly, it's like a deadlock. To avoid such situations, 
+the `.org` pragma would raise an error, as the moment of its evaluation the `Later` symbol's value is 
+unknown.
+
+For most Z80 instructions the compiler uses late evaluation:
+
+```
+Start: .org #6000
+    ld hl,(MyVar)
+    ; code body omitted
+    ret
+MyVar: .defs 2
+```
+
+When the compiler reaches the `ld hl,(MyVar)` instruction, it does not know the value of `MyVar`. Nonetheless,
+it does not stop with an error, but generates the machine code for `ld hl,(0)`, namely #21, #00, and #00; 
+takes a note (it is called a *fixup*) when `MyVal` gets a value, the two #00 bytes generated at address #6001 
+should be updated accordingly.
+
 ### Operands
 You can use the following operands in epressions:
 * Boolean, Decimal and hexadecimal literals
@@ -1912,7 +1944,40 @@ push ix
 
 You can opt to not pass a macro parameter for a specific argument. Look at this macro declaration:
 
+```
+LdBcDeHl:
+    .macro(bcVal, deVal, hlVal)
+      .if def({{bcVal}})
+        ld bc,{{bcVal}}
+      .endif
+      .if def({{deVal}})
+        ld de,{{deVal}}
+      .endif
+      .if def({{hlVal}})
+        ld hl,{{hlVal}}
+      .endif
+    .endm
+```
 
+You can invoke this macro in these ways, leaving a parameter empty to sign that you do not intend to use it:
+
+```
+LdBcDeHl(,#1000,#2000)
+; ... and later
+LdBcDeHl(#3000,,#4000)
+```
+
+The compiler understands your intention and generates this output:
+
+```
+ld de,#1000
+ld hl,#2000
+; ... and later
+ld bc,#3000
+ld hl,#4000
+```
+
+It's time to deep into the nitty-gritty details of creating and using macros in __SpectNetIde__.
 
 ### Macro Declaration
 
@@ -1958,9 +2023,177 @@ Mul10:
     .endm
 ```
 
+Arguments are identifiers, thus the corresponding naming rules are applied to them. You cannot use a reserved word
+(for example a mnemonic like `ldir` or a register name like `hl`) as a macro argument.
+
+### Macro Parameters
+
+You can invoke a macro with as many parameters as many argument its declaration has, or even with less parameters.
+If the macro invocation has more parameters than arguments, the compiler raises an error.
+
+Let's assume, you've created this macro declaration:
+
+```
+MyMacro: .macro(arg1, arg2, arg2)
+; Macro body
+.endm
+```
+
+All of these usages are valid:
+
+```
+MyMacro()
+MyMacro(a)
+MyMacro(a, b)
+MyMacro(a, b, c)
+```
+
+Nonetheless, these usage is invalid since it passes more than three parameters:
+
+```
+MyMacro(a, b, c, d) ; ERROR: To many parameters
+```
+
+Sometimes it is convenient to omit not the last parameters but one in the beginning or the middle of the
+parameter list. You can do that: an empy comma separator signs that the preceeding parameter is empty. Using this
+notation, all these invocations of `MyMacro` is valid:
+
+```
+MyMacro(,b)
+MyMacro(a,,c)
+MyMacro(,,)
+```
+
+Within the macro declaration, you can use the `def()` function to check if a particular argument has a value.
+
+```
+LdBcDeHl:
+    .macro(bcVal, deVal, hlVal)
+      .if def({{bcVal}})
+        ld bc,{{bcVal}}
+      .endif
+      .if def({{deVal}})
+        ld de,{{deVal}}
+      .endif
+      .if def({{hlVal}})
+        ld hl,{{hlVal}}
+      .endif
+    .endm
+```
+
+The `def()` function accepts only a macro argument reference (the name of the argument wrapped in double curlay braces).
+This function evaluates to true only when the macro argument is not empty. 
+
+You can use the logical NOT operator (`!`) combined to `def()` to check if an argument is empty.
+
+```
+MyMacro: .macro(arg)
+  .if !def({{arg}})
+    ; generate something for empty arg
+  .endif
+.endm
+```
+### Passing Parameters to Macros
+
+You can pass _anything_ as a macro parameter that is a _valid operand_ of a Z80 instruction. This means the
+following options:
+* Names of 8-bit registers and 16-bit register pairs (e.g. `a`, `b`, `ixl`, `hl` `sp`, `af`, etc.)
+* Names of conditions (e.g. `z`, `nz`, `pe`, `m`, etc.)
+* Memory address indirection (e.g. `(#4000)`, `(#4000+#20)`)
+* Register pair indirection (e.g. `(bc)`, `(de)`, `(hl)`, etc.)
+* Indexed indirection (e.g. `(ix+#20)`, `(iy-12)`, etc.)
+* C-port (`(c)`)
+* Expression (e.g. `(MyId << 1) + 23`, `#4000`, `12*sin(pi()/4)`, `"ld " + "a,b"`, etc.)
+
+You should be careful when you use parentheses in expressions. Let's assume, you declare this macro:
+
+```
+SetHlValue:
+    .macro(value)
+        ld hl,{{value}}
+    .endm
+```
+
+When you use it, the first invocation uses an expression, the second has a memory address indirection:
+
+```
+SetHlValue(#4000+#20)
+SetHlValue((#4000+#20))
+```
+
+The compiler translates them to these instructions:
+
+```
+ld hl,#4020
+ld hl,(#4020)
+```
+
+To avoid such issues, you can use the square brackets to group parts of expressions. When you invoke the
+`SetHlValue` macro with this way, both usage with generate a `ld hl,#4020` statement:
+
+```
+SetHlValue(#4000+#20)
+SetHlValue([#4000+#20])
+```
+
+When you pass parameters to macros, any expression in the parameters is evaluated instantly, so you cannot
+use unknown symbols or variables &mdash; ones that will get their values only somewhere later in the code.
+
+The compiler replaces the macro argument references to their current values passed in parameters. 
+Whenever you use an expression, its value is converted into a string and put into the place of the 
+macro argument.
+
+### Passing Instructions in a Macro Parameter
+
+Within a macro declaration, you can use macro argument reference in stead of an entire Z80 instruction.
+Take a look at this macro:
+
+```
+ShortDi:
+    .macro(body)
+        di
+        {{body}}
+        ei
+    .endm
+```
+
+Here, the `body` argument is expected to get something that the compiler can understand as an entire
+instruction. When you invoke the macro, you need to pass a string expression so that the compiler can
+replace the `{{body}}` reference. Here is an example:
+
+```
+ShortDi("in a,(#fe)")
+```
+
+As you expect, the compiler generates this output:
+
+```
+di
+in a,(#fe)
+ei
+```
+
+You are not obliged to use Z80 instructions, the compiler accepts pragmas, too:
+
+```
+ShortDi(".db #00")
+```
+
+Well, the output is not pretty useful, nonetheless, the compiler generates this:
+
+```
+di
+.db #00
+ei
+```
+
+### Passing Multiple Lines in a Macro Parameter
+
+_TBD_
 
 ### Labels in Macros
 
+_TBD_
 
 * Macro names serve as the start label for the macro, too.
 
