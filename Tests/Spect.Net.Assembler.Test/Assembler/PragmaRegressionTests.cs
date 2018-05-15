@@ -195,7 +195,16 @@ namespace Spect.Net.Assembler.Test.Assembler
 
         [TestMethod]
         [DataRow(".dm textof(ld)", new byte[] { 0x4C, 0x44 })]
+        [DataRow(".dm TEXTOF(ld)", new byte[] { 0x4C, 0x44 })]
         public void TextOfWorksAsExpected(string source, byte[] expected)
+        {
+            CodeEmitWorks(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow(".dm ltextof(ld)", new byte[] { 0x6C, 0x64 })]
+        [DataRow(".dm LTEXTOF(ld)", new byte[] { 0x6C, 0x64 })]
+        public void LTextOfWorksAsExpected(string source, byte[] expected)
         {
             CodeEmitWorks(source, expected);
         }

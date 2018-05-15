@@ -921,5 +921,26 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             CodeEmitWorks(source, expected);
         }
+
+        [TestMethod]
+        [DataRow(".error \"This is an error\"")]
+        [DataRow(".ERROR \"This is an error\"")]
+        [DataRow("error \"This is an error\"")]
+        [DataRow("ERROR \"This is an error\"")]
+        public void ErrorPragmaWorks(string source)
+        {
+            CodeRaisesError(source, Errors.Z0500);
+        }
+
+        [TestMethod]
+        [DataRow(".error true")]
+        [DataRow(".ERROR 123")]
+        [DataRow("error 123.5")]
+        public void ErrorPragmaWorksWithDifferentTypes(string source)
+        {
+            CodeRaisesError(source, Errors.Z0500);
+        }
+
+
     }
 }

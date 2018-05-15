@@ -44,6 +44,7 @@ pragma
 	|	tracePragma
 	|	rndSeedPragma
 	|	defgPragma
+	|   errorPragma
 	;
 
 directive
@@ -112,6 +113,7 @@ alignPragma : ALGPRAG expr? ;
 tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
 rndSeedPragma: RNDSEED expr? ;
 defgPragma	: DGPRAG expr ;
+errorPragma : ERRORPR expr ;
 
 operation
 	:	trivialOperation
@@ -300,7 +302,7 @@ functionInvocation
 	;
 
 builtinFunctionInvocation
-	: TEXTOF LPAR (mnemonic | regsAndConds | macroParam) RPAR
+	: (TEXTOF | LTEXTOF) LPAR (mnemonic | regsAndConds | macroParam) RPAR
 	| DEF LPAR operand? RPAR
 	;
 
@@ -556,6 +558,7 @@ TRACE	: '.trace' | '.TRACE' | 'trace' | 'TRACE' ;
 TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;
 RNDSEED	: '.rndseed' | 'rndseed' | '.RNDSEED' | 'RNDSEED' ;
 DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
+ERRORPR	: '.error' | '.ERROR' | 'error' | 'ERROR' ;
 
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
@@ -579,7 +582,8 @@ BREAK	: '.break' | 'break' | '.BREAK' | 'BREAK' ;
 CONTINUE: '.continue' | 'continue' | '.CONTINUE' | 'CONTINUE' ;
 
 // --- Built-in function names
-TEXTOF	: 'textof' ;
+TEXTOF	: 'textof' | 'TEXTOF' ;
+LTEXTOF	: 'ltextof' | 'LTEXTOF' ;
 HREG	: 'hreg' | 'HREG' ;
 LREG	: 'lreg' | 'LREG' ;
 DEF		: 'def' | 'DEF' ;

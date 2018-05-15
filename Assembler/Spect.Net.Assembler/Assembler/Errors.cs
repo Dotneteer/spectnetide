@@ -89,6 +89,8 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0421 = "Z0421";
         public const string Z0422 = "Z0422";
 
+        public const string Z0500 = "Z0500";
+
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
         {
@@ -168,6 +170,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0420, "Macro parameter can only be used within a macro declaration." },
             { Z0421, "The DEF() parse time function accepts only macro parameters." },
             { Z0422, "Cannot pass a macro parameter template in a macro parameter." },
+            { Z0500, "ERROR: {0}" },
         };
 
         /// <summary>

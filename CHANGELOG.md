@@ -1,3 +1,9 @@
+### Version under development
+
+__FEATURE__: You can raise a custom error with the `.error` pragma.  
+__FEATURE__: Now, you can use the `str()`, `lowercase()` and `uppercase()` functions.  
+
+
 ### Version 1.8.0
 
 __FEATURE__: Macros are now supported.  

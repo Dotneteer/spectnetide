@@ -516,6 +516,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitDefgPragma([NotNull] Z80AsmParser.DefgPragmaContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.errorPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterErrorPragma([NotNull] Z80AsmParser.ErrorPragmaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.errorPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitErrorPragma([NotNull] Z80AsmParser.ErrorPragmaContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.operation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

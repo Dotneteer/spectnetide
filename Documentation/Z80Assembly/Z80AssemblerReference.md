@@ -463,6 +463,7 @@ Signature | Value | Description
 `frac(float)` | `float` | The fractional part of the specified number.
 `high(integer)` | `integer` | The leftmost 8 bits (MSB) of a 16-bit integer number.
 `int(float)` | `integer` | The integer part of the specified number.
+`lcase(string)` | `string` | The lowercase version of the input string.
 `left(string, integer)` | `string` | Takes the leftmost characters of the string with the length specified.
 `len(string)` | `integer` | The length of the specified string.
 `length(string)` | `integer` | The length of the specified string.
@@ -470,6 +471,7 @@ Signature | Value | Description
 `log(float, float)` | `float` | The logarithm of a specified number in a specified base.
 `log10(float)` | `float` | The base 10 logarithm of a specified number.
 `low(integer)` | `integer` | The rightmost 8 bits (LSB) of an integer number.
+`lowercase(string)` | `string` | The lowercase version of the input string.
 `max(integer, integer)` | `integer` |  The larger of two *integer* numbers.
 `max(float, float)` | `float` | The larger of two *float* numbers.
 `min(integer, integer)` | `integer` |  The smaller of two *integer* numbers.
@@ -487,10 +489,15 @@ Signature | Value | Description
 `sin(float)` | `float` | The sine of the specified angle.
 `sinh(float)` | `float` | The hyperbolic sine of the specified angle.
 `sqrt(float)` | `float` | The square root of a specified number.
+`str(bool)` | `string` | Convert the input value to a string.
+`str(integer)` | `string` | Convert the input value to a string.
+`str(float)` | `string` | Convert the input value to a string.
 `substr(string, integer, integer)` | `string` | Takes a substring of the specified string from the given position (zero-based) and length.
 `tan(float)` | `float` | The tangent of the specified angle.
 `tanh(float)` | `float` | The hyperbolic tangent of the specified angle.
 `truncate(float)` | `integer` | Calculates the integral part of a specified number.
+`ucase(string)` | `string` | The uppercase version of the input string.
+`uppercase(string)` | `string` | The uppercase version of the input string.
 `word(integer)` | `integer` | The rightmost 16 bits of an integer number.
 
 Functions have the same precedence as the unary operators (such as the unary `+` and `-`).
@@ -1008,6 +1015,15 @@ Here are a few samples:
 .dg "___OOOO"          ; #1E
 .dg "....OOOO ..OO"    ; #0F, #30
 .dg ">....OO OO..OOOO" ; #03, #CF
+```
+
+### The ERROR Pragma
+
+You cas raise custom error messages with this pragma. __ERROR__ accepts an expression
+and displays an error message with code `Z0500` using the text you provide. Here is a sample:
+
+```
+.error "The value must be greater than" + str(minvalue)
 ```
 
 ## Statements

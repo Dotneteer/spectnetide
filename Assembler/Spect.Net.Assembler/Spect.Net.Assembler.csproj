@@ -139,6 +139,7 @@
     <Compile Include="SyntaxTree\Pragmas\DispPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\EntPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\EquPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\ErrorPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\ExternPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\FillbPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\FillwPragma.cs" />

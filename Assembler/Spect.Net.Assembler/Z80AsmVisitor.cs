@@ -541,6 +541,25 @@ namespace Spect.Net.Assembler
                 context);
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.errorPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitErrorPragma(Z80AsmParser.ErrorPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new ErrorPragma(
+                    context.expr() != null
+                        ? (ExpressionNode)VisitExpr(context.expr())
+                        : null),
+                context);
+        }
+
         #endregion
 
         #region Operations
@@ -1654,7 +1673,7 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
             AddFunction(context);
             string token = null;
-            if (context.TEXTOF() != null)
+            if (context.TEXTOF() != null || context.LTEXTOF() != null)
             {
                 if (context.macroParam() != null)
                 {
@@ -1674,6 +1693,11 @@ namespace Spect.Net.Assembler
                 {
                     AddOperand(context.regsAndConds());
                     token = context.regsAndConds().NormalizeToken();
+                }
+
+                if (context.LTEXTOF() != null)
+                {
+                    token = token.ToLower();
                 }
                 return new LiteralNode(token);
             }

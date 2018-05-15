@@ -1389,6 +1389,9 @@ namespace Spect.Net.Assembler.Assembler
                 case DefgPragma defgPragma:
                     ProcessDefgPragma(defgPragma);
                     break;
+                case ErrorPragma errorPragma:
+                    ProcessErrorPragma(errorPragma);
+                    break;
             }
         }
 
@@ -1896,6 +1899,16 @@ namespace Spect.Net.Assembler.Assembler
             }
         }
 
+        /// <summary>
+        /// Processes the ERROR pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFG pragma</param>
+        private void ProcessErrorPragma(ErrorPragma pragma)
+        {
+            var errorValue = EvalImmediate(pragma, pragma.Expr);
+            if (!errorValue.IsValid) return;
+            ReportError(Errors.Z0500, pragma, errorValue.AsString());
+        }
 
         #endregion
 
