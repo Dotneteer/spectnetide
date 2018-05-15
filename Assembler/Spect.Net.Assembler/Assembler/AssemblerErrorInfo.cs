@@ -47,10 +47,10 @@ namespace Spect.Net.Assembler.Assembler
         public AssemblerErrorInfo(SourceFileItem sourceItem, string errorCode, SourceLineBase line, params object[] parameters)
         {
             ErrorCode = errorCode;
-            Line = line.SourceLine;
-            Column = line.Position;
+            Line = line?.SourceLine ?? 0;
+            Column = line?.FirstColumn ?? 0;
             Message = Errors.GetMessage(ErrorCode, parameters);
-            Filename = sourceItem.Filename;
+            Filename = sourceItem?.Filename;
         }
     }
 }

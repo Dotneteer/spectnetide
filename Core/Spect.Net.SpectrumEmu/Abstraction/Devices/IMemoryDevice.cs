@@ -9,21 +9,21 @@
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
-        /// <param name="noContention">
+        /// <param name="suppressContention">
         /// Indicates non-contended read operation
         /// </param>
         /// <returns>Byte read from the memory</returns>
-        byte Read(ushort addr, bool noContention = false);
+        byte Read(ushort addr, bool suppressContention = false);
 
         /// <summary>
         /// Sets the memory value at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <param name="noContention">
+        /// <param name="supressContention">
         /// Indicates non-contended write operation
         /// </param>
-        void Write(ushort addr, byte value, bool noContention = false);
+        void Write(ushort addr, byte value, bool supressContention = false);
 
         /// <summary>
         /// Emulates memory contention

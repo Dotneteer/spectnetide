@@ -28,8 +28,28 @@ namespace Spect.Net.Assembler.Assembler
         public List<byte> EmittedCode { get; set; } = new List<byte>(1024);
 
         /// <summary>
+        /// Signs if overflow has been detected
+        /// </summary>
+        public bool OverflowDetected { get; private set; }
+
+        /// <summary>
         /// The current code generation offset
         /// </summary>
         public int CurrentOffset => EmittedCode.Count;
+
+        /// <summary>
+        /// Emits a new data byte
+        /// </summary>
+        /// <param name="data"></param>
+        public bool EmitByte(byte data)
+        {
+            EmittedCode.Add(data);
+            if (StartAddress + EmittedCode.Count > 0x10000 && !OverflowDetected)
+            {
+                OverflowDetected = true;
+                return true;
+            }
+            return false;
+        }
     }
 }

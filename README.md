@@ -22,6 +22,8 @@ __SpectNetIde__ supports you in two main scenarios:
 exsisting BASIC/Z80 assmebly code.
 2. __Code creation__. You can easily create, run, debug, and export Z80 assembly code.
 
+I cannot be grateful enough to [__Simon Brattel__](http://www.desdes.com/index.htm). Many features I have been implementing in the SpectNetIde assembler were inspired by Simon's outstanding [Zeus Z80 Assembler](http://www.desdes.com/products/oldfiles/zeus.htm). I honor his ideas and work.
+
 ## Taste the Pudding!
 
 >You can download the VSIX installer file [here](https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde).
@@ -71,6 +73,8 @@ robust Z80 assembler and related toolset.
 for example, both `jp (hl)` and `jp hl` are accepted, as well as `sub b` and `sub a,b`)
     * __String escape sequences for ZX Spectrum-specific characters__. The assembly language supports escapes for control characters like
 `AT`, `TAB`, `PAPER`, &pound;, or &copy;.
+    * __Loops and conditional statements__
+    * __Powerful dynamic macros__
     * __Source code debugging__. You can set up breakpoint in the source code. When they are reached, the corresponding source code
 is displayed. *Run/Pause/Step-Into/Step/Over* commands are available with source code, too.
     * __Z80 Program code export__. You can export the Z80 assembly code into `.TZX` and `.TAP` code files that can be immediately

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
@@ -24,16 +25,153 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        ushort? IEvaluationContext.GetSymbolValue(string symbol)
+        ExpressionValue IEvaluationContext.GetSymbolValue(string symbol)
         {
+            // --- Check the local scope in stack order
+            foreach (var scope in _output.LocalScopes)
+            {
+                if (scope.Symbols.TryGetValue(symbol, out var localSymbolValue))
+                {
+                    return localSymbolValue;
+                }
+                if (scope.Vars.TryGetValue(symbol, out var localVarValue))
+                {
+                    return localVarValue;
+                }
+            }
+
+            // --- Check the global scope
             if (_output.Symbols.TryGetValue(symbol, out var symbolValue))
             {
                 return symbolValue;
             }
             return _output.Vars.TryGetValue(symbol, out var varValue) 
                 ? varValue
-                : (ushort?)null;
+                : null;
         }
+
+        /// <summary>
+        /// Gets the current loop counter value
+        /// </summary>
+        public ExpressionValue GetLoopCounterValue()
+        {
+            if (IsInGlobalScope)
+            {
+                ReportError(Errors.Z0412, CurrentSourceLine);
+                return ExpressionValue.Error;
+            }
+
+            var scope = _output.LocalScopes.Peek();
+            if (!scope.IsLoopScope)
+            {
+                ReportError(Errors.Z0412, CurrentSourceLine);
+                return ExpressionValue.Error;
+            }
+
+            return new ExpressionValue(scope.LoopCounter);
+        }
+
+        #region Symbol handler methods
+
+        /// <summary>
+        /// Tests if the current assembly instruction is in the global scope
+        /// </summary>
+        public bool IsInGlobalScope => _output.LocalScopes.Count == 0;
+
+        /// <summary>
+        /// Checks is the specified error should be reported in the local scope
+        /// </summary>
+        /// <param name="errorCode">Error code to check</param>
+        /// <returns></returns>
+        public bool ShouldReportErrorInCurrentScope(string errorCode)
+        {
+            if (IsInGlobalScope) return true;
+            var localScope = _output.LocalScopes.Peek();
+            if (localScope.OwnerScope != null)
+            {
+                localScope = localScope.OwnerScope;
+            }
+            return !localScope.IsErrorReported(errorCode);
+        }
+
+        /// <summary>
+        /// Checks if the specified symbol exists
+        /// </summary>
+        /// <param name="symbol">Symbol to check</param>
+        /// <returns></returns>
+        public bool SymbolExists(string symbol)
+        {
+            var lookup = _output.LocalScopes.Count > 0
+                ? _output.LocalScopes.Peek().Symbols
+                : _output.Symbols;
+            return lookup.ContainsKey(symbol);
+        }
+
+        /// <summary>
+        /// Adds a symbol to the current scope
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="value"></param>
+        public void AddSymbol(string symbol, ExpressionValue value)
+        {
+            var lookup = _output.LocalScopes.Count > 0
+                ? _output.LocalScopes.Peek().Symbols
+                : _output.Symbols;
+            lookup.Add(symbol, value);
+        }
+
+        /// <summary>
+        /// Checks if the variable with the specified name exisits
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool VariableExists(string name)
+        {
+            // --- Search for the variable from inside out
+            foreach (var scope in _output.LocalScopes)
+            {
+                if (scope.Vars.ContainsKey(name))
+                {
+                    return true;
+                }
+            }
+
+            // --- Check the global scope
+            return _output.Vars.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Sets the value of a variable
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="value">Variable value</param>
+        public void SetVariable(string name, ExpressionValue value)
+        {
+            // --- Search for the variable from inside out
+            foreach (var scope in _output.LocalScopes)
+            {
+                if (scope.Vars.ContainsKey(name))
+                {
+                    scope.Vars[name] = value;
+                    return;
+                }
+            }
+
+            // --- Check the global scope
+            if (_output.Vars.ContainsKey(name))
+            {
+                _output.Vars[name] = value;
+                return;
+            }
+
+            // --- The variable does not exist, create it in the current scope
+            var vars = _output.LocalScopes.Count > 0
+                ? _output.LocalScopes.Peek().Vars
+                : _output.Vars;
+            vars[name] = value;
+        }
+
+        #endregion
 
         #region Evaluation methods
 
@@ -42,28 +180,33 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="symbol">Symbol name</param>
         /// <param name="value">Symbol value</param>
-        public void SetSymbolValue(string symbol, ushort value)
+        public void SetSymbolValue(string symbol, ExpressionValue value)
             => _output.Symbols[symbol] = value;
 
         /// <summary>
         /// Evaluates the specified expression.
         /// </summary>
+        /// <param name="opLine">Assembly line with operation</param>
         /// <param name="expr">Expression to evaluate</param>
         /// <returns>
         /// Null, if the expression cannot be evaluated, or evaluation 
         /// results an error (e.g. divide by zero)
         /// </returns>
-        public ushort? Eval(ExpressionNode expr)
+        public ExpressionValue Eval(SourceLineBase opLine, ExpressionNode expr)
         {
             if (expr == null)
             {
                 throw new ArgumentNullException(nameof(expr));
             }
-            if (!expr.ReadyToEvaluate(this)) return null;
+            if (!expr.ReadyToEvaluate(this)) return ExpressionValue.NonEvaluated;
             var result = expr.Evaluate(this);
-            return expr.EvaluationError != null 
-                ? (ushort?) null 
-                : result;
+
+            // --- Certain symbols may not bee be evaluated
+            if (result == ExpressionValue.Error)
+            {
+                ReportError(Errors.Z0200, opLine, expr.EvaluationError);
+            }
+            return result;
         }
 
         /// <summary>
@@ -75,7 +218,7 @@ namespace Spect.Net.Assembler.Assembler
         /// Null, if the expression cannot be evaluated, or evaluation 
         /// results an error (e.g. divide by zero)
         /// </returns>
-        public ushort? EvalImmediate(SourceLineBase opLine, ExpressionNode expr)
+        public ExpressionValue EvalImmediate(SourceLineBase opLine, ExpressionNode expr)
         {
             if (expr == null)
             {
@@ -84,13 +227,16 @@ namespace Spect.Net.Assembler.Assembler
             if (!expr.ReadyToEvaluate(this))
             {
                 ReportError(Errors.Z0201, opLine);
-                return null;
+                return ExpressionValue.NonEvaluated;
             }
             var result = expr.Evaluate(this);
-            if (expr.EvaluationError == null) return result;
+            if (result.IsValid)
+            {
+                return result;
+            }
 
             ReportError(Errors.Z0200, opLine, expr.EvaluationError);
-            return null;
+            return ExpressionValue.Error;
         }
 
         #endregion
@@ -106,8 +252,14 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="label">Optional EQU label</param>
         private void RecordFixup(SourceLineBase opLine, FixupType type, ExpressionNode expression, string label = null)
         {
-            _output.Fixups.Add(new FixupEntry(opLine, type, _output.Segments.Count - 1,
-                CurrentSegment.CurrentOffset, expression, label));
+            var localScope = IsInGlobalScope ? null : _output.LocalScopes.Peek();
+            var fixup = new FixupEntry(this, localScope, opLine, type, _output.Segments.Count - 1,
+                CurrentSegment.CurrentOffset, expression, label);
+            foreach (var scope in _output.LocalScopes)
+            {
+                scope.Fixups.Add(fixup);
+            }
+            _output.Fixups.Add(fixup);
         }
 
         /// <summary>
@@ -116,15 +268,35 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns></returns>
         private bool FixupSymbols()
         {
+            // --- Go through all scopes from inside to outside
+            foreach (var scope in _output.LocalScopes)
+            {
+                if (FixupSymbols(scope.Fixups, scope.Symbols, false))
+                {
+                    // --- Successful fixup in the local scope
+                    return true;
+                }
+            }
+
+            return FixupSymbols(_output.Fixups, _output.Symbols, true);
+        }
+
+        /// <summary>
+        /// Tries to create fixups in the specified scope
+        /// </summary>
+        /// <param name="fixups">Fixup entries in the scope</param>
+        /// <param name="symbols">Symbols in the scope</param>
+        /// <param name="signNotEvaluable">Raise error if the symbol is not evaluable</param>
+        /// <returns></returns>
+        private bool FixupSymbols(List<FixupEntry> fixups, Dictionary<string, ExpressionValue> symbols, bool signNotEvaluable)
+        {
             // --- First, fix the .equ values
             var success = true;
-            foreach (var equ in _output.Fixups.Where(f => f.Type == FixupType.Equ))
+            foreach (var equ in fixups.Where(f => f.Type == FixupType.Equ && !f.Resolved))
             {
-                ushort value;
-                if (EvaluateFixupExpression(equ, out value))
+                if (EvaluateFixupExpression(equ, false, signNotEvaluable, out var value))
                 {
-                    _output.Symbols[equ.Label] = value;
-                    equ.Resolved = true;
+                    symbols[equ.Label] = value;
                 }
                 else
                 {
@@ -133,46 +305,44 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Second, fix all the other values
-            foreach (var fixup in _output.Fixups.Where(f => f.Type != FixupType.Equ))
+            foreach (var fixup in fixups.Where(f => f.Type != FixupType.Equ && !f.Resolved))
             {
-                ushort value;
-                if (EvaluateFixupExpression(fixup, out value))
+                if (EvaluateFixupExpression(fixup, true, signNotEvaluable, out var value))
                 {
                     var segment = _output.Segments[fixup.SegmentIndex];
                     var emittedCode = segment.EmittedCode;
-                    fixup.Resolved = true;
                     switch (fixup.Type)
                     {
                         case FixupType.Bit8:
-                            emittedCode[fixup.Offset] = (byte) value;
+                            emittedCode[fixup.Offset] = value.AsByte();
                             break;
 
                         case FixupType.Bit16:
-                            emittedCode[fixup.Offset] = (byte)value;
-                            emittedCode[fixup.Offset + 1] = (byte)(value >> 8);
+                            emittedCode[fixup.Offset] = value.AsByte();
+                            emittedCode[fixup.Offset + 1] = (byte)(value.AsWord() >> 8);
                             break;
 
                         case FixupType.Jr:
                             // --- Check for Relative address
-                            var currentAssemblyAddress = segment.StartAddress 
+                            var currentAssemblyAddress = segment.StartAddress
                                 + (segment.Displacement ?? 0)
                                 + fixup.Offset;
-                            var dist = value - (currentAssemblyAddress + 2);
+                            var dist = value.AsWord() - (currentAssemblyAddress + 2);
                             if (dist < -128 || dist > 127)
                             {
                                 ReportError(Errors.Z0022, fixup.SourceLine, dist);
                                 success = false;
                                 break;
                             }
-                            emittedCode[fixup.Offset + 1] = (byte) dist;
+                            emittedCode[fixup.Offset + 1] = (byte)dist;
                             break;
 
                         case FixupType.Ent:
-                            _output.EntryAddress = value;
+                            _output.EntryAddress = value.AsWord();
                             break;
 
                         case FixupType.Xent:
-                            _output.ExportEntryAddress = value;
+                            _output.ExportEntryAddress = value.AsWord();
                             break;
                     }
                 }
@@ -188,22 +358,40 @@ namespace Spect.Net.Assembler.Assembler
         /// Evaluates the fixup entry
         /// </summary>
         /// <param name="fixup"></param>
+        /// <param name="numericOnly">Signs if only numeric expressions are accepted</param>
+        /// <param name="signNotEvaluable">Raise error if the symbol is not evaluable</param>
         /// <param name="exprValue">The value of the expression</param>
         /// <returns>True, if evaluation successful; otherwise, false</returns>
-        private bool EvaluateFixupExpression(FixupEntry fixup, out ushort exprValue)
+        private bool EvaluateFixupExpression(FixupEntry fixup, bool numericOnly, bool signNotEvaluable, 
+            out ExpressionValue exprValue)
         {
-            exprValue = 0;
-            if (!fixup.Expression.ReadyToEvaluate(this))
+            exprValue = new ExpressionValue(0L);
+            if (!fixup.Expression.ReadyToEvaluate(fixup))
             {
-                ReportError(Errors.Z0201, fixup.SourceLine);
+                if (signNotEvaluable)
+                {
+                    ReportError(Errors.Z0201, fixup.SourceLine);
+                }
                 return false;
             }
-            exprValue = fixup.Expression.Evaluate(this);
+
+            // --- Now resolve the fixup
+            exprValue = fixup.Expression.Evaluate(fixup);
+            fixup.Resolved = true;
+
+            // --- Check, if resolution was successful
             if (fixup.Expression.EvaluationError != null)
             {
                 ReportError(Errors.Z0200, fixup.SourceLine, fixup.Expression.EvaluationError);
                 return false;
             }
+            if (numericOnly && exprValue.Type == ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0305, fixup.SourceLine);
+                return false;
+            }
+
+            // --- Ok, no error
             return true;
         }
 

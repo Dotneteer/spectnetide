@@ -125,6 +125,14 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     {
                         type = Z80AsmTokenType.Include;
                     }
+                    else if (asmline is MacroInvocation)
+                    {
+                        type = Z80AsmTokenType.MacroInvocation;
+                    }
+                    else if (asmline is StatementBase)
+                    {
+                        type = Z80AsmTokenType.Statement;
+                    }
 
                     // --- Retrieve a pragma/directive/instruction
                     yield return CreateSpan(currentLine, asmline.KeywordSpan, type);
@@ -132,7 +140,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 
                 if (asmline.CommentSpan != null)
                 {
-                    // --- Retrieve a comment
                     yield return CreateSpan(currentLine, asmline.CommentSpan, Z80AsmTokenType.Comment);
                 }
 
@@ -140,18 +147,74 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 {
                     foreach (var numberSpan in asmline.Numbers)
                     {
-                        // --- Retrieve a number
                         yield return CreateSpan(currentLine, numberSpan, Z80AsmTokenType.Number);
                     }
                 }
 
-                if (asmline.Identifiers == null) continue;
-
-                foreach (var idSpan in asmline.Identifiers)
+                if (asmline.Strings != null)
                 {
-                    // --- Retrieve a number
-                    yield return CreateSpan(currentLine, idSpan, Z80AsmTokenType.Identifier);
+                    foreach (var stringSpan in asmline.Strings)
+                    {
+                        yield return CreateSpan(currentLine, stringSpan, Z80AsmTokenType.String);
+                    }
                 }
+
+                if (asmline.Functions != null)
+                {
+                    foreach (var functionSpan in asmline.Functions)
+                    {
+                        yield return CreateSpan(currentLine, functionSpan, Z80AsmTokenType.Function);
+                    }
+                }
+
+                if (asmline.SemiVars != null)
+                {
+                    foreach (var semiVarSpan in asmline.SemiVars)
+                    {
+                        yield return CreateSpan(currentLine, semiVarSpan, Z80AsmTokenType.SemiVar);
+                    }
+                }
+
+                if (asmline.MacroParams != null)
+                {
+                    foreach (var macroParamSpan in asmline.MacroParams)
+                    {
+                        yield return CreateSpan(currentLine, macroParamSpan, Z80AsmTokenType.MacroParam);
+                    }
+                }
+
+                if (asmline.Identifiers != null)
+                {
+                    foreach (var id in asmline.Identifiers)
+                    {
+                        yield return CreateSpan(currentLine, id, Z80AsmTokenType.Identifier);
+                    }
+                }
+
+                if (asmline.Statements != null)
+                {
+                    foreach (var statement in asmline.Statements)
+                    {
+                        yield return CreateSpan(currentLine, statement, Z80AsmTokenType.Statement);
+                    }
+                }
+
+                if (asmline.Operands != null)
+                {
+                    foreach (var operand in asmline.Operands)
+                    {
+                        yield return CreateSpan(currentLine, operand, Z80AsmTokenType.Operand);
+                    }
+                }
+
+                if (asmline.Mnemonics != null)
+                {
+                    foreach (var mnemonic in asmline.Mnemonics)
+                    {
+                        yield return CreateSpan(currentLine, mnemonic, Z80AsmTokenType.Instruction);
+                    }
+                }
+
             }
         }
 

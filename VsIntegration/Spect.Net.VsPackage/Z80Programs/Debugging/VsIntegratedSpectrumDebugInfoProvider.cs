@@ -130,14 +130,17 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 if (fileIndex < 0) continue;
 
                 // --- Check the breakpoint address
-                if (CompiledOutput.AddressMap.TryGetValue((fileIndex, breakpoint.FileLine), out var address))
+                if (CompiledOutput.AddressMap.TryGetValue((fileIndex, breakpoint.FileLine), out var addresses))
                 {
-                    Breakpoints.Add(address, new BreakpointInfo
+                    foreach (var addr in addresses)
                     {
-                        File = CompiledOutput.SourceFileList[fileIndex].Filename,
-                        FileLine = breakpoint.FileLine,
-                        Type = BreakpointType.NoCondition
-                    });
+                        Breakpoints.Add(addr, new BreakpointInfo
+                        {
+                            File = CompiledOutput.SourceFileList[fileIndex].Filename,
+                            FileLine = breakpoint.FileLine,
+                            Type = BreakpointType.NoCondition
+                        });
+                    }
                 }
             }
         }

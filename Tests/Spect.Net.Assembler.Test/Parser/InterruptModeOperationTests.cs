@@ -29,8 +29,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Operand.ShouldNotBeNull();
             line.Operand.Type.ShouldBe(OperandType.Expr);
             line.Operand2.ShouldBeNull();
-            line.BitIndex.ShouldBeNull();
-            line.Condition.ShouldBeNull();
+            line.Operand3.ShouldBeNull();
         }
     }
 }

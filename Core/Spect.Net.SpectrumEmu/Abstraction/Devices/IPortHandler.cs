@@ -12,6 +12,11 @@
         void Reset();
 
         /// <summary>
+        /// Gets the parent device of this port handler
+        /// </summary>
+        IPortDevice ParentDevice { get; }
+
+        /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
         /// </summary>
         void OnAttachedToVm(ISpectrumVm hostVm);

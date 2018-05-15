@@ -47,19 +47,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
-        /// <param name="noContention">Indicates non-contended read operation</param>
+        /// <param name="suppressContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public abstract byte Read(ushort addr, bool noContention = false);
+        public abstract byte Read(ushort addr, bool suppressContention = false);
 
         /// <summary>
         /// Sets the memory value at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <param name="noContention">
+        /// <param name="supressContention">
         /// Indicates non-contended write operation
         /// </param>
-        public abstract void Write(ushort addr, byte value, bool noContention = false);
+        public abstract void Write(ushort addr, byte value, bool supressContention = false);
 
         /// <summary>
         /// Emulates memory contention
@@ -69,9 +69,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             if ((addr & 0xC000) == 0x4000)
             {
-                var delay = ScreenDevice.GetContentionValue(HostVm.CurrentFrameTact);
-                Cpu?.Delay(delay);
+                ApplyDelay();
             }
+        }
+
+        /// <summary>
+        /// Applies the delay according to the current frame tact
+        /// </summary>
+        protected void ApplyDelay()
+        {
+            if (HostVm == null) return;
+            var delay = ScreenDevice.GetContentionValue(HostVm.CurrentFrameTact);
+            Cpu.Delay(delay);
+            HostVm.ContentionAccumulated += delay;
         }
 
         /// <summary>

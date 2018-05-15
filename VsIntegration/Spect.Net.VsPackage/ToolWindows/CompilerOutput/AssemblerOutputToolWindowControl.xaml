@@ -154,9 +154,11 @@
                         <TextBlock Text="#of Symbols: " Style="{DynamicResource Z80Text}"/>
                         <TextBlock Text="{Binding Symbols.Count}" Style="{DynamicResource Z80Text}"/>
                     </StackPanel>
-                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                        <ListBox BorderThickness="0" Background="Transparent" ItemsSource="{Binding Symbols}" 
+                    <ListBox Grid.Row="2" BorderThickness="0" Background="Transparent" ItemsSource="{Binding Symbols}" 
                                   ItemTemplate="{DynamicResource DataTemplate1}"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.CanContentScroll="True"
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <ListBox.Resources>
@@ -169,7 +171,6 @@
                                 </DataTemplate>
                             </ListBox.Resources>
                         </ListBox>
-                    </ScrollViewer>
                 </Grid>
             </TabItem>
             <TabItem Header="Fixups">
@@ -189,9 +190,11 @@
                         <TextBlock Text="{Binding Fixups.Count}" Style="{DynamicResource Z80Text}"/>
                     </StackPanel>
 
-                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                        <ListBox BorderThickness="0" Background="Transparent" ItemsSource="{Binding Fixups}" 
+                    <ListBox Grid.Row="2" BorderThickness="0" Background="Transparent" ItemsSource="{Binding Fixups}" 
                                  ItemTemplate="{DynamicResource DataTemplate2}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ScrollViewer.CanContentScroll="True"
                                  VirtualizingPanel.IsVirtualizing="True"
                                  VirtualizingPanel.VirtualizationMode="Recycling">
                             <ListBox.Resources>
@@ -211,7 +214,6 @@
                                 </DataTemplate>
                             </ListBox.Resources>
                         </ListBox>
-                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -78,7 +78,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Mnemonic.ShouldBe(type);
             line.Operand.Expression.ShouldNotBeNull();
             line.Operand2.ShouldBeNull();
-            line.Condition.ShouldBeNull();
+            line.Operand3.ShouldBeNull();
         }
 
         protected void JumpToRegisterAddressWorks(string instruction, string reg)
@@ -93,7 +93,6 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Mnemonic.ShouldBe("JP");
             line.Operand.Expression.ShouldBeNull();
             line.Operand.Register.ShouldBe(reg);
-            line.Condition.ShouldBeNull();
         }
 
         protected void ConditionOperationWorks(string instruction, string type, string condition, bool nullTarget = false)
@@ -108,14 +107,21 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Mnemonic.ShouldBe(type);
             if (nullTarget)
             {
-                line.Operand?.Expression.ShouldBeNull();
+                line.Operand2?.Expression.ShouldBeNull();
             }
             else
             {
-                line.Operand.Expression.ShouldNotBeNull();
+                line.Operand2.Expression.ShouldNotBeNull();
             }
-            line.Operand?.Register.ShouldBeNull();
-            line.Condition.ShouldBe(condition);
+            line.Operand2?.Register.ShouldBeNull();
+            if (condition.ToUpper() == "C")
+            {
+                line.Operand.Register.ShouldBe("C");
+            }
+            else
+            {
+                line.Operand.Condition.ShouldBe(condition);
+            }
         }
     }
 }

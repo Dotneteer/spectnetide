@@ -7,8 +7,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// </summary>
     public sealed class Spectrum128MemoryDevice : BankedMemoryDeviceBase
     {
-        private IZ80Cpu _cpu;
-        private IScreenDevice _screenDevice;
         private int _currentSlot3Bank;
 
         /// <summary>
@@ -45,8 +43,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _cpu = hostVm?.Cpu;
-            _screenDevice = hostVm?.ScreenDevice;
             _currentSlot3Bank = 0;
         }
 
@@ -54,9 +50,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
-        /// <param name="noContention">Indicates non-contended read operation</param>
+        /// <param name="suppressContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public override byte Read(ushort addr, bool noContention = false)
+        public override byte Read(ushort addr, bool suppressContention = false)
         {
             var memIndex = addr & 0x3FFF;
             byte memValue;
@@ -66,8 +62,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     return Roms[SelectedRomIndex][memIndex];
                 case 0x4000:
                     memValue = RamBanks[5][memIndex];
-                    if (noContention || _screenDevice == null) return memValue;
-                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    if (suppressContention || ScreenDevice == null) return memValue;
+                    ApplyDelay();
                     return memValue;
                 case 0x8000:
                     return RamBanks[2][memIndex];
@@ -76,7 +72,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     if ((_currentSlot3Bank & 0x01) == 0) return memValue;
 
                     // --- Bank 1, 3, 5, and 7 are contended
-                    _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                    ApplyDelay();
                     return memValue;
             }
         }
@@ -86,10 +82,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <param name="noContention">
+        /// <param name="supressContention">
         /// Indicates non-contended write operation
         /// </param>
-        public override void Write(ushort addr, byte value, bool noContention = false)
+        public override void Write(ushort addr, byte value, bool supressContention = false)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             var memIndex = addr & 0x3FFF;
@@ -99,9 +95,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     // --- ROM cannot be overwritten
                     return;
                 case 0x4000:
-                    if (!noContention)
+                    if (!supressContention)
                     {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        ApplyDelay();
                     }
                     RamBanks[5][memIndex] = value;
                     break;
@@ -112,9 +108,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     if ((_currentSlot3Bank & 0x01) != 0)
                     {
                         // --- Bank 1, 3, 5, and 7 are contended
-                        if (!noContention)
+                        if (!supressContention)
                         {
-                            _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                            ApplyDelay();
                         }
                     }
                     RamBanks[_currentSlot3Bank][memIndex] = value;

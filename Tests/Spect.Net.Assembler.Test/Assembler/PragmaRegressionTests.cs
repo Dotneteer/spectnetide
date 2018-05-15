@@ -21,7 +21,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["MYSYMBOL"].ShouldBe((ushort)0x6789);
+            output.Symbols["MYSYMBOL"].Value.ShouldBe((ushort)0x6789);
         }
 
         [TestMethod]
@@ -192,5 +192,13 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
         }
+
+        [TestMethod]
+        [DataRow(".dm textof(ld)", new byte[] { 0x4C, 0x44 })]
+        public void TextOfWorksAsExpected(string source, byte[] expected)
+        {
+            CodeEmitWorks(source, expected);
+        }
+
     }
 }

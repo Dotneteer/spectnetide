@@ -160,9 +160,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
 
         private class Z80TestMemoryDevice : IMemoryDevice
         {
-            public byte Read(ushort addr, bool noContention) => 0;
+            public byte Read(ushort addr, bool suppressContention) => 0;
 
-            public void Write(ushort addr, byte value, bool noContention = false)
+            public void Write(ushort addr, byte value, bool supressContention = false)
             { }
 
             public void ContentionWait(ushort addr)
@@ -285,9 +285,9 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
                 }
             }
 
-            public byte Read(ushort addr, bool noContention) => _buffer[addr];
+            public byte Read(ushort addr, bool suppressContention) => _buffer[addr];
 
-            public void Write(ushort addr, byte value, bool noContention = false)
+            public void Write(ushort addr, byte value, bool supressContention = false)
 
             {
                 _buffer[addr] = value;

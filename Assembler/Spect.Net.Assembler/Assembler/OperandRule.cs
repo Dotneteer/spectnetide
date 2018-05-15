@@ -19,5 +19,6 @@ namespace Spect.Net.Assembler.Assembler
             FirstOp = firstOp;
             SecondOp = secondOp;
         }
+
     }
 }

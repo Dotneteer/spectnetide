@@ -78,6 +78,7 @@ namespace Spect.Net.VsPackage.Z80Programs
             CurrentItemId = itemId;
 
             var compiler = new Z80Assembler();
+            compiler.AssemblerMessageCreated += DisplayTraceMessage;
             if (!(hierarchy is IVsProject project)) return null;
             project.GetMkDocument(itemId, out var itemFullPath);
             var output = compiler.CompileFile(itemFullPath, options);
@@ -355,6 +356,15 @@ namespace Spect.Net.VsPackage.Z80Programs
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Displays the TRACE pragma messages of the compiler
+        /// </summary>
+        private static void DisplayTraceMessage(object sender, AssemblerMessageArgs e)
+        {
+            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+            pane.WriteLine($"TRACE: {e.Message}");
         }
     }
 }

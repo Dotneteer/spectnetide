@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -24,8 +25,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["SYMBOL1"].ShouldBe((ushort)123);
-            output.Symbols["SYMBOL2"].ShouldBe((ushort)122);
+            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)123);
+            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)122);
         }
 
         [TestMethod]
@@ -64,7 +65,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0200);
         }
 
         [TestMethod]
@@ -85,8 +86,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["SYMBOL1"].ShouldBe((ushort)0xF3);
-            output.Symbols["SYMBOL2"].ShouldBe((ushort)0xF2);
+            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)0xF3);
+            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)0xF2);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -150,8 +151,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["SYMBOL1"].ShouldBe((ushort)0x8004);
-            output.Symbols["SYMBOL2"].ShouldBe((ushort)0x8003);
+            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)0x8004);
+            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)0x8003);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -215,7 +216,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["FORWADDR"].ShouldBe((ushort)0x8004);
+            output.Symbols["FORWADDR"].Value.ShouldBe((ushort)0x8004);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -242,7 +243,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["BACKADDR"].ShouldBe((ushort)0x8000);
+            output.Symbols["BACKADDR"].Value.ShouldBe((ushort)0x8000);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -287,6 +288,80 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0022);
+        }
+
+        [TestMethod]
+        public void StringEquWithImmediateEvaluationWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Symbol1 .equ ""hello""
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Symbols["SYMBOL1"].Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL1"].AsString().ShouldBe("hello");
+        }
+
+        [TestMethod]
+        public void StringEquWithFixupWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Symbol1 .equ Symbol2 + ""you""
+                Symbol2 .equ ""hello""
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Symbols["SYMBOL1"].Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL1"].AsString().ShouldBe("helloyou");
+            output.Symbols["SYMBOL2"].Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL2"].AsString().ShouldBe("hello");
+        }
+
+        [TestMethod]
+        public void StringEquWith16BitExpectedRaisesAnError()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Symbol1 .equ ""hello""
+                        ld hl,Symbol1
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
+        }
+
+        [TestMethod]
+        public void StringEquWith16BitFixupRaisesAnError()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Symbol1 .equ ""hello"" + Symbol2
+                        ld hl,Symbol1
+                Symbol2 .equ ""you""
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
         }
     }
 }

@@ -130,6 +130,23 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     /// Defines an editor format for a Z80 assembly number
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80String")]
+    [Name("Z80String")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80StringClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80StringClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - String";
+            ForegroundColor = Colors.Cyan;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly number
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Identifier")]
     [Name("Z80Identifier")]
     [UserVisible(true)]
@@ -140,6 +157,24 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         {
             DisplayName = "Z80 Asm - Identifier";
             ForegroundColor = Colors.DarkCyan;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly number
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Function")]
+    [Name("Z80Function")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80FunctionClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80FunctionClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Function";
+            ForegroundColor = Colors.DarkCyan;
+            IsBold = true;
         }
     }
 
@@ -177,4 +212,93 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         }
     }
 
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly instruction
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80MacroParam")]
+    [Name("Z80MacroParam")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80MacroParamFormat : ClassificationFormatDefinition
+    {
+        public Z80MacroParamFormat()
+        {
+            DisplayName = "Z80 Asm - Macro Parameter";
+            ForegroundColor = Colors.DarkOrchid;
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly instruction
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Statement")]
+    [Name("Z80Statement")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80StatementFormat : ClassificationFormatDefinition
+    {
+        public Z80StatementFormat()
+        {
+            DisplayName = "Z80 Asm - Statement";
+            ForegroundColor = Colors.OliveDrab;
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly instruction
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80MacroInvocation")]
+    [Name("Z80MacroInvocation")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80MacroInvocationFormat : ClassificationFormatDefinition
+    {
+        public Z80MacroInvocationFormat()
+        {
+            DisplayName = "Z80 Asm - Invoke macro";
+            ForegroundColor = Colors.OliveDrab;
+            IsItalic = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 operand
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Operand")]
+    [Name("Z80Operand")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80OperandClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80OperandClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Operand";
+            ForegroundColor = Colors.NavajoWhite;
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 operand
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80SemiVar")]
+    [Name("Z80SemiVar")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80SemiVarClassifierFormat : ClassificationFormatDefinition
+    {
+        public Z80SemiVarClassifierFormat()
+        {
+            DisplayName = "Z80 Asm - Semi-variables";
+            ForegroundColor = Colors.LightCoral;
+            IsItalic = true;
+        }
+    }
 }

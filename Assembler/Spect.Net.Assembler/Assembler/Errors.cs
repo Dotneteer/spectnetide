@@ -46,6 +46,8 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0088 = "Z0088";
         public const string Z0089 = "Z0089";
         public const string Z0090 = "Z0090";
+        public const string Z0091 = "Z0091";
+        public const string Z0092 = "Z0092";
 
         public const string Z0100 = "Z0100";
         public const string Z0101 = "Z0101";
@@ -58,6 +60,34 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0301 = "Z0301";
         public const string Z0302 = "Z0302";
         public const string Z0303 = "Z0303";
+        public const string Z0304 = "Z0304";
+        public const string Z0305 = "Z0305";
+        public const string Z0306 = "Z0306";
+        public const string Z0307 = "Z0307";
+
+        public const string Z0400 = "Z0400";
+        public const string Z0401 = "Z0401";
+        public const string Z0402 = "Z0402";
+        public const string Z0403 = "Z0403";
+        public const string Z0404 = "Z0404";
+        public const string Z0405 = "Z0405";
+        public const string Z0406 = "Z0406";
+        public const string Z0407 = "Z0407";
+        public const string Z0408 = "Z0408";
+        public const string Z0409 = "Z0409";
+        public const string Z0410 = "Z0410";
+        public const string Z0411 = "Z0411";
+        public const string Z0412 = "Z0412";
+        public const string Z0413 = "Z0413";
+        public const string Z0414 = "Z0414";
+        public const string Z0415 = "Z0415";
+        public const string Z0416 = "Z0416";
+        public const string Z0417 = "Z0417";
+        public const string Z0418 = "Z0418";
+        public const string Z0419 = "Z0419";
+        public const string Z0420 = "Z0420";
+        public const string Z0421 = "Z0421";
+        public const string Z0422 = "Z0422";
 
         // --- Error messages
         private static readonly IDictionary<string, string> s_Messages = new Dictionary<string, string>
@@ -100,6 +130,8 @@ namespace Spect.Net.Assembler.Assembler
             { Z0088, "A MODEL pragma can be used only once." },
             { Z0089, "A MODEL pragma can have only these values: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'." },
             { Z0090, "An #ifmod or #ifnmod directive cen be used only with these identifiers: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'." },
+            { Z0091, "DEFM pragma requires a string argument." },
+            { Z0092, "ALIGN pragma must be used with a parameter value between 1 and #4000; {0} in an invalid value." },
             { Z0100, "Unexpected token: '{0}'" },
             { Z0101, "Unexpected end of line" },
             { Z0102, "To use this Spectrum Next-specific instruction, you need to set MODEL type to NEXT explicitly." },
@@ -108,7 +140,34 @@ namespace Spect.Net.Assembler.Assembler
             { Z0300, "Cannot find include file: '{0}'" },
             { Z0301, "Error reading include file: '{0}' ({1})" },
             { Z0302, "Include file '{0}' is included more than once into the same parent source file" },
-            { Z0303, "Include file '{0}' causes circular file reference" }
+            { Z0303, "Include file '{0}' causes circular file reference" },
+            { Z0304, "The current assembly address overflew #FFFF." },
+            { Z0305, "A string value is used where a numeric value is expected." },
+            { Z0306, "A string value is expected." },
+            { Z0307, "Cannot use an empty string with DEFG pragma." },
+            { Z0400, "You cannot define a macro without a name." },
+            { Z0401, "Missing {0} statement." },
+            { Z0402, "Macro with name '{0}' has already been declared." },
+            { Z0403, "Unknown macro argument is used '{0}' macro definition." },
+            { Z0404, "Macro definition cannot be nested into another macro definition." },
+            { Z0405, "Orphan '{0}' statement found without a corresponding '{1}' statement." },
+            { Z0406, "Loop counter cannot be greater than 65535 (#FFFF)." },
+            { Z0407, "The {0} pragma can be used only in the global scope." },
+            { Z0408, "Too many errors detected while compiling a loop, further processing aborted." },
+            { Z0409, "Loop counter exceeded the maximum value of 65535 (#FFFF)." },
+            { Z0410, "IF cannot have an {0} section after a detected ELSE section." },
+            { Z0411, "{0} section in IF cannot have a label." },
+            { Z0412, "$CNT cannot be used outside of loop constructs." },
+            { Z0413, "The STEP value in a FOR-loop cannot be zero." },
+            { Z0414, "Variable {0} is already declared, it cannot be used as a FOR-loop variable again." },
+            { Z0415, "BREAK cannot be used outside of loop constructs." },
+            { Z0416, "CONTINUE cannot be used outside of loop constructs." },
+            { Z0417, "Duplicated MACRO argument: {0}." },
+            { Z0418, "Unknown MACRO: {0}." },
+            { Z0419, "The declaration of MACRO {0} contains {1} argument(s), but it is invoked with more parameters ({2})." },
+            { Z0420, "Macro parameter can only be used within a macro declaration." },
+            { Z0421, "The DEF() parse time function accepts only macro parameters." },
+            { Z0422, "Cannot pass a macro parameter template in a macro parameter." },
         };
 
         /// <summary>

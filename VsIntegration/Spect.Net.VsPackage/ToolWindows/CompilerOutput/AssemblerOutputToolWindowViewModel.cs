@@ -192,7 +192,7 @@ namespace Spect.Net.VsPackage.ToolWindows.CompilerOutput
             {
                 ToggleSymbolCommandText = "Order by symbols";
                 if (Output == null) return;
-                var symbols = Output.Symbols.OrderBy(kv => kv.Value).Select(kv => new AssemblySymbol(kv.Key, kv.Value));
+                var symbols = Output.Symbols.OrderBy(kv => kv.Value.Value).Select(kv => new AssemblySymbol(kv.Key, kv.Value));
                 Symbols = new List<AssemblySymbol>(symbols);
             }
         }

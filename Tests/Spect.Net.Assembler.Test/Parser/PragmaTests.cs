@@ -335,6 +335,25 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        [DataRow("dw")]
+        [DataRow(".dw")]
+        [DataRow("DW")]
+        [DataRow(".DW")]
+        public void DefwPragmaWorksAsExpected5(string pragma)
+        {
+            // --- Act
+            var visitor = Parse($"{pragma} #01, #02");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefwPragma;
+            line.ShouldNotBeNull();
+            line.Exprs.Count.ShouldBe(2);
+            line.Exprs[0].ShouldBeOfType<LiteralNode>();
+            line.Exprs[1].ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
         public void DefbPragmaWorksAsExpected1()
         {
             // --- Act
@@ -396,16 +415,43 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        public void DefmPragmaWorksAsExpected1()
+        [DataRow("db")]
+        [DataRow(".db")]
+        [DataRow("DB")]
+        [DataRow(".DB")]
+        public void DefbPragmaWorksAsExpected5(string pragma)
         {
             // --- Act
-            var visitor = Parse(".defm \"Message with \\\" mark\"");
+            var visitor = Parse($"{pragma} #01, #02");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefbPragma;
+            line.ShouldNotBeNull();
+            line.Exprs.Count.ShouldBe(2);
+            line.Exprs[0].ShouldBeOfType<LiteralNode>();
+            line.Exprs[1].ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        [DataRow("defm")]
+        [DataRow("DEFM")]
+        [DataRow("dm")]
+        [DataRow("DM")]
+        [DataRow(".defm")]
+        [DataRow(".DEFM")]
+        [DataRow(".dm")]
+        [DataRow(".DM")]
+        public void DefmPragmaWorksAsExpected(string pragma)
+        {
+            // --- Act
+            var visitor = Parse($"{pragma} \"Message with \\\" mark\"");
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefmPragma;
             line.ShouldNotBeNull();
-            line.Message.ShouldBe("\"Message with \\\" mark\"");
+            line.Message.ShouldNotBeNull();
         }
 
         [TestMethod]
@@ -701,6 +747,118 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as ModelPragma;
             line.ShouldNotBeNull();
             line.Model.ShouldBe("NEXT");
+        }
+
+        [TestMethod]
+        [DataRow(".align")]
+        [DataRow("align")]
+        [DataRow(".ALIGN")]
+        [DataRow("ALIGN")]
+        public void AlignPragmaWorksWithoutExpression(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as AlignPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".align #100")]
+        [DataRow("align #100")]
+        [DataRow(".ALIGN #100")]
+        [DataRow("ALIGN #100")]
+        public void AlignPragmaWorksWithExpression(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as AlignPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        [DataRow("trace #100", 1, false)]
+        [DataRow(".trace #100", 1, false)]
+        [DataRow("TRACE #100", 1, false)]
+        [DataRow(".TRACE #100", 1, false)]
+        [DataRow("tracehex #100", 1, true)]
+        [DataRow(".tracehex #100", 1, true)]
+        [DataRow("TRACEHEX #100", 1, true)]
+        [DataRow(".TRACEHEX #100", 1, true)]
+        [DataRow("trace #100, #200, \"Hello\"", 3, false)]
+        public void TracePragmaWorksWith(string source, int exprCount, bool isHex)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as TracePragma;
+            line.ShouldNotBeNull();
+            line.Exprs.Count.ShouldBe(exprCount);
+            line.IsHex.ShouldBe(isHex);
+        }
+
+        [TestMethod]
+        [DataRow(".rndseed")]
+        [DataRow("rndseed")]
+        [DataRow(".RNDSEED")]
+        [DataRow("RNDSEED")]
+        public void RndSeedPragmaWorksWithoutExpression(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as RndSeedPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".rndseed #100")]
+        [DataRow("rndseed #100")]
+        [DataRow(".RNDSEED #100")]
+        [DataRow("RNDSEED #100")]
+        public void RndSeedPragmaWorksWithExpression(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as RndSeedPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        [DataRow(".defg \"___O\"")]
+        [DataRow("defg \"___O\"")]
+        [DataRow(".DEFG \"___O\"")]
+        [DataRow("DEFG \"___O\"")]
+        [DataRow(".dg \"___O\"")]
+        [DataRow("dg \"___O\"")]
+        [DataRow(".DG \"___O\"")]
+        [DataRow("DG \"___O\"")]
+        public void DefgPragmaWorksAsExpected(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefgPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
         }
 
     }

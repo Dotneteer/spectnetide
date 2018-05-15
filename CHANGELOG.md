@@ -6,9 +6,67 @@ of Spectrum 128K and Spectrum +3, (Bit 5=1, of the `$7FFD` port), and the ALLRAM
 __FETAURE__: While the emulator runs, the memory bank status (ZX Spectrum Memory and Z80 Disassembly tools) is continuously
 updated.
 
+### Version 1.8.0
+
+__FEATURE__: Macros are now supported.  
+__FEATURE__: The Z80 assembler now supports the `FOR`..`NEXT` loop.  
+__FEATURE__: Unary logical NOT operator (`!`) added to the language.  
+__FEATURE__: The `&` operator can be used with two string values. The result is the concatenation
+of the two strings with a `\r\n` (next line) character pair inserted between them.  
+__FEATURE__: You can exit loops with `.break`, or carry on to the next iteration with `.continue`.  
+__FEATURE__: You can define syntax hightlighting for instruction operands (registers, conditions, etc.),
+and semi-variable literals ($, $cnt, etc.)  
+__FEATURE__: The assembler now supports *dynamic macros*, a non-preprocessor way of declaring and applying
+macros in the code.  
+__FEATURE__: The `lreg()` and `hreg()` parse-time functions can be applied an 16-bit standard registers and 16-bit
+index registers.  
+__FEATURE__: The `texof()` operator retrieves the compile-time text of a mnemonic, register, or condition.  
+__FEATURE__: New comparison operators, `===` and `!==` now support case-insensitive string comparison.  
+__FIX__: The `.defb` and `.defw` pragma accepted string values. Now, they do not.  
+
+
+### Version 1.7.0
+
+__FEATURE__: The Z80 assembler supports the `IF`..`ELIF`..`ELSE`..`ENDIF` statement.  
+__FEATURE__: The Z80 assembler now supports loop statements: `LOOP`, `REPEAT`..`UNTIL`
+`WHILE`..`WEND`.  
+__FIX__: The Z80 assembler accepted the invalid `sbc ix,de` and `sbc iy,de` operations without an error
+message &mdash; and compiled `add ix,de` and `add iy,de` operations. Now, it raises an error message.  
+__FIX__: The Z80 assembler did not accepted the `ld (ix+MySymbol+2),h` expression, you had to write 
+`ld (ix+[MySymbol+2]),h`. Now, the assembler does not have this restriction, so the first instruction 
+is also correct.  
+__FEATURE__: The Z80 assembler now accepts `(` and `)` as expression delimiters, not only `[` and `]`.  
+__FIX__: The Z80 assembler took the `ld sp,de` and `ld sp,bc` instructions into account as if they were 
+`ld sp,hl`. Now, the assembler recognizes that they are invalid, and raises an error message.  
+__FIX__: The lists in the *Symbols* and *Fixups* tabs of the Z80 Assembler Output window  
+
+### Version 1.6.0
+
+__FEATURE__: The Z80 Assembler now allows using floating point numbers and functions.  
+__FEATURE__: New pragmas are supported: `ALIGN`, `TRACE`, `TRACEHEX`, `DEFG`  
+__FEATURE__: `VAR` pragma supports two new alternate token: `=` and `:=`  
+__FEATURE__: The current address is now accessible not only with `$` but with `.`, too  
+
+### Version 1.5.0
+
+__FEATURE__: The ZX Spectrum emulator now supports the +2A/3 "floating bus" feature (http://sky.relative-path.com/zx/floating_bus.html)  
+__FEATURE__: The Z80 Registers tool window contains new counters:
+* `STP`: The number of T-cycles spent since the last pause
+* `DEL`: The accumulated contention delays since the machine started
+* `LCO`: The accumulated contention delays since the machine was last paused
+* `CON`: Contention delay value of the current screen rendering frame
+
+__FEATURE__: ZX Spectrum I/O port logging can be turned on/off through a SpectNetIde option
+ 
+### Version 1.4.0
+
+__FEATURE__: Now, the assembler recognises hexadecimal-like identifiers as identifiers.
+When using the `h` or `H` suffix, hexedecimal literals should start with a decimal digit.  
+__FEATURE__: The ZX Spectrum emulator now supports the ULA "floating bus" feature (http://ramsoft.bbk.org.omegahg.com/floatingbus.html)
+
 ### Version 1.3.0
 
-__FEATURE__: The first version of ZX Spectrum scripting object model is added to the project.
+__FEATURE__: The first version of ZX Spectrum scripting object model is added to the project.  
 __CHANGE__: When saving the virtual machine state of a ZX Spectrum 48K model, now, the memory
 image is compressed.  
 __WARNING__: When you work with a ZX Spectrum 48K state file from an older __SpectNetIde__ version,

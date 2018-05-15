@@ -10,8 +10,21 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
-        public override ushort Calculate(IEvaluationContext evalContext)
-            => (ushort)(LeftOperand.Evaluate(evalContext) 
-                >> RightOperand.Evaluate(evalContext));
+        public override ExpressionValue Calculate(IEvaluationContext evalContext)
+        {
+            var left = LeftOperand.Evaluate(evalContext);
+            var right = RightOperand.Evaluate(evalContext);
+            if (left.Type != ExpressionValueType.Bool && left.Type != ExpressionValueType.Integer)
+            {
+                EvaluationError = "The left operand of the shift right operator must be integral";
+                return ExpressionValue.Error;
+            }
+            if (right.Type != ExpressionValueType.Bool && right.Type != ExpressionValueType.Integer)
+            {
+                EvaluationError = "Right operand of the shift right operator must be integral";
+                return ExpressionValue.Error;
+            }
+            return new ExpressionValue(left.AsLong() >> (ushort)right.AsLong());
+        }
     }
 }

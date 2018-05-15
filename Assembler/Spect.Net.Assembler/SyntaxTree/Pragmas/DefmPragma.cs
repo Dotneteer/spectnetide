@@ -1,3 +1,5 @@
+using Spect.Net.Assembler.SyntaxTree.Expressions;
+
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
@@ -8,6 +10,6 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
         /// <summary>
         /// The message to define
         /// </summary>
-        public string Message { get; set; }
+        public ExpressionNode Message { get; set; }
     }
 }

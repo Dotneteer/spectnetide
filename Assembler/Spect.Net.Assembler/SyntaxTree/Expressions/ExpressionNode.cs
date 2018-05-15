@@ -23,11 +23,16 @@
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public abstract ushort Evaluate(IEvaluationContext evalContext);
+        public abstract ExpressionValue Evaluate(IEvaluationContext evalContext);
 
         /// <summary>
         /// Retrieves the evaluation error text, provided there is any issue
         /// </summary>
         public virtual string EvaluationError { get; set; } = null;
+
+        /// <summary>
+        /// Indicates if this expression has a macro parameter
+        /// </summary>
+        public virtual bool HasMacroParameter => false;
     }
 }

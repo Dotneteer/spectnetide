@@ -30,6 +30,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <registersTool:FlagsControl Grid.Row="0" 
                                     RegName="F" 
@@ -71,7 +75,13 @@
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="HLT" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Text="HLT" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Indicates (1) if the CPU is in HALTED state" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding Halted}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
         <Grid Row="3">
@@ -79,10 +89,59 @@
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="CLK" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
+            <TextBlock Text="CLK" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="The #of T-cycles spent since the machine has been started" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding Tacts}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
-        <Border Grid.Row="4"
+        <Grid Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="STP" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Displays the number of T-cycles spent since the last pause" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding LastStepTacts}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <Grid Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="DEL" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Displays the accumulated contention delays since the machine started" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding ContentionAccumulated}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <Grid Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="LCO" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Displays the accumulated contention delays since the machine was last paused" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding LastContentionValue}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <Border Grid.Row="7"
                 BorderBrush="{StaticResource BDebugOddRow}"
                 BorderThickness="0,2,0,0"
                 Margin="0,2,0,0"
@@ -126,12 +185,12 @@
                 </Grid>
             </WrapPanel>
         </Border>
-        <Border Grid.Row="5"
+        <Border Grid.Row="8"
                 BorderBrush="{StaticResource BDebugOddRow}"
                 BorderThickness="0,2,0,0"
                 Margin="0,2,0,0"
                 Padding="0,2,0,0"/>
-        <Grid Row="6">
+        <Grid Row="9">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
@@ -145,7 +204,7 @@
             </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding CurrentUlaTact}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
-        <Grid Row="7">
+        <Grid Row="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
@@ -159,7 +218,7 @@
             </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding FrameCount}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
-        <Grid Row="8">
+        <Grid Row="11">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
@@ -173,7 +232,7 @@
             </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding CurrentRasterLine}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
-        <Grid Row="9">
+        <Grid Row="12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
@@ -186,6 +245,20 @@
                 </TextBlock.ToolTip>
             </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding PixelOperation}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <Grid Row="13">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="CON" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Shows the current contention delay value" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding ContentionValue}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
     </Grid>
 

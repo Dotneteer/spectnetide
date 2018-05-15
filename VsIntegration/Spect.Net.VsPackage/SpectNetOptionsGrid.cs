@@ -120,7 +120,7 @@ namespace Spect.Net.VsPackage
         [DisplayName("Highlight entire breakpoint line")]
         [Description("If set to true, highlights the entire line of the current breakpoint line; " +
                      "otherwise, only the instruction part.")]
-        public bool FullLineHighlight { get; set; } = false;
+        public bool FullLineHighlight { get; set; } = true;
 
         [Category("Disassembly View")]
         [DisplayName("Turn on commenting mode")]
@@ -177,6 +177,16 @@ namespace Spect.Net.VsPackage
         [DisplayName("Log execution time in T-States")]
         [Description("Log the execution time in Z80 CPU T-States")]
         public bool TestTStateExecutionLogging { get; set; } = true;
+
+        [Category("Diagnostics")]
+        [DisplayName("Log I/O port access")]
+        [Description("Logs the usage of ZX Spectrum I/O ports")]
+        public bool LogIoAccess { get; set; } = false;
+
+        [Category("Diagnostics")]
+        [DisplayName("Log Next register access")]
+        [Description("Logs the usage of ZX Spectrum Next registers")]
+        public bool LogNextRegAccess { get; set; } = false;
 
         /// <summary>
         /// Signs that the keyboard layout type has changed

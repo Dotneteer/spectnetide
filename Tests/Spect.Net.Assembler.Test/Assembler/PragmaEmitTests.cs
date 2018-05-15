@@ -265,7 +265,42 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["MYSYMBOL"].ShouldBe((ushort)200);
+            output.Symbols["MYSYMBOL"].Value.ShouldBe((ushort)200);
+        }
+
+        [TestMethod]
+        public void EquPragmaWorksWithImmediateEvaluation2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol: .equ 100+100
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Symbols["MYSYMBOL"].Value.ShouldBe((ushort)200);
+        }
+
+        [TestMethod]
+        public void EquPragmaWorksWithImmediateEvaluation3()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol
+                    .equ 100+100
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Symbols["MYSYMBOL"].Value.ShouldBe((ushort)200);
         }
 
         [TestMethod]
@@ -308,36 +343,48 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void VarPragmaWorksWithInitialDefinition()
+        [DataRow(".var")]
+        [DataRow(".VAR")]
+        [DataRow("var")]
+        [DataRow("VAR")]
+        [DataRow("=")]
+        [DataRow(":=")]
+        public void VarPragmaWorksWithInitialDefinition(string source)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                MySymbol .var 100+100
+                MySymbol " + source + @" 100+100
                 ld a,b");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
-            output.Vars["MYSYMBOL"].ShouldBe((ushort)200);
+            output.Vars["MYSYMBOL"].Value.ShouldBe((ushort)200);
         }
 
         [TestMethod]
-        public void VarPragmaWorksWithReassignment()
+        [DataRow(".var")]
+        [DataRow(".VAR")]
+        [DataRow("var")]
+        [DataRow("VAR")]
+        [DataRow("=")]
+        [DataRow(":=")]
+        public void VarPragmaWorksWithReassignment(string source)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
             var output = compiler.Compile(@"
-                MySymbol .var 100+100
+                MySymbol " + source + @" 100+100
                 ld a,b
-                MySymbol .var MySymbol*3");
+                MySymbol " + source + @" MySymbol*3");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
-            output.Vars["MYSYMBOL"].ShouldBe((ushort)600);
+            output.Vars["MYSYMBOL"].Value.ShouldBe((ushort)600);
         }
 
         [TestMethod]
@@ -379,6 +426,21 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void DefbPragmaFailsWithString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defb ""Hello""");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
+        }
+
+        [TestMethod]
         public void DefwPragmaWorksWithImmediateEvaluation()
         {
             // --- Arrange
@@ -399,6 +461,59 @@ namespace Spect.Net.Assembler.Test.Assembler
                 segment.EmittedCode[i].ShouldBe(expected[i]);
             }
         }
+
+        [TestMethod]
+        public void DefwPragmaWorksWithFunctions()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0xE5, 0x03 };
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defw 1000*sin(1.5)");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void DefwPragmaFailsFunctions()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .DEFW 1000/sinx(1.5)");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0200);
+        }
+
+        [TestMethod]
+        public void DefwPragmaFailsWithString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defw ""Hello""");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
+        }
+
 
         [TestMethod]
         public void DefmPragmaWorksAsExpected()
@@ -695,5 +810,116 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0088);
         }
 
+        [TestMethod]
+        public void AlignPragmaWorksWithNoExpression()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            // --- Assert
+
+            // --- Act
+            var output = compiler.Compile(@"
+                ld a,b
+                .align
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var bytes = output.Segments[0].EmittedCode;
+            bytes.Count.ShouldBe(0x101);
+            bytes[0].ShouldBe((byte)0x78);
+            for (var i = 1; i < 0x100; i++)
+            {
+                bytes[i].ShouldBe((byte)0x00);
+            }
+            bytes[0x100].ShouldBe((byte)0x78);
+        }
+
+        [TestMethod]
+        [DataRow("ld a,b", 0x100, "ld a,b", new byte[] {0x78}, new byte[] {0x78})]
+        [DataRow("ld a,b", 0x02, "ld a,b", new byte[] { 0x78 }, new byte[] { 0x78 })]
+        [DataRow("ld a,b", 0x04, "ld a,b", new byte[] { 0x78 }, new byte[] { 0x78 })]
+        [DataRow("", 0x08, "ld a,b", new byte[0], new byte[] { 0x78 })]
+        [DataRow("ld a,b", 0x10, "", new byte[] { 0x78 }, new byte[0])]
+        public void AlignPragmaWorksWithExpression(string entrySource, int align, string exitSource, byte[] head, byte[] tail)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(entrySource + "\n .align " + align + "\n" + exitSource);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var bytes = output.Segments[0].EmittedCode;
+            var alignedLength = head.Length == 0 ? 0x00 : align;
+            bytes.Count.ShouldBe(alignedLength + tail.Length);
+            for (var i = 0; i < head.Length; i++)
+            {
+                bytes[i].ShouldBe(head[i]);
+            }
+            for (var i = head.Length; i < alignedLength; i++)
+            {
+                bytes[i].ShouldBe((byte)0x00);
+            }
+            for (var i = 0; i < tail.Length; i++)
+            {
+                bytes[alignedLength + i].ShouldBe(tail[i]);
+            }
+        }
+
+        [TestMethod]
+        [DataRow("trace #100", "256")]
+        [DataRow("tracehex #100", "0100")]
+        [DataRow("trace \"Hello\", #100, #200 ", "Hello256512")]
+        [DataRow("trace 3.14/2", "1.57")]
+        [DataRow("tracehex #1000*#1000", "01000000")]
+        [DataRow("tracehex \"Hello\"", "48656C6C6F")]
+        public void TracePragmaGeneratesOutput(string source, string message)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            string messageReceived = null;
+            compiler.AssemblerMessageCreated += (s, args) => { messageReceived = args.Message; };
+
+            // --- Act
+            var output = compiler.Compile(source);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            messageReceived.ShouldBe(message);
+        }
+
+        [TestMethod]
+        [DataRow(".dg \"....OOOO\"", new byte[] { 0x0F })]
+        [DataRow(".dg \">....OOOO\"", new byte[] { 0x0F })]
+        [DataRow(".dg \"<----OOOO\"", new byte[] { 0x0F })]
+        [DataRow(".dg \"___OOOO\"", new byte[] { 0x1E })]
+        [DataRow(".dg \"..OOOO\"", new byte[] { 0x3C })]
+        [DataRow(".dg \"-OOOO\"", new byte[] { 0x78 })]
+        [DataRow(".dg \"<___####\"", new byte[] { 0x1E })]
+        [DataRow(".dg \"<..OOOO\"", new byte[] { 0x3C })]
+        [DataRow(".dg \"<.OOOO\"", new byte[] { 0x78 })]
+        [DataRow(".dg \">...XXXX\"", new byte[] { 0x0F })]
+        [DataRow(".dg \">..xxxx\"", new byte[] { 0x0F })]
+        [DataRow(".dg \">.qqqq\"", new byte[] { 0x0F })]
+        [DataRow(".dg \">OOOO\"", new byte[] { 0x0F })]
+
+        [DataRow(".dg \" ....OOOO\"", new byte[] { 0x0F })]
+        [DataRow(".dg \" .... OOOO \"", new byte[] { 0x0F })]
+
+        [DataRow(".dg \"....OOOO ..OO\"", new byte[] { 0x0F, 0x30 })]
+        [DataRow(".dg \"....OOOO ..OOO\"", new byte[] { 0x0F, 0x38 })]
+        [DataRow(".dg \"....OOOO ..OOOO\"", new byte[] { 0x0F, 0x3C })]
+        [DataRow(".dg \">....OOOO ..OO\"", new byte[] { 0x00, 0xF3 })]
+        [DataRow(".dg \">....O OOO..OOO\"", new byte[] { 0x01, 0xE7 })]
+        [DataRow(".dg \">....OO OO..OOOO\"", new byte[] { 0x03, 0xCF })]
+        public void DefgPragmaWorksAsExpected(string source, byte[] expected)
+        {
+            CodeEmitWorks(source, expected);
+        }
     }
 }

@@ -63,6 +63,11 @@
         /// <summary>
         /// Expression
         /// </summary>
-        Expr
+        Expr,
+
+        /// <summary>
+        /// Condition
+        /// </summary>
+        Condition
     }
 }

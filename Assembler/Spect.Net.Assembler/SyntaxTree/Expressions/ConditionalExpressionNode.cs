@@ -36,15 +36,15 @@
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ushort Evaluate(IEvaluationContext evalContext)
+        public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
             var cond = Condition.Evaluate(evalContext);
             if (Condition.EvaluationError != null)
             {
                 EvaluationError = Condition.EvaluationError;
-                return 0;
+                return ExpressionValue.Error;
             }
-            if (cond != 0)
+            if (cond.AsBool())
             {
                 var trueValue = TrueExpression.Evaluate(evalContext);
                 if (TrueExpression.EvaluationError == null)
@@ -52,7 +52,7 @@
                     return trueValue;
                 }
                 EvaluationError = TrueExpression.EvaluationError;
-                return 0;
+                return ExpressionValue.Error;
             }
 
             var falseValue = FalseExpression.Evaluate(evalContext);
@@ -61,7 +61,15 @@
                 return falseValue;
             }
             EvaluationError = FalseExpression.EvaluationError;
-            return 0;
+            return ExpressionValue.Error;
         }
+
+        /// <summary>
+        /// Indicates if this expression has a macro parameter
+        /// </summary>
+        public override bool HasMacroParameter
+            => (Condition?.HasMacroParameter ?? false)
+               || (TrueExpression?.HasMacroParameter ?? false)
+               || (FalseExpression?.HasMacroParameter ?? false);
     }
 }

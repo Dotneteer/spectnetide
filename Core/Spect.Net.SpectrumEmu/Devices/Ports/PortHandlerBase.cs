@@ -20,15 +20,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         }
 
         /// <summary>
+        /// Gets the parent device of this port handler
+        /// </summary>
+        public IPortDevice ParentDevice { get; }
+
+        /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
+        /// <param name="parent">Parent device</param>
         /// <param name="mask">Port mask</param>
         /// <param name="port">Port number after masking</param>
         /// <param name="canRead">Read supported?</param>
         /// <param name="canWrite">Write supported?</param>
-        protected PortHandlerBase(ushort mask, ushort port, 
+        protected PortHandlerBase(IPortDevice parent, ushort mask, ushort port, 
             bool canRead = true, bool canWrite = true)
         {
+            ParentDevice = parent;
             PortMask = mask;
             Port = port;
             CanRead = canRead;

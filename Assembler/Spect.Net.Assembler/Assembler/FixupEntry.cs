@@ -7,8 +7,18 @@ namespace Spect.Net.Assembler.Assembler
     /// This class represents a fixup that recalculates and replaces
     /// unresolved symbol value at the end of the compilation
     /// </summary>
-    public class FixupEntry
+    public class FixupEntry : IEvaluationContext
     {
+        /// <summary>
+        /// The parent evaluation context
+        /// </summary>
+        public IEvaluationContext ParentContext { get; }
+
+        /// <summary>
+        /// Gets the optional local scope of the fixup
+        /// </summary>
+        public SymbolScope LocalScope { get; }
+
         /// <summary>
         /// The source line that belongs to the fixup
         /// </summary>
@@ -44,9 +54,15 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public string Label { get; }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public FixupEntry(SourceLineBase sourceLine, FixupType type, int segmentIndex, int offset, ExpressionNode expression, string label = null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// </summary>
+        public FixupEntry(IEvaluationContext parentContext, SymbolScope localScope,
+            SourceLineBase sourceLine, FixupType type, 
+            int segmentIndex, int offset, ExpressionNode expression, string label = null)
         {
+            ParentContext = parentContext;
+            LocalScope = localScope;
             SourceLine = sourceLine;
             Type = type;
             SegmentIndex = segmentIndex;
@@ -55,5 +71,39 @@ namespace Spect.Net.Assembler.Assembler
             Resolved = false;
             Label = label;
         }
+
+        /// <summary>
+        /// Gets the current assembly address
+        /// </summary>
+        public ushort GetCurrentAddress() => ParentContext.GetCurrentAddress();
+
+        /// <summary>
+        /// Gets the value of the specified symbol
+        /// </summary>
+        /// <param name="symbol">Symbol name</param>
+        /// <returns>
+        /// Null, if the symbol cannot be found; otherwise, the symbol's value
+        /// </returns>
+        public ExpressionValue GetSymbolValue(string symbol)
+        {
+            if (LocalScope != null)
+            {
+                // --- Check the global scope
+                if (LocalScope.Symbols.TryGetValue(symbol, out var symbolValue))
+                {
+                    return symbolValue;
+                }
+                if (LocalScope.Vars.TryGetValue(symbol, out var varValue))
+                {
+                    return varValue;
+                }
+            }
+            return ParentContext.GetSymbolValue(symbol);
+        }
+
+        /// <summary>
+        /// Gets the current loop counter value
+        /// </summary>
+        public ExpressionValue GetLoopCounterValue() => ParentContext.GetLoopCounterValue();
     }
 }

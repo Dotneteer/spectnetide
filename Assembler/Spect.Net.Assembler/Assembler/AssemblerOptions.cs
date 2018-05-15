@@ -26,5 +26,10 @@ namespace Spect.Net.Assembler.Assembler
         /// The current ZX Spectrum model
         /// </summary>
         public SpectrumModelType CurrentModel { get; set; } = SpectrumModelType.Spectrum48;
+
+        /// <summary>
+        /// The maximum number of errors to report within a loop
+        /// </summary>
+        public int MaxLoopErrorsToReport { get; set; } = 16;
     }
 }

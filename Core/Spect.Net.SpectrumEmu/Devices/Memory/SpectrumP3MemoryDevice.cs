@@ -7,12 +7,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     /// </summary>
     public class SpectrumP3MemoryDevice : BankedMemoryDeviceBase
     {
-        private IZ80Cpu _cpu;
-        private IScreenDevice _screenDevice;
         private int[] _slots;
         private bool _isInAllRamMode;
 
         public override bool IsInAllRamMode => _isInAllRamMode;
+
+        /// <summary>
+        /// Gets the last value that was read in a contended memory access operation
+        /// </summary>
+        public byte LastContendedReadValue { get; private set; }
 
         /// <summary>
         /// Initializes the device
@@ -20,6 +23,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public SpectrumP3MemoryDevice() : base(4, 8)
         {
             _isInAllRamMode = false;
+            LastContendedReadValue = 0xFF;
         }
 
         /// <summary>
@@ -53,8 +57,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _cpu = hostVm?.Cpu;
-            _screenDevice = hostVm?.ScreenDevice;
             _slots = new[]
             {
                 0, 5, 2, 0
@@ -79,9 +81,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
-        /// <param name="noContention">Indicates non-contended read operation</param>
+        /// <param name="suppressContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public override byte Read(ushort addr, bool noContention = false)
+        public override byte Read(ushort addr, bool suppressContention = false)
         {
             var memIndex = addr & 0x3FFF;
             var memValue = RamBanks[_slots[(byte)(addr >> 14)]][memIndex];
@@ -92,18 +94,20 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                         ? memValue
                         : Roms[SelectedRomIndex][memIndex];
                 case 0x4000:
-                    if (!noContention && _screenDevice != null)
+                    if (!suppressContention && ScreenDevice != null)
                     {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        ApplyDelay();
+                        LastContendedReadValue = memValue;
                     }
                     return memValue;
                 case 0x8000:
                     return memValue;
                 default:
                     // --- Bank 4, 5, 6, and 7 are contended
-                    if (_slots[3] >= 4 && _screenDevice != null)
+                    if (_slots[3] >= 4 && ScreenDevice != null)
                     {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        ApplyDelay();
+                        LastContendedReadValue = memValue;
                     }
                     return memValue;
             }
@@ -114,10 +118,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <param name="noContention">
+        /// <param name="supressContention">
         /// Indicates non-contended write operation
         /// </param>
-        public override void Write(ushort addr, byte value, bool noContention = false)
+        public override void Write(ushort addr, byte value, bool supressContention = false)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             var memIndex = addr & 0x3FFF;
@@ -130,9 +134,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     }
                     return;
                 case 0x4000:
-                    if (!noContention)
+                    if (!supressContention)
                     {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        ApplyDelay();
                     }
                     RamBanks[_slots[1]][memIndex] = value;
                     break;
@@ -144,9 +148,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                     if (bankIndex >= 4)
                     {
                         // --- Bank 4, 5, 6, and 7 are contended
-                        if (!noContention)
+                        if (!supressContention)
                         {
-                            _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                            ApplyDelay();
                         }
                     }
                     RamBanks[bankIndex][memIndex] = value;

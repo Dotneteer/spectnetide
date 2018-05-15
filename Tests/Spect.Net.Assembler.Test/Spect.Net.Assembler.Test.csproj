@@ -58,6 +58,7 @@
     <Compile Include="AssemblerTestBed.cs" />
     <Compile Include="Assembler\AluOperationEmitTests.cs" />
     <Compile Include="Assembler\BitOperationEmitTests.cs" />
+    <Compile Include="Assembler\ContinueTests.cs" />
     <Compile Include="Assembler\ControlFlowOperationEmitTests.cs" />
     <Compile Include="Assembler\DirectiveTests.cs" />
     <Compile Include="Assembler\ErrorMessageTests.cs" />
@@ -78,6 +79,18 @@
     <Compile Include="Assembler\PragmaRegressionTests.cs" />
     <Compile Include="Assembler\LabelEmissionTests.cs" />
     <Compile Include="Assembler\LoadOperationRegressionTests.cs" />
+    <Compile Include="Assembler\LiteralEvaluationTests.cs" />
+    <Compile Include="Assembler\FunctionEvaluationTests.cs" />
+    <Compile Include="Assembler\EmitTests.cs" />
+    <Compile Include="Assembler\MacroEmitTests.cs" />
+    <Compile Include="Assembler\LoopEmitTests.cs" />
+    <Compile Include="Assembler\RepeatTests.cs" />
+    <Compile Include="Assembler\IfEmitTests.cs" />
+    <Compile Include="Assembler\ForEmitTests.cs" />
+    <Compile Include="Assembler\BreakTests.cs" />
+    <Compile Include="Assembler\MacroArgumentEmitTests.cs" />
+    <Compile Include="Assembler\WhileEmitTests.cs" />
+    <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />
     <Compile Include="Parser\AluOperationTests.cs" />
     <Compile Include="Parser\BitOperationTests.cs" />
@@ -95,6 +108,13 @@
     <Compile Include="Parser\TextSpanTests.cs" />
     <Compile Include="Parser\TrivialOperationTests.cs" />
     <Compile Include="Parser\SpectrumStringTests.cs" />
+    <Compile Include="Parser\LiteralParserTests.cs" />
+    <Compile Include="Parser\MacroTests.cs" />
+    <Compile Include="Parser\LoopTests.cs" />
+    <Compile Include="Parser\RepeatTests.cs" />
+    <Compile Include="Parser\IfTests.cs" />
+    <Compile Include="Parser\ForTests.cs" />
+    <Compile Include="Parser\WhileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,6 @@ namespace Spect.Net.VsPackage.Commands
         VsxShowToolWindowCommand<SpectNetPackage, SpectNetCommandSet>
     {
         protected override void OnQueryStatus(OleMenuCommand mc)
-            => mc.Enabled = Package.CodeDiscoverySolution?.CurrentProject != null;
+            => mc.Enabled = true;
     }
 }

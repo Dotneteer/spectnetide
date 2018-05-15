@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
+// ReSharper disable InconsistentNaming
 
 #pragma warning disable 649
 
@@ -44,12 +45,40 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         internal static ClassificationTypeDefinition identifierDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80String")]
+        internal static ClassificationTypeDefinition stringDefinition;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80Function")]
+        internal static ClassificationTypeDefinition functionDefinition;
+
+        [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80Breakpoint")]
         internal static ClassificationTypeDefinition breakpointDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80CurrentBreakpoint")]
         internal static ClassificationTypeDefinition currentBreakpointDefinition;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80MacroParam")]
+        internal static ClassificationTypeDefinition macroParam;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80Statement")]
+        internal static ClassificationTypeDefinition statement;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80MacroInvocation")]
+        internal static ClassificationTypeDefinition macroInvocation;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80Operand")]
+        internal static ClassificationTypeDefinition register;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80SemiVar")]
+        internal static ClassificationTypeDefinition semiVar;
     }
 }
 

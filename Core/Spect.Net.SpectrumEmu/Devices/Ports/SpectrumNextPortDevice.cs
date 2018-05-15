@@ -12,9 +12,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
 
         public SpectrumNextPortDevice()
         {
-            Handlers.Add(new Spectrum48PortHandler());
-            _memoryPortHandler = new SpectrumP3MemoryPagePortHandler();
-            _extMemoryPortHandler = new SpectrumP3ExtMemoryPagePortHandler();
+            Handlers.Add(new Spectrum48PortHandler(this));
+            _memoryPortHandler = new SpectrumP3MemoryPagePortHandler(this);
+            _extMemoryPortHandler = new SpectrumP3ExtMemoryPagePortHandler(this);
             _memoryPortHandler.RomLowSelectionChanged += (sender, args) 
                 => _extMemoryPortHandler.SelectRomLow = (byte) sender;
             _memoryPortHandler.LastSlot3IndexChanged += (sender, args)

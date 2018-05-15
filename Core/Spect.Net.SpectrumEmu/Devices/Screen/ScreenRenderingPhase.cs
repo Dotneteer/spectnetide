@@ -8,7 +8,7 @@
         /// <summary>
         /// The ULA does not do any rendering
         /// </summary>
-        None,
+        None = 0,
 
         /// <summary>
         /// The ULA sets the border color to display the current pixel.
@@ -37,6 +37,12 @@
         DisplayB1,
 
         /// <summary>
+        /// The ULA displays the next two pixels of Byte2 sequentially during a
+        /// single Z80 clock cycle.
+        /// </summary>
+        DisplayB2,
+
+        /// <summary>
         /// The ULA displays the next two pixels of Byte1 sequentially during a
         /// single Z80 clock cycle. It prepares to display the pixels of the next
         /// byte in the row with prefetching the corresponding byte from the
@@ -51,12 +57,6 @@
         /// display memory.
         /// </summary>
         DisplayB1FetchA2,
-
-        /// <summary>
-        /// The ULA displays the next two pixels of Byte2 sequentially during a
-        /// single Z80 clock cycle.
-        /// </summary>
-        DisplayB2,
 
         /// <summary>
         /// The ULA displays the next two pixels of Byte2 sequentially during a

@@ -171,7 +171,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError("jp (sp)", Errors.Z0016);
             CodeRaisesError("jp (ix+3)", Errors.Z0016);
             CodeRaisesError("jp (iy+3)", Errors.Z0016);
-            CodeRaisesError("jp nz,(hl)", Errors.Z0017);
+            CodeRaisesError("jp nz,(hl)", Errors.Z0001);
         }
 
     }

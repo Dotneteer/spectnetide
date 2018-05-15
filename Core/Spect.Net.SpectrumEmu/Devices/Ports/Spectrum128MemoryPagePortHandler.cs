@@ -16,7 +16,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public Spectrum128MemoryPagePortHandler() : base(PORTMASK, PORT, canRead: false)
+        /// <param name="parent">Parent device</param>
+        public Spectrum128MemoryPagePortHandler(IPortDevice parent) : base(parent, PORTMASK, PORT, canRead: false)
         {
         }
 

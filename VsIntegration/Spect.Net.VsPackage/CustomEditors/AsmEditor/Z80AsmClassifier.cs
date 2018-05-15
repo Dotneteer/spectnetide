@@ -29,8 +29,15 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             _z80AsmTypes.Add(Z80AsmTokenType.Comment, typeService.GetClassificationType("Z80Comment"));
             _z80AsmTypes.Add(Z80AsmTokenType.Number, typeService.GetClassificationType("Z80Number"));
             _z80AsmTypes.Add(Z80AsmTokenType.Identifier, typeService.GetClassificationType("Z80Identifier"));
+            _z80AsmTypes.Add(Z80AsmTokenType.String, typeService.GetClassificationType("Z80String"));
+            _z80AsmTypes.Add(Z80AsmTokenType.Function, typeService.GetClassificationType("Z80Function"));
             _z80AsmTypes.Add(Z80AsmTokenType.Breakpoint, typeService.GetClassificationType("Z80Breakpoint"));
             _z80AsmTypes.Add(Z80AsmTokenType.CurrentBreakpoint, typeService.GetClassificationType("Z80CurrentBreakpoint"));
+            _z80AsmTypes.Add(Z80AsmTokenType.MacroParam, typeService.GetClassificationType("Z80MacroParam"));
+            _z80AsmTypes.Add(Z80AsmTokenType.Statement, typeService.GetClassificationType("Z80Statement"));
+            _z80AsmTypes.Add(Z80AsmTokenType.MacroInvocation, typeService.GetClassificationType("Z80MacroInvocation"));
+            _z80AsmTypes.Add(Z80AsmTokenType.Operand, typeService.GetClassificationType("Z80Operand"));
+            _z80AsmTypes.Add(Z80AsmTokenType.SemiVar, typeService.GetClassificationType("Z80SemiVar"));
         }
 
         /// <summary>

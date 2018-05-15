@@ -36,6 +36,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             sut.TaskDescription.ShouldBeNull();
         }
 
+
+
         private SourceLineBase CreateSut(string comment)
         {
             return new StubSourceLineBase() { Comment = comment };

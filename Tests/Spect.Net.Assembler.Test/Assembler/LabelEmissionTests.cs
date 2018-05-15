@@ -42,5 +42,52 @@ namespace Spect.Net.Assembler.Test.Assembler
                 0x78, 0x01, 0x00, 0x60);
         }
 
+        [TestMethod]
+        public void OrgWithHangingLabelWorks()
+        {
+            CodeEmitWorks(@"
+                LabelOnly:
+                    .org #6000
+                    ld a,b
+                    ld bc,LabelOnly",
+                0x78, 0x01, 0x00, 0x60);
+        }
+
+        [TestMethod]
+        public void EquWithHangingLabelWorks()
+        {
+            CodeEmitWorks(@"
+                LabelOnly:
+                    .org #6000
+                LabelOnly2:
+                    .equ #4567
+                    ld a,b
+                    ld bc,LabelOnly2",
+                0x78, 0x01, 0x67, 0x45);
+        }
+
+        [TestMethod]
+        public void VarWithHangingLabelWorks()
+        {
+            CodeEmitWorks(@"
+                LabelOnly:
+                    .org #6000
+                LabelOnly2:
+                    .var #4567
+                    ld a,b
+                    ld bc,LabelOnly2",
+                0x78, 0x01, 0x67, 0x45);
+        }
+
+        [TestMethod]
+        public void OrphanHangingLabelWorks()
+        {
+            CodeEmitWorks(@"
+                    .org #6000
+                    ld a,b
+                    ld bc,LabelOnly
+                LabelOnly:",
+                0x78, 0x01, 0x04, 0x60);
+        }
     }
 }

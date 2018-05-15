@@ -13,9 +13,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
     {
         private const int DIVIDE_ROM_PAGE_INDEX = 4 * 2;
 
-        private IZ80Cpu _cpu;
         private IRomConfiguration _romConfig;
-        private IScreenDevice _screenDevice;
         private INextFeatureSetDevice _nextDevice;
         private IDivIdeDevice _divIdeDevice;
 
@@ -49,9 +47,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _cpu = hostVm.Cpu;
             _romConfig = hostVm.RomConfiguration;
-            _screenDevice = hostVm.ScreenDevice;
             _nextDevice = hostVm.NextDevice;
             _divIdeDevice = hostVm.DivIdeDevice;
 
@@ -120,9 +116,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// Reads the memory at the specified address
         /// </summary>
         /// <param name="addr">Memory address</param>
-        /// <param name="noContention">Indicates non-contended read operation</param>
+        /// <param name="suppressContention">Indicates non-contended read operation</param>
         /// <returns>Byte read from the memory</returns>
-        public override byte Read(ushort addr, bool noContention = false)
+        public override byte Read(ushort addr, bool suppressContention = false)
         {
             var memIndex = addr & 0x1FFF;
             var slotOffset = (addr >> 13) & 0x01;
@@ -191,9 +187,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 // --- 8K Bank #2, #3
                 case 0x4000:
                 case 0x0600:
-                    if (!noContention && _screenDevice != null)
+                    if (!suppressContention && ScreenDevice != null)
                     {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        ApplyDelay();
                     }
                     if (slotIndex >= _ramPages.Length) return 0xFF;
                     return _ramPages[slotIndex][memIndex];
@@ -207,9 +203,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 // --- 8K Bank #6, #7
                 default:
                     // --- Bank 4, 5, 6, and 7 are contended
-                    if (_slots16[3] >= 4 && _screenDevice != null)
+                    if (_slots16[3] >= 4 && ScreenDevice != null)
                     {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        ApplyDelay();
                     }
                     if (slotIndex >= _ramPages.Length) return 0xFF;
                     return _ramPages[slotIndex][memIndex];
@@ -221,10 +217,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         /// </summary>
         /// <param name="addr">Memory address</param>
         /// <param name="value">Memory value to write</param>
-        /// <param name="noContention">
+        /// <param name="supressContention">
         /// Indicates non-contended write operation
         /// </param>
-        public override void Write(ushort addr, byte value, bool noContention = false)
+        public override void Write(ushort addr, byte value, bool supressContention = false)
         {
             var memIndex = addr & 0x1FFF;
             var slotOffset = (addr >> 13) & 0x01;
@@ -273,9 +269,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 // --- 8K Bank #2, #3
                 case 0x4000:
                 case 0x6000:
-                    if (!noContention)
+                    if (!supressContention)
                     {
-                        _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                        ApplyDelay();
                     }
                     if (slotIndex < _ramPages.Length)
                     {
@@ -295,11 +291,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
                 // --- 8K Bank #6, #7
                 default:
                     // --- Bank 4, 5, 6, and 7 are contended
-                    if (_slots16[3] >= 4 && _screenDevice != null)
+                    if (_slots16[3] >= 4 && ScreenDevice != null)
                     {
-                        if (!noContention)
+                        if (!supressContention)
                         {
-                            _cpu?.Delay(_screenDevice.GetContentionValue(HostVm.CurrentFrameTact));
+                            ApplyDelay();
                         }
                     }
                     if (slotIndex < _ramPages.Length)

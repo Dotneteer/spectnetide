@@ -184,7 +184,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
             line.ShouldNotBeNull();
-            line.InstructionSpan.ShouldBeNull();
+            line.InstructionSpan.Start.ShouldBe(0);
+            line.InstructionSpan.End.ShouldBe(9);
         }
 
         [TestMethod]
@@ -242,7 +243,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
             line.ShouldNotBeNull();
-            line.InstructionSpan.ShouldBeNull();
+            line.InstructionSpan.Start.ShouldBe(2);
+            line.InstructionSpan.End.ShouldBe(2);
         }
 
         /// <summary>

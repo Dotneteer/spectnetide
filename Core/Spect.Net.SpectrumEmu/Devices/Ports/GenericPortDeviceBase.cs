@@ -7,7 +7,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     {
         protected IZ80Cpu Cpu;
         protected IScreenDevice ScreenDevice;
-        protected List<IPortHandler> Handlers { get; } = new List<IPortHandler>();
+
+        /// <summary>
+        /// List of available handlers
+        /// </summary>
+        public  List<IPortHandler> Handlers { get; } = new List<IPortHandler>();
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -64,8 +68,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
                     return readValue;
                 }
             }
-            PortAccessLogger?.PortRead(addr, 0xFF, false);
-            return 0xFF;
+            var ur = UnhandledRead(addr);
+            PortAccessLogger?.PortRead(addr, ur, false);
+            return ur;
         }
 
         /// <summary>
@@ -154,6 +159,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// </summary>
         /// <returns></returns>
         public virtual bool IsContendedBankPagedIn() => false;
+
+        /// <summary>
+        /// Define how to handle an unattached port
+        /// </summary>
+        /// <param name="addr">Port address</param>
+        /// <returns>Port value for the unhandled port address</returns>
+        public virtual byte UnhandledRead(ushort addr) => 0xFF;
 
         /// <summary>
         /// Resets this device

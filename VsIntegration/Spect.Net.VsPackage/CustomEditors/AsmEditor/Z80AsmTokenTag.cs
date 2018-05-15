@@ -36,6 +36,13 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         Number,
         Identifier,
         Breakpoint,
-        CurrentBreakpoint
+        CurrentBreakpoint,
+        String,
+        Function,
+        MacroParam,
+        Statement,
+        MacroInvocation,
+        Operand,
+        SemiVar
     }
 }

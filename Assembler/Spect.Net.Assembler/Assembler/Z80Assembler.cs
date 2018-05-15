@@ -49,6 +49,20 @@ namespace Spect.Net.Assembler.Assembler
         public List<SourceLineBase> PreprocessedLines { get; private set; }
 
         /// <summary>
+        /// This event is raised whenever a TRACE pragma creates an output message
+        /// </summary>
+        public event EventHandler<AssemblerMessageArgs> AssemblerMessageCreated;
+
+        /// <summary>
+        /// Raises a new assembéer message
+        /// </summary>
+        /// <param name="message">Assembler message</param>
+        protected virtual void OnAssemblerMessageCreated(string message)
+        {
+            AssemblerMessageCreated?.Invoke(this, new AssemblerMessageArgs(message));
+        }
+
+        /// <summary>
         /// This method compiles the Z80 Assembly code in the specified file into Z80
         /// binary code.
         /// </summary>
@@ -195,6 +209,8 @@ namespace Spect.Net.Assembler.Assembler
                 else if (processOps)
                 {
                     line.FileIndex = fileIndex;
+                    line.SourceText = sourceText.Substring(line.FirstPosition,
+                        line.LastPosition - line.FirstPosition + 1);
                     parsedLines.Add(line);
                 }
                 currentLineIndex++;
@@ -328,7 +344,7 @@ namespace Spect.Net.Assembler.Assembler
                     if (directive.Mnemonic == "#IF")
                     {
                         var value = EvalImmediate(directive, directive.Expr);
-                        processOps = value != null && value.Value != 0;
+                        processOps = value.IsValid && value.Value != 0;
                     }
                     else if (directive.Mnemonic == "#IFMOD" || directive.Mnemonic == "#IFNMOD")
                     {
@@ -410,7 +426,9 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="error">Error information</param>
         private void ReportError(SourceFileItem sourceItem, Z80AsmParserErrorInfo error)
         {
-            _output.Errors.Add(new AssemblerErrorInfo(sourceItem, error));
+            var errInfo = new AssemblerErrorInfo(sourceItem, error);
+            _output.Errors.Add(errInfo);
+            ReportScopeError(errInfo.ErrorCode);
         }
 
         /// <summary>
@@ -419,10 +437,28 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="errorCode">Code of error</param>
         /// <param name="line">Source line associated with the error</param>
         /// <param name="parameters">Optiona error message parameters</param>
-        private void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
+        public void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
         {
-            var sourceItem = _output.SourceFileList[line.FileIndex];
+            var sourceItem = line != null 
+                ? _output.SourceFileList[line.FileIndex] 
+                : null;
             _output.Errors.Add(new AssemblerErrorInfo(sourceItem, errorCode, line, parameters));
+            ReportScopeError(errorCode);
+        }
+
+        /// <summary>
+        /// Administers the error in the local scope
+        /// </summary>
+        /// <param name="errorCode"></param>
+        private void ReportScopeError(string errorCode)
+        {
+            if (_output.LocalScopes.Count == 0) return;
+            var localScope = _output.LocalScopes.Peek();
+            if (localScope.OwnerScope != null)
+            {
+                localScope = localScope.OwnerScope;
+            }
+            localScope.ReportError(errorCode);
         }
 
         #endregion Helpers

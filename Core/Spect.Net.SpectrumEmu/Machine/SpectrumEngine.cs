@@ -70,6 +70,23 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IZ80Cpu Cpu { get; }
 
         /// <summary>
+        /// The CPU tact at which the last execution cycle started
+        /// </summary>
+        public long LastExecutionStartTact { get; private set; }
+
+        /// <summary>
+        /// Gets the value of the contention accummulated since the start of 
+        /// the machine
+        /// </summary>
+        public long ContentionAccumulated { get; set; }
+
+        /// <summary>
+        /// Gets the value of the contention accummulated when the 
+        /// execution cycle started
+        /// </summary>
+        public long LastExecutionContentionValue { get; private set; }
+
+        /// <summary>
         /// The current execution cycle options
         /// </summary>
         public ExecuteCycleOptions ExecuteCycleOptions { get; private set; }
@@ -444,6 +461,9 @@ namespace Spect.Net.SpectrumEmu.Machine
             FrameCount = 0;
             Overflow = 0;
             LastFrameStartCpuTick = 0;
+            LastExecutionStartTact = 0L;
+            ContentionAccumulated = 0L;
+            LastExecutionContentionValue = 0L;
             _frameCompleted = true;
             Cpu.Reset();
             Cpu.ReleaseResetSignal();
@@ -522,6 +542,8 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             ExecuteCycleOptions = options;
             ExecutionCompletionReason = ExecutionCompletionReason.None;
+            LastExecutionStartTact = Cpu.Tacts;
+            LastExecutionContentionValue = ContentionAccumulated;
 
             // --- We use these variables to calculate wait time at the end of the frame
             var cycleStartTime = Clock.GetCounter();

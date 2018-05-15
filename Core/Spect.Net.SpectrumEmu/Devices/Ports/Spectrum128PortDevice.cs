@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     /// <summary>
     /// This class represents the port device used by the Spectrum 128 virtual machine
     /// </summary>
-    public class Spectrum128PortDevice: GenericPortDeviceBase
+    public class Spectrum128PortDevice: UlaGenericPortDeviceBase
     {
         protected IMemoryDevice MemoryDevice;
         protected ISoundDevice SoundDevice;
@@ -23,10 +23,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
 
         public Spectrum128PortDevice()
         {
-            Handlers.Add(new Spectrum48PortHandler());
-            Handlers.Add(new Spectrum128MemoryPagePortHandler());
-            Handlers.Add(new SoundRegisterIndexPortHandler());
-            Handlers.Add(new SoundRegisterValuePortHandler());
+            Handlers.Add(new Spectrum48PortHandler(this));
+            _memoryHandler = new Spectrum128MemoryPagePortHandler(this);
+            Handlers.Add(_memoryHandler);
+            Handlers.Add(new SoundRegisterIndexPortHandler(this));
+            Handlers.Add(new SoundRegisterValuePortHandler(this));
         }
 
         /// <summary>

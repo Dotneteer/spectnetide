@@ -15,7 +15,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public SoundRegisterIndexPortHandler() : base(PORTMASK, PORT, canRead: false)
+        public SoundRegisterIndexPortHandler(IPortDevice parent) : base(parent, PORTMASK, PORT, canRead: false)
         {
         }
 
