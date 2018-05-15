@@ -67,7 +67,7 @@ namespace Spect.Net.Assembler.Assembler
             while (currentLineIndex < lines.Count)
             {
                 var asmLine = lines[currentLineIndex];
-                EmitSingleLine(lines, asmLine, ref currentLineIndex);
+                EmitSingleLine(lines, lines, asmLine, ref currentLineIndex);
 
                 // --- Next line
                 currentLineIndex++;
@@ -87,12 +87,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Emits a single line
         /// </summary>
-        /// <param name="lines">All parsed lines</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
         /// <param name="asmLine">The line to emit</param>
         /// <param name="currentLineIndex">The index of the line to emit</param>
         /// <param name="fromMacroEmit">Is the method called during macro emit?</param>
         /// <returns></returns>
-        private void EmitSingleLine(List<SourceLineBase> lines, SourceLineBase asmLine, ref int currentLineIndex, 
+        private void EmitSingleLine(List<SourceLineBase> allLines, List<SourceLineBase> scopeLines, SourceLineBase asmLine, ref int currentLineIndex, 
             bool fromMacroEmit = false)
         {
             CurrentSourceLine = asmLine;
@@ -188,7 +189,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else if (asmLine is StatementBase statement)
                 {
-                    ProcessStatement(lines, statement, currentLabel, ref currentLineIndex);
+                    ProcessStatement(allLines, scopeLines, statement, currentLabel, ref currentLineIndex);
                 }
                 else if (asmLine is OperationBase opLine)
                 {
@@ -225,16 +226,18 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Processes a compiler statement
         /// </summary>
-        /// <param name="lines">All parsed assembly lines</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
         /// <param name="stmt">Statement to process</param>
         /// <param name="label">Label to process</param>
         /// <param name="currentLineIndex">Current line index</param>
-        private void ProcessStatement(List<SourceLineBase> lines, StatementBase stmt, string label, ref int currentLineIndex)
+        private void ProcessStatement(List<SourceLineBase> allLines, List<SourceLineBase> scopeLines, 
+            StatementBase stmt, string label, ref int currentLineIndex)
         {
             switch (stmt)
             {
                 case MacroStatement macroStmt:
-                    CollectMacroDefinition(macroStmt, label, lines, ref currentLineIndex);
+                    CollectMacroDefinition(macroStmt, label, allLines, ref currentLineIndex);
                     break;
 
                 case MacroEndStatement macroEndStmt:
@@ -242,7 +245,7 @@ namespace Spect.Net.Assembler.Assembler
                     break;
 
                 case LoopStatement loopStatement:
-                    ProcessLoopStatement(loopStatement, lines, ref currentLineIndex);
+                    ProcessLoopStatement(loopStatement, allLines, scopeLines, ref currentLineIndex);
                     break;
 
                 case LoopEndStatement loopEndStmt:
@@ -250,7 +253,7 @@ namespace Spect.Net.Assembler.Assembler
                     break;
 
                 case RepeatStatement repeatStatement:
-                    ProcessRepeatStatement(repeatStatement, lines, ref currentLineIndex);
+                    ProcessRepeatStatement(repeatStatement, allLines, scopeLines, ref currentLineIndex);
                     break;
 
                 case UntilStatement untilStmt:
@@ -258,7 +261,7 @@ namespace Spect.Net.Assembler.Assembler
                     break;
 
                 case WhileStatement whileStatement:
-                    ProcessWhileStatement(whileStatement, lines, ref currentLineIndex);
+                    ProcessWhileStatement(whileStatement, allLines, scopeLines, ref currentLineIndex);
                     break;
 
                 case WhileEndStatement whileEndStmt:
@@ -266,7 +269,7 @@ namespace Spect.Net.Assembler.Assembler
                     break;
 
                 case ForStatement forStatement:
-                    ProcessForStatement(forStatement, lines, ref currentLineIndex);
+                    ProcessForStatement(forStatement, allLines, scopeLines, ref currentLineIndex);
                     break;
 
                 case NextStatement ifEndStmt:
@@ -278,7 +281,7 @@ namespace Spect.Net.Assembler.Assembler
                     break;
 
                 case IfStatement ifStatement:
-                    ProcessIfStatement(ifStatement, lines, ref currentLineIndex);
+                    ProcessIfStatement(ifStatement, allLines, scopeLines, ref currentLineIndex);
                     break;
 
                 case ElseStatement elseStmt:
@@ -298,7 +301,7 @@ namespace Spect.Net.Assembler.Assembler
                     break;
 
                 case MacroInvocation macroInvokeStmt:
-                    ProcessMacroInvocation(macroInvokeStmt, lines);
+                    ProcessMacroInvocation(macroInvokeStmt, allLines);
                     break;
             }
         }
@@ -308,10 +311,10 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="macro">Statement for the macro</param>
         /// <param name="label">Label of the macro</param>
-        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="allLines">All parsed lines</param>
         /// <param name="currentLineIndex">Index of the macro definition line</param>
         private void CollectMacroDefinition(MacroStatement macro, string label,
-            List<SourceLineBase> lines, ref int currentLineIndex)
+            List<SourceLineBase> allLines, ref int currentLineIndex)
         {
             var errorFound = false;
             // --- Check for parameter uniqueness
@@ -339,7 +342,7 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Search for the end of the macro
             var firstLine = currentLineIndex;
-            if (!macro.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+            if (!macro.SearchForEnd(this, allLines, ref currentLineIndex, out var endLabel)) return;
 
             // --- Create macro definition
             var macroDef = new MacroDefinition(label, firstLine, currentLineIndex, 
@@ -349,7 +352,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- or nested macro
             for (var i = firstLine + 1; i < currentLineIndex; i++)
             {
-                var macroLine = lines[i];
+                var macroLine = allLines[i];
                 if (macroLine.EmitIssue != null)
                 {
                     ReportError(macroLine.EmitIssue, macroLine);
@@ -387,13 +390,15 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the LOOP statement
         /// </summary>
         /// <param name="loop">LOOP statement</param>
-        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
         /// <param name="currentLineIndex">Index of the LOOP definition line</param>
-        private void ProcessLoopStatement(LoopStatement loop, List<SourceLineBase> lines, ref int currentLineIndex)
+        private void ProcessLoopStatement(LoopStatement loop, List<SourceLineBase> allLines, 
+            List<SourceLineBase> scopeLines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop
             var firstLine = currentLineIndex;
-            if (!loop.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+            if (!loop.SearchForEnd(this, scopeLines, ref currentLineIndex, out var endLabel)) return;
 
             // --- End found
             var lastLine = currentLineIndex;
@@ -430,8 +435,8 @@ namespace Spect.Net.Assembler.Assembler
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
                 {
-                    var curLine = lines[loopLineIndex];
-                    EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    var curLine = scopeLines[loopLineIndex];
+                    EmitSingleLine(allLines, scopeLines, curLine, ref loopLineIndex);
                     if (iterationScope.BreakReached || iterationScope.ContinueReached)
                     {
                         break;
@@ -443,7 +448,7 @@ namespace Spect.Net.Assembler.Assembler
                 if (endLabel != null)
                 {
                     // --- Add the end label to the loop scope
-                    var endLine = lines[currentLineIndex];
+                    var endLine = scopeLines[currentLineIndex];
                     if (SymbolExists(endLabel))
                     {
                         ReportError(Errors.Z0040, endLine, endLabel);
@@ -485,17 +490,20 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the REPEAT statement
         /// </summary>
         /// <param name="repeat">REPEAT statement</param>
-        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
         /// <param name="currentLineIndex">Index of the REPEAT definition line</param>
-        private void ProcessRepeatStatement(RepeatStatement repeat, List<SourceLineBase> lines, ref int currentLineIndex)
+        private void ProcessRepeatStatement(RepeatStatement repeat,
+            List<SourceLineBase> allLines,
+            List<SourceLineBase> scopeLines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop
             var firstLine = currentLineIndex;
-            if (!repeat.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+            if (!repeat.SearchForEnd(this, scopeLines, ref currentLineIndex, out var endLabel)) return;
 
             // --- End found
             var lastLine = currentLineIndex;
-            var untilStmt = lines[lastLine] as UntilStatement;
+            var untilStmt = scopeLines[lastLine] as UntilStatement;
 
             // --- Create a scope for the repeat loop
             var loopScope = new SymbolScope();
@@ -515,8 +523,8 @@ namespace Spect.Net.Assembler.Assembler
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
                 {
-                    var curLine = lines[loopLineIndex];
-                    EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    var curLine = scopeLines[loopLineIndex];
+                    EmitSingleLine(allLines, scopeLines, curLine, ref loopLineIndex);
                     if (iterationScope.BreakReached || iterationScope.ContinueReached)
                     {
                         break;
@@ -528,7 +536,7 @@ namespace Spect.Net.Assembler.Assembler
                 if (endLabel != null)
                 {
                     // --- Add the end label to the loop scope
-                    var endLine = lines[currentLineIndex];
+                    var endLine = scopeLines[currentLineIndex];
                     if (SymbolExists(endLabel))
                     {
                         ReportError(Errors.Z0040, endLine, endLabel);
@@ -589,13 +597,16 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the WHILE statement
         /// </summary>
         /// <param name="whileStmt">WHILE statement</param>
-        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
         /// <param name="currentLineIndex">Index of the WHILE definition line</param>
-        private void ProcessWhileStatement(WhileStatement whileStmt, List<SourceLineBase> lines, ref int currentLineIndex)
+        private void ProcessWhileStatement(WhileStatement whileStmt,
+            List<SourceLineBase> allLines,
+            List<SourceLineBase> scopeLines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop
             var firstLine = currentLineIndex;
-            if (!whileStmt.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+            if (!whileStmt.SearchForEnd(this, scopeLines, ref currentLineIndex, out var endLabel)) return;
 
             // --- End found
             var lastLine = currentLineIndex;
@@ -629,8 +640,8 @@ namespace Spect.Net.Assembler.Assembler
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
                 {
-                    var curLine = lines[loopLineIndex];
-                    EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    var curLine = scopeLines[loopLineIndex];
+                    EmitSingleLine(allLines, scopeLines, curLine, ref loopLineIndex);
                     if (iterationScope.BreakReached || iterationScope.ContinueReached)
                     {
                         break;
@@ -642,7 +653,7 @@ namespace Spect.Net.Assembler.Assembler
                 if (endLabel != null)
                 {
                     // --- Add the end label to the loop scope
-                    var endLine = lines[currentLineIndex];
+                    var endLine = scopeLines[currentLineIndex];
                     if (SymbolExists(endLabel))
                     {
                         ReportError(Errors.Z0040, endLine, endLabel);
@@ -692,13 +703,16 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the FOR statement
         /// </summary>
         /// <param name="forStmt">FOR statement</param>
-        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
         /// <param name="currentLineIndex">Index of the FOR definition line</param>
-        private void ProcessForStatement(ForStatement forStmt, List<SourceLineBase> lines, ref int currentLineIndex)
+        private void ProcessForStatement(ForStatement forStmt,
+            List<SourceLineBase> allLines,
+            List<SourceLineBase> scopeLines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop
             var firstLine = currentLineIndex;
-            if (!forStmt.SearchForEnd(this, lines, ref currentLineIndex, out var endLabel)) return;
+            if (!forStmt.SearchForEnd(this, scopeLines, ref currentLineIndex, out var endLabel)) return;
 
             // --- End found
             var lastLine = currentLineIndex;
@@ -796,8 +810,8 @@ namespace Spect.Net.Assembler.Assembler
                 var loopLineIndex = firstLine + 1;
                 while (loopLineIndex < lastLine)
                 {
-                    var curLine = lines[loopLineIndex];
-                    EmitSingleLine(lines, curLine, ref loopLineIndex);
+                    var curLine = scopeLines[loopLineIndex];
+                    EmitSingleLine(allLines, scopeLines, curLine, ref loopLineIndex);
                     if (iterationScope.BreakReached || iterationScope.ContinueReached)
                     {
                         break;
@@ -809,7 +823,7 @@ namespace Spect.Net.Assembler.Assembler
                 if (endLabel != null)
                 {
                     // --- Add the end label to the loop scope
-                    var endLine = lines[currentLineIndex];
+                    var endLine = scopeLines[currentLineIndex];
                     if (SymbolExists(endLabel))
                     {
                         ReportError(Errors.Z0040, endLine, endLabel);
@@ -891,12 +905,15 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the if statement
         /// </summary>
         /// <param name="ifStmt">IF statement</param>
-        /// <param name="lines">Parsed assembly lines</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
         /// <param name="currentLineIndex">Index of the IF definition line</param>
-        private void ProcessIfStatement(IfStatement ifStmt, List<SourceLineBase> lines, ref int currentLineIndex)
+        private void ProcessIfStatement(IfStatement ifStmt,
+            List<SourceLineBase> allLines,
+            List<SourceLineBase> scopeLines, ref int currentLineIndex)
         {
             // --- Search for the end of the loop
-            var ifDef = GetIfSections(ifStmt, lines, ref currentLineIndex, out var endLabel);
+            var ifDef = GetIfSections(ifStmt, scopeLines, ref currentLineIndex, out var endLabel);
             if (ifDef == null) return;
 
             // --- Process the IF definition
@@ -936,8 +953,8 @@ namespace Spect.Net.Assembler.Assembler
             var loopLineIndex = sectionToCompile.Section.FirstLine + 1;
             while (loopLineIndex < sectionToCompile.Section.LastLine)
             {
-                var curLine = lines[loopLineIndex];
-                EmitSingleLine(lines, curLine, ref loopLineIndex);
+                var curLine = scopeLines[loopLineIndex];
+                EmitSingleLine(allLines, scopeLines, curLine, ref loopLineIndex);
                 loopLineIndex++;
             }
 
@@ -945,7 +962,7 @@ namespace Spect.Net.Assembler.Assembler
             if (endLabel != null)
             {
                 // --- Add the end label to the loop scope
-                var endLine = lines[currentLineIndex];
+                var endLine = scopeLines[currentLineIndex];
                 if (SymbolExists(endLabel))
                 {
                     ReportError(Errors.Z0040, endLine, endLabel);
@@ -1084,8 +1101,9 @@ namespace Spect.Net.Assembler.Assembler
         /// Handles the invocation of a MACRO
         /// </summary>
         /// <param name="macroStmt">MACRO invocation statement</param>
-        /// <param name="lines">Parsed assembly lines</param>
-        private void ProcessMacroInvocation(MacroInvocation macroStmt, List<SourceLineBase> lines)
+        /// <param name="allLines">All parsed lines</param>
+        private void ProcessMacroInvocation(MacroInvocation macroStmt,
+            List<SourceLineBase> allLines)
         {
             // --- Check if macro definition exists
             if (!_output.Macros.TryGetValue(macroStmt.Name, out var macroDef))
@@ -1195,7 +1213,7 @@ namespace Spect.Net.Assembler.Assembler
             while (lineIndex < lastLine)
             {
                 // --- Replace all macro arguments by their actual value
-                var curLine = lines[lineIndex];
+                var curLine = allLines[lineIndex];
                 var lineText = curLine.SourceText;
                 var matches = MacroParamRegex.Matches(lineText);
                 foreach (Match match in matches)
@@ -1275,7 +1293,7 @@ namespace Spect.Net.Assembler.Assembler
             while (lineIndex < visitedLines.Lines.Count)
             {
                 var macroLine = visitedLines.Lines[lineIndex];
-                EmitSingleLine(visitedLines.Lines, macroLine, ref lineIndex, true);
+                EmitSingleLine(allLines, visitedLines.Lines, macroLine, ref lineIndex, true);
 
                 // --- Next line
                 lineIndex++;
@@ -1285,8 +1303,8 @@ namespace Spect.Net.Assembler.Assembler
             var endLabel = macroDef.EndLabel;
             if (endLabel != null)
             {
-                // --- Add the end label to the loop scope
-                var endLine = lines[lastLine];
+                // --- Add the end label to the macro scope
+                var endLine = allLines[lastLine];
                 if (SymbolExists(endLabel))
                 {
                     ReportError(Errors.Z0040, endLine, endLabel);

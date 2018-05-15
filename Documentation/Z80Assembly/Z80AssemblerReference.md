@@ -2235,15 +2235,97 @@ nop
 ei
 ```
 
-### Labels in Macros
+### Labels, Symbols, and Variables in Macros
+
+Macros have a local scope for all labels, symbols, and variables created within their body, including the label
+attached to the `.endm` statement. The name of the macro is a label that also represents the start of the macro.
+
+Take a look at this macro definition:
+
+```
+GetBoundaries:
+    .macro(instr)
+        {{instr}}
+        ld de,EndLabel
+        ld hl,GetBoundaries
+EndLabel:
+    .endm
+```
+
+Here, the `ld hl,GetBoundaries` instruction fills __HL__ with the start address of the macro, while the
+`ld de,EndLabel` instruction puts the address of the next instruction following the macro int __DE__
+
+Let's assume, you use the macro this way:
+
+```
+.org #8000
+GetBoundaries("nop")
+GetBoundaries("ld ix,#ABCD")
+```
+
+The compiler will create this output:
+
+```
+#8000 GetBoundaries_1 nop
+#8001                 ld de,#8007 ; EndLabel_1
+#8004                 ld hl,#8000 ; GetBoundaries_1
+#8007 EndLabel_1
+      GetBoundaries_2 ld ix,#ABCD
+#800B                 ld de,#8011 ; Endlabel_2
+#800E                 ld hl,#8007 ; GetBoundaries_2
+#8011 EndLabel_2
+```
+
+Symbols and variables within the context work exactly as they do with loops. Do not forget: Symbols
+are constant values, while variables may change!
+
+This sample represents how symbols can be used within a macro:
+
+_TBD_ Symbol sample
+
+_TBD_ Global variable sample
+
+_TBD_ Local variable sample
+
+### Parse-Time Functions
 
 _TBD_
-
-* Macro names serve as the start label for the macro, too.
 
 ### Invoking Macros from Macros
 
-_TBD_
+__SpectNetIde__ allows you to invoke a macro from another macro, too. Here is a short sample:
+
+```
+Delay:
+    .macro(wait)
+        ld b,{{wait}}
+        WaitLoop: djnz WaitLoop
+    .endm
+
+BorderPulse:
+    .macro(col1, wait1, col2, wait2)
+        ld a,{{col1}}
+        out (#fe),a
+        Delay({{wait1}})
+        ld a,{{col2}}
+        out (#fe),a
+        Delay({{wait2}})
+    .endm
+```
+
+Here, the `BorderPulse` macro uses `Delay` as a helper macro. The `BorderPulse(2, 10, 3, 20)` invocation
+produces this output:
+
+```
+ld a,2
+out (#fe),a
+ld b,10
+WaitLoop_1: djnz WaitLoop_1
+ld a,3
+out (#fe),a
+ld b,20
+WaitLoop_2: djnz WaitLoop_2
+```
 
 ## Directives
 

@@ -1773,11 +1773,12 @@ namespace Spect.Net.Assembler.Test.Assembler
                 LdHl2:
                     .macro(value1, value2)
                         LdHl({{value1}})
+                        LdHl({{value2}})
                     .endm
 
                 LdHl2(2,3)";
 
-            CodeEmitWorks(SOURCE, 0x21, 0x02, 0x00);
+            CodeEmitWorks(SOURCE, 0x21, 0x02, 0x00, 0x21, 0x03, 0x00);
         }
 
 

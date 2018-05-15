@@ -679,9 +679,12 @@ namespace Spect.Net.Assembler
             }
             else if (context.memIndirect() != null)
             {
-                var expContext = context.memIndirect().expr();
+                var miContext = context.memIndirect();
+                var expContext = miContext.expr();
                 op.Type = OperandType.MemIndirect;
                 op.Expression = (ExpressionNode)VisitExpr(expContext);
+                if (miContext.LPAR() != null) AddOperand(miContext.LPAR());
+                if (miContext.RPAR() != null) AddOperand(miContext.RPAR());
             }
             else if (context.regIndirect() != null)
             {
@@ -697,16 +700,18 @@ namespace Spect.Net.Assembler
             else if (context.indexedAddr() != null)
             {
                 op.Type = OperandType.IndexedAddress;
-                var indexedAddrContext = context.indexedAddr();
-                regContext = indexedAddrContext.reg16Idx();
-                if (indexedAddrContext.ChildCount > 3)
+                var idContext = context.indexedAddr();
+                regContext = idContext.reg16Idx();
+                if (idContext.ChildCount > 3)
                 {
-                    op.Expression = (ExpressionNode)VisitExpr(indexedAddrContext.expr());
+                    op.Expression = (ExpressionNode)VisitExpr(idContext.expr());
                 }
-                op.Register = indexedAddrContext.reg16Idx().NormalizeToken();
-                op.Sign = indexedAddrContext.ChildCount > 3
-                    ? indexedAddrContext.GetChild(2).NormalizeToken()
+                op.Register = idContext.reg16Idx().NormalizeToken();
+                op.Sign = idContext.ChildCount > 3
+                    ? idContext.GetChild(2).NormalizeToken()
                     : null;
+                if (idContext.LPAR() != null) AddOperand(idContext.LPAR());
+                if (idContext.RPAR() != null) AddOperand(idContext.RPAR());
             }
             else if (context.expr() != null)
             {
@@ -1798,7 +1803,16 @@ namespace Spect.Net.Assembler
         private void AddOperand(ParserRuleContext context)
         {
             if (_operands == null) _operands = new List<TextSpan>();
-            _operands.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+            _operands.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new operand text span
+        /// </summary>
+        private void AddOperand(ITerminalNode node)
+        {
+            if (_operands == null) _operands = new List<TextSpan>();
+            _operands.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
         }
 
         /// <summary>
