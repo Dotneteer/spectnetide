@@ -24,8 +24,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public Spectrum128PortDevice()
         {
             Handlers.Add(new Spectrum48PortHandler(this));
-            _memoryHandler = new Spectrum128MemoryPagePortHandler(this);
-            Handlers.Add(_memoryHandler);
+            var memoryHandler = new Spectrum128MemoryPagePortHandler(this);
+            Handlers.Add(memoryHandler);
             Handlers.Add(new SoundRegisterIndexPortHandler(this));
             Handlers.Add(new SoundRegisterValuePortHandler(this));
         }

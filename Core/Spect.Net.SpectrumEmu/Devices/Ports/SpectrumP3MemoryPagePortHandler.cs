@@ -25,6 +25,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         }
 
         /// <summary>
+        /// Indicates if paging is enabled or not
+        /// </summary>
+        /// <remarks>
+        /// Port 0x7FFD, Bit 5: 
+        /// False - paging is enables
+        /// True - paging is not enabled and further output to the port
+        /// is ignored until the computer is reset
+        /// </remarks>
+        public bool PagingEnabled { get; set; }
+
+        /// <summary>
         /// Indicates the low bit of ROM selection
         /// </summary>
         /// <remarks>

@@ -379,18 +379,6 @@ namespace Spect.Net.VsPackage
         }
 
         /// <summary>
-        /// Logs an exception that stopped the virtual machine
-        /// </summary>
-        private static void MachineOnVmStoppedWithException(object sender, EventArgs eventArgs)
-        {
-            if (sender is SpectrumMachine machine)
-            {
-                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
-                pane.WriteLine($"The ZX Spectrum virtual machine has stopped because of an exception\n{machine.ExecutionCycleException}");
-            }
-        }
-
-        /// <summary>
         /// Gets the options of this package
         /// </summary>
         public SpectNetOptionsGrid Options

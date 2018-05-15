@@ -15,7 +15,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
         /// </summary>
-        public MmcCardSelectPortHandler() : base(PORTMASK, PORT, false)
+        public MmcCardSelectPortHandler(IPortDevice parent) : base(parent, PORTMASK, PORT, false)
         {
         }
 
