@@ -2330,18 +2330,6 @@ The compiler will create this output:
 Symbols and variables within the context work exactly as they do with loops. Do not forget: Symbols
 are constant values, while variables may change!
 
-This sample represents how symbols can be used within a macro:
-
-_TBD_ Symbol sample
-
-_TBD_ Global variable sample
-
-_TBD_ Local variable sample
-
-### Parse-Time Functions
-
-_TBD_
-
 ### Invoking Macros from Macros
 
 __SpectNetIde__ allows you to invoke a macro from another macro, too. Here is a short sample:
