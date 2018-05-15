@@ -495,6 +495,57 @@ Signature | Value | Description
 
 Functions have the same precedence as the unary operators (such as the unary `+` and `-`).
 
+### Parse Time Functions
+
+The compiler provides a construct, *parse time functions*. These functions can receive a Z80 assembly language token
+and transform them into other language constructs. As the name suggests, these function run in the parsing phase, before
+the compiler emits code.
+
+#### The `lreg()` and `hreg()` Parse Time Functions
+
+These functions accept a 16-bit register pair token (__BC__, __DE__, __HL__, __IX__, or __IY__), and retrieve the lower
+or higher 8-bit register half of their input. Here is a sample code snippet:
+
+```
+ld a,lreg(bc)
+ld c,hreg(hl)
+ld a,lreg(ix)
+ld l,hreg(de)
+```
+
+The compiler sees as if you wrote this:
+
+```
+ld a,c
+ld c,h
+ld a,ixl
+ld l,d
+```
+
+#### The `textof()` Parse Time Function
+
+You can use `textof()`, which accepts these kinds of tokens: mnemonic, register, register indirection, C port, 
+or condition. This function translates these tokens into uppercase string constants that represent them.
+Here is a sample:
+
+```
+.dm textof(ldir)
+.dm textof(bc)
+.dm textof((de))
+.dm textof((c))
+.dm textof(nz)
+```
+
+The compiler sees as if you wrote this code:
+
+```
+.dm "LDIR"
+.dm "BC"
+.dm "(DE)"
+.dm "(C)"
+.dm "NZ"
+```
+
 ## Z80 Instructions
 
 __SpectNetIde__ implements Every officially documented Z80 instruction as well as the 
