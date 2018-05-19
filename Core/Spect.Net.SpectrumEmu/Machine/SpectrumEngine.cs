@@ -202,6 +202,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IDivIdeDevice DivIdeDevice { get; }
 
         /// <summary>
+        /// The optional Floppy device
+        /// </summary>
+        public IFloppyDevice FloppyDevice { get; }
+
+        /// <summary>
         /// Debug info provider object
         /// </summary>
         public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
@@ -333,6 +338,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             var divIdeInfo = GetDeviceInfo<IDivIdeDevice>();
             DivIdeDevice = divIdeInfo?.Device;
 
+            // --- Init the floppy device
+            var floppyInfo = GetDeviceInfo<IFloppyDevice>();
+            FloppyDevice = floppyInfo?.Device;
+
             // --- Carry out frame calculations
             ResetUlaTact();
             _frameTacts = ScreenConfiguration.ScreenRenderingFrameTactCount;
@@ -372,6 +381,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (SoundDevice != null) _spectrumDevices.Add(SoundDevice);
             if (NextDevice != null) _spectrumDevices.Add(NextDevice);
             if (DivIdeDevice != null) _spectrumDevices.Add(DivIdeDevice);
+            if (FloppyDevice != null) _spectrumDevices.Add(FloppyDevice);
 
             // --- Now, prepare devices to find each other
             foreach (var device in _spectrumDevices)

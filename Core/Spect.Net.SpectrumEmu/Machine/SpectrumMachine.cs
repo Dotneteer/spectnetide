@@ -8,6 +8,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.DivIde;
+using Spect.Net.SpectrumEmu.Devices.Floppy;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Next;
@@ -484,7 +485,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                 new ScreenDeviceInfo(spectrumConfig.Screen),
                 new BeeperDeviceInfo(spectrumConfig.Beeper, GetProvider<IBeeperProvider>()),
                 new TapeDeviceInfo(GetProvider<ITapeProvider>()),
-                new SoundDeviceInfo(spectrumConfig.Sound, GetProvider<ISoundProvider>())
+                new SoundDeviceInfo(spectrumConfig.Sound, GetProvider<ISoundProvider>()),
+                new FloppyDeviceInfo(new FloppyDevice())
             };
         }
 

@@ -402,6 +402,7 @@
       <Link>DeploymentResources\Spect.Net.CodeDiscover.targets</Link>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="Docs\UPD765A.pdf" />
     <None Include="Key.snk" />
     <None Include="packages.config">
       <SubType>Designer</SubType>

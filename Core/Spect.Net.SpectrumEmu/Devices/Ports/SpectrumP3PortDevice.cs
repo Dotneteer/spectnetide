@@ -26,6 +26,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             Handlers.Add(new SoundRegisterIndexPortHandler(this));
             Handlers.Add(new SoundRegisterValuePortHandler(this));
             Handlers.Add(new SpectrumP3FloatingPointBusPortHandler(this));
+            Handlers.Add(new SpectrumP3FloppyStatusPortHandler(this));
+            Handlers.Add(new SpectrumP3FloppyCommandPortHandler(this));
         }
 
         /// <summary>
