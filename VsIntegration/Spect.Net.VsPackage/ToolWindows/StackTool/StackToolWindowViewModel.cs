@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
-using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.VsPackage.ToolWindows.StackTool

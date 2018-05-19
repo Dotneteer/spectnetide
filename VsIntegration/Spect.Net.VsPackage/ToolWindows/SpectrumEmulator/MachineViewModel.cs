@@ -106,7 +106,17 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Stack debug provider
         /// </summary>
-        public IStackDebugSupport StackDebugSupport { get; set; }
+        public IStackDebugSupport StackDebugSupport
+        {
+            get => Machine?.SpectrumVm?.Cpu.StackDebugSupport;
+            set
+            {
+                if (Machine?.SpectrumVm?.Cpu != null)
+                {
+                    Machine.SpectrumVm.Cpu.StackDebugSupport = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Device information for startup
