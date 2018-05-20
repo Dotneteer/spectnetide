@@ -154,6 +154,7 @@
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
     <Compile Include="Devices\DivIde\DivIdeDevice.cs" />
     <Compile Include="Devices\Floppy\FloppyDevice.cs" />
+    <Compile Include="Devices\Floppy\VirtualFloppyFile.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
     <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
     <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />

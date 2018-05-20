@@ -11,12 +11,20 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         private Command _lastCommand;
         private int _commandBytesReceived;
         private int _resultBytesIndex;
+        private int _dataResultBytesIndex;
+        private byte _nextSector;
         private byte _st0;
         private byte _st1;
         private byte _st2;
         private byte _st3;
+        private byte[] _parameters;
         private byte[] _commandResult;
+        private byte[] _dataResult;
         private byte _execStatus;
+        private bool _multiTrack;
+        private bool _skipDeletedData;
+
+        private VirtualFloppyFile _floppyFile;
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -81,6 +89,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 CurrentCylinders[i] = 0x00;
             }
             _execStatus = 0x80;
+            _nextSector = 1;
+            _multiTrack = false;
+            _skipDeletedData = false;
+            _floppyFile = VirtualFloppyFile.OpenOrCreateFloppyFile(@"C:\Temp\FloppyFile\vfddFile.vfdd");
         }
 
         /// <summary>
@@ -210,7 +222,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 }
                 else if (cmd == 0x08)
                 {
-                    _lastCommand = Command.SenseInterruptStatus;
+                    // --- Sense inteerupt status, no more command bytes
+                    _st0 = (byte)(_execStatus | (HeadNumber == 0 ? 0x04 : 0x00) | (SelectedDrive & 0x03));
+                    SendResult(new[] { _st0, CurrentCylinders[SelectedDrive] });
+                    _execStatus = 0x80;
+                    return;
                 }
                 else if (cmd == 0x0F)
                 {
@@ -219,6 +235,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 else if ((cmd & 0xBF) == 0x0A)
                 {
                     _lastCommand = Command.ReadId;
+                }
+                else if ((cmd & 0x1F) == 0x06)
+                {
+                    _lastCommand = Command.ReadData;
+                    _multiTrack = (cmd & 0x80) != 0;
+                    _skipDeletedData = (cmd & 0x20) != 0;
+                    _parameters = new byte[7];
                 }
                 else
                 {
@@ -259,12 +282,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     _acceptCommand = true;
                     break;
 
-                case Command.SenseInterruptStatus:
-                    _st0 = (byte)(_execStatus |(HeadNumber == 0 ? 0x04 : 0x00) | (SelectedDrive & 0x03));
-                    SendResult(new[] { _st0, CurrentCylinders[SelectedDrive] });
-                    _execStatus = 0x80;
-                    break;
-
                 case Command.Seek:
                     if (_commandBytesReceived == 0)
                     {
@@ -276,7 +293,35 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     {
                         CurrentCylinders[SelectedDrive] = (byte)(cmd > 79 ? 79 : cmd);
                         _execStatus = 0b0010_0000;
+                        _nextSector = 1;
                         _acceptCommand = true;
+                    }
+                    break;
+
+                case Command.ReadId:
+                    HeadNumber = (cmd >> 2) & 0x01;
+                    SelectedDrive = cmd & 0x03;
+                    _commandBytesReceived++;
+                    _st0 = (byte)(SelectedDrive & 0x03);
+                    _st1 = (byte)(_nextSector > 9 ? 0x80 : 0x00);
+                    _st2 = 0x00;
+                    SendResult(new []{ _st0, _st1, _st2,
+                        CurrentCylinders[SelectedDrive],
+                        (byte)HeadNumber,
+                        _nextSector,
+                        (byte)0x02});
+                    _nextSector++;
+                    break;
+
+                case Command.ReadData:
+                    if (_commandBytesReceived < 7)
+                    {
+                        _parameters[_commandBytesReceived++] = cmd;
+                    }
+                    if (_commandBytesReceived >= 7)
+                    {
+                        // TODO: Read bytes
+                        
                     }
                     break;
 
@@ -298,6 +343,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         {
             if (DirectionOut)
             {
+                if (_dataResult != null && _dataResultBytesIndex < _dataResult.Length)
+                {
+                    SetExecutionMode(true);
+                    return _commandResult[_dataResultBytesIndex++];
+                }
+                SetExecutionMode(false);
                 if (_commandResult != null && _resultBytesIndex < _commandResult.Length)
                 {
                     var result = _commandResult[_resultBytesIndex++];
@@ -316,13 +367,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// <summary>
         /// Sets the specified result to be sent
         /// </summary>
-        /// <param name="result"></param>
-        private void SendResult(byte[] result)
+        private void SendResult(byte[] result, byte[] dataResult = null)
         {
             _acceptCommand = true;
             _resultBytesIndex = 0;
             SetDioFlag(true);
             _commandResult = result;
+            _dataResult = dataResult;
         }
 
         private enum Command: byte
