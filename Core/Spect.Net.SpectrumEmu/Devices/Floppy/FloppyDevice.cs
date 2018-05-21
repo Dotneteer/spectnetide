@@ -18,6 +18,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         private byte _st3;
         private byte[] _parameters;
         private byte[] _commandResult;
+        private byte[] _dataToWrite;
         private byte[] _dataResult;
         private byte _execStatus;
         private bool _multiTrack;
@@ -254,9 +255,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     _commandBytesReceived = 0;
                     _parameters = new byte[5];
                 }
+                else if ((cmd & 0x3F) == 0x05)
+                {
+                    _lastCommand = Command.WriteData;
+                    _multiTrack = (cmd & 0x80) != 0;
+                    _commandBytesReceived = 0;
+                    _parameters = new byte[8];
+                }
                 else
                 {
                     var x = 1;
+                    _lastCommand = Command.None;
                 }
                 _acceptCommand = false;
                 _commandBytesReceived = 0;
@@ -314,7 +323,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     SelectedDrive = cmd & 0x03;
                     Heads[SelectedDrive] = (byte)((cmd >> 2) & 0x01);
                     _commandBytesReceived++;
-                    CurrentSectors[SelectedDrive]++;
                     _execStatus = 0x00;
                     SendDataResult();
                     break;
@@ -324,16 +332,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     {
                         _parameters[_commandBytesReceived++] = cmd;
                     }
-                    if (_commandBytesReceived >= 8)
+                    if (_commandBytesReceived == 8)
                     {
                         SelectedDrive = _parameters[0] & 0x03;
                         Heads[SelectedDrive] = (byte)((_parameters[0] >> 2) & 0x01);
+                        CurrentSectors[SelectedDrive] = _parameters[3];
 
                         // --- Check if ID is the same as the current sector
                         if (_parameters[1] != CurrentTracks[SelectedDrive]
-                            || _parameters[2] != Heads[SelectedDrive]
-                            || _parameters[3] != CurrentSectors[SelectedDrive]
-                            || _parameters[4] != 0x02 && _parameters[4] != 0)
+                            || _parameters[2] != Heads[SelectedDrive])
                         {
                             _dataResult = null;
                             _execStatus = 0x40; // --- Command completed abnormally
@@ -360,12 +367,67 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     }
                     if (_commandBytesReceived >= 5)
                     {
+                        // --- Receive format parameters
                         SelectedDrive = _parameters[0] & 0x03;
                         Heads[SelectedDrive] = (byte)((_parameters[0] >> 2) & 0x01);
-                    }
 
+                        var dataBytes = 1 << (_parameters[1] + 7);
+                        var sectors = _parameters[2];
+                        var filler = _parameters[4];
+                        var data = new byte[dataBytes];
+                        for (var i = 0; i < dataBytes; i++)
+                        {
+                            data[i] = filler;
+                        }
+
+                        // --- Format the selected track
+                        for (var sector = 1; sector <= sectors; sector++)
+                        {
+                            _floppyFile.WriteData(Heads[SelectedDrive], 
+                                CurrentTracks[SelectedDrive],
+                                sector,
+                                data);
+                        }
+                        _dataResult = null;
+                        _execStatus = 0x00;
+                        SendDataResult();
+                    }
                     break;
 
+                case Command.WriteData:
+                    if (_commandBytesReceived < 8)
+                    {
+                        _parameters[_commandBytesReceived] = cmd;
+                        if (_commandBytesReceived == 7)
+                        {
+                            SelectedDrive = _parameters[0] & 0x03;
+                            Heads[SelectedDrive] = (byte)((_parameters[0] >> 2) & 0x01);
+                            CurrentSectors[SelectedDrive] = _parameters[3];
+                            var length = _parameters[4] == 0 ? _parameters[7] : 1 << (_parameters[4] + 7);
+                            _dataToWrite = new byte[length];
+
+                            // --- Sign that writye position has been reached
+                            SetExecutionMode(true);
+                        }
+                    }
+                    else if (_commandBytesReceived < 8 + _dataToWrite.Length)
+                    {
+                        _dataToWrite[_commandBytesReceived - 8] = cmd;
+                        SetExecutionMode(true);
+                    }
+                    else if (_commandBytesReceived >= 8 + _dataToWrite.Length)
+                    {
+                        SetExecutionMode(false);
+                        _floppyFile.WriteData(
+                            Heads[SelectedDrive],
+                            CurrentTracks[SelectedDrive],
+                            CurrentSectors[SelectedDrive],
+                            _dataToWrite);
+                        _execStatus = 0x00;
+                        SendDataResult();
+                    }
+                    _commandBytesReceived++;
+                    break;
                 default:
                     break;
             }
