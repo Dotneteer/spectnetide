@@ -12,7 +12,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         private int _commandBytesReceived;
         private int _resultBytesIndex;
         private int _dataResultBytesIndex;
-        private byte _nextSector;
         private byte _st0;
         private byte _st1;
         private byte _st2;
@@ -60,19 +59,24 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         public bool NonDmaMode { get; private set; }
 
         /// <summary>
-        /// Represents head 0 or 1
-        /// </summary>
-        public int HeadNumber { get; private set; }
-
-        /// <summary>
         /// Represents the selected drive
         /// </summary>
         public int SelectedDrive { get; private set; }
 
         /// <summary>
-        /// Gets the current cylinder values
+        /// Gets the current head values
         /// </summary>
-        public byte[] CurrentCylinders { get; } = new byte[4];
+        public byte[] Heads { get; } = new byte[4];
+
+        /// <summary>
+        /// Gets the current track values
+        /// </summary>
+        public byte[] CurrentTracks { get; } = new byte[4];
+
+        /// <summary>
+        /// Gets the current sector values
+        /// </summary>
+        public byte[] CurrentSectors { get; } = new byte[4];
 
         /// <summary>
         /// Resets this device
@@ -86,10 +90,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             _st0 = _st1 = _st2 = _st3 = 0x00;
             for (var i = 0; i < 4; i++)
             {
-                CurrentCylinders[i] = 0x00;
+                CurrentTracks[i] = 0x00;
+                CurrentSectors[i] = 0x00;
             }
             _execStatus = 0x80;
-            _nextSector = 1;
             _multiTrack = false;
             _skipDeletedData = false;
             _floppyFile = VirtualFloppyFile.OpenOrCreateFloppyFile(@"C:\Temp\FloppyFile\vfddFile.vfdd");
@@ -222,9 +226,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 }
                 else if (cmd == 0x08)
                 {
-                    // --- Sense inteerupt status, no more command bytes
-                    _st0 = (byte)(_execStatus | (HeadNumber == 0 ? 0x04 : 0x00) | (SelectedDrive & 0x03));
-                    SendResult(new[] { _st0, CurrentCylinders[SelectedDrive] });
+                    // --- Sense interrupt status, no more command bytes
+                    _st0 = (byte)(_execStatus | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
+                    SendResult(new[] { _st0, CurrentTracks[SelectedDrive] });
                     _execStatus = 0x80;
                     return;
                 }
@@ -241,7 +245,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     _lastCommand = Command.ReadData;
                     _multiTrack = (cmd & 0x80) != 0;
                     _skipDeletedData = (cmd & 0x20) != 0;
-                    _parameters = new byte[7];
+                    _commandBytesReceived = 0;
+                    _parameters = new byte[8];
+                }
+                else if ((cmd & 0xBD) == 0x0D)
+                {
+                    _lastCommand = Command.FormatTrack;
+                    _commandBytesReceived = 0;
+                    _parameters = new byte[5];
                 }
                 else
                 {
@@ -270,59 +281,89 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     break;
 
                 case Command.SenseDriveStatus:
-                    HeadNumber = (cmd >> 2) & 0x01;
                     SelectedDrive = cmd & 0x03;
-                    _st3 = (byte)(0b0011_1000 | (HeadNumber == 0 ? 0x04 : 0x00) | (SelectedDrive & 0x03));
+                    Heads[SelectedDrive] = (byte)((cmd >> 2) & 0x01);
+                    _st3 = (byte)(0b0011_1000 | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
                     SendResult(new [] { _st3 });
                     break;
 
                 case Command.Recalibrate:
                     SelectedDrive = cmd & 0x03;
-                    CurrentCylinders[SelectedDrive] = 0x00;
+                    CurrentTracks[SelectedDrive] = 0x00;
                     _acceptCommand = true;
+                    _execStatus = 0b0010_0000;
                     break;
 
                 case Command.Seek:
                     if (_commandBytesReceived == 0)
                     {
-                        HeadNumber = (cmd >> 2) & 0x01;
                         SelectedDrive = cmd & 0x03;
+                        Heads[SelectedDrive] = (byte)((cmd >> 2) & 0x01);
                         _commandBytesReceived++;
                     }
                     else
                     {
-                        CurrentCylinders[SelectedDrive] = (byte)(cmd > 79 ? 79 : cmd);
+                        CurrentTracks[SelectedDrive] = (byte)(cmd > 79 ? 79 : cmd);
+                        CurrentSectors[SelectedDrive] = 1;
                         _execStatus = 0b0010_0000;
-                        _nextSector = 1;
                         _acceptCommand = true;
                     }
                     break;
 
                 case Command.ReadId:
-                    HeadNumber = (cmd >> 2) & 0x01;
                     SelectedDrive = cmd & 0x03;
+                    Heads[SelectedDrive] = (byte)((cmd >> 2) & 0x01);
                     _commandBytesReceived++;
-                    _st0 = (byte)(SelectedDrive & 0x03);
-                    _st1 = (byte)(_nextSector > 9 ? 0x80 : 0x00);
-                    _st2 = 0x00;
-                    SendResult(new []{ _st0, _st1, _st2,
-                        CurrentCylinders[SelectedDrive],
-                        (byte)HeadNumber,
-                        _nextSector,
-                        (byte)0x02});
-                    _nextSector++;
+                    CurrentSectors[SelectedDrive]++;
+                    _execStatus = 0x00;
+                    SendDataResult();
                     break;
 
                 case Command.ReadData:
-                    if (_commandBytesReceived < 7)
+                    if (_commandBytesReceived < 8)
                     {
                         _parameters[_commandBytesReceived++] = cmd;
                     }
-                    if (_commandBytesReceived >= 7)
+                    if (_commandBytesReceived >= 8)
                     {
-                        // TODO: Read bytes
-                        
+                        SelectedDrive = _parameters[0] & 0x03;
+                        Heads[SelectedDrive] = (byte)((_parameters[0] >> 2) & 0x01);
+
+                        // --- Check if ID is the same as the current sector
+                        if (_parameters[1] != CurrentTracks[SelectedDrive]
+                            || _parameters[2] != Heads[SelectedDrive]
+                            || _parameters[3] != CurrentSectors[SelectedDrive]
+                            || _parameters[4] != 0x02 && _parameters[4] != 0)
+                        {
+                            _dataResult = null;
+                            _execStatus = 0x40; // --- Command completed abnormally
+                            SendDataResult();
+                            break;
+                        }
+
+                        // --- Read bytes in
+                        var length = _parameters[4] == 0 ? _parameters[7] : 512;
+                        _dataResult = _floppyFile.ReadData(
+                            Heads[SelectedDrive],
+                            CurrentTracks[SelectedDrive],
+                            CurrentSectors[SelectedDrive],
+                            length);
+                        _execStatus = 0x00;
+                        SendDataResult();
                     }
+                    break;
+
+                case Command.FormatTrack:
+                    if (_commandBytesReceived < 5)
+                    {
+                        _parameters[_commandBytesReceived++] = cmd;
+                    }
+                    if (_commandBytesReceived >= 5)
+                    {
+                        SelectedDrive = _parameters[0] & 0x03;
+                        Heads[SelectedDrive] = (byte)((_parameters[0] >> 2) & 0x01);
+                    }
+
                     break;
 
                 default:
@@ -345,8 +386,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             {
                 if (_dataResult != null && _dataResultBytesIndex < _dataResult.Length)
                 {
-                    SetExecutionMode(true);
-                    return _commandResult[_dataResultBytesIndex++];
+                    return _dataResult[_dataResultBytesIndex++];
                 }
                 SetExecutionMode(false);
                 if (_commandResult != null && _resultBytesIndex < _commandResult.Length)
@@ -371,9 +411,32 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         {
             _acceptCommand = true;
             _resultBytesIndex = 0;
+            _dataResultBytesIndex = 0;
             SetDioFlag(true);
             _commandResult = result;
             _dataResult = dataResult;
+            if (_dataResult != null)
+            {
+                SetExecutionMode(true);
+            }
+        }
+
+        /// <summary>
+        /// Sends the standard data result package
+        /// </summary>
+        private void SendDataResult()
+        {
+            _st0 = (byte)(_execStatus | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
+            _st1 = (byte)(CurrentSectors[SelectedDrive] > 9 ? 0x80 : 0x00);
+            _st2 = 0x00;
+            SendResult(new byte[]
+            {
+                _st0, _st1, _st2,
+                CurrentTracks[SelectedDrive],
+                Heads[SelectedDrive],
+                CurrentSectors[SelectedDrive],
+                0x02
+            }, _dataResult);
         }
 
         private enum Command: byte
