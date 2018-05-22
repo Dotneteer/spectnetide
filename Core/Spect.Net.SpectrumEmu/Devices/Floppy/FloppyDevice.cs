@@ -324,7 +324,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     Heads[SelectedDrive] = (byte)((cmd >> 2) & 0x01);
                     _commandBytesReceived++;
                     _execStatus = 0x00;
-                    SendDataResult();
+                    _st0 = (byte)(_execStatus | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
+                    _st1 = (byte)(CurrentSectors[SelectedDrive] > 9 ? 0x80 : 0x00);
+                    _st2 = 0x00;
+                    SendResult(new byte[]
+                    {
+                        _st0, _st1, _st2,
+                        CurrentTracks[SelectedDrive],
+                        Heads[SelectedDrive],
+                        0x01,
+                        0x02
+                    }, _dataResult);
                     break;
 
                 case Command.ReadData:

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -47,7 +48,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// <returns></returns>
         public virtual bool IsSpectrumVmCompatible()
         {
-            return IsDoubleSided && Tracks == 40 && SectorsPerTrack == 9;
+            return true;
         }
 
         /// <summary>
@@ -65,8 +66,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// Creates a Spectrum compatible floppy file with the specified name
         /// </summary>
         /// <param name="filename">File name with full pass</param>
+        /// <param name="format">Format to create</param>
         /// <returns>The newly created floppy file</returns>
-        public static VirtualFloppyFile CreateSpectrumFloppyFile(string filename)
+        public static VirtualFloppyFile CreateSpectrumFloppyFile(string filename, FloppyFormat format = FloppyFormat.SpectrumP3)
         {
             var dir = Path.GetDirectoryName(filename);
             if (dir != null && !Directory.Exists(dir))
@@ -75,16 +77,27 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             }
             using (var writer = new BinaryWriter(File.Create(filename)))
             {
-                var floppy = new VirtualFloppyFile(filename, true, 40, 9);
+                if (!s_FormatHeaders.TryGetValue(format, out var formatDesc))
+                {
+                    formatDesc = s_DefaultFormatDescriptor;
+                }
+                var floppy = new VirtualFloppyFile(filename, formatDesc[1] != 0, 
+                    formatDesc[2], formatDesc[3]);
                 writer.Write(HEADER);
                 writer.Write(floppy.IsDoubleSided ? (byte)0x01 : (byte)0x00);
                 writer.Write(floppy.Tracks);
                 writer.Write(floppy.SectorsPerTrack);
                 var sectorData = new byte[512];
+                for (var i = 0; i < sectorData.Length; i++)
+                {
+                    sectorData[i] = 0xE5;
+                }
                 for (var i = 0; i < (floppy.IsDoubleSided ? 2 : 1) * floppy.Tracks * floppy.SectorsPerTrack; i++)
                 {
                     writer.Write(sectorData);
                 }
+                writer.Seek(HEADER_SIZE, SeekOrigin.Begin);
+                writer.Write(formatDesc);
                 return floppy;
             }
         }
@@ -204,7 +217,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             }
             if (sector < 1 || sector > SectorsPerTrack)
             {
-                throw new ArgumentException($"Track must be 1 and {SectorsPerTrack}", nameof(sector));
+                throw new ArgumentException($"Sector must be 1 and {SectorsPerTrack}", nameof(sector));
             }
         }
 
@@ -219,5 +232,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 + track * SectorsPerTrack * SECTOR_SIZE         // Track offset
                 + (sector - 1) * SECTOR_SIZE;                   // Sector offset
         }
+
+        /// <summary>
+        /// Default format descriptor, if none found by ID
+        /// </summary>
+        private static readonly byte[] s_DefaultFormatDescriptor =
+            {0x00, 0x00, 0x28, 0x09, 0x02, 0x01, 0x03, 0x02, 0x2a, 0x52};
+
+        /// <summary>
+        /// The available format descriptors
+        /// </summary>
+        private static readonly Dictionary<FloppyFormat, byte[]> s_FormatHeaders = new Dictionary<FloppyFormat, byte[]>
+        {
+            { FloppyFormat.SpectrumP3, new byte[] { 0x00, 0x00, 0x28, 0x09, 0x02, 0x01, 0x03, 0x02, 0x2a, 0x52} },
+            { FloppyFormat.CpcSystem, new byte[] { 0x01, 0x00, 0x28, 0x09, 0x02, 0x02, 0x03, 0x02, 0x2a, 0x52} },
+            { FloppyFormat.CpcData, new byte[] { 0x02, 0x00, 0x28, 0x09, 0x02, 0x00, 0x03, 0x02, 0x2a, 0x52} },
+            { FloppyFormat.Pcw, new byte[] { 0x03, 0x81, 0x50, 0x09, 0x02, 0x01, 0x04, 0x04, 0x2a, 0x52} }
+        };
     }
 }
