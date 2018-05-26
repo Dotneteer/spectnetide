@@ -39,6 +39,12 @@
     </ContentType>
 
     <ContentType
+        Name="Vfdd" 
+        DisplayName="ZX Spectrum Virtual FDD file" 
+        ItemType="Tzx">
+    </ContentType>
+
+    <ContentType
         Name="SpConf" 
         DisplayName="ZX Spectrum configuration file" 
         ItemType="SpConf">
@@ -63,6 +69,7 @@
     <ItemType Name="Rom" DisplayName="ZX Spectrum ROM file"/>
     <ItemType Name="Tzx" DisplayName="ZX Spectrum TZX tape file"/>
     <ItemType Name="Tap" DisplayName="ZX Spectrum TAP tape file"/>
+    <ItemType Name="Vfdd" DisplayName="ZX Spectrum Virtual FDD file"/>
     <ItemType Name="SpConf" DisplayName="ZX Spectrum configuration file"/>
     <ItemType Name="VmState" DisplayName="ZX Spectrum virtual machine state file"/>
 
@@ -73,6 +80,7 @@
     <FileExtension Name=".rom" ContentType="Rom" />
     <FileExtension Name=".tzx" ContentType="Tzx" />
     <FileExtension Name=".tap" ContentType="Tap" />
+    <FileExtension Name=".vfdd" ContentType="vfdd" />
     <FileExtension Name=".spconf" ContentType="SpConf" />
     <FileExtension Name=".vmstate" ContentType="VmState" />
 

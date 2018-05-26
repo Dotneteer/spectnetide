@@ -22,6 +22,7 @@
       <ProjectItem OpenInEditor="false">Annotations.disann</ProjectItem>
       <ProjectItem OpenInEditor="false">.z80settings</ProjectItem>
       <ProjectItem OpenInEditor="false" ReplaceParameters="true">Rom\ZxSpectrum.spconf</ProjectItem>
+      <ProjectItem OpenInEditor="false">FloppyDisks\Empty.vfdd</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-0.rom</ProjectItem>
       <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-1.rom</ProjectItem>
