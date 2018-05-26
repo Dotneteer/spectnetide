@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Devices.Floppy;
 using Spect.Net.SpectrumEmu.Devices.Next;
 using Spect.Net.SpectrumEmu.Devices.Ports;
 using Spect.Net.SpectrumEmu.Machine;
@@ -362,6 +363,10 @@ namespace Spect.Net.VsPackage
             {
                 nextDev.RegisterAccessLogger = new NextRegisterAccessLogger();
             }
+            if (machine.SpectrumVm.FloppyDevice is FloppyDevice floppy)
+            {
+                floppy.FloppyLogger = new FloppyDeviceLogger();
+            }
 
             var vm = new MachineViewModel(machine)
             {
@@ -534,6 +539,9 @@ namespace Spect.Net.VsPackage
             return SpectrumModels.GetModelTypeFromName(modelName);
         }
 
+        /// <summary>
+        /// This class logs I/O port events
+        /// </summary>
         private class PortAccessLogger : IPortAccessLogger
         {
             public void PortRead(ushort addr, byte value, bool handled)
@@ -549,6 +557,9 @@ namespace Spect.Net.VsPackage
             }
         }
 
+        /// <summary>
+        /// Tis class logs NEXT register events
+        /// </summary>
         private class NextRegisterAccessLogger : INextRegisterAccessLogger
         {
             public void RegisterIndexSet(byte index)
@@ -567,6 +578,101 @@ namespace Spect.Net.VsPackage
             {
                 var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
                 pane.WriteLine($"Next register value obtained: {value:X2}");
+            }
+        }
+
+        private class FloppyDeviceLogger : IFloppyDeviceLogger
+        {
+            /// <summary>
+            /// Allows to trace a floppy message
+            /// </summary>
+            /// <param name="message"></param>
+            public void Trace(string message)
+            {
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.WriteLine($"Floppy event: {message}");
+            }
+
+            /// <summary>
+            /// A new command byte has been received
+            /// </summary>
+            /// <param name="cmd"></param>
+            public void CommandReceived(byte cmd)
+            {
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.WriteLine($"FDC command: {cmd:X2}");
+            }
+
+            /// <summary>
+            /// Command parameters received by the controller
+            /// </summary>
+            /// <param name="pars"></param>
+            public void CommandParamsReceived(byte[] pars)
+            {
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.Write("FDC pars: ");
+                foreach (var p in pars)
+                {
+                    pane.Write($"{p:X2} ");
+                }
+                pane.WriteLine();
+            }
+
+            /// <summary>
+            /// Data received by the controller
+            /// </summary>
+            /// <param name="data"></param>
+            public void DataReceived(byte[] data)
+            {
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.WriteLine("FDC data received: ");
+                var count = 1;
+                foreach (var p in data)
+                {
+                    pane.Write($"{p:X2} ");
+                    if (count % 16 == 0)
+                    {
+                        pane.WriteLine();
+                    }
+                    count++;
+                }
+                pane.WriteLine();
+            }
+
+            /// <summary>
+            /// Data sent back by the controller
+            /// </summary>
+            /// <param name="data"></param>
+            public void DataSent(byte[] data)
+            {
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.WriteLine("FDC data sent back: ");
+                var count = 1;
+                foreach (var p in data)
+                {
+                    pane.Write($"{p:X2} ");
+                    if (count % 16 == 0)
+                    {
+                        pane.WriteLine();
+                    }
+                    count++;
+                }
+                pane.WriteLine();
+            }
+
+            /// <summary>
+            /// Result sent back by the controller
+            /// </summary>
+            /// <param name="result"></param>
+            public void ResultSent(byte[] result)
+            {
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                pane.Write("FDC result: ");
+                foreach (var p in result)
+                {
+                    pane.Write($"{p:X2} ");
+                }
+                pane.WriteLine();
             }
         }
 
