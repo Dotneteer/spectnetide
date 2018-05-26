@@ -6,14 +6,14 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// This class describes configuration information for the DivIde device.
     /// </summary>
     public class FloppyDeviceInfo :
-        DeviceInfoBase<IFloppyDevice, INoConfiguration, INoProvider>
+        DeviceInfoBase<IFloppyDevice, IFloppyConfiguration, INoProvider>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="device">DivIde device instance</param>
-        public FloppyDeviceInfo(IFloppyDevice device) 
-            : base(null, null, device)
+        public FloppyDeviceInfo(IFloppyConfiguration config, IFloppyDevice device) 
+            : base(null, config, device)
         {
         }
     }

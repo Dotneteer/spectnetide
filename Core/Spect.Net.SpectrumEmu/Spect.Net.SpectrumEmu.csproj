@@ -57,6 +57,7 @@
     <Compile Include="Abstraction\Configuration\DivIdeDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\FloppyDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\IAudioConfiguration.cs" />
+    <Compile Include="Abstraction\Configuration\IFloppyConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IMemoryConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\INoConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IDeviceConfiguration.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Abstraction\Configuration\AudioConfigurationData.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
     <Compile Include="Devices\DivIde\DivIdeDevice.cs" />
+    <Compile Include="Devices\Floppy\FloppyConfiguration.cs" />
     <Compile Include="Devices\Floppy\FloppyDevice.cs" />
     <Compile Include="Devices\Floppy\FloppyFormat.cs" />
     <Compile Include="Devices\Floppy\IFloppyDeviceLogger.cs" />

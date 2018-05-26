@@ -37,7 +37,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <returns>True, if read handled; otherwise, false</returns>
         public override bool HandleRead(ushort addr, out byte readValue)
         {
-            readValue = _floppyDevice.ReadResultByte();
+            readValue = _floppyDevice.ReadResultByte(out var executionMode);
+            _floppyDevice.SetExecutionMode(executionMode);
             return true;
         }
 

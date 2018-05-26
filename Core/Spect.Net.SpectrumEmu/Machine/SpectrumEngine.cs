@@ -9,6 +9,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Devices.Floppy;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
@@ -202,6 +203,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IDivIdeDevice DivIdeDevice { get; }
 
         /// <summary>
+        /// The configuration of the floppy
+        /// </summary>
+        public IFloppyConfiguration FloppyConfiguration { get; }
+
+        /// <summary>
         /// The optional Floppy device
         /// </summary>
         public IFloppyDevice FloppyDevice { get; }
@@ -340,7 +346,11 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the floppy device
             var floppyInfo = GetDeviceInfo<IFloppyDevice>();
-            FloppyDevice = floppyInfo?.Device;
+            if (floppyInfo != null)
+            {
+                FloppyDevice = floppyInfo.Device;
+                FloppyConfiguration = (IFloppyConfiguration)floppyInfo.ConfigurationData ?? new FloppyConfiguration();
+            }
 
             // --- Carry out frame calculations
             ResetUlaTact();

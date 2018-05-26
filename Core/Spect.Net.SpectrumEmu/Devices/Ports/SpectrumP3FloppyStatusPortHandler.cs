@@ -1,5 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Devices.Floppy;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
@@ -12,6 +12,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         private const ushort PORT = 0b0010_1111_1111_1101;
 
         private IFloppyDevice _floppyDevice;
+        private IFloppyConfiguration _config;
 
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
@@ -28,6 +29,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         {
             base.OnAttachedToVm(hostVm);
             _floppyDevice = hostVm.FloppyDevice;
+            _config = hostVm.FloppyConfiguration;
         }
 
         /// <summary>
@@ -38,7 +40,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         /// <returns>True, if read handled; otherwise, false</returns>
         public override bool HandleRead(ushort addr, out byte readValue)
         {
-            readValue = _floppyDevice?.MainStatusRegister ?? 0xFF;
+            readValue = 0xFF;
+            if (_floppyDevice != null && _config?.FloppyPresent == true )
+            {
+                readValue = _floppyDevice.MainStatusRegister;
+            }
             return true;
         }
     }

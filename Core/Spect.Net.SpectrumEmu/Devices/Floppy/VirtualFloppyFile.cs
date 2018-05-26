@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
     public class VirtualFloppyFile
     {
         // ReSharper disable once InconsistentNaming
-        public static readonly byte[] HEADER = { (byte)'V', (byte)'F', (byte)'D', (byte)'D', (byte)'F' };
+        public static readonly byte[] HEADER = { (byte)'V', (byte)'F', (byte)'D', (byte)'D' };
 
         /// <summary>
         /// Sector size in bytes
@@ -27,6 +27,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// The name of the floppy file with full path
         /// </summary>
         public string Filename { get; }
+
+        /// <summary>
+        /// Is the ployy write protected?
+        /// </summary>
+        public bool IsWriteProtected { get; }
+
         /// <summary>
         /// Signs if the floppy is double-sided
         /// </summary>
@@ -54,9 +60,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// <summary>
         /// We do not allow direct instantiation
         /// </summary>
-        private VirtualFloppyFile(string filename, bool isDoubleSided, byte tracks, byte sectorsPerTrack)
+        private VirtualFloppyFile(string filename, bool isWriteProtected, bool isDoubleSided, byte tracks, byte sectorsPerTrack)
         {
             Filename = filename;
+            IsWriteProtected = isWriteProtected;
+            IsWriteProtected = false;
             IsDoubleSided = isDoubleSided;
             Tracks = tracks;
             SectorsPerTrack = sectorsPerTrack;
@@ -81,9 +89,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 {
                     formatDesc = s_DefaultFormatDescriptor;
                 }
-                var floppy = new VirtualFloppyFile(filename, formatDesc[1] != 0, 
+                var floppy = new VirtualFloppyFile(filename, false, formatDesc[1] != 0, 
                     formatDesc[2], formatDesc[3]);
                 writer.Write(HEADER);
+                writer.Write(floppy.IsWriteProtected ? (byte)0x01 : (byte)0x00);
                 writer.Write(floppy.IsDoubleSided ? (byte)0x01 : (byte)0x00);
                 writer.Write(floppy.Tracks);
                 writer.Write(floppy.SectorsPerTrack);
@@ -116,10 +125,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 {
                     throw new InvalidOperationException("Invalid floppy file header");
                 }
+
+                var isWriteProtected = reader.ReadByte() != 0x00;
                 var isDoubleSided  = reader.ReadByte() != 0x00;
                 var tracks = reader.ReadByte();
                 var sectorsPerTrack = reader.ReadByte();
-                var floppy = new VirtualFloppyFile(filename, isDoubleSided, tracks, sectorsPerTrack);
+                var floppy = new VirtualFloppyFile(filename, isWriteProtected, isDoubleSided, tracks, sectorsPerTrack);
                 var lengthRead = 0;
                 for (var i = 0; i < (isDoubleSided ? 2 : 1) * tracks * sectorsPerTrack; i++)
                 {

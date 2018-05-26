@@ -486,7 +486,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 new BeeperDeviceInfo(spectrumConfig.Beeper, GetProvider<IBeeperProvider>()),
                 new TapeDeviceInfo(GetProvider<ITapeProvider>()),
                 new SoundDeviceInfo(spectrumConfig.Sound, GetProvider<ISoundProvider>()),
-                new FloppyDeviceInfo(new FloppyDevice())
+                new FloppyDeviceInfo(spectrumConfig.Floppy, new FloppyDevice())
             };
         }
 

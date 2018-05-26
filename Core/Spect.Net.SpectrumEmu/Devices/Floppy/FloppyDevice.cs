@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Floppy
@@ -8,6 +8,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
     /// </summary>
     public class FloppyDevice: IFloppyDevice
     {
+        private IFloppyConfiguration _config;
         private bool _acceptCommand;
         private Command _lastCommand;
         private int _commandBytesReceived;
@@ -22,8 +23,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         private byte[] _dataToWrite;
         private byte[] _dataResult;
         private byte _execStatus;
-        private bool _multiTrack;
-        private bool _skipDeletedData;
 
         private VirtualFloppyFile _floppyFile;
 
@@ -43,6 +42,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         public void OnAttachedToVm(ISpectrumVm hostVm)
         {
             HostVm = hostVm;
+            _config = hostVm.FloppyConfiguration;
         }
 
         /// <summary>
@@ -101,8 +101,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 CurrentSectors[i] = 0x00;
             }
             _execStatus = 0xC0;
-            _multiTrack = false;
-            _skipDeletedData = false;
             _floppyFile = VirtualFloppyFile.OpenOrCreateFloppyFile(@"C:\Temp\FloppyFile\vfddFile.vfdd");
             FloppyLogger?.Trace("Floppy reset");
         }
@@ -262,8 +260,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 else if ((cmd & 0x1F) == 0x06)
                 {
                     _lastCommand = Command.ReadData;
-                    _multiTrack = (cmd & 0x80) != 0;
-                    _skipDeletedData = (cmd & 0x20) != 0;
                     _commandBytesReceived = 0;
                     _parameters = new byte[8];
                 }
@@ -276,7 +272,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 else if ((cmd & 0x3F) == 0x05)
                 {
                     _lastCommand = Command.WriteData;
-                    _multiTrack = (cmd & 0x80) != 0;
                     _commandBytesReceived = 0;
                     _parameters = new byte[8];
                 }
@@ -315,7 +310,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     FloppyLogger?.CommandParamsReceived(_parameters);
                     SelectedDrive = cmd & 0x03;
                     Heads[SelectedDrive] = (byte)((cmd >> 2) & 0x01);
-                    _st3 = (byte)(0b0011_1000 | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
+                    if (SelectedDrive == 0)
+                    {
+                        _st3 = (byte)(0b0011_1000 | (Heads[0] == 0 ? 0x00 : 0x04));
+                    }
+                    else if (SelectedDrive == 1 && _config.DriveBPresent)
+                    {
+                        _st3 = (byte)(0b0011_1000 | (Heads[1] == 0 ? 0x00 : 0x04) | 0x01);
+                    }
                     var result = new[] {_st3};
                     SendResult(result);
                     break;
@@ -397,7 +399,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                             CurrentTracks[SelectedDrive],
                             CurrentSectors[SelectedDrive],
                             length);
-                        _execStatus = 0x20;
+                        _execStatus = 0x00;
                         SendDataResult();
                     }
                     break;
@@ -461,7 +463,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     }
                     else if (_commandBytesReceived >= 8 + _dataToWrite.Length)
                     {
-                        FloppyLogger.DataReceived(_dataToWrite);
+                        FloppyLogger?.DataReceived(_dataToWrite);
                         SetExecutionMode(false);
                         _floppyFile.WriteData(
                             Heads[SelectedDrive],
@@ -472,8 +474,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                         SendDataResult();
                     }
                     _commandBytesReceived++;
-                    break;
-                default:
                     break;
             }
 
@@ -486,15 +486,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// <summary>
         /// Reads a result byte
         /// </summary>
+        /// <param name="executionMode">Execution mode after read</param>
         /// <returns>Result byte received</returns>
-        public byte ReadResultByte()
+        public byte ReadResultByte(out bool executionMode)
         {
+            executionMode = (MainStatusRegister & 0x20) != 0;
             if (DirectionOut)
             {
                 if (_dataResult != null && _dataResultBytesIndex < _dataResult.Length)
                 {
                     if (_dataResultBytesIndex == _dataResult.Length - 1)
                     {
+                        executionMode = false;
                         FloppyLogger?.DataSent(_dataResult);
                     }
                     return _dataResult[_dataResultBytesIndex++];
@@ -555,22 +558,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         {
             None,
             ReadData,
-            ReadDeletedData,
             WriteData,
-            WriteDeletedData,
-            ReadDiagnostic,
             ReadId,
             FormatTrack,
-            ScanEqual,
-            ScanLowOrEqual,
-            ScanHighOrEqual,
             Recalibrate,
-            SenseInterruptStatus,
             Specify,
             SenseDriveStatus,
-            Version,
-            Seek,
-            Invalid
+            Seek
         }
     }
 }

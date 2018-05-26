@@ -201,6 +201,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IFloppyDevice FloppyDevice { get; }
 
         /// <summary>
+        /// The configuration of the floppy
+        /// </summary>
+        IFloppyConfiguration FloppyConfiguration { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

@@ -188,6 +188,11 @@ namespace Spect.Net.VsPackage
         [Description("Logs the usage of ZX Spectrum Next registers")]
         public bool LogNextRegAccess { get; set; } = false;
 
+        [Category("Diagnostics")]
+        [DisplayName("Log floppy controller commands")]
+        [Description("Logs the low level commands sent to the uPD765a FDC")]
+        public bool LogFloppyCommands { get; set; } = false;
+
         /// <summary>
         /// Signs that the keyboard layout type has changed
         /// </summary>

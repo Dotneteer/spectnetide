@@ -363,7 +363,7 @@ namespace Spect.Net.VsPackage
             {
                 nextDev.RegisterAccessLogger = new NextRegisterAccessLogger();
             }
-            if (machine.SpectrumVm.FloppyDevice is FloppyDevice floppy)
+            if (Options.LogFloppyCommands && machine.SpectrumVm.FloppyDevice is FloppyDevice floppy)
             {
                 floppy.FloppyLogger = new FloppyDeviceLogger();
             }

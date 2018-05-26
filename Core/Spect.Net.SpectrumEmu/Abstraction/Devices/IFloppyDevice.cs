@@ -50,7 +50,8 @@
         /// <summary>
         /// Reads a result byte
         /// </summary>
+        /// <param name="executionMode">Execution mode after read</param>
         /// <returns>Result byte received</returns>
-        byte ReadResultByte();
+        byte ReadResultByte(out bool executionMode);
     }
 }
