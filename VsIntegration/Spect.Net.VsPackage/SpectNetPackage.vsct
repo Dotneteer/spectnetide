@@ -227,6 +227,17 @@
         </Strings>
       </Button>
 
+      <!-- Create Virtual Floppy Disk File command -->
+      <Button guid="guidSpectNetCmdSet" id="CreateVfddCommandId" priority="0x0104" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="TapeFileWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="FloppyDrive" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Create Virtual Floppy Disk File</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- Z80 Unit Test Explorer tool window command -->
       <Button guid="guidSpectNetCmdSet" id="TestExplorerToolWindowCommandId" priority="0x0103" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="TestExplorerWindowsGroup" />
@@ -578,7 +589,45 @@
           <CommandName>SetAsDefaultAnnotationFile</CommandName>
         </Strings>
       </Button>
-      
+
+      <!-- Mount as Drive A: command -->
+      <Button guid="guidSpectNetCmdSet" id="MountDriveACommandId" priority="0x0100" type="Button">
+          <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+          <Icon guid="ImageCatalogGuid" id="FloppyDrive" />
+          <CommandFlag>IconIsMoniker</CommandFlag>
+          <CommandFlag>DynamicVisibility</CommandFlag>
+          <Strings>
+              <ButtonText>Insert into drive A:</ButtonText>
+              <CommandName>MountAsDriveA</CommandName>
+          </Strings>
+      </Button>
+
+      <!-- Mount as Drive B: command -->
+      <Button guid="guidSpectNetCmdSet" id="MountDriveBCommandId" priority="0x0101" type="Button">
+          <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+          <Icon guid="ImageCatalogGuid" id="FloppyDrive" />
+          <CommandFlag>IconIsMoniker</CommandFlag>
+          <CommandFlag>DynamicVisibility</CommandFlag>
+          <Strings>
+              <ButtonText>Insert into drive B:</ButtonText>
+              <CommandName>MountAsDriveB</CommandName>
+          </Strings>
+      </Button>
+
+      <!-- Eject Disk command -->
+      <Button guid="guidSpectNetCmdSet" id="EjectDiskCommandId" priority="0x0100" type="Button">
+          <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+          <Icon guid="ImageCatalogGuid" id="GlyphLeft" />
+          <CommandFlag>IconIsMoniker</CommandFlag>
+          <CommandFlag>DynamicVisibility</CommandFlag>
+          <CommandFlag>TextChanges</CommandFlag>
+          <Strings>
+              <ButtonText>Eject Disk</ButtonText>
+              <CommandName>EjectDisk</CommandName>
+          </Strings>
+      </Button>
+
+
       <!-- Unit Test Explorer Toolbar buttons -->
       <Button guid="guidSpectNetCmdSet" id="TestCompileAll" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
@@ -693,6 +742,9 @@
       <IDSymbol name="RunAllZ80TestCommandId" value="0x0815" />
       <IDSymbol name="CompileAllZ80TestCommandId" value="0x0816" />
       <IDSymbol name="LoadVmStateFileCommandId" value="0x0817" />
+      <IDSymbol name="MountDriveACommandId" value="0x0818" />
+      <IDSymbol name="MountDriveBCommandId" value="0x0819" />
+      <IDSymbol name="EjectDiskCommandId" value="0x0820" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />
@@ -757,6 +809,9 @@
 
       <!-- Z80 Assembler output tool window -->
       <IDSymbol name="AssemblerOutputToolWindowCommandId" value="0x1A00" />
+
+      <!-- Create Virtual Floppy Disk File window -->
+      <IDSymbol name="CreateVfddCommandId" value="0x1B00" />
 
     </GuidSymbol>
   </Symbols>

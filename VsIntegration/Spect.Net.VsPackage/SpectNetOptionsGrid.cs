@@ -51,6 +51,11 @@ namespace Spect.Net.VsPackage
         [Description("Displays a confirmation message about VM state file load")]
         public bool ConfirmVmStateLoad { get; set; } = true;
 
+        [Category("Virtual machine")]
+        [DisplayName("Virtual floppy disk folder")]
+        [Description("Virtual floppy disk files are added to this folder")]
+        public string VfddFolder { get; set; } = @"FloppyDisks";
+
         // --- Run Z80 Code options
         [Category("Run Z80 Code")]
         [DisplayName("Confirm non-zero displacement")]

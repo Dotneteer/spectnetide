@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+﻿using System.Threading.Tasks;
+using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Floppy
@@ -25,6 +26,16 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         private byte _execStatus;
 
         private VirtualFloppyFile _floppyFile;
+
+        /// <summary>
+        /// Gets the virtual floppy in Drive A:
+        /// </summary>
+        public VirtualFloppyFile DriveAFloppy { get; private set; }
+
+        /// <summary>
+        /// Gets the virtual floppy in Drive B:
+        /// </summary>
+        public VirtualFloppyFile DriveBFloppy { get; private set; }
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -520,6 +531,46 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         }
 
         /// <summary>
+        /// Inserts a virtual FDD file into Drive A:
+        /// </summary>
+        /// <param name="vfddPath"></param>
+        public Task InsertDriveA(string vfddPath)
+        {
+            DriveAFloppy = VirtualFloppyFile.OpenFloppyFile(vfddPath);
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Inserts a virtual FDD file into Drive B:
+        /// </summary>
+        /// <param name="vfddPath"></param>
+        public Task InsertDriveB(string vfddPath)
+        {
+            DriveBFloppy = VirtualFloppyFile.OpenFloppyFile(vfddPath);
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Ejects the disk from Drive A:
+        /// </summary>
+        public Task EjectDriveA()
+        {
+            DriveAFloppy = null;
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Ejects the disk from Drive A:
+        /// </summary>
+        public Task EjectDriveB()
+        {
+            DriveBFloppy = null;
+            return Task.FromResult(0);
+        }
+
+        #region Helpers
+
+        /// <summary>
         /// Sets the specified result to be sent
         /// </summary>
         private void SendResult(byte[] result, byte[] dataResult = null)
@@ -566,5 +617,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             SenseDriveStatus,
             Seek
         }
+
+        #endregion
     }
 }

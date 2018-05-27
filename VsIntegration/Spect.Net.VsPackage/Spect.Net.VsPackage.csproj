@@ -58,12 +58,14 @@
     <Compile Include="Commands\CompileDefaultZ80CodeCommand.cs" />
     <Compile Include="Commands\CompileZ80CodeCommand.cs" />
     <Compile Include="Commands\CompileZ80TestsCommand.cs" />
+    <Compile Include="Commands\CreateVfddFileCommand.cs" />
     <Compile Include="Commands\DebugDefaultZ80CodeCommand.cs" />
     <Compile Include="Commands\DebugZ80CodeCommand.cs" />
     <Compile Include="Commands\ExportDefaultZ80ProgramCommand.cs" />
     <Compile Include="Commands\ExportZ80ProgramCommand.cs" />
     <Compile Include="Commands\InjectDefaultZ80CodeCommand.cs" />
     <Compile Include="Commands\InjectZ80CodeCommand.cs" />
+    <Compile Include="Commands\InsertDriveBCommand.cs" />
     <Compile Include="Commands\RunAllZ80TestsCommand.cs" />
     <Compile Include="Commands\RunDefaultZ80CodeCommand.cs" />
     <Compile Include="Commands\RunZ80CodeCommand.cs" />
@@ -176,6 +178,15 @@
       <DependentUpon>TestTreeViewItemControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\TestExplorer\TestTreeViewItems.cs" />
+    <Compile Include="Commands\InsertDriveACommand.cs" />
+    <Compile Include="Commands\EjectFloppyCommand.cs" />
+    <Compile Include="Z80Programs\Floppy\CreateVfddFileViewModel.cs" />
+    <Compile Include="Z80Programs\Floppy\DiskFormatConverter.cs" />
+    <Compile Include="Z80Programs\Floppy\CreateVfddFileDialog.xaml.cs">
+      <DependentUpon>CreateVfddFileDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Z80Programs\Floppy\InsertFloppyCommandBase.cs" />
+    <Compile Include="Z80Programs\Floppy\VfddCommandBase.cs" />
     <Compile Include="Z80Programs\Commands\VmStateCommandBase.cs" />
     <Compile Include="Z80Programs\Commands\Z80CompileCodeCommandBase.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifierProvider.cs" />
@@ -780,6 +791,10 @@
     <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Z80Programs\Floppy\CreateVfddFileDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Resource Include="ToolWindows\TestExplorer\RomIcon.xaml">
       <Generator>MSBuild:Compile</Generator>

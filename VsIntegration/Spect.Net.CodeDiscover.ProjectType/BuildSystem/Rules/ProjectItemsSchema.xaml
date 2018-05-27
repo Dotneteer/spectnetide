@@ -41,7 +41,7 @@
     <ContentType
         Name="Vfdd" 
         DisplayName="ZX Spectrum Virtual FDD file" 
-        ItemType="Tzx">
+        ItemType="Vfdd">
     </ContentType>
 
     <ContentType
