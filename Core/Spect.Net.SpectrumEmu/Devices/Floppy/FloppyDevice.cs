@@ -9,6 +9,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
     /// </summary>
     public class FloppyDevice: IFloppyDevice
     {
+        private readonly object _locker = new object();
         private IFloppyConfiguration _config;
         private bool _acceptCommand;
         private Command _lastCommand;
@@ -24,8 +25,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         private byte[] _dataToWrite;
         private byte[] _dataResult;
         private byte _execStatus;
-
-        private VirtualFloppyFile _floppyFile;
 
         /// <summary>
         /// Gets the virtual floppy in Drive A:
@@ -112,7 +111,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 CurrentSectors[i] = 0x00;
             }
             _execStatus = 0xC0;
-            _floppyFile = VirtualFloppyFile.OpenOrCreateFloppyFile(@"C:\Temp\FloppyFile\vfddFile.vfdd");
             FloppyLogger?.Trace("Floppy reset");
         }
 
@@ -136,37 +134,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         public byte MainStatusRegister { get; set; }
 
         /// <summary>
-        /// Sets the flag that indicates if an FDD is busy
+        /// Retrieves the current floppy file
         /// </summary>
-        /// <param name="fdd">FDD index (0..3)</param>
-        /// <param name="busy">True: busy; false: accepts commands</param>
-        public void SetFddBusy(int fdd, bool busy)
-        {
-            if (busy)
-            {
-                MainStatusRegister |= (byte) (1 << (fdd & 0x03));
-            }
-            else
-            {
-                MainStatusRegister &= (byte) ~(fdd & 0x03);
-            }
-        }
+        public VirtualFloppyFile CurrentFloppyFile
+            => SelectedDrive == 0x00
+                ? DriveAFloppy
+                : DriveBFloppy;
 
         /// <summary>
-        /// Sets the flag that indicates if the controller is busy
+        /// Signs if the current disk is ready
         /// </summary>
-        /// <param name="busy">True: busy; false: accepts commands</param>
-        public void SetFdcBusy(bool busy)
-        {
-            if (busy)
-            {
-                MainStatusRegister |= 0b0001_0000;
-            }
-            else
-            {
-                MainStatusRegister &= 0b1110_1111;
-            }
-        }
+        public bool IsDiskReady => CurrentFloppyFile != null;
 
         /// <summary>
         /// Sets the flag that indicates executin mode
@@ -197,22 +175,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             else
             {
                 MainStatusRegister &= 0b1011_1111;
-            }
-        }
-
-        /// <summary>
-        /// Sets the Request for Master (RQM) flag
-        /// </summary>
-        /// <param name="rqm">RQM flag</param>
-        public void SetRqmFlag(bool rqm)
-        {
-            if (rqm)
-            {
-                MainStatusRegister |= 0b1000_0000;
-            }
-            else
-            {
-                MainStatusRegister &= 0b0111_1111;
             }
         }
 
@@ -251,8 +213,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 {
                     // --- Sense interrupt status, no more command bytes
                     FloppyLogger?.CommandReceived(cmd);
-                    _st0 = (byte)(_execStatus | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
-                    SendResult(new[] { _st0, CurrentTracks[SelectedDrive] });
+                    byte currentTrack = 0x00;
+                    if (IsDiskReady)
+                    {
+                        _st0 = (byte)(_execStatus | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
+                        currentTrack = CurrentTracks[SelectedDrive];
+                    }
+                    else
+                    {
+                        // --- Disk is not ready
+                        _st0 = (byte)(0xC8 | (SelectedDrive & 0x03));
+                    }
+                    SendResult(new[] { _st0, currentTrack });
                     _execStatus = 0x80;
                     return;
                 }
@@ -339,7 +311,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     SelectedDrive = cmd & 0x03;
                     CurrentTracks[SelectedDrive] = 0x00;
                     _acceptCommand = true;
-                    _execStatus = 0b0010_0000;
+                    _execStatus = IsDiskReady
+                        ? (byte)0b0010_0000
+                        : (byte)0b1100_1000;
                     break;
 
                 case Command.Seek:
@@ -356,7 +330,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                         FloppyLogger?.CommandParamsReceived(_parameters);
                         CurrentTracks[SelectedDrive] = (byte)(cmd > 79 ? 79 : cmd);
                         CurrentSectors[SelectedDrive] = 1;
-                        _execStatus = 0b0010_0000;
+                        _execStatus = IsDiskReady
+                            ? (byte)0b0010_0000
+                            : (byte)0b1100_1000;
                         _acceptCommand = true;
                     }
                     break;
@@ -367,7 +343,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     SelectedDrive = cmd & 0x03;
                     Heads[SelectedDrive] = (byte)((cmd >> 2) & 0x01);
                     _commandBytesReceived++;
-                    _execStatus = 0x00;
+                    _execStatus = IsDiskReady
+                        ? (byte)0x00
+                        : (byte)0xC8;
                     _st0 = (byte)(_execStatus | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
                     _st1 = (byte)(CurrentSectors[SelectedDrive] > 9 ? 0x80 : 0x00);
                     _st2 = 0x00;
@@ -405,12 +383,20 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
 
                         // --- Read bytes in
                         var length = _parameters[4] == 0 ? _parameters[7] : 512;
-                        _dataResult = _floppyFile.ReadData(
-                            Heads[SelectedDrive],
-                            CurrentTracks[SelectedDrive],
-                            CurrentSectors[SelectedDrive],
-                            length);
-                        _execStatus = 0x00;
+                        if (IsDiskReady)
+                        {
+                            _dataResult = CurrentFloppyFile.ReadData(
+                                Heads[SelectedDrive],
+                                CurrentTracks[SelectedDrive],
+                                CurrentSectors[SelectedDrive],
+                                length);
+                            _execStatus = 0x00;
+                        }
+                        else
+                        {
+                            _dataResult = null;
+                            _execStatus = 0xC8;
+                        }
                         SendDataResult();
                     }
                     break;
@@ -437,15 +423,23 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                         }
 
                         // --- Format the selected track
+                        var errorFound = false;
                         for (var sector = 1; sector <= sectors; sector++)
                         {
-                            _floppyFile.WriteData(Heads[SelectedDrive], 
-                                CurrentTracks[SelectedDrive],
-                                sector,
-                                data);
+                            if (IsDiskReady)
+                            {
+                                CurrentFloppyFile.WriteData(Heads[SelectedDrive],
+                                    CurrentTracks[SelectedDrive],
+                                    sector,
+                                    data);
+                            }
+                            else
+                            {
+                                errorFound = true;
+                            }
                         }
                         _dataResult = null;
-                        _execStatus = 0x00;
+                        _execStatus = errorFound ? (byte)0xC8 : (byte)0x00;
                         SendDataResult();
                     }
                     break;
@@ -476,12 +470,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     {
                         FloppyLogger?.DataReceived(_dataToWrite);
                         SetExecutionMode(false);
-                        _floppyFile.WriteData(
-                            Heads[SelectedDrive],
-                            CurrentTracks[SelectedDrive],
-                            CurrentSectors[SelectedDrive],
-                            _dataToWrite);
-                        _execStatus = 0x00;
+                        if (IsDiskReady)
+                        {
+                            CurrentFloppyFile.WriteData(
+                                Heads[SelectedDrive],
+                                CurrentTracks[SelectedDrive],
+                                CurrentSectors[SelectedDrive],
+                                _dataToWrite);
+                            _execStatus = 0x00;
+                        }
+                        else
+                        {
+                            _execStatus = 0xC8;
+                        }
                         SendDataResult();
                     }
                     _commandBytesReceived++;
@@ -502,30 +503,29 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         public byte ReadResultByte(out bool executionMode)
         {
             executionMode = (MainStatusRegister & 0x20) != 0;
-            if (DirectionOut)
+            if (!DirectionOut) return 0xFF;
+
+            if (_dataResult != null && _dataResultBytesIndex < _dataResult.Length)
             {
-                if (_dataResult != null && _dataResultBytesIndex < _dataResult.Length)
+                if (_dataResultBytesIndex == _dataResult.Length - 1)
                 {
-                    if (_dataResultBytesIndex == _dataResult.Length - 1)
-                    {
-                        executionMode = false;
-                        FloppyLogger?.DataSent(_dataResult);
-                    }
-                    return _dataResult[_dataResultBytesIndex++];
+                    executionMode = false;
+                    FloppyLogger?.DataSent(_dataResult);
                 }
-                SetExecutionMode(false);
-                if (_commandResult != null && _resultBytesIndex < _commandResult.Length)
+                return _dataResult[_dataResultBytesIndex++];
+            }
+            SetExecutionMode(false);
+            if (_commandResult != null && _resultBytesIndex < _commandResult.Length)
+            {
+                var result = _commandResult[_resultBytesIndex++];
+                if (_resultBytesIndex >= _commandResult.Length)
                 {
-                    var result = _commandResult[_resultBytesIndex++];
-                    if (_resultBytesIndex >= _commandResult.Length)
-                    {
-                        FloppyLogger?.ResultSent(_commandResult);
-                        SetDioFlag(false);
-                        _resultBytesIndex = 0;
-                        _commandResult = null;
-                    }
-                    return result;
+                    FloppyLogger?.ResultSent(_commandResult);
+                    SetDioFlag(false);
+                    _resultBytesIndex = 0;
+                    _commandResult = null;
                 }
+                return result;
             }
             return 0xFF;
         }
@@ -536,7 +536,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// <param name="vfddPath"></param>
         public Task InsertDriveA(string vfddPath)
         {
-            DriveAFloppy = VirtualFloppyFile.OpenFloppyFile(vfddPath);
+            lock (_locker)
+            {
+                DriveAFloppy = VirtualFloppyFile.OpenFloppyFile(vfddPath);
+            }
             return Task.FromResult(0);
         }
 
@@ -546,7 +549,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// <param name="vfddPath"></param>
         public Task InsertDriveB(string vfddPath)
         {
-            DriveBFloppy = VirtualFloppyFile.OpenFloppyFile(vfddPath);
+            lock (_locker)
+            {
+                DriveBFloppy = VirtualFloppyFile.OpenFloppyFile(vfddPath);
+            }
             return Task.FromResult(0);
         }
 
@@ -555,7 +561,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// </summary>
         public Task EjectDriveA()
         {
-            DriveAFloppy = null;
+            lock (_locker)
+            {
+                DriveAFloppy = null;
+            }
             return Task.FromResult(0);
         }
 
@@ -564,7 +573,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// </summary>
         public Task EjectDriveB()
         {
-            DriveBFloppy = null;
+            lock (_locker)
+            {
+                DriveBFloppy = null;
+            }
             return Task.FromResult(0);
         }
 
@@ -605,6 +617,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             }, _dataResult);
         }
 
+        /// <summary>
+        /// FDD commands this class can handle
+        /// </summary>
         private enum Command: byte
         {
             None,

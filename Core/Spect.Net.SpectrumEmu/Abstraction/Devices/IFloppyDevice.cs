@@ -14,19 +14,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         byte MainStatusRegister { get; }
 
         /// <summary>
-        /// Sets the flag that indicates if an FDD is busy
-        /// </summary>
-        /// <param name="fdd">FDD index (0..3)</param>
-        /// <param name="busy">True: in seek mode; false: accepts commands</param>
-        void SetFddBusy(int fdd, bool busy);
-
-        /// <summary>
-        /// Sets the flag that indicates if the controller is busy
-        /// </summary>
-        /// <param name="busy">True: busy; false: accepts commands</param>
-        void SetFdcBusy(bool busy);
-
-        /// <summary>
         /// Sets the flag that indicates executin mode
         /// </summary>
         /// <param name="exm">Execution mode flag</param>
@@ -37,12 +24,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// </summary>
         /// <param name="dio">DIO flag</param>
         void SetDioFlag(bool dio);
-
-        /// <summary>
-        /// Sets the Request for Master (RQM) flag
-        /// </summary>
-        /// <param name="rqm">RQM flag</param>
-        void SetRqmFlag(bool rqm);
 
         /// <summary>
         /// Sends a command byte to the controller
