@@ -24,6 +24,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         public const int HEADER_SIZE = 8;
 
         /// <summary>
+        /// Disk format
+        /// </summary>
+        public FloppyFormat DiskFormat { get; }
+
+        /// <summary>
         /// The name of the floppy file with full path
         /// </summary>
         public string Filename { get; }
@@ -54,6 +59,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         public byte FirstSectorIndex { get;  }
 
         /// <summary>
+        /// Format specifier
+        /// </summary>
+        public List<byte> FormatSpec { get; }
+
+        /// <summary>
         /// Checks if the current drive is Spectrum compatible
         /// </summary>
         /// <returns></returns>
@@ -65,16 +75,32 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// <summary>
         /// We do not allow direct instantiation
         /// </summary>
-        private VirtualFloppyFile(string filename, bool isWriteProtected, bool isDoubleSided, byte tracks, byte sectorsPerTrack,
-            byte firsSectorIndex)
+        private VirtualFloppyFile(string filename, bool isWriteProtected, 
+            IReadOnlyList<byte> formatSpec, byte firsSectorIndex)
         {
             Filename = filename;
+            FormatSpec = new List<byte>(formatSpec);
             IsWriteProtected = isWriteProtected;
             IsWriteProtected = false;
-            IsDoubleSided = isDoubleSided;
-            Tracks = tracks;
-            SectorsPerTrack = sectorsPerTrack;
+            IsDoubleSided = formatSpec[1] != 0;
+            Tracks = formatSpec[2];
+            SectorsPerTrack = formatSpec[3];
             FirstSectorIndex = firsSectorIndex;
+            switch (formatSpec[0])
+            {
+                case 0x00:
+                    DiskFormat = FloppyFormat.SpectrumP3;
+                    break;
+                case 0x01:
+                    DiskFormat = FloppyFormat.CpcSystem;
+                    break;
+                case 0x02:
+                    DiskFormat = FloppyFormat.CpcData;
+                    break;
+                default:
+                    DiskFormat = FloppyFormat.Pcw;
+                    break;
+            }
         }
 
         /// <summary>
@@ -97,8 +123,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     formatDesc = s_DefaultFormatDescriptor;
                 }
                 var formatBytes = formatDesc.Format;
-                var floppy = new VirtualFloppyFile(filename, false, formatBytes[1] != 0, 
-                    formatBytes[2], formatBytes[3], formatDesc.SectorIndex);
+                var floppy = new VirtualFloppyFile(filename, false, formatBytes, formatDesc.SectorIndex);
                 writer.Write(HEADER);
                 writer.Write(floppy.IsWriteProtected ? (byte)0x01 : (byte)0x00);
                 writer.Write(floppy.IsDoubleSided ? (byte)0x01 : (byte)0x00);
@@ -140,7 +165,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 var tracks = reader.ReadByte();
                 var sectorsPerTrack = reader.ReadByte();
                 var firstSector = reader.ReadByte();
-                var floppy = new VirtualFloppyFile(filename, isWriteProtected, isDoubleSided, tracks, sectorsPerTrack, firstSector);
                 var lengthRead = 0;
                 for (var i = 0; i < (isDoubleSided ? 2 : 1) * tracks * sectorsPerTrack; i++)
                 {
@@ -152,6 +176,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                             $"Floppy file is shorter then expected, its size is {lengthRead} bytes.");
                     }
                 }
+                reader.BaseStream.Seek(HEADER_SIZE, SeekOrigin.Begin);
+                var formatSpec = reader.ReadBytes(10);
+                var floppy = new VirtualFloppyFile(filename, isWriteProtected, formatSpec, firstSector);
                 if (!floppy.IsSpectrumVmCompatible())
                 {
                     throw new InvalidOperationException("Floppy file is not Spectrum compatible");

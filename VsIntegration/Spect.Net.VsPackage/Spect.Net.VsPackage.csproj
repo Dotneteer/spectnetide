@@ -114,6 +114,12 @@
     </Compile>
     <Compile Include="CustomEditors\TzxEditor\TzxHwBlockItemViewModel.cs" />
     <Compile Include="CustomEditors\TzxEditor\TzxTurboSpeedBlockViewModel.cs" />
+    <Compile Include="CustomEditors\VfddEditor\VfddEditorControl.xaml.cs">
+      <DependentUpon>VfddEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\VfddEditor\VfddEditorFactory.cs" />
+    <Compile Include="CustomEditors\VfddEditor\VfddEditorPane.cs" />
+    <Compile Include="CustomEditors\VfddEditor\VfddEditorViewModel.cs" />
     <Compile Include="ProjectStructure\SpConfProjectItem.cs" />
     <Compile Include="ProjectStructure\ProjectItemRenamedEventArgs.cs" />
     <Compile Include="ProjectStructure\FileChangedEventArgs.cs" />
@@ -665,6 +671,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxHardwareInfoControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\VfddEditor\VfddEditorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
