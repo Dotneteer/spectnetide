@@ -46,7 +46,13 @@
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 
-    <!-- ZX Spectrum inventory file types -->
+    <!-- ZX Spectrum Virtual FDD file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Vfdd.xaml;">
+        <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+
+      <!-- ZX Spectrum inventory file types -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\SpConf.xaml;">
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>

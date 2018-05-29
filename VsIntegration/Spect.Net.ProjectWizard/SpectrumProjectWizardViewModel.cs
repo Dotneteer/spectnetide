@@ -81,13 +81,33 @@ namespace Spect.Net.ProjectWizard
                 },
                 new SpectrumRepositoryItemViewModel
                 {
-                    IconPath = "Images/Spectrump3e.ico",
+                    IconPath = "Images/Spectrump2e.ico",
                     ModelKey = SpectrumModels.ZX_SPECTRUM_P3_E,
                     RevisionKey = SpectrumModels.PAL,
-                    ModelName = "ZX Spectrum +3E",
+                    ModelName = "ZX Spectrum +2E",
                     ScreenMode = "PAL",
                     CpuMode = "Normal Speed",
-                    RevisionNo = "0.6 (beta)"
+                    RevisionNo = "1.0"
+                },
+                new SpectrumRepositoryItemViewModel
+                {
+                    IconPath = "Images/Spectrump3e.ico",
+                    ModelKey = SpectrumModels.ZX_SPECTRUM_P3_E,
+                    RevisionKey = SpectrumModels.FLOPPY1,
+                    ModelName = "ZX Spectrum +3E + FDD",
+                    ScreenMode = "PAL",
+                    CpuMode = "Normal Speed",
+                    RevisionNo = "0.8 (beta)"
+                },
+                new SpectrumRepositoryItemViewModel
+                {
+                    IconPath = "Images/Spectrump3e.ico",
+                    ModelKey = SpectrumModels.ZX_SPECTRUM_P3_E,
+                    RevisionKey = SpectrumModels.FLOPPY2,
+                    ModelName = "ZX Spectrum +3E + Double FDD",
+                    ScreenMode = "PAL",
+                    CpuMode = "Normal Speed",
+                    RevisionNo = "0.8 (beta)"
                 },
                 //new SpectrumRepositoryItemViewModel
                 //{

@@ -2,6 +2,7 @@
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.SpectrumEmu.Devices.Floppy;
 
 namespace Spect.Net.SpectrumEmu
 {
@@ -318,6 +319,120 @@ namespace Spect.Net.SpectrumEmu
                                     TactsPerSample = 128
                                 }
                             }
+                        },
+                        {
+                            FLOPPY1, new SpectrumEdition
+                            {
+                                Cpu = new CpuConfigurationData
+                                {
+                                    BaseClockFrequency = 3_546_900,
+                                    ClockMultiplier = 1,
+                                    SupportsNextOperations = false
+                                },
+                                Rom = new RomConfigurationData
+                                {
+                                    RomName = "ZxSpectrumP3E",
+                                    NumberOfRoms = 4,
+                                    Spectrum48RomIndex = 3
+                                },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = true,
+                                    RamBanks = 8,
+                                    ContentionType = MemoryContentionType.GateArray
+                                },
+                                Screen = new ScreenConfigurationData
+                                {
+                                    InterruptTact = 14,
+                                    VerticalSyncLines = 8,
+                                    NonVisibleBorderTopLines = 7,
+                                    BorderTopLines = 48,
+                                    BorderBottomLines = 48,
+                                    NonVisibleBorderBottomLines = 8,
+                                    DisplayLines = 192,
+                                    BorderLeftTime = 24,
+                                    BorderRightTime = 24,
+                                    DisplayLineTime = 128,
+                                    HorizontalBlankingTime = 40,
+                                    NonVisibleBorderRightTime = 12,
+                                    PixelDataPrefetchTime = 2,
+                                    AttributeDataPrefetchTime = 1
+                                },
+                                Beeper = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 35469,
+                                    SamplesPerFrame = 709,
+                                    TactsPerSample = 100
+                                },
+                                Sound = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 27710,
+                                    SamplesPerFrame = 553,
+                                    TactsPerSample = 128
+                                },
+                                Floppy = new FloppyConfiguration
+                                {
+                                    FloppyPresent = true,
+                                    DriveBPresent = false
+                                }
+                            }
+                        },
+                        {
+                            FLOPPY2, new SpectrumEdition
+                            {
+                                Cpu = new CpuConfigurationData
+                                {
+                                    BaseClockFrequency = 3_546_900,
+                                    ClockMultiplier = 1,
+                                    SupportsNextOperations = false
+                                },
+                                Rom = new RomConfigurationData
+                                {
+                                    RomName = "ZxSpectrumP3E",
+                                    NumberOfRoms = 4,
+                                    Spectrum48RomIndex = 3
+                                },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = true,
+                                    RamBanks = 8,
+                                    ContentionType = MemoryContentionType.GateArray
+                                },
+                                Screen = new ScreenConfigurationData
+                                {
+                                    InterruptTact = 14,
+                                    VerticalSyncLines = 8,
+                                    NonVisibleBorderTopLines = 7,
+                                    BorderTopLines = 48,
+                                    BorderBottomLines = 48,
+                                    NonVisibleBorderBottomLines = 8,
+                                    DisplayLines = 192,
+                                    BorderLeftTime = 24,
+                                    BorderRightTime = 24,
+                                    DisplayLineTime = 128,
+                                    HorizontalBlankingTime = 40,
+                                    NonVisibleBorderRightTime = 12,
+                                    PixelDataPrefetchTime = 2,
+                                    AttributeDataPrefetchTime = 1
+                                },
+                                Beeper = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 35469,
+                                    SamplesPerFrame = 709,
+                                    TactsPerSample = 100
+                                },
+                                Sound = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 27710,
+                                    SamplesPerFrame = 553,
+                                    TactsPerSample = 128
+                                },
+                                Floppy = new FloppyConfiguration
+                                {
+                                    FloppyPresent = true,
+                                    DriveBPresent = true
+                                }
+                            }
                         }
                     }
                 }
@@ -425,6 +540,16 @@ namespace Spect.Net.SpectrumEmu
         public const string NTSC_2_X = "NTSC2X";
 
         /// <summary>
+        /// Key for single floppy
+        /// </summary>
+        public const string FLOPPY1 = "FLOPPY1";
+
+        /// <summary>
+        /// Key for double floppy
+        /// </summary>
+        public const string FLOPPY2 = "FLOPPY2";
+
+        /// <summary>
         /// The Spectrum models available 
         /// </summary>
         public static IReadOnlyDictionary<string, SpectrumModelEditions> StockModels => s_StockModels;
@@ -464,6 +589,18 @@ namespace Spect.Net.SpectrumEmu
         /// </summary>
         public static SpectrumEdition ZxSpectrumP3EPal =>
             StockModels[ZX_SPECTRUM_P3_E].Editions[PAL].Clone();
+
+        /// <summary>
+        /// Shortcut to access ZX Spectrum +3E model PAL Revision + 1 floppy
+        /// </summary>
+        public static SpectrumEdition ZxSpectrumP3EFloppy1 =>
+            StockModels[ZX_SPECTRUM_P3_E].Editions[FLOPPY1].Clone();
+
+        /// <summary>
+        /// Shortcut to access ZX Spectrum +3E model PAL Revision + 2 floppy
+        /// </summary>
+        public static SpectrumEdition ZxSpectrumP3EFloppy2 =>
+            StockModels[ZX_SPECTRUM_P3_E].Editions[FLOPPY2].Clone();
 
         /// <summary>
         /// Shortcut to access ZX Spectrum Next model PAL Revision

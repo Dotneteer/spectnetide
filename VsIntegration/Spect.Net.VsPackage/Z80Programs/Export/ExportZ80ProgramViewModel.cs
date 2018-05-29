@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.IO;
+﻿using System.IO;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.Wpf.Mvvm;
 

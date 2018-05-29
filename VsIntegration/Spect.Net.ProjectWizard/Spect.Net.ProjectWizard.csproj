@@ -102,5 +102,8 @@
   <ItemGroup>
     <Resource Include="Images\Spectrum128.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Spectrump2e.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

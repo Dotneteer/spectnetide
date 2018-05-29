@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:memory1="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
                     xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
-                    xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export">
+                    xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
+                    xmlns:floppy="clr-namespace:Spect.Net.VsPackage.Z80Programs.Floppy">
 
     <!-- Colors -->
     <Color x:Key="Cz80Text">#FF51c351</Color>
@@ -548,4 +549,5 @@
     <toolWindows:Hex4Converter x:Key="Hex4Converter" />
     <toolWindows:StringListToStringConverter x:Key="StringListToStringConverter" />
     <export:ExportFormatConverter x:Key="ExportFormatConverter" />
+    <floppy:DiskFormatConverter x:Key="DiskFormatConverter" />
 </ResourceDictionary>
