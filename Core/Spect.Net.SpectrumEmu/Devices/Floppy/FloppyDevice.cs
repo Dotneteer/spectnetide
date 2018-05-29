@@ -301,6 +301,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     {
                         _st3 = (byte)(0b0011_1000 | (Heads[1] == 0 ? 0x00 : 0x04) | 0x01);
                     }
+                    if (IsDiskReady && CurrentFloppyFile.IsWriteProtected)
+                    {
+                        _st3 |= 0x40;
+                    } 
                     var result = new[] {_st3};
                     SendResult(result);
                     break;
@@ -423,23 +427,31 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                         }
 
                         // --- Format the selected track
-                        var errorFound = false;
+                        _execStatus = 0x00;
                         for (var sector = 1; sector <= sectors; sector++)
                         {
                             if (IsDiskReady)
                             {
-                                CurrentFloppyFile.WriteData(Heads[SelectedDrive],
+                                if (!CurrentFloppyFile.IsWriteProtected)
+                                {
+                                    CurrentFloppyFile.WriteData(Heads[SelectedDrive],
                                     CurrentTracks[SelectedDrive],
                                     sector,
                                     data);
+                                }
+                                else
+                                {
+                                    _execStatus = 0xC0;
+                                    break;
+                                }
                             }
                             else
                             {
-                                errorFound = true;
+                                _execStatus = 0xC8;
+                                break;
                             }
                         }
                         _dataResult = null;
-                        _execStatus = errorFound ? (byte)0xC8 : (byte)0x00;
                         SendDataResult();
                     }
                     break;
@@ -472,12 +484,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                         SetExecutionMode(false);
                         if (IsDiskReady)
                         {
-                            CurrentFloppyFile.WriteData(
+                            if (!CurrentFloppyFile.IsWriteProtected)
+                            {
+                                CurrentFloppyFile.WriteData(
                                 Heads[SelectedDrive],
                                 CurrentTracks[SelectedDrive],
                                 CurrentSectors[SelectedDrive],
                                 _dataToWrite);
-                            _execStatus = 0x00;
+                                _execStatus = 0x00;
+                            }
+                            else
+                            {
+                                _execStatus = 0xC0;
+                            }
                         }
                         else
                         {
@@ -604,8 +623,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         /// </summary>
         private void SendDataResult()
         {
+            var writeProtected = CurrentFloppyFile?.IsWriteProtected ?? false;
             _st0 = (byte)(_execStatus | (Heads[SelectedDrive] == 0 ? 0x00 : 0x04) | (SelectedDrive & 0x03));
-            _st1 = (byte)(CurrentSectors[SelectedDrive] > 9 ? 0x80 : 0x00);
+            _st1 = (byte)((CurrentSectors[SelectedDrive] > 9 ? 0x80 : 0x00) 
+                          | (writeProtected ? 0x02 : 0x00));
             _st2 = 0x00;
             SendResult(new byte[]
             {

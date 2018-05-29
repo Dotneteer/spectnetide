@@ -81,7 +81,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             Filename = filename;
             FormatSpec = new List<byte>(formatSpec);
             IsWriteProtected = isWriteProtected;
-            IsWriteProtected = false;
             IsDoubleSided = formatSpec[1] != 0;
             Tracks = formatSpec[2];
             SectorsPerTrack = formatSpec[3];
@@ -201,6 +200,44 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
         }
 
         /// <summary>
+        /// Sets the specified write protection mode of the disk
+        /// </summary>
+        /// <param name="filename">Disk file name</param>
+        /// <param name="isWriteProtected">Write protection flag</param>
+        public static void SetWriteProtection(string filename, bool isWriteProtected)
+        {
+            // --- This operation allows to check the file for corruption
+            OpenFloppyFile(filename);
+
+            using (var writer = new BinaryWriter(File.OpenWrite(filename)))
+            {
+                writer.BaseStream.Seek(HEADER.Length, SeekOrigin.Begin);
+                writer.Write(isWriteProtected ? (byte) 0x01 : (byte) 0x00);
+            }
+        }
+
+        /// <summary>
+        /// Check if the specified file has write protection or not
+        /// </summary>
+        /// <param name="filename">Disk file name</param>
+        /// <returns>True, if the disk is write protected</returns>
+        public static bool CheckWriteProtection(string filename)
+        {
+            try
+            {
+                using (var reader = new BinaryReader(File.OpenRead(filename)))
+                {
+                    reader.BaseStream.Seek(HEADER.Length, SeekOrigin.Begin);
+                    return reader.ReadByte() != 0;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Writes the data to the file
         /// </summary>
         /// <param name="head">Head parameter (0 or 1)</param>
@@ -213,15 +250,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
             {
                 sector = sector - FirstSectorIndex + 1;
             }
+
             CheckPositionParameters(head, track, sector);
             if (data.Length == 0)
             {
                 throw new ArgumentException("Data must be at least one byte", nameof(data));
             }
+
             if (data.Length > SECTOR_SIZE)
             {
                 throw new ArgumentException($"Data cannot be longer than {SECTOR_SIZE} bytes", nameof(data));
             }
+
             using (var writer = new BinaryWriter(File.OpenWrite(Filename)))
             {
                 writer.Seek(CalculateSectorPosition(head, track, sector), SeekOrigin.Begin);

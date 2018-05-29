@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.VsPackage.CustomEditors.VfddEditor
+﻿using System.ComponentModel;
+
+namespace Spect.Net.VsPackage.CustomEditors.VfddEditor
 {
     /// <summary>
     /// Interaction logic for VfddEditorControl.xaml

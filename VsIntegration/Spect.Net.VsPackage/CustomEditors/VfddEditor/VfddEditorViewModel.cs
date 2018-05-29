@@ -19,6 +19,7 @@ namespace Spect.Net.VsPackage.CustomEditors.VfddEditor
         private int _directoryBlocks;
         private int _readWriteGapLength;
         private int _formatGapLength;
+        private string _capacity;
 
         /// <summary>
         /// Indicates if the disk file format is valid
@@ -117,6 +118,32 @@ namespace Spect.Net.VsPackage.CustomEditors.VfddEditor
         {
             get => _formatGapLength;
             set => Set(ref _formatGapLength, value);
+        }
+
+        /// <summary>
+        /// Disk capacity
+        /// </summary>
+        public string Capacity
+        {
+            get => _capacity;
+            set => Set(ref _capacity, value);
+        }
+
+        public VfddEditorViewModel()
+        {
+            if (!IsInDesignMode) return;
+            IsValidFormat = true;
+            DiskFormat = "Spectrum +3";
+            Sideness = "Single";
+            TracksPerSide = 40;
+            SectorsPerTrack = 9;
+            SectorSize = 512;
+            ReservedTracks = 2;
+            BlockSize = 4;
+            DirectoryBlocks = 7;
+            ReadWriteGapLength = 11;
+            FormatGapLength = 12;
+            Capacity = "180 Kbytes";
         }
     }
 }

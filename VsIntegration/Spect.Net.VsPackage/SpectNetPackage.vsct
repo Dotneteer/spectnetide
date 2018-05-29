@@ -627,8 +627,20 @@
           </Strings>
       </Button>
 
+      <!-- Set write protection command -->
+      <Button guid="guidSpectNetCmdSet" id="WriteProtectionCommandId" priority="0x0104" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="Writeable" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Make write protected</ButtonText>
+          <CommandName>WriteProtection</CommandName>
+        </Strings>
+      </Button>
 
-      <!-- Unit Test Explorer Toolbar buttons -->
+        <!-- Unit Test Explorer Toolbar buttons -->
       <Button guid="guidSpectNetCmdSet" id="TestCompileAll" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="UnitTestExplorerToolbarStartGroup" />
         <Icon guid="ImageCatalogGuid" id="AutoTest" />
@@ -745,8 +757,9 @@
       <IDSymbol name="MountDriveACommandId" value="0x0818" />
       <IDSymbol name="MountDriveBCommandId" value="0x0819" />
       <IDSymbol name="EjectDiskCommandId" value="0x0820" />
+      <IDSymbol name="WriteProtectionCommandId" value="0x0821" />
 
-      <!-- Emulator tool window -->
+        <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />
       <IDSymbol name="EmulatorToolbar" value="0x1010" />
       <IDSymbol name="EmulatorToolbarGroup" value="0x1020" />

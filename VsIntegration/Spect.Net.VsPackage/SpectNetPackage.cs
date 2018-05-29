@@ -17,6 +17,7 @@ using Spect.Net.VsPackage.CustomEditors.DisannEditor;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
+using Spect.Net.VsPackage.CustomEditors.VfddEditor;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
 using Spect.Net.VsPackage.ToolWindows.CompilerOutput;
@@ -76,6 +77,8 @@ namespace Spect.Net.VsPackage
     [ProvideEditorLogicalView(typeof(DisAnnEditorFactory), LogicalViewID.Designer)]
     [ProvideEditorExtension(typeof(SpConfEditorFactory), SpConfEditorFactory.EXTENSION, 0x40)]
     [ProvideEditorLogicalView(typeof(SpConfEditorFactory), LogicalViewID.Designer)]
+    [ProvideEditorExtension(typeof(VfddEditorFactory), VfddEditorFactory.EXTENSION, 0x40)]
+    [ProvideEditorLogicalView(typeof(VfddEditorFactory), LogicalViewID.Designer)]
 
     // --- Option pages
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
@@ -201,6 +204,7 @@ namespace Spect.Net.VsPackage
             RegisterEditorFactory(new TapEditorFactory());
             RegisterEditorFactory(new DisAnnEditorFactory());
             RegisterEditorFactory(new SpConfEditorFactory());
+            RegisterEditorFactory(new VfddEditorFactory());
 
             // --- Register providers
             SpectrumMachine.Reset();
