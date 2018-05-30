@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
@@ -222,7 +223,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                     else
                     {
                         // --- Disk is not ready
-                        _st0 = (byte)(0xC8 | (SelectedDrive & 0x03));
+                        _st0 = (byte)(0x58 | (SelectedDrive & 0x03));
                     }
                     SendResult(new[] { _st0, currentTrack });
                     _execStatus = 0x80;
@@ -389,12 +390,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                         var length = _parameters[4] == 0 ? _parameters[7] : 512;
                         if (IsDiskReady)
                         {
-                            _dataResult = CurrentFloppyFile.ReadData(
-                                Heads[SelectedDrive],
-                                CurrentTracks[SelectedDrive],
-                                CurrentSectors[SelectedDrive],
-                                length);
-                            _execStatus = 0x00;
+                            try
+                            {
+                                _dataResult = CurrentFloppyFile.ReadData(
+                                    Heads[SelectedDrive],
+                                    CurrentTracks[SelectedDrive],
+                                    CurrentSectors[SelectedDrive],
+                                    length);
+                                _execStatus = 0x00;
+                            }
+                            catch (Exception)
+                            {
+                                // --- Probably the disk file has been deleted
+                                _dataResult = null;
+                                _execStatus = 0xC8;
+                                EjectCurrentFloppy();
+                            }
                         }
                         else
                         {
@@ -434,10 +445,19 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                             {
                                 if (!CurrentFloppyFile.IsWriteProtected)
                                 {
-                                    CurrentFloppyFile.WriteData(Heads[SelectedDrive],
-                                    CurrentTracks[SelectedDrive],
-                                    sector,
-                                    data);
+                                    try
+                                    {
+                                        CurrentFloppyFile.WriteData(Heads[SelectedDrive],
+                                            CurrentTracks[SelectedDrive],
+                                            sector,
+                                            data);
+                                    }
+                                    catch
+                                    {
+                                        // --- Probably the disk file has been deleted
+                                        _execStatus = 0xC0;
+                                        EjectCurrentFloppy();
+                                    }
                                 }
                                 else
                                 {
@@ -486,12 +506,21 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                         {
                             if (!CurrentFloppyFile.IsWriteProtected)
                             {
-                                CurrentFloppyFile.WriteData(
-                                Heads[SelectedDrive],
-                                CurrentTracks[SelectedDrive],
-                                CurrentSectors[SelectedDrive],
-                                _dataToWrite);
-                                _execStatus = 0x00;
+                                try
+                                {
+                                    CurrentFloppyFile.WriteData(
+                                        Heads[SelectedDrive],
+                                        CurrentTracks[SelectedDrive],
+                                        CurrentSectors[SelectedDrive],
+                                        _dataToWrite);
+                                    _execStatus = 0x00;
+                                }
+                                catch
+                                {
+                                    // --- Probably the disk file has been deleted
+                                    _execStatus = 0xC0;
+                                    EjectCurrentFloppy();
+                                }
                             }
                             else
                             {
@@ -636,6 +665,24 @@ namespace Spect.Net.SpectrumEmu.Devices.Floppy
                 CurrentSectors[SelectedDrive],
                 0x02
             }, _dataResult);
+        }
+
+        /// <summary>
+        /// Ejects the current drive (as a result of unexpected error)
+        /// </summary>
+        private void EjectCurrentFloppy()
+        {
+            lock (_locker)
+            {
+                if (SelectedDrive == 0)
+                {
+                    DriveAFloppy = null;
+                }
+                else
+                {
+                    DriveBFloppy = null;
+                }
+            }
         }
 
         /// <summary>

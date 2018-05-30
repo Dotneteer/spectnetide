@@ -19,9 +19,9 @@ namespace Spect.Net.VsPackage.Commands
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
             base.OnQueryStatus(mc);
-            if (!mc.Enabled) return;
+            if (!mc.Visible) return;
 
-            mc.Enabled = Package.MachineViewModel.SpectrumVm.FloppyConfiguration?.DriveBPresent == true;
+            mc.Visible = Package.MachineViewModel.SpectrumVm.FloppyConfiguration?.DriveBPresent == true;
         }
 
         /// <summary>
