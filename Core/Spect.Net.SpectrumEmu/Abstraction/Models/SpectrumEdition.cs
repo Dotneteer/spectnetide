@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Devices.Floppy;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Models
 {
@@ -33,10 +34,15 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
         public AudioConfigurationData Beeper { get; set; }
 
         /// <summary>
-        /// The sound configuration data for this resision
+        /// The sound configuration data for this revision
         /// </summary>
         public AudioConfigurationData Sound { get; set; }
 
+        /// <summary>
+        /// The floppy configuration of this revision
+        /// </summary>
+        public FloppyConfiguration Floppy { get; set; }
+        
         /// <summary>
         /// Returns a clone of this revision
         /// </summary>
@@ -50,7 +56,8 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
                 Memory = Memory.Clone(),
                 Screen = Screen.Clone(),
                 Beeper = Beeper.Clone(),
-                Sound = Sound?.Clone()
+                Sound = Sound?.Clone(),
+                Floppy = Floppy?.Clone()
             };
         }
     }

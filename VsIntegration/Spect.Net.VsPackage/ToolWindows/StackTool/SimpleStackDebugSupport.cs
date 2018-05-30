@@ -14,11 +14,13 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// Stack Pointer events
         /// </summary>
         public LruList<StackPointerManipulationEvent> StackPointerEvents { get; private set; }
+            = new LruList<StackPointerManipulationEvent>();
 
         /// <summary>
         /// Stack content events
         /// </summary>
         public Dictionary<ushort, StackContentManipulationEvent>  StackContentEvents { get; private set; }
+            = new Dictionary<ushort, StackContentManipulationEvent>();
 
         /// <summary>
         /// Resets the debug support

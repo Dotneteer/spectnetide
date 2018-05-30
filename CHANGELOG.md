@@ -3,6 +3,17 @@
 __FEATURE__: You can raise a custom error with the `.error` pragma.  
 __FEATURE__: Now, you can use the `str()`, `lowercase()` and `uppercase()` functions.  
 
+### Version 1.9.0
+
+__FEATURE:__ Floppy drive emulation added to Spectrum +3e.
+* Drive A: and drive B: supported (0, 1, or 2 floppy configurations)
+* You can choose the configuration when creating a new project
+* All four floppy disk types supported by Spectrum +3 (Spectrum +3, CPC Data, CPC System, Amstrad PCW)
+can be created, inserted, or ejected.
+* Disks can be marked as write protected
+* The contents of the disks are stored in `.vfdd` files that are now part of
+the ZX Spectrum project
+* `.vfdd` files have an editor that displays the format information of the virtual disk
 
 ### Version 1.8.0
 

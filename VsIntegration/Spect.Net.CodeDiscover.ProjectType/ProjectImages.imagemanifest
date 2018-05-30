@@ -16,6 +16,7 @@
     <ID Name="Z80CodeFolder" Value="8" />
     <ID Name="SpConfIcon" Value="9" />
     <ID Name="Z80TestIcon" Value="10" />
+    <ID Name="FloppyIcon" Value="11" />
   </Symbols>
   <Images>
     <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
@@ -50,6 +51,9 @@
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(Z80TestIcon)">
       <Source Uri="$(Resources)/Images/Z80TestIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(FloppyIcon)">
+        <Source Uri="$(Resources)/Images/FloppyIcon.xaml" />
     </Image>
   </Images>
   <ImageLists />
