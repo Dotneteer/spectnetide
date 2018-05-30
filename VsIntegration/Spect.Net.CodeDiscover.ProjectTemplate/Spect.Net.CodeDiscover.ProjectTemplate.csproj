@@ -59,7 +59,6 @@
   <ItemGroup>
     <None Include=".z80settings" />
     <None Include="Annotations.disann" />
-    <None Include="FloppyDisks\Empty.vfdd" />
     <None Include="Rom\ZxSpectrumNext-0.disann" />
     <None Include="Rom\ZxSpectrumNext-3.disann" />
     <None Include="Rom\ZxSpectrumNext-2.disann" />

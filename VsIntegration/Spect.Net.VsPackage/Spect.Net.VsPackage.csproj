@@ -83,6 +83,7 @@
     <Compile Include="Commands\ShowZ80DisassemblyCommand.cs" />
     <Compile Include="Commands\ShowZ80RegistersCommand.cs" />
     <Compile Include="Commands\VmStateLoadCommand.cs" />
+    <Compile Include="Commands\WriteProtectFloppyCommand.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80AsmClassifier.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugClassifierProvider.cs" />
     <Compile Include="CustomEditors\AsmEditor\Z80DebugClassifier.cs" />

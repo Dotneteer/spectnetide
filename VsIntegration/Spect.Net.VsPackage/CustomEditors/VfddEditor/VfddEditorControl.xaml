@@ -18,6 +18,90 @@
     </UserControl.Resources>
 
     <Grid>
-        <TextBlock Style="{StaticResource Z80StatusText}">VFDD Viewer</TextBlock>            
+        <Border Margin="8,12" Visibility="{Binding IsValidFormat, Converter={StaticResource BoolToCollapsedConverter}}">
+            <TextBlock Style="{StaticResource Z80Text}" TextWrapping="Wrap">
+                The virtual floppy disk file is corrupt, it does not 
+                match with any of the accepted ZX Spectrum +3E floppy disk formats.
+            </TextBlock>
+        </Border>
+        <ScrollViewer Visibility="{Binding IsValidFormat, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <Border Margin="8,12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,8,0"
+                           Text="Format:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" 
+                           Text="{Binding DiskFormat}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,8,0"
+                           Text="Sideness:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" 
+                           Text="{Binding Sideness}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,8,0"
+                           Text="#of Tracks per side:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" 
+                           Text="{Binding TracksPerSide}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,0,8,0"
+                           Text="#of Sectors per track:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" 
+                           Text="{Binding SectorsPerTrack}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,0,8,0"
+                           Text="Sector size:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" 
+                           Text="{Binding SectorSize}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="5" Grid.Column="0" Margin="0,0,8,0"
+                           Text="#of Reserved tracks:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="5" Grid.Column="1" 
+                           Text="{Binding ReservedTracks}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="6" Grid.Column="0" Margin="0,0,8,0"
+                           Text="Block size:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="6" Grid.Column="1" 
+                           Text="{Binding BlockSize}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="7" Grid.Column="0" Margin="0,0,8,0"
+                           Text="#of Directory blocks:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="7" Grid.Column="1" 
+                           Text="{Binding DirectoryBlocks}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="8" Grid.Column="0" Margin="0,0,8,0"
+                           Text="Read/Write gap length:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="8" Grid.Column="1" 
+                           Text="{Binding ReadWriteGapLength}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="9" Grid.Column="0" Margin="0,0,8,0"
+                           Text="Format gap length:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="9" Grid.Column="1" 
+                           Text="{Binding FormatGapLength}" Style="{StaticResource Z80StatusText}"/>
+
+                    <TextBlock Grid.Row="10" Grid.Column="0" Margin="0,0,8,0"
+                               Text="Disk capacity:" Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Row="10" Grid.Column="1" 
+                               Text="{Binding Capacity}" Style="{StaticResource Z80StatusText}"/>
+                </Grid>
+            </Border>
+        </ScrollViewer>
     </Grid>
 </UserControl>
