@@ -55,7 +55,9 @@
     <Compile Include="Abstraction\Configuration\DeviceInfoBase.cs" />
     <Compile Include="Abstraction\Configuration\DeviceInfoCollection.cs" />
     <Compile Include="Abstraction\Configuration\DivIdeDeviceInfo.cs" />
+    <Compile Include="Abstraction\Configuration\FloppyDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\IAudioConfiguration.cs" />
+    <Compile Include="Abstraction\Configuration\IFloppyConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IMemoryConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\INoConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IDeviceConfiguration.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="Abstraction\Devices\ITbBlueControlDevice.cs" />
     <Compile Include="Abstraction\Devices\IZ80Cpu.cs" />
     <Compile Include="Abstraction\Devices\IZ80CpuTestSupport.cs" />
+    <Compile Include="Abstraction\Devices\IFloppyDevice.cs" />
     <Compile Include="Abstraction\Discovery\BranchEvent.cs" />
     <Compile Include="Abstraction\Discovery\IBranchDebugSupport.cs" />
     <Compile Include="Abstraction\Discovery\IStackDebugSupport.cs" />
@@ -154,6 +157,11 @@
     <Compile Include="Abstraction\Configuration\AudioConfigurationData.cs" />
     <Compile Include="Devices\Beeper\BeeperDevice.cs" />
     <Compile Include="Devices\DivIde\DivIdeDevice.cs" />
+    <Compile Include="Devices\Floppy\FloppyConfiguration.cs" />
+    <Compile Include="Devices\Floppy\FloppyDevice.cs" />
+    <Compile Include="Devices\Floppy\FloppyFormat.cs" />
+    <Compile Include="Devices\Floppy\IFloppyDeviceLogger.cs" />
+    <Compile Include="Devices\Floppy\VirtualFloppyFile.cs" />
     <Compile Include="Devices\DivIde\MmcDevice.cs" />
     <Compile Include="Devices\DivIde\MmcStorage.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
@@ -192,6 +200,8 @@
     <Compile Include="Devices\Ports\SpectrumNextPortDevice.cs" />
     <Compile Include="Devices\Ports\SpectrumP3ExtMemoryPagePortHandler.cs" />
     <Compile Include="Devices\Ports\SpectrumP3FloatingPointBusPortHandler.cs" />
+    <Compile Include="Devices\Ports\SpectrumP3FloppyCommandPortHandler.cs" />
+    <Compile Include="Devices\Ports\SpectrumP3FloppyStatusPortHandler.cs" />
     <Compile Include="Devices\Ports\SpectrumP3MemoryPagePortHandler.cs" />
     <Compile Include="Devices\Ports\SpectrumP3PortDevice.cs" />
     <Compile Include="Devices\Ports\GenericPortDeviceBase.cs" />

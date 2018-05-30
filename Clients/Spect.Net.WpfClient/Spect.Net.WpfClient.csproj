@@ -75,6 +75,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Design.xaml.cs">
+      <DependentUpon>Design.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Machine\MachineViewModel.cs" />
     <Compile Include="SpectrumControl\DisplayModeConverter.cs" />
     <Compile Include="SpectrumControl\SpectrumDisplayControl.xaml.cs">
@@ -84,6 +87,10 @@
     <Page Include="AppStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Design.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

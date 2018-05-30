@@ -10,7 +10,7 @@ It (will) support the following ZX Spectrum models:
 
 * __ZX Spectrum 48K__ &mdash; _Emulator and tooling completed_
 * __ZX Spectrum 128K__ &mdash; _Emulator and tooling completed_
-* __ZX Spectrum +3E__ &mdash; _Emulator and tooling development is in progress_
+* __ZX Spectrum +3E__ &mdash; _Emulator and tooling completed_
 * __ZX Spectrum Next__ &mdash; _Emulator and tooling development is in progress_
 
 At the moment the code is entirely written in C#. Nonetheless, I plan to implement certain parts in C++ (somewhen 
@@ -65,6 +65,8 @@ the tape files.
     * __Stack view tool__. Besides the stack contents, you can see &mdash; with disassembly &mdash; the instructions that placed a particular value to the stack. 
     * __Spectrum VM state management__. You can save and load the current state of the Spectrum virtual machine to a file, or even add it
 to the project hierarchy. When you start a Z80 program, the IDE uses VM states for fast code load and execution.
+    * __Virtual floppy disk support__. You can create virtual floppy disks for the Spectrum +3e model, insert them into the virtual floppy
+drives, eject them, make the floppies write protected, or remove the write protection. 
 
 * __Full-blown Z80 assembly programming__. The [SpectNetIde Assembler](Documentation/Z80Assembly/Z80AssemblerReference.md) provides you a
 robust Z80 assembler and related toolset.

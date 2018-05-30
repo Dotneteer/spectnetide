@@ -9,6 +9,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
+using Spect.Net.SpectrumEmu.Devices.Floppy;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
@@ -202,6 +203,16 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IDivIdeDevice DivIdeDevice { get; }
 
         /// <summary>
+        /// The configuration of the floppy
+        /// </summary>
+        public IFloppyConfiguration FloppyConfiguration { get; }
+
+        /// <summary>
+        /// The optional Floppy device
+        /// </summary>
+        public IFloppyDevice FloppyDevice { get; }
+
+        /// <summary>
         /// The optional MMC device
         /// </summary>
         public IMmcDevice MmcDevice { get; }
@@ -338,6 +349,14 @@ namespace Spect.Net.SpectrumEmu.Machine
             var divIdeInfo = GetDeviceInfo<IDivIdeDevice>();
             DivIdeDevice = divIdeInfo?.Device;
 
+            // --- Init the floppy device
+            var floppyInfo = GetDeviceInfo<IFloppyDevice>();
+            if (floppyInfo != null)
+            {
+                FloppyDevice = floppyInfo.Device;
+                FloppyConfiguration = (IFloppyConfiguration)floppyInfo.ConfigurationData ?? new FloppyConfiguration();
+            }
+
             // --- Init the MMC device
             var mmcInfo = GetDeviceInfo<IMmcDevice>();
             MmcDevice = mmcInfo?.Device;
@@ -381,6 +400,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (SoundDevice != null) _spectrumDevices.Add(SoundDevice);
             if (NextDevice != null) _spectrumDevices.Add(NextDevice);
             if (DivIdeDevice != null) _spectrumDevices.Add(DivIdeDevice);
+            if (FloppyDevice != null) _spectrumDevices.Add(FloppyDevice);
             if (MmcDevice != null) _spectrumDevices.Add(MmcDevice);
 
             // --- Now, prepare devices to find each other

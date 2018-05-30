@@ -169,13 +169,24 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.GotoSymbol:
-                    if (CompilerOutput == null)
+                    // --- Check current ROM
+                    var curRomIndex = MachineViewModel.SpectrumVm.MemoryDevice.GetSelectedRomIndex();
+                    if (RomViewMode)
                     {
-                        validationMessage = "No compilation has been done, symbols cannot be used with the 'G' command";
-                        return false;
+                        curRomIndex = RomIndex;
                     }
-
-                    if (!CompilerOutput.Symbols.TryGetValue(parser.Arg1, out var symbolValue))
+                    var labelAddrs = AnnotationHandler.RomPageAnnotations[curRomIndex].Labels
+                        .Where(kp =>
+                            string.Compare(kp.Value, parser.Arg1, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        .Select(kp => kp.Key)
+                        .ToList();
+                    if (labelAddrs.Count > 0)
+                    {
+                        // --- Address found in the current ROM
+                        address = labelAddrs[0];
+                        break;
+                    }
+                    if (CompilerOutput == null || !CompilerOutput.Symbols.TryGetValue(parser.Arg1, out var symbolValue))
                     {
                         validationMessage = $"Cannot find symbol '{parser.Arg1}'";
                         return false;

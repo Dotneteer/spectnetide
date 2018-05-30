@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Spect.Net.ProjectWizard" 
         Background="{DynamicResource BToolBackground}"
         mc:Ignorable="d" 
-        d:DesignHeight="500" d:DesignWidth="540" WindowStartupLocation="CenterScreen" 
+        d:DesignHeight="500" d:DesignWidth="640" WindowStartupLocation="CenterScreen" 
         Title="Create a new ZX Spectrum project" SizeToContent="WidthAndHeight" ResizeMode="NoResize" 
         d:DataContext="{d:DesignInstance {x:Type local:SpectrumProjectWizardViewModel}}" 
         FocusManager.FocusedElement="{Binding ElementName=ProjectTypesListBox}">
@@ -71,7 +71,7 @@
         </ItemsPanelTemplate>
         <DataTemplate x:Key="ProjectItemsTemplate">
             <Grid d:DataContext="{d:DesignInstance {x:Type local:SpectrumRepositoryItemViewModel}}" 
-                  Width="140"
+                  Width="180"
                   Margin="0,8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -154,7 +154,7 @@
             <RowDefinition Height="360" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListBox Margin="8" Width="480"
+        <ListBox Margin="8" Width="600"
                  x:Name="ProjectTypesListBox"
                  Focusable="True"
                  BorderThickness="0"

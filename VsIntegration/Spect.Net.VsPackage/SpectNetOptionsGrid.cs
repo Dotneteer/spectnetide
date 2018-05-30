@@ -51,6 +51,11 @@ namespace Spect.Net.VsPackage
         [Description("Displays a confirmation message about VM state file load")]
         public bool ConfirmVmStateLoad { get; set; } = true;
 
+        [Category("Virtual machine")]
+        [DisplayName("Virtual floppy disk folder")]
+        [Description("Virtual floppy disk files are added to this folder")]
+        public string VfddFolder { get; set; } = @"FloppyDisks";
+
         // --- Run Z80 Code options
         [Category("Run Z80 Code")]
         [DisplayName("Confirm non-zero displacement")]
@@ -187,6 +192,11 @@ namespace Spect.Net.VsPackage
         [DisplayName("Log Next register access")]
         [Description("Logs the usage of ZX Spectrum Next registers")]
         public bool LogNextRegAccess { get; set; } = false;
+
+        [Category("Diagnostics")]
+        [DisplayName("Log floppy controller commands")]
+        [Description("Logs the low level commands sent to the uPD765a FDC")]
+        public bool LogFloppyCommands { get; set; } = false;
 
         /// <summary>
         /// Signs that the keyboard layout type has changed

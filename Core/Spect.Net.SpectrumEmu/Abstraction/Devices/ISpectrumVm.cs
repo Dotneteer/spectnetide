@@ -196,6 +196,16 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         ExecutionCompletionReason ExecutionCompletionReason { get; }
 
         /// <summary>
+        /// The optional Floppy device
+        /// </summary>
+        IFloppyDevice FloppyDevice { get; }
+
+        /// <summary>
+        /// The configuration of the floppy
+        /// </summary>
+        IFloppyConfiguration FloppyConfiguration { get; }
+
+        /// <summary>
         /// The optional MMC device
         /// </summary>
         IMmcDevice MmcDevice { get; }
