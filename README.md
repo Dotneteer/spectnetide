@@ -10,7 +10,7 @@ It (will) support the following ZX Spectrum models:
 
 * __ZX Spectrum 48K__ &mdash; _Emulator and tooling completed_
 * __ZX Spectrum 128K__ &mdash; _Emulator and tooling completed_
-* __ZX Spectrum +3E__ &mdash; _Emulator and tooling development is in progress_
+* __ZX Spectrum +3E__ &mdash; _Emulator and tooling completed_
 * __ZX Spectrum Next__ &mdash; _Emulator and tooling development is in progress_
 
 At the moment the code is entirely written in C#. Nonetheless, I plan to implement certain parts in C++ (somewhen 

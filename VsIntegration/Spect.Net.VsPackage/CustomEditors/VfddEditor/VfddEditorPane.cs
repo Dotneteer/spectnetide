@@ -27,7 +27,7 @@ namespace Spect.Net.VsPackage.CustomEditors.VfddEditor
             var vm = new VfddEditorViewModel();
             try
             {
-                var floppyFile = VirtualFloppyFile.OpenFloppyFile(fileName);
+                VirtualFloppyFile.OpenFloppyFile(fileName);
                 vm.IsValidFormat = true;
             }
             catch (Exception)

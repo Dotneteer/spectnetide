@@ -97,7 +97,7 @@ namespace Spect.Net.ProjectWizard
                     ModelName = "ZX Spectrum +3E + FDD",
                     ScreenMode = "PAL",
                     CpuMode = "Normal Speed",
-                    RevisionNo = "0.8 (beta)"
+                    RevisionNo = "1.0"
                 },
                 new SpectrumRepositoryItemViewModel
                 {
@@ -107,7 +107,7 @@ namespace Spect.Net.ProjectWizard
                     ModelName = "ZX Spectrum +3E + Double FDD",
                     ScreenMode = "PAL",
                     CpuMode = "Normal Speed",
-                    RevisionNo = "0.8 (beta)"
+                    RevisionNo = "1.0"
                 },
                 //new SpectrumRepositoryItemViewModel
                 //{
