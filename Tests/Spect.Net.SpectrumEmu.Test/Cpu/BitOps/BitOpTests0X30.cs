@@ -437,7 +437,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.BitOps
         /// SRL B: 0xCB 0x38
         /// </summary>
         [TestMethod]
-        public void SRA_B_SetsZero()
+        public void SRL_B_SetsZero()
         {
             // --- Arrange
             var m = new Z80TestMachine(RunMode.OneInstruction);

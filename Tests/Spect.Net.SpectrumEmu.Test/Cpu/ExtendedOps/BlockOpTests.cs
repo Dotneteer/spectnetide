@@ -970,7 +970,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.ExtendedOps
             var m = new Z80TestMachine(RunMode.UntilEnd);
             m.InitCode(new byte[]
             {
-                0xED, 0xB3 // OUTI
+                0xED, 0xB3 // OUTIR
             });
             var regs = m.Cpu.Registers;
             regs.BC = 0x3CC;
