@@ -248,7 +248,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             var regs = m.Cpu.Registers;
             regs.IX.ShouldBe((ushort)0x1334);
 
-            m.ShouldKeepRegisters(except: "IX");
+            m.ShouldKeepRegisters(except: "F, IX");
             m.ShouldKeepMemory();
 
             regs.PC.ShouldBe((ushort)0x0006);
@@ -827,7 +827,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             var m = new Z80TestMachine(RunMode.UntilEnd);
             m.InitCode(new byte[]
             {
-                0xDD, 0x36, 0x52, 0xD2  // DEC (IX+52H),D2H
+                0xDD, 0x36, 0x52, 0xD2  // LD (IX+52H),D2H
             });
             var regs = m.Cpu.Registers;
             regs.IX = 0x1000;
@@ -2711,7 +2711,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedOps
             var m = new Z80TestMachine(RunMode.OneInstruction);
             m.InitCode(new byte[]
             {
-                0xDD, 0xB8  // CP XH
+                0xDD, 0xBC  // CP XH
             });
             var regs = m.Cpu.Registers;
             regs.A = 0x36;

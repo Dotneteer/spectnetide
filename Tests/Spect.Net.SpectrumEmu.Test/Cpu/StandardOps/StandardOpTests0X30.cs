@@ -110,6 +110,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu.StandardOps
             var before = m.Memory[0x1000];
             m.Run();
             var after = m.Memory[0x1000];
+
             // --- Assert
             var regs = m.Cpu.Registers;
 

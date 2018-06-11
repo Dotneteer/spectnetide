@@ -1345,7 +1345,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
-        ///     "ld a,(NN)" operation
+        ///     "ld (NN),a" operation
         /// </summary>
         /// <remarks>
         ///     The contents of A are loaded to the memory address specified by
@@ -1595,7 +1595,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
-        ///     "ld (NN),a" operation
+        ///     "ld a,(NN)" operation
         /// </summary>
         /// <remarks>
         ///     The contents of the memory location specified by the operands
