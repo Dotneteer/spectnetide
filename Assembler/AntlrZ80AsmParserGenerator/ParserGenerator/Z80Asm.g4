@@ -45,6 +45,7 @@ pragma
 	|	rndSeedPragma
 	|	defgPragma
 	|   errorPragma
+	|	incBinPragma
 	;
 
 directive
@@ -114,6 +115,7 @@ tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
 rndSeedPragma: RNDSEED expr? ;
 defgPragma	: DGPRAG expr ;
 errorPragma : ERRORPR expr ;
+incBinPragma: INCBIN expr ( ',' expr ( ',' expr)? )? ;
 
 operation
 	:	trivialOperation
@@ -559,6 +561,8 @@ TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;
 RNDSEED	: '.rndseed' | 'rndseed' | '.RNDSEED' | 'RNDSEED' ;
 DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
 ERRORPR	: '.error' | '.ERROR' | 'error' | 'ERROR' ;
+INCBIN	: '.includebin' | 'includebin' | '.INCLUDEBIN' | 'INCLUDEBIN' 
+		  | '.include_bin' | 'include_bin' | '.INCLUDE_BIN' | 'INCLUDE_BIN' ;
 
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;

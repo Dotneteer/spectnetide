@@ -89,6 +89,7 @@
     <Compile Include="Assembler\ForEmitTests.cs" />
     <Compile Include="Assembler\BreakTests.cs" />
     <Compile Include="Assembler\MacroArgumentEmitTests.cs" />
+    <Compile Include="Assembler\IncludeBinPragmaTests.cs" />
     <Compile Include="Assembler\WhileEmitTests.cs" />
     <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />
@@ -120,6 +121,18 @@
   <ItemGroup>
     <None Include="OperationTestState.xlsx" />
     <None Include="packages.config" />
+    <Content Include="TestFiles\IncludeBinExists.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithZeroOffset.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithNegativeOffset.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="TestFiles\IncludeBinNotExists.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="TestFiles\SingleInclude.z80asm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -190,6 +203,33 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\ErrorsNoInclude.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\ZXSpectrum48.rom">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithNonZeroOffset.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithZeroOffsetAndLength.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithNonZeroOffsetAndLength.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithTooLongOffset.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithTightOffset.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithNegativeLength.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithTooLongSegment.z80asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\IncludeBinWithTightSegment.z80asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -64,6 +64,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0305 = "Z0305";
         public const string Z0306 = "Z0306";
         public const string Z0307 = "Z0307";
+        public const string Z0308 = "Z0308";
 
         public const string Z0400 = "Z0400";
         public const string Z0401 = "Z0401";
@@ -88,6 +89,10 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0420 = "Z0420";
         public const string Z0421 = "Z0421";
         public const string Z0422 = "Z0422";
+        public const string Z0423 = "Z0423";
+        public const string Z0424 = "Z0424";
+        public const string Z0425 = "Z0425";
+        public const string Z0426 = "Z0426";
 
         public const string Z0500 = "Z0500";
 
@@ -147,6 +152,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0305, "A string value is used where a numeric value is expected." },
             { Z0306, "A string value is expected." },
             { Z0307, "Cannot use an empty string with DEFG pragma." },
+            { Z0308, "An integral value is expected." },
             { Z0400, "You cannot define a macro without a name." },
             { Z0401, "Missing {0} statement." },
             { Z0402, "Macro with name '{0}' has already been declared." },
@@ -170,6 +176,10 @@ namespace Spect.Net.Assembler.Assembler
             { Z0420, "Macro parameter can only be used within a macro declaration." },
             { Z0421, "The DEF() parse time function accepts only macro parameters." },
             { Z0422, "Cannot pass a macro parameter template in a macro parameter." },
+            { Z0423, "Cannot open file '{0}' used in INCLUDEBIN pragma ({0})." },
+            { Z0424, "Invalid INCLUDEBIN offset value (negative, or greater than the file length)." },
+            { Z0425, "Invalid INCLUDEBIN length value (negative, or segment exceends the file length)." },
+            { Z0426, "Emitting the INCLUDEBIN segment would overflow the #FFFF assembly address." },
             { Z0500, "ERROR: {0}" },
         };
 

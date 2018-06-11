@@ -560,6 +560,32 @@ namespace Spect.Net.Assembler
                 context);
         }
 
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.incBinPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitIncBinPragma(Z80AsmParser.IncBinPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var filenameExpr = context.expr().Length > 0
+                ? (ExpressionNode) VisitExpr(context.expr()[0])
+                : null;
+            var offsetExpr = context.expr().Length > 1
+                ? (ExpressionNode)VisitExpr(context.expr()[1])
+                : null;
+            var lengthExpr = context.expr().Length > 2
+                ? (ExpressionNode)VisitExpr(context.expr()[2])
+                : null;
+            return AddLine(new IncludeBinPragma(filenameExpr, offsetExpr, lengthExpr), 
+                context);
+        }
+
         #endregion
 
         #region Operations
