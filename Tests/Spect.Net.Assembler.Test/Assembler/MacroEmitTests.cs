@@ -1782,6 +1782,18 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void DefFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,def(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+
+
+        [TestMethod]
         [DataRow("b", 0x78)]
         [DataRow("c", 0x79)]
         [DataRow("d", 0x7A)]
@@ -1807,6 +1819,279 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(source, (byte)expected);
         }
 
+        [TestMethod]
+        public void IsReg8FailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,isreg8(a)";
 
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+        [TestMethod]
+        [DataRow("i", 0x57)]
+        [DataRow("r", 0x5F)]
+        [DataRow("bc", 0x00)]
+        public void IsReg8SpecWorksAsExpected(string param, int expected)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreg8spec({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            .defb 0xED, 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, 0xED, (byte)expected);
+        }
+
+        [TestMethod]
+        public void IsReg8SpecFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,isreg8spec(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+        [TestMethod]
+        [DataRow("xh", 0xDD, 0x7C)]
+        [DataRow("ixh", 0xDD, 0x7C)]
+        [DataRow("xl", 0xDD, 0x7D)]
+        [DataRow("ixl", 0xDD, 0x7D)]
+        [DataRow("yh", 0xFD, 0x7C)]
+        [DataRow("iyh", 0xFD, 0x7C)]
+        [DataRow("yl", 0xFD, 0x7D)]
+        [DataRow("iyl", 0xFD, 0x7D)]
+        [DataRow("bc", 0x00, 0x00)]
+        public void IsReg8IdxWorksAsExpected(string param, int exp1, int exp2)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreg8idx({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            .defb 0x00, 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)exp1, (byte)exp2);
+        }
+        [TestMethod]
+        public void IsReg8IdxFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,isreg8idx(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+        [TestMethod]
+        [DataRow("bc", 0x01)]
+        [DataRow("de", 0x11)]
+        [DataRow("hl", 0x21)]
+        [DataRow("sp", 0x31)]
+        public void IsReg16WorksAsExpected(string param, int expected)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreg16({{mpar}})
+                            ld {{mpar}},0x1234
+                        .else
+                            .defb 0xED, 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)expected, 0x34, 0x12);
+        }
+
+        [TestMethod]
+        public void IsReg16FailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,isreg16(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+        [TestMethod]
+        [DataRow("ix", 0xDD, 0x21)]
+        [DataRow("iy", 0xFD, 0x21)]
+        [DataRow("a", 0x00, 0x00)]
+        public void IsReg16IdxWorksAsExpected(string param, int exp1, int exp2)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreg16idx({{mpar}})
+                            ld {{mpar}},0x1234
+                        .else
+                            .defb 0x00, 0x00, 0x34, 0x12
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)exp1, (byte)exp2, 0x34, 0x12);
+        }
+
+        [TestMethod]
+        public void IsReg16IdxFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,isreg16idx(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+        [TestMethod]
+        [DataRow("(bc)", 0x02)]
+        [DataRow("(de)", 0x12)]
+        [DataRow("(hl)", 0x77)]
+        [DataRow("IX", 0x00)]
+        public void IsRegIndirectWorksAsExpected(string param, int expected)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregindirect({{mpar}})
+                            ld {{mpar}},a
+                        .else
+                            .defb 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)expected);
+        }
+
+        [TestMethod]
+        public void IsRegIndirectFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,isregindirect(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+        [TestMethod]
+        [DataRow("(c)", 0x78)]
+        [DataRow("c", 0x00)]
+        [DataRow("a", 0x00)]
+        public void IsCPortWorksAsExpected(string param, int expected)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if iscport({{mpar}})
+                            in a,{{mpar}}
+                        .else
+                            .defb 0xED, 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, 0xED, (byte)expected);
+        }
+
+        [TestMethod]
+        public void IsCPortFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,iscport(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+        [TestMethod]
+        [DataRow("(ix)", 0xDD, 0x77, 0x00)]
+        [DataRow("(ix+2)", 0xDD, 0x77, 0x02)]
+        [DataRow("(ix-2)", 0xDD, 0x77, 0xFE)]
+        [DataRow("(iy)", 0xFD, 0x77, 0x00)]
+        [DataRow("(iy+2)", 0xFD, 0x77, 0x02)]
+        [DataRow("(iy-2)", 0xFD, 0x77, 0xFE)]
+        [DataRow("a", 0x00, 0x00, 0x00)]
+        public void IsIndexedAddrWorksAsExpected(string param, int exp1, int exp2, int exp3)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isindexedaddr({{mpar}})
+                            ld {{mpar}},a
+                        .else
+                            .defb 0x00, 0x00, 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)exp1, (byte)exp2, (byte)exp3);
+        }
+
+        [TestMethod]
+        public void IsIndexedAddrFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,isindexedaddr(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
+        [TestMethod]
+        [DataRow("nz", 0xC2)]
+        [DataRow("z", 0xCA)]
+        [DataRow("nc", 0xD2)]
+        [DataRow("c", 0xDA)]
+        [DataRow("po", 0xE2)]
+        [DataRow("pe", 0xEA)]
+        [DataRow("p", 0xF2)]
+        [DataRow("m", 0xFA)]
+        [DataRow("a", 0x00)]
+        public void IsConditionWorksAsExpected(string param, int expexted)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if iscondition({{mpar}})
+                            jp {{mpar}},#1234
+                        .else
+                            .defb 0x00, 0x34, 0x12
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)expexted, 0x34, 0x12);
+        }
+
+        [TestMethod]
+        public void IsConditionFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,iscondition(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
     }
 }

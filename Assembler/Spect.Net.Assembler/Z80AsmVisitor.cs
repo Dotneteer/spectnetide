@@ -1730,16 +1730,71 @@ namespace Spect.Net.Assembler
 
             if (context.DEF() != null)
             {
-                // --- We do this visit just for syntax highlighting
                 CheckForMacroParamNode(context);
                 return new LiteralNode(context.operand() != null && context.operand().NONEARG() == null);
             }
 
             if (context.ISREG8() != null)
             {
-                // --- We do this visit just for syntax highlighting
                 CheckForMacroParamNode(context);
                 return new LiteralNode(context.operand()?.reg8() != null 
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG8SPEC() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg8Spec() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG8IDX() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg8Idx() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG16() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg16() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG16IDX() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg16Idx() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREGINDIRECT() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.regIndirect() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISCPORT() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.cPort() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISINDEXEDADDR() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.indexedAddr() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISCONDITION() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(
+                    (context.operand()?.condition() != null || context.operand().reg8()?.GetText()?.ToLower() == "c")
                     && context.operand().NONEARG() == null);
             }
 

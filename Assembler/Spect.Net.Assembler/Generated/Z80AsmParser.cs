@@ -58,10 +58,10 @@ public partial class Z80AsmParser : Parser {
 		ELIF=188, ELSESTMT=189, ENDIFSTMT=190, FOR=191, TO=192, STEP=193, FORNEXT=194, 
 		NEXT=195, BREAK=196, CONTINUE=197, TEXTOF=198, LTEXTOF=199, HREG=200, 
 		LREG=201, DEF=202, ISREG8=203, ISREG8SPEC=204, ISREG8IDX=205, ISREG16=206, 
-		ISREG16IDX=207, ISREGINDIRECT=208, ISCPORT=209, ISCONDITION=210, HEXNUM=211, 
-		BINNUM=212, DECNUM=213, REALNUM=214, CHAR=215, STRING=216, FSTRING=217, 
-		BOOLLIT=218, TRUE=219, FALSE=220, IDENTIFIER=221, IDSTART=222, IDCONT=223, 
-		CURADDR=224, CURCNT=225, NONEARG=226, ErrorCharacter=227;
+		ISREG16IDX=207, ISREGINDIRECT=208, ISCPORT=209, ISINDEXEDADDR=210, ISCONDITION=211, 
+		HEXNUM=212, BINNUM=213, DECNUM=214, REALNUM=215, CHAR=216, STRING=217, 
+		FSTRING=218, BOOLLIT=219, TRUE=220, FALSE=221, IDENTIFIER=222, IDSTART=223, 
+		IDCONT=224, CURADDR=225, CURCNT=226, NONEARG=227, ErrorCharacter=228;
 	public const int
 		RULE_compileUnit = 0, RULE_asmline = 1, RULE_label = 2, RULE_comment = 3, 
 		RULE_pragma = 4, RULE_directive = 5, RULE_statement = 6, RULE_macroStatement = 7, 
@@ -126,7 +126,7 @@ public partial class Z80AsmParser : Parser {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, "'$<none>$'"
+		null, null, "'$<none>$'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "COMMENT", "WS", "NEWLINE", "COLON", "SCOLON", "COMMA", "ASSIGN", 
@@ -152,10 +152,10 @@ public partial class Z80AsmParser : Parser {
 		"REPEAT", "UNTIL", "WHILE", "ENDWHILE", "IFSTMT", "ELIF", "ELSESTMT", 
 		"ENDIFSTMT", "FOR", "TO", "STEP", "FORNEXT", "NEXT", "BREAK", "CONTINUE", 
 		"TEXTOF", "LTEXTOF", "HREG", "LREG", "DEF", "ISREG8", "ISREG8SPEC", "ISREG8IDX", 
-		"ISREG16", "ISREG16IDX", "ISREGINDIRECT", "ISCPORT", "ISCONDITION", "HEXNUM", 
-		"BINNUM", "DECNUM", "REALNUM", "CHAR", "STRING", "FSTRING", "BOOLLIT", 
-		"TRUE", "FALSE", "IDENTIFIER", "IDSTART", "IDCONT", "CURADDR", "CURCNT", 
-		"NONEARG", "ErrorCharacter"
+		"ISREG16", "ISREG16IDX", "ISREGINDIRECT", "ISCPORT", "ISINDEXEDADDR", 
+		"ISCONDITION", "HEXNUM", "BINNUM", "DECNUM", "REALNUM", "CHAR", "STRING", 
+		"FSTRING", "BOOLLIT", "TRUE", "FALSE", "IDENTIFIER", "IDSTART", "IDCONT", 
+		"CURADDR", "CURCNT", "NONEARG", "ErrorCharacter"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -2280,7 +2280,7 @@ public partial class Z80AsmParser : Parser {
 			State = 342;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 				{
 				State = 341; operand();
 				}
@@ -3132,7 +3132,7 @@ public partial class Z80AsmParser : Parser {
 			State = 409;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)))) != 0)) {
 				{
 				State = 408; expr();
 				}
@@ -3265,7 +3265,7 @@ public partial class Z80AsmParser : Parser {
 			State = 422;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)))) != 0)) {
 				{
 				State = 421; expr();
 				}
@@ -3974,7 +3974,7 @@ public partial class Z80AsmParser : Parser {
 				State = 536;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 535; operand();
 					}
@@ -6203,7 +6203,9 @@ public partial class Z80AsmParser : Parser {
 		public ITerminalNode ISREG8IDX() { return GetToken(Z80AsmParser.ISREG8IDX, 0); }
 		public ITerminalNode ISREG16() { return GetToken(Z80AsmParser.ISREG16, 0); }
 		public ITerminalNode ISREG16IDX() { return GetToken(Z80AsmParser.ISREG16IDX, 0); }
+		public ITerminalNode ISREGINDIRECT() { return GetToken(Z80AsmParser.ISREGINDIRECT, 0); }
 		public ITerminalNode ISCPORT() { return GetToken(Z80AsmParser.ISCPORT, 0); }
+		public ITerminalNode ISINDEXEDADDR() { return GetToken(Z80AsmParser.ISINDEXEDADDR, 0); }
 		public ITerminalNode ISCONDITION() { return GetToken(Z80AsmParser.ISCONDITION, 0); }
 		public BuiltinFunctionInvocationContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -6231,7 +6233,7 @@ public partial class Z80AsmParser : Parser {
 		EnterRule(_localctx, 148, RULE_builtinFunctionInvocation);
 		int _la;
 		try {
-			State = 882;
+			State = 894;
 			_errHandler.Sync(this);
 			switch (_input.La(1)) {
 			case TEXTOF:
@@ -6393,7 +6395,7 @@ public partial class Z80AsmParser : Parser {
 				State = 837;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 836; operand();
 					}
@@ -6410,7 +6412,7 @@ public partial class Z80AsmParser : Parser {
 				State = 843;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 842; operand();
 					}
@@ -6427,7 +6429,7 @@ public partial class Z80AsmParser : Parser {
 				State = 849;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 848; operand();
 					}
@@ -6444,7 +6446,7 @@ public partial class Z80AsmParser : Parser {
 				State = 855;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 854; operand();
 					}
@@ -6461,7 +6463,7 @@ public partial class Z80AsmParser : Parser {
 				State = 861;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 860; operand();
 					}
@@ -6478,7 +6480,7 @@ public partial class Z80AsmParser : Parser {
 				State = 867;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 866; operand();
 					}
@@ -6487,15 +6489,15 @@ public partial class Z80AsmParser : Parser {
 				State = 869; Match(RPAR);
 				}
 				break;
-			case ISCPORT:
+			case ISREGINDIRECT:
 				EnterOuterAlt(_localctx, 8);
 				{
-				State = 870; Match(ISCPORT);
+				State = 870; Match(ISREGINDIRECT);
 				State = 871; Match(LPAR);
 				State = 873;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 872; operand();
 					}
@@ -6504,21 +6506,55 @@ public partial class Z80AsmParser : Parser {
 				State = 875; Match(RPAR);
 				}
 				break;
-			case ISCONDITION:
+			case ISCPORT:
 				EnterOuterAlt(_localctx, 9);
 				{
-				State = 876; Match(ISCONDITION);
+				State = 876; Match(ISCPORT);
 				State = 877; Match(LPAR);
 				State = 879;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
 					{
 					State = 878; operand();
 					}
 				}
 
 				State = 881; Match(RPAR);
+				}
+				break;
+			case ISINDEXEDADDR:
+				EnterOuterAlt(_localctx, 10);
+				{
+				State = 882; Match(ISINDEXEDADDR);
+				State = 883; Match(LPAR);
+				State = 885;
+				_errHandler.Sync(this);
+				_la = _input.La(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+					{
+					State = 884; operand();
+					}
+				}
+
+				State = 887; Match(RPAR);
+				}
+				break;
+			case ISCONDITION:
+				EnterOuterAlt(_localctx, 11);
+				{
+				State = 888; Match(ISCONDITION);
+				State = 889; Match(LPAR);
+				State = 891;
+				_errHandler.Sync(this);
+				_la = _input.La(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LPAR) | (1L << LSBRAC) | (1L << PLUS) | (1L << MINUS) | (1L << TILDE) | (1L << LDBRAC) | (1L << EXCLM) | (1L << A) | (1L << B) | (1L << C) | (1L << D) | (1L << E) | (1L << H) | (1L << L) | (1L << I) | (1L << R) | (1L << XL) | (1L << XH) | (1L << YL) | (1L << YH) | (1L << BC) | (1L << DE) | (1L << HL) | (1L << SP) | (1L << IX) | (1L << IY) | (1L << AF) | (1L << AF_) | (1L << Z) | (1L << NZ) | (1L << NC) | (1L << PO) | (1L << PE) | (1L << P) | (1L << M))) != 0) || ((((_la - 198)) & ~0x3f) == 0 && ((1L << (_la - 198)) & ((1L << (TEXTOF - 198)) | (1L << (LTEXTOF - 198)) | (1L << (HREG - 198)) | (1L << (LREG - 198)) | (1L << (DEF - 198)) | (1L << (ISREG8 - 198)) | (1L << (ISREG8SPEC - 198)) | (1L << (ISREG8IDX - 198)) | (1L << (ISREG16 - 198)) | (1L << (ISREG16IDX - 198)) | (1L << (ISREGINDIRECT - 198)) | (1L << (ISCPORT - 198)) | (1L << (ISINDEXEDADDR - 198)) | (1L << (ISCONDITION - 198)) | (1L << (HEXNUM - 198)) | (1L << (BINNUM - 198)) | (1L << (DECNUM - 198)) | (1L << (REALNUM - 198)) | (1L << (CHAR - 198)) | (1L << (STRING - 198)) | (1L << (BOOLLIT - 198)) | (1L << (IDENTIFIER - 198)) | (1L << (CURADDR - 198)) | (1L << (CURCNT - 198)) | (1L << (NONEARG - 198)))) != 0)) {
+					{
+					State = 890; operand();
+					}
+				}
+
+				State = 893; Match(RPAR);
 				}
 				break;
 			default:
@@ -6574,9 +6610,9 @@ public partial class Z80AsmParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 884;
+			State = 896;
 			_la = _input.La(1);
-			if ( !(((((_la - 211)) & ~0x3f) == 0 && ((1L << (_la - 211)) & ((1L << (HEXNUM - 211)) | (1L << (BINNUM - 211)) | (1L << (DECNUM - 211)) | (1L << (REALNUM - 211)) | (1L << (CHAR - 211)) | (1L << (STRING - 211)) | (1L << (BOOLLIT - 211)) | (1L << (CURADDR - 211)) | (1L << (CURCNT - 211)))) != 0)) ) {
+			if ( !(((((_la - 212)) & ~0x3f) == 0 && ((1L << (_la - 212)) & ((1L << (HEXNUM - 212)) | (1L << (BINNUM - 212)) | (1L << (DECNUM - 212)) | (1L << (REALNUM - 212)) | (1L << (CHAR - 212)) | (1L << (STRING - 212)) | (1L << (BOOLLIT - 212)) | (1L << (CURADDR - 212)) | (1L << (CURCNT - 212)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			} else {
 				if (_input.La(1) == TokenConstants.Eof) {
@@ -6628,7 +6664,7 @@ public partial class Z80AsmParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 886; Match(IDENTIFIER);
+			State = 898; Match(IDENTIFIER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -6671,9 +6707,9 @@ public partial class Z80AsmParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 888; Match(LDBRAC);
-			State = 889; Match(IDENTIFIER);
-			State = 890; Match(RDBRAC);
+			State = 900; Match(LDBRAC);
+			State = 901; Match(IDENTIFIER);
+			State = 902; Match(RDBRAC);
 			}
 		}
 		catch (RecognitionException re) {
@@ -6731,7 +6767,7 @@ public partial class Z80AsmParser : Parser {
 		RegsContext _localctx = new RegsContext(_ctx, State);
 		EnterRule(_localctx, 156, RULE_regs);
 		try {
-			State = 898;
+			State = 910;
 			_errHandler.Sync(this);
 			switch (_input.La(1)) {
 			case A:
@@ -6743,7 +6779,7 @@ public partial class Z80AsmParser : Parser {
 			case L:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 892; reg8();
+				State = 904; reg8();
 				}
 				break;
 			case XL:
@@ -6752,14 +6788,14 @@ public partial class Z80AsmParser : Parser {
 			case YH:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 893; reg8Idx();
+				State = 905; reg8Idx();
 				}
 				break;
 			case I:
 			case R:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 894; reg8Spec();
+				State = 906; reg8Spec();
 				}
 				break;
 			case BC:
@@ -6768,21 +6804,21 @@ public partial class Z80AsmParser : Parser {
 			case SP:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 895; reg16();
+				State = 907; reg16();
 				}
 				break;
 			case IX:
 			case IY:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 896; reg16Idx();
+				State = 908; reg16Idx();
 				}
 				break;
 			case AF:
 			case AF_:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 897; reg16Spec();
+				State = 909; reg16Spec();
 				}
 				break;
 			default:
@@ -6838,34 +6874,34 @@ public partial class Z80AsmParser : Parser {
 		RegsAndCondsContext _localctx = new RegsAndCondsContext(_ctx, State);
 		EnterRule(_localctx, 158, RULE_regsAndConds);
 		try {
-			State = 904;
+			State = 916;
 			_errHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(_input,77,_ctx) ) {
+			switch ( Interpreter.AdaptivePredict(_input,79,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 900; regs();
+				State = 912; regs();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 901; regIndirect();
+				State = 913; regIndirect();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 902; cPort();
+				State = 914; cPort();
 				}
 				break;
 
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 903; condition();
+				State = 915; condition();
 				}
 				break;
 			}
@@ -6993,7 +7029,7 @@ public partial class Z80AsmParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 906;
+			State = 918;
 			_la = _input.La(1);
 			if ( !(((((_la - 63)) & ~0x3f) == 0 && ((1L << (_la - 63)) & ((1L << (NOP - 63)) | (1L << (RLCA - 63)) | (1L << (RRCA - 63)) | (1L << (RLA - 63)) | (1L << (RRA - 63)) | (1L << (DAA - 63)) | (1L << (CPL - 63)) | (1L << (SCF - 63)) | (1L << (CCF - 63)) | (1L << (HALT - 63)) | (1L << (RET - 63)) | (1L << (EXX - 63)) | (1L << (DI - 63)) | (1L << (EI - 63)) | (1L << (NEG - 63)) | (1L << (RETN - 63)) | (1L << (RETI - 63)) | (1L << (RLD - 63)) | (1L << (RRD - 63)) | (1L << (LDI - 63)) | (1L << (CPI - 63)) | (1L << (INI - 63)) | (1L << (OUTI - 63)) | (1L << (LDD - 63)) | (1L << (CPD - 63)) | (1L << (IND - 63)) | (1L << (OUTD - 63)) | (1L << (LDIR - 63)) | (1L << (CPIR - 63)) | (1L << (INIR - 63)) | (1L << (OTIR - 63)) | (1L << (LDDR - 63)) | (1L << (CPDR - 63)) | (1L << (INDR - 63)) | (1L << (OTDR - 63)) | (1L << (LD - 63)) | (1L << (INC - 63)) | (1L << (DEC - 63)) | (1L << (EX - 63)) | (1L << (ADD - 63)) | (1L << (ADC - 63)) | (1L << (SUB - 63)) | (1L << (SBC - 63)) | (1L << (AND - 63)) | (1L << (XOR - 63)) | (1L << (OR - 63)) | (1L << (CP - 63)) | (1L << (DJNZ - 63)) | (1L << (JR - 63)) | (1L << (JP - 63)) | (1L << (CALL - 63)) | (1L << (RST - 63)) | (1L << (PUSH - 63)) | (1L << (POP - 63)) | (1L << (IN - 63)) | (1L << (OUT - 63)) | (1L << (IM - 63)) | (1L << (RLC - 63)) | (1L << (RRC - 63)) | (1L << (RL - 63)) | (1L << (RR - 63)) | (1L << (SLA - 63)) | (1L << (SRA - 63)) | (1L << (SLL - 63)))) != 0) || ((((_la - 127)) & ~0x3f) == 0 && ((1L << (_la - 127)) & ((1L << (SRL - 127)) | (1L << (BIT - 127)) | (1L << (RES - 127)) | (1L << (SET - 127)) | (1L << (SWAPNIB - 127)) | (1L << (MUL - 127)) | (1L << (POPX - 127)) | (1L << (MIRROR - 127)) | (1L << (TEST - 127)) | (1L << (NEXTREG - 127)) | (1L << (OUTINB - 127)) | (1L << (LDIX - 127)) | (1L << (LDIRX - 127)) | (1L << (LDDX - 127)) | (1L << (LDDRX - 127)) | (1L << (PIXELDN - 127)) | (1L << (PIXELAD - 127)) | (1L << (SETAE - 127)) | (1L << (LDPIRX - 127)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -7019,7 +7055,7 @@ public partial class Z80AsmParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xE5\x38F\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xE6\x39B\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -7095,33 +7131,34 @@ public partial class Z80AsmParser : Parser {
 		"L\x3L\x3L\x5L\x341\nL\x3L\x3L\x3L\x3L\x3L\x5L\x348\nL\x3L\x3L\x3L\x3L"+
 		"\x5L\x34E\nL\x3L\x3L\x3L\x3L\x5L\x354\nL\x3L\x3L\x3L\x3L\x5L\x35A\nL\x3"+
 		"L\x3L\x3L\x3L\x5L\x360\nL\x3L\x3L\x3L\x3L\x5L\x366\nL\x3L\x3L\x3L\x3L"+
-		"\x5L\x36C\nL\x3L\x3L\x3L\x3L\x5L\x372\nL\x3L\x5L\x375\nL\x3M\x3M\x3N\x3"+
-		"N\x3O\x3O\x3O\x3O\x3P\x3P\x3P\x3P\x3P\x3P\x5P\x385\nP\x3Q\x3Q\x3Q\x3Q"+
-		"\x5Q\x38B\nQ\x3R\x3R\x3R\x2\x2\x2S\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE"+
-		"\x2\x10\x2\x12\x2\x14\x2\x16\x2\x18\x2\x1A\x2\x1C\x2\x1E\x2 \x2\"\x2$"+
-		"\x2&\x2(\x2*\x2,\x2.\x2\x30\x2\x32\x2\x34\x2\x36\x2\x38\x2:\x2<\x2>\x2"+
-		"@\x2\x42\x2\x44\x2\x46\x2H\x2J\x2L\x2N\x2P\x2R\x2T\x2V\x2X\x2Z\x2\\\x2"+
-		"^\x2`\x2\x62\x2\x64\x2\x66\x2h\x2j\x2l\x2n\x2p\x2r\x2t\x2v\x2x\x2z\x2"+
-		"|\x2~\x2\x80\x2\x82\x2\x84\x2\x86\x2\x88\x2\x8A\x2\x8C\x2\x8E\x2\x90\x2"+
-		"\x92\x2\x94\x2\x96\x2\x98\x2\x9A\x2\x9C\x2\x9E\x2\xA0\x2\xA2\x2\x2\x1B"+
-		"\x5\x2\x95\x96\x99\x9A\x9D\x9E\x3\x2\xDA\xDB\x3\x2\xC4\xC5\x4\x2\t\t\xA3"+
-		"\xA3\x4\x2\xC5\xC5\xDF\xDF\x3\x2\xAF\xB0\x4\x2\x41JL\x63\x4\x2\x85\x86"+
-		"\x8B\x94\x3\x2\xCA\xCB\x3\x2%+\x3\x2.\x31\x3\x2,-\x3\x2\x32\x35\x3\x2"+
-		"\x36\x37\x4\x2\x32\x34\x36\x37\x3\x2\x38\x39\x3\x2\xF\x10\x4\x2\'\':@"+
-		"\x3\x2\x14\x17\x3\x2\x18\x1B\x3\x2\x1C\x1D\x3\x2\x1E \x3\x2\xC8\xC9\x5"+
-		"\x2\xD5\xDA\xDC\xDC\xE2\xE3\x3\x2\x41\x93\x3FB\x2\xBF\x3\x2\x2\x2\x4\xD7"+
-		"\x3\x2\x2\x2\x6\xD9\x3\x2\x2\x2\b\xDD\x3\x2\x2\x2\n\xF4\x3\x2\x2\x2\f"+
-		"\xFE\x3\x2\x2\x2\xE\x110\x3\x2\x2\x2\x10\x112\x3\x2\x2\x2\x12\x120\x3"+
-		"\x2\x2\x2\x14\x122\x3\x2\x2\x2\x16\x125\x3\x2\x2\x2\x18\x127\x3\x2\x2"+
-		"\x2\x1A\x129\x3\x2\x2\x2\x1C\x12C\x3\x2\x2\x2\x1E\x12F\x3\x2\x2\x2 \x131"+
-		"\x3\x2\x2\x2\"\x134\x3\x2\x2\x2$\x137\x3\x2\x2\x2&\x139\x3\x2\x2\x2(\x13B"+
-		"\x3\x2\x2\x2*\x145\x3\x2\x2\x2,\x147\x3\x2\x2\x2.\x149\x3\x2\x2\x2\x30"+
-		"\x14B\x3\x2\x2\x2\x32\x158\x3\x2\x2\x2\x34\x15A\x3\x2\x2\x2\x36\x15D\x3"+
-		"\x2\x2\x2\x38\x160\x3\x2\x2\x2:\x163\x3\x2\x2\x2<\x166\x3\x2\x2\x2>\x169"+
-		"\x3\x2\x2\x2@\x16C\x3\x2\x2\x2\x42\x175\x3\x2\x2\x2\x44\x17E\x3\x2\x2"+
-		"\x2\x46\x181\x3\x2\x2\x2H\x187\x3\x2\x2\x2J\x189\x3\x2\x2\x2L\x18C\x3"+
-		"\x2\x2\x2N\x191\x3\x2\x2\x2P\x196\x3\x2\x2\x2R\x199\x3\x2\x2\x2T\x19D"+
-		"\x3\x2\x2\x2V\x1A6\x3\x2\x2\x2X\x1AA\x3\x2\x2\x2Z\x1AD\x3\x2\x2\x2\\\x1B0"+
+		"\x5L\x36C\nL\x3L\x3L\x3L\x3L\x5L\x372\nL\x3L\x3L\x3L\x3L\x5L\x378\nL\x3"+
+		"L\x3L\x3L\x3L\x5L\x37E\nL\x3L\x5L\x381\nL\x3M\x3M\x3N\x3N\x3O\x3O\x3O"+
+		"\x3O\x3P\x3P\x3P\x3P\x3P\x3P\x5P\x391\nP\x3Q\x3Q\x3Q\x3Q\x5Q\x397\nQ\x3"+
+		"R\x3R\x3R\x2\x2\x2S\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10\x2\x12"+
+		"\x2\x14\x2\x16\x2\x18\x2\x1A\x2\x1C\x2\x1E\x2 \x2\"\x2$\x2&\x2(\x2*\x2"+
+		",\x2.\x2\x30\x2\x32\x2\x34\x2\x36\x2\x38\x2:\x2<\x2>\x2@\x2\x42\x2\x44"+
+		"\x2\x46\x2H\x2J\x2L\x2N\x2P\x2R\x2T\x2V\x2X\x2Z\x2\\\x2^\x2`\x2\x62\x2"+
+		"\x64\x2\x66\x2h\x2j\x2l\x2n\x2p\x2r\x2t\x2v\x2x\x2z\x2|\x2~\x2\x80\x2"+
+		"\x82\x2\x84\x2\x86\x2\x88\x2\x8A\x2\x8C\x2\x8E\x2\x90\x2\x92\x2\x94\x2"+
+		"\x96\x2\x98\x2\x9A\x2\x9C\x2\x9E\x2\xA0\x2\xA2\x2\x2\x1B\x5\x2\x95\x96"+
+		"\x99\x9A\x9D\x9E\x3\x2\xDB\xDC\x3\x2\xC4\xC5\x4\x2\t\t\xA3\xA3\x4\x2\xC5"+
+		"\xC5\xE0\xE0\x3\x2\xAF\xB0\x4\x2\x41JL\x63\x4\x2\x85\x86\x8B\x94\x3\x2"+
+		"\xCA\xCB\x3\x2%+\x3\x2.\x31\x3\x2,-\x3\x2\x32\x35\x3\x2\x36\x37\x4\x2"+
+		"\x32\x34\x36\x37\x3\x2\x38\x39\x3\x2\xF\x10\x4\x2\'\':@\x3\x2\x14\x17"+
+		"\x3\x2\x18\x1B\x3\x2\x1C\x1D\x3\x2\x1E \x3\x2\xC8\xC9\x5\x2\xD6\xDB\xDD"+
+		"\xDD\xE3\xE4\x3\x2\x41\x93\x40B\x2\xBF\x3\x2\x2\x2\x4\xD7\x3\x2\x2\x2"+
+		"\x6\xD9\x3\x2\x2\x2\b\xDD\x3\x2\x2\x2\n\xF4\x3\x2\x2\x2\f\xFE\x3\x2\x2"+
+		"\x2\xE\x110\x3\x2\x2\x2\x10\x112\x3\x2\x2\x2\x12\x120\x3\x2\x2\x2\x14"+
+		"\x122\x3\x2\x2\x2\x16\x125\x3\x2\x2\x2\x18\x127\x3\x2\x2\x2\x1A\x129\x3"+
+		"\x2\x2\x2\x1C\x12C\x3\x2\x2\x2\x1E\x12F\x3\x2\x2\x2 \x131\x3\x2\x2\x2"+
+		"\"\x134\x3\x2\x2\x2$\x137\x3\x2\x2\x2&\x139\x3\x2\x2\x2(\x13B\x3\x2\x2"+
+		"\x2*\x145\x3\x2\x2\x2,\x147\x3\x2\x2\x2.\x149\x3\x2\x2\x2\x30\x14B\x3"+
+		"\x2\x2\x2\x32\x158\x3\x2\x2\x2\x34\x15A\x3\x2\x2\x2\x36\x15D\x3\x2\x2"+
+		"\x2\x38\x160\x3\x2\x2\x2:\x163\x3\x2\x2\x2<\x166\x3\x2\x2\x2>\x169\x3"+
+		"\x2\x2\x2@\x16C\x3\x2\x2\x2\x42\x175\x3\x2\x2\x2\x44\x17E\x3\x2\x2\x2"+
+		"\x46\x181\x3\x2\x2\x2H\x187\x3\x2\x2\x2J\x189\x3\x2\x2\x2L\x18C\x3\x2"+
+		"\x2\x2N\x191\x3\x2\x2\x2P\x196\x3\x2\x2\x2R\x199\x3\x2\x2\x2T\x19D\x3"+
+		"\x2\x2\x2V\x1A6\x3\x2\x2\x2X\x1AA\x3\x2\x2\x2Z\x1AD\x3\x2\x2\x2\\\x1B0"+
 		"\x3\x2\x2\x2^\x1BD\x3\x2\x2\x2`\x1BF\x3\x2\x2\x2\x62\x28C\x3\x2\x2\x2"+
 		"\x64\x28E\x3\x2\x2\x2\x66\x2A5\x3\x2\x2\x2h\x2A7\x3\x2\x2\x2j\x2A9\x3"+
 		"\x2\x2\x2l\x2AB\x3\x2\x2\x2n\x2AD\x3\x2\x2\x2p\x2AF\x3\x2\x2\x2r\x2B1"+
@@ -7130,8 +7167,8 @@ public partial class Z80AsmParser : Parser {
 		"\x82\x2D3\x3\x2\x2\x2\x84\x2DB\x3\x2\x2\x2\x86\x2E3\x3\x2\x2\x2\x88\x2EB"+
 		"\x3\x2\x2\x2\x8A\x2F3\x3\x2\x2\x2\x8C\x2FB\x3\x2\x2\x2\x8E\x303\x3\x2"+
 		"\x2\x2\x90\x30B\x3\x2\x2\x2\x92\x328\x3\x2\x2\x2\x94\x339\x3\x2\x2\x2"+
-		"\x96\x374\x3\x2\x2\x2\x98\x376\x3\x2\x2\x2\x9A\x378\x3\x2\x2\x2\x9C\x37A"+
-		"\x3\x2\x2\x2\x9E\x384\x3\x2\x2\x2\xA0\x38A\x3\x2\x2\x2\xA2\x38C\x3\x2"+
+		"\x96\x380\x3\x2\x2\x2\x98\x382\x3\x2\x2\x2\x9A\x384\x3\x2\x2\x2\x9C\x386"+
+		"\x3\x2\x2\x2\x9E\x390\x3\x2\x2\x2\xA0\x396\x3\x2\x2\x2\xA2\x398\x3\x2"+
 		"\x2\x2\xA4\xC0\a\x2\x2\x3\xA5\xA7\a\x5\x2\x2\xA6\xA5\x3\x2\x2\x2\xA7\xAA"+
 		"\x3\x2\x2\x2\xA8\xA6\x3\x2\x2\x2\xA8\xA9\x3\x2\x2\x2\xA9\xAB\x3\x2\x2"+
 		"\x2\xAA\xA8\x3\x2\x2\x2\xAB\xB4\x5\x4\x3\x2\xAC\xAE\a\x5\x2\x2\xAD\xAC"+
@@ -7151,7 +7188,7 @@ public partial class Z80AsmParser : Parser {
 		"\xD1\x3\x2\x2\x2\xD1\xD8\x3\x2\x2\x2\xD2\xD8\x5\b\x5\x2\xD3\xD5\x5\x6"+
 		"\x4\x2\xD4\xD6\x5\b\x5\x2\xD5\xD4\x3\x2\x2\x2\xD5\xD6\x3\x2\x2\x2\xD6"+
 		"\xD8\x3\x2\x2\x2\xD7\xC2\x3\x2\x2\x2\xD7\xCE\x3\x2\x2\x2\xD7\xD2\x3\x2"+
-		"\x2\x2\xD7\xD3\x3\x2\x2\x2\xD8\x5\x3\x2\x2\x2\xD9\xDB\a\xDF\x2\x2\xDA"+
+		"\x2\x2\xD7\xD3\x3\x2\x2\x2\xD8\x5\x3\x2\x2\x2\xD9\xDB\a\xE0\x2\x2\xDA"+
 		"\xDC\a\x6\x2\x2\xDB\xDA\x3\x2\x2\x2\xDB\xDC\x3\x2\x2\x2\xDC\a\x3\x2\x2"+
 		"\x2\xDD\xDE\a\x3\x2\x2\xDE\t\x3\x2\x2\x2\xDF\xF5\x5\x34\x1B\x2\xE0\xF5"+
 		"\x5\x36\x1C\x2\xE1\xF5\x5\x38\x1D\x2\xE2\xF5\x5:\x1E\x2\xE3\xF5\x5<\x1F"+
@@ -7165,7 +7202,7 @@ public partial class Z80AsmParser : Parser {
 		"\x2\xF4\xEA\x3\x2\x2\x2\xF4\xEB\x3\x2\x2\x2\xF4\xEC\x3\x2\x2\x2\xF4\xED"+
 		"\x3\x2\x2\x2\xF4\xEE\x3\x2\x2\x2\xF4\xEF\x3\x2\x2\x2\xF4\xF0\x3\x2\x2"+
 		"\x2\xF4\xF1\x3\x2\x2\x2\xF4\xF2\x3\x2\x2\x2\xF4\xF3\x3\x2\x2\x2\xF5\v"+
-		"\x3\x2\x2\x2\xF6\xF7\t\x2\x2\x2\xF7\xFF\a\xDF\x2\x2\xF8\xFF\a\x97\x2\x2"+
+		"\x3\x2\x2\x2\xF6\xF7\t\x2\x2\x2\xF7\xFF\a\xE0\x2\x2\xF8\xFF\a\x97\x2\x2"+
 		"\xF9\xFF\a\x98\x2\x2\xFA\xFB\a\x9C\x2\x2\xFB\xFF\x5\x80\x41\x2\xFC\xFD"+
 		"\a\x9B\x2\x2\xFD\xFF\t\x3\x2\x2\xFE\xF6\x3\x2\x2\x2\xFE\xF8\x3\x2\x2\x2"+
 		"\xFE\xF9\x3\x2\x2\x2\xFE\xFA\x3\x2\x2\x2\xFE\xFC\x3\x2\x2\x2\xFF\r\x3"+
@@ -7180,7 +7217,7 @@ public partial class Z80AsmParser : Parser {
 		"\x109\x3\x2\x2\x2\x110\x10A\x3\x2\x2\x2\x110\x10B\x3\x2\x2\x2\x110\x10C"+
 		"\x3\x2\x2\x2\x110\x10D\x3\x2\x2\x2\x110\x10E\x3\x2\x2\x2\x110\x10F\x3"+
 		"\x2\x2\x2\x111\xF\x3\x2\x2\x2\x112\x113\a\xB5\x2\x2\x113\x11C\a\n\x2\x2"+
-		"\x114\x119\a\xDF\x2\x2\x115\x116\a\b\x2\x2\x116\x118\a\xDF\x2\x2\x117"+
+		"\x114\x119\a\xE0\x2\x2\x115\x116\a\b\x2\x2\x116\x118\a\xE0\x2\x2\x117"+
 		"\x115\x3\x2\x2\x2\x118\x11B\x3\x2\x2\x2\x119\x117\x3\x2\x2\x2\x119\x11A"+
 		"\x3\x2\x2\x2\x11A\x11D\x3\x2\x2\x2\x11B\x119\x3\x2\x2\x2\x11C\x114\x3"+
 		"\x2\x2\x2\x11C\x11D\x3\x2\x2\x2\x11D\x11E\x3\x2\x2\x2\x11E\x11F\a\v\x2"+
@@ -7193,11 +7230,11 @@ public partial class Z80AsmParser : Parser {
 		"\x133\x5\x80\x41\x2\x133!\x3\x2\x2\x2\x134\x135\a\xBE\x2\x2\x135\x136"+
 		"\x5\x80\x41\x2\x136#\x3\x2\x2\x2\x137\x138\a\xBF\x2\x2\x138%\x3\x2\x2"+
 		"\x2\x139\x13A\a\xC0\x2\x2\x13A\'\x3\x2\x2\x2\x13B\x13C\a\xC1\x2\x2\x13C"+
-		"\x13D\a\xDF\x2\x2\x13D\x13E\a\t\x2\x2\x13E\x13F\x5\x80\x41\x2\x13F\x140"+
+		"\x13D\a\xE0\x2\x2\x13D\x13E\a\t\x2\x2\x13E\x13F\x5\x80\x41\x2\x13F\x140"+
 		"\a\xC2\x2\x2\x140\x143\x5\x80\x41\x2\x141\x142\a\xC3\x2\x2\x142\x144\x5"+
 		"\x80\x41\x2\x143\x141\x3\x2\x2\x2\x143\x144\x3\x2\x2\x2\x144)\x3\x2\x2"+
 		"\x2\x145\x146\t\x4\x2\x2\x146+\x3\x2\x2\x2\x147\x148\a\xC6\x2\x2\x148"+
-		"-\x3\x2\x2\x2\x149\x14A\a\xC7\x2\x2\x14A/\x3\x2\x2\x2\x14B\x14C\a\xDF"+
+		"-\x3\x2\x2\x2\x149\x14A\a\xC7\x2\x2\x14A/\x3\x2\x2\x2\x14B\x14C\a\xE0"+
 		"\x2\x2\x14C\x14D\a\n\x2\x2\x14D\x152\x5\x32\x1A\x2\x14E\x14F\a\b\x2\x2"+
 		"\x14F\x151\x5\x32\x1A\x2\x150\x14E\x3\x2\x2\x2\x151\x154\x3\x2\x2\x2\x152"+
 		"\x150\x3\x2\x2\x2\x152\x153\x3\x2\x2\x2\x153\x155\x3\x2\x2\x2\x154\x152"+
@@ -7326,7 +7363,7 @@ public partial class Z80AsmParser : Parser {
 		"\x80\x41\x2\x29B\x2A6\x5~@\x2\x29C\x29D\t\n\x2\x2\x29D\x2A0\a\n\x2\x2"+
 		"\x29E\x2A1\x5r:\x2\x29F\x2A1\x5\x9CO\x2\x2A0\x29E\x3\x2\x2\x2\x2A0\x29F"+
 		"\x3\x2\x2\x2\x2A1\x2A2\x3\x2\x2\x2\x2A2\x2A3\a\v\x2\x2\x2A3\x2A6\x3\x2"+
-		"\x2\x2\x2A4\x2A6\a\xE4\x2\x2\x2A5\x290\x3\x2\x2\x2\x2A5\x291\x3\x2\x2"+
+		"\x2\x2\x2A4\x2A6\a\xE5\x2\x2\x2A5\x290\x3\x2\x2\x2\x2A5\x291\x3\x2\x2"+
 		"\x2\x2A5\x292\x3\x2\x2\x2\x2A5\x293\x3\x2\x2\x2\x2A5\x294\x3\x2\x2\x2"+
 		"\x2A5\x295\x3\x2\x2\x2\x2A5\x296\x3\x2\x2\x2\x2A5\x297\x3\x2\x2\x2\x2A5"+
 		"\x298\x3\x2\x2\x2\x2A5\x299\x3\x2\x2\x2\x2A5\x29A\x3\x2\x2\x2\x2A5\x29B"+
@@ -7376,8 +7413,8 @@ public partial class Z80AsmParser : Parser {
 		"N\x2\x328\x313\x3\x2\x2\x2\x328\x314\x3\x2\x2\x2\x328\x315\x3\x2\x2\x2"+
 		"\x328\x316\x3\x2\x2\x2\x328\x318\x3\x2\x2\x2\x328\x31A\x3\x2\x2\x2\x328"+
 		"\x31C\x3\x2\x2\x2\x328\x31E\x3\x2\x2\x2\x328\x322\x3\x2\x2\x2\x328\x326"+
-		"\x3\x2\x2\x2\x328\x327\x3\x2\x2\x2\x329\x93\x3\x2\x2\x2\x32A\x32B\a\xDF"+
-		"\x2\x2\x32B\x32C\a\n\x2\x2\x32C\x33A\a\v\x2\x2\x32D\x32E\a\xDF\x2\x2\x32E"+
+		"\x3\x2\x2\x2\x328\x327\x3\x2\x2\x2\x329\x93\x3\x2\x2\x2\x32A\x32B\a\xE0"+
+		"\x2\x2\x32B\x32C\a\n\x2\x2\x32C\x33A\a\v\x2\x2\x32D\x32E\a\xE0\x2\x2\x32E"+
 		"\x32F\a\n\x2\x2\x32F\x334\x5\x80\x41\x2\x330\x331\a\b\x2\x2\x331\x333"+
 		"\x5\x80\x41\x2\x332\x330\x3\x2\x2\x2\x333\x336\x3\x2\x2\x2\x334\x332\x3"+
 		"\x2\x2\x2\x334\x335\x3\x2\x2\x2\x335\x337\x3\x2\x2\x2\x336\x334\x3\x2"+
@@ -7385,43 +7422,48 @@ public partial class Z80AsmParser : Parser {
 		"\x339\x32D\x3\x2\x2\x2\x33A\x95\x3\x2\x2\x2\x33B\x33C\t\x18\x2\x2\x33C"+
 		"\x340\a\n\x2\x2\x33D\x341\x5\xA2R\x2\x33E\x341\x5\xA0Q\x2\x33F\x341\x5"+
 		"\x9CO\x2\x340\x33D\x3\x2\x2\x2\x340\x33E\x3\x2\x2\x2\x340\x33F\x3\x2\x2"+
-		"\x2\x341\x342\x3\x2\x2\x2\x342\x343\a\v\x2\x2\x343\x375\x3\x2\x2\x2\x344"+
+		"\x2\x341\x342\x3\x2\x2\x2\x342\x343\a\v\x2\x2\x343\x381\x3\x2\x2\x2\x344"+
 		"\x345\a\xCC\x2\x2\x345\x347\a\n\x2\x2\x346\x348\x5\x66\x34\x2\x347\x346"+
-		"\x3\x2\x2\x2\x347\x348\x3\x2\x2\x2\x348\x349\x3\x2\x2\x2\x349\x375\a\v"+
+		"\x3\x2\x2\x2\x347\x348\x3\x2\x2\x2\x348\x349\x3\x2\x2\x2\x349\x381\a\v"+
 		"\x2\x2\x34A\x34B\a\xCD\x2\x2\x34B\x34D\a\n\x2\x2\x34C\x34E\x5\x66\x34"+
 		"\x2\x34D\x34C\x3\x2\x2\x2\x34D\x34E\x3\x2\x2\x2\x34E\x34F\x3\x2\x2\x2"+
-		"\x34F\x375\a\v\x2\x2\x350\x351\a\xCE\x2\x2\x351\x353\a\n\x2\x2\x352\x354"+
+		"\x34F\x381\a\v\x2\x2\x350\x351\a\xCE\x2\x2\x351\x353\a\n\x2\x2\x352\x354"+
 		"\x5\x66\x34\x2\x353\x352\x3\x2\x2\x2\x353\x354\x3\x2\x2\x2\x354\x355\x3"+
-		"\x2\x2\x2\x355\x375\a\v\x2\x2\x356\x357\a\xCF\x2\x2\x357\x359\a\n\x2\x2"+
+		"\x2\x2\x2\x355\x381\a\v\x2\x2\x356\x357\a\xCF\x2\x2\x357\x359\a\n\x2\x2"+
 		"\x358\x35A\x5\x66\x34\x2\x359\x358\x3\x2\x2\x2\x359\x35A\x3\x2\x2\x2\x35A"+
-		"\x35B\x3\x2\x2\x2\x35B\x375\a\v\x2\x2\x35C\x35D\a\xD0\x2\x2\x35D\x35F"+
+		"\x35B\x3\x2\x2\x2\x35B\x381\a\v\x2\x2\x35C\x35D\a\xD0\x2\x2\x35D\x35F"+
 		"\a\n\x2\x2\x35E\x360\x5\x66\x34\x2\x35F\x35E\x3\x2\x2\x2\x35F\x360\x3"+
-		"\x2\x2\x2\x360\x361\x3\x2\x2\x2\x361\x375\a\v\x2\x2\x362\x363\a\xD1\x2"+
+		"\x2\x2\x2\x360\x361\x3\x2\x2\x2\x361\x381\a\v\x2\x2\x362\x363\a\xD1\x2"+
 		"\x2\x363\x365\a\n\x2\x2\x364\x366\x5\x66\x34\x2\x365\x364\x3\x2\x2\x2"+
-		"\x365\x366\x3\x2\x2\x2\x366\x367\x3\x2\x2\x2\x367\x375\a\v\x2\x2\x368"+
-		"\x369\a\xD3\x2\x2\x369\x36B\a\n\x2\x2\x36A\x36C\x5\x66\x34\x2\x36B\x36A"+
-		"\x3\x2\x2\x2\x36B\x36C\x3\x2\x2\x2\x36C\x36D\x3\x2\x2\x2\x36D\x375\a\v"+
-		"\x2\x2\x36E\x36F\a\xD4\x2\x2\x36F\x371\a\n\x2\x2\x370\x372\x5\x66\x34"+
+		"\x365\x366\x3\x2\x2\x2\x366\x367\x3\x2\x2\x2\x367\x381\a\v\x2\x2\x368"+
+		"\x369\a\xD2\x2\x2\x369\x36B\a\n\x2\x2\x36A\x36C\x5\x66\x34\x2\x36B\x36A"+
+		"\x3\x2\x2\x2\x36B\x36C\x3\x2\x2\x2\x36C\x36D\x3\x2\x2\x2\x36D\x381\a\v"+
+		"\x2\x2\x36E\x36F\a\xD3\x2\x2\x36F\x371\a\n\x2\x2\x370\x372\x5\x66\x34"+
 		"\x2\x371\x370\x3\x2\x2\x2\x371\x372\x3\x2\x2\x2\x372\x373\x3\x2\x2\x2"+
-		"\x373\x375\a\v\x2\x2\x374\x33B\x3\x2\x2\x2\x374\x344\x3\x2\x2\x2\x374"+
-		"\x34A\x3\x2\x2\x2\x374\x350\x3\x2\x2\x2\x374\x356\x3\x2\x2\x2\x374\x35C"+
-		"\x3\x2\x2\x2\x374\x362\x3\x2\x2\x2\x374\x368\x3\x2\x2\x2\x374\x36E\x3"+
-		"\x2\x2\x2\x375\x97\x3\x2\x2\x2\x376\x377\t\x19\x2\x2\x377\x99\x3\x2\x2"+
-		"\x2\x378\x379\a\xDF\x2\x2\x379\x9B\x3\x2\x2\x2\x37A\x37B\a\"\x2\x2\x37B"+
-		"\x37C\a\xDF\x2\x2\x37C\x37D\a#\x2\x2\x37D\x9D\x3\x2\x2\x2\x37E\x385\x5"+
-		"h\x35\x2\x37F\x385\x5j\x36\x2\x380\x385\x5l\x37\x2\x381\x385\x5n\x38\x2"+
-		"\x382\x385\x5p\x39\x2\x383\x385\x5t;\x2\x384\x37E\x3\x2\x2\x2\x384\x37F"+
-		"\x3\x2\x2\x2\x384\x380\x3\x2\x2\x2\x384\x381\x3\x2\x2\x2\x384\x382\x3"+
-		"\x2\x2\x2\x384\x383\x3\x2\x2\x2\x385\x9F\x3\x2\x2\x2\x386\x38B\x5\x9E"+
-		"P\x2\x387\x38B\x5v<\x2\x388\x38B\x5x=\x2\x389\x38B\x5~@\x2\x38A\x386\x3"+
-		"\x2\x2\x2\x38A\x387\x3\x2\x2\x2\x38A\x388\x3\x2\x2\x2\x38A\x389\x3\x2"+
-		"\x2\x2\x38B\xA1\x3\x2\x2\x2\x38C\x38D\t\x1A\x2\x2\x38D\xA3\x3\x2\x2\x2"+
-		"P\xA8\xAF\xB4\xBA\xBF\xC2\xC9\xCC\xD0\xD5\xD7\xDB\xF4\xFE\x110\x119\x11C"+
-		"\x143\x152\x158\x172\x17B\x185\x19B\x1A3\x1A8\x1B6\x1B8\x1BD\x1DD\x1E9"+
-		"\x1F0\x1F7\x1FE\x207\x20E\x215\x21A\x226\x22D\x236\x23D\x244\x24B\x252"+
-		"\x259\x260\x267\x275\x27F\x28C\x2A0\x2A5\x2C5\x2D1\x2D8\x2E0\x2E8\x2F0"+
-		"\x2F8\x300\x308\x310\x328\x334\x339\x340\x347\x34D\x353\x359\x35F\x365"+
-		"\x36B\x371\x374\x384\x38A";
+		"\x373\x381\a\v\x2\x2\x374\x375\a\xD4\x2\x2\x375\x377\a\n\x2\x2\x376\x378"+
+		"\x5\x66\x34\x2\x377\x376\x3\x2\x2\x2\x377\x378\x3\x2\x2\x2\x378\x379\x3"+
+		"\x2\x2\x2\x379\x381\a\v\x2\x2\x37A\x37B\a\xD5\x2\x2\x37B\x37D\a\n\x2\x2"+
+		"\x37C\x37E\x5\x66\x34\x2\x37D\x37C\x3\x2\x2\x2\x37D\x37E\x3\x2\x2\x2\x37E"+
+		"\x37F\x3\x2\x2\x2\x37F\x381\a\v\x2\x2\x380\x33B\x3\x2\x2\x2\x380\x344"+
+		"\x3\x2\x2\x2\x380\x34A\x3\x2\x2\x2\x380\x350\x3\x2\x2\x2\x380\x356\x3"+
+		"\x2\x2\x2\x380\x35C\x3\x2\x2\x2\x380\x362\x3\x2\x2\x2\x380\x368\x3\x2"+
+		"\x2\x2\x380\x36E\x3\x2\x2\x2\x380\x374\x3\x2\x2\x2\x380\x37A\x3\x2\x2"+
+		"\x2\x381\x97\x3\x2\x2\x2\x382\x383\t\x19\x2\x2\x383\x99\x3\x2\x2\x2\x384"+
+		"\x385\a\xE0\x2\x2\x385\x9B\x3\x2\x2\x2\x386\x387\a\"\x2\x2\x387\x388\a"+
+		"\xE0\x2\x2\x388\x389\a#\x2\x2\x389\x9D\x3\x2\x2\x2\x38A\x391\x5h\x35\x2"+
+		"\x38B\x391\x5j\x36\x2\x38C\x391\x5l\x37\x2\x38D\x391\x5n\x38\x2\x38E\x391"+
+		"\x5p\x39\x2\x38F\x391\x5t;\x2\x390\x38A\x3\x2\x2\x2\x390\x38B\x3\x2\x2"+
+		"\x2\x390\x38C\x3\x2\x2\x2\x390\x38D\x3\x2\x2\x2\x390\x38E\x3\x2\x2\x2"+
+		"\x390\x38F\x3\x2\x2\x2\x391\x9F\x3\x2\x2\x2\x392\x397\x5\x9EP\x2\x393"+
+		"\x397\x5v<\x2\x394\x397\x5x=\x2\x395\x397\x5~@\x2\x396\x392\x3\x2\x2\x2"+
+		"\x396\x393\x3\x2\x2\x2\x396\x394\x3\x2\x2\x2\x396\x395\x3\x2\x2\x2\x397"+
+		"\xA1\x3\x2\x2\x2\x398\x399\t\x1A\x2\x2\x399\xA3\x3\x2\x2\x2R\xA8\xAF\xB4"+
+		"\xBA\xBF\xC2\xC9\xCC\xD0\xD5\xD7\xDB\xF4\xFE\x110\x119\x11C\x143\x152"+
+		"\x158\x172\x17B\x185\x19B\x1A3\x1A8\x1B6\x1B8\x1BD\x1DD\x1E9\x1F0\x1F7"+
+		"\x1FE\x207\x20E\x215\x21A\x226\x22D\x236\x23D\x244\x24B\x252\x259\x260"+
+		"\x267\x275\x27F\x28C\x2A0\x2A5\x2C5\x2D1\x2D8\x2E0\x2E8\x2F0\x2F8\x300"+
+		"\x308\x310\x328\x334\x339\x340\x347\x34D\x353\x359\x35F\x365\x36B\x371"+
+		"\x377\x37D\x380\x390\x396";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }

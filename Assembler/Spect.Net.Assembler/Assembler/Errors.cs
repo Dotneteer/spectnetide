@@ -174,7 +174,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0418, "Unknown MACRO: {0}." },
             { Z0419, "The declaration of MACRO {0} contains {1} argument(s), but it is invoked with more parameters ({2})." },
             { Z0420, "Macro parameter can only be used within a macro declaration." },
-            { Z0421, "The DEF() parse time function accepts only macro parameters." },
+            { Z0421, "A parse-time function accepts only macro parameters." },
             { Z0422, "Cannot pass a macro parameter template in a macro parameter." },
             { Z0423, "Cannot open file '{0}' used in INCLUDEBIN pragma ({0})." },
             { Z0424, "Invalid INCLUDEBIN offset value (negative, or greater than the file length)." },

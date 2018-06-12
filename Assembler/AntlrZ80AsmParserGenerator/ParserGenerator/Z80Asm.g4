@@ -311,7 +311,9 @@ builtinFunctionInvocation
 	| ISREG8IDX LPAR operand? RPAR
 	| ISREG16 LPAR operand? RPAR
 	| ISREG16IDX LPAR operand? RPAR
+	| ISREGINDIRECT LPAR operand? RPAR
 	| ISCPORT LPAR operand? RPAR
+	| ISINDEXEDADDR LPAR operand? RPAR
 	| ISCONDITION LPAR operand? RPAR
 	;
 
@@ -605,6 +607,7 @@ ISREG16: 'isreg16' | 'ISREG16' ;
 ISREG16IDX: 'isreg16idx' | 'ISREG16IDX' ;
 ISREGINDIRECT: 'isregindirect' | 'ISREGINDIRECT' ;
 ISCPORT: 'iscport' | 'ISCPORT' ;
+ISINDEXEDADDR: 'isindexedaddr' | 'ISINDEXEDADDR' ;
 ISCONDITION: 'iscondition' | 'ISCONDITION' ;
 
 // --- Basic literals

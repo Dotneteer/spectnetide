@@ -99,6 +99,14 @@ namespace Spect.Net.Assembler.Assembler
         {
             CurrentSourceLine = asmLine;
 
+            // --- Report any parse-time function issue
+            if (asmLine.EmitIssue != null)
+            {
+                ReportError(asmLine.EmitIssue, asmLine);
+                return;
+            }
+
+            // --- No parse-time issue, process the line
             if (asmLine is NoInstructionLine noInstrLine)
             {
                 if (noInstrLine.Label != null)
