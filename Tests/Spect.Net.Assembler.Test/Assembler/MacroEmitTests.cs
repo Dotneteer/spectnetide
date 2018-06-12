@@ -1781,6 +1781,32 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(SOURCE, 0x21, 0x02, 0x00, 0x21, 0x03, 0x00);
         }
 
+        [TestMethod]
+        [DataRow("b", 0x78)]
+        [DataRow("c", 0x79)]
+        [DataRow("d", 0x7A)]
+        [DataRow("e", 0x7B)]
+        [DataRow("h", 0x7C)]
+        [DataRow("l", 0x7D)]
+        [DataRow("a", 0x7F)]
+        [DataRow("bc", 0x00)]
+        public void IsReg8WorksAsExpected(string param, int expected)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreg8({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)expected);
+        }
+
 
     }
 }

@@ -1731,20 +1731,35 @@ namespace Spect.Net.Assembler
             if (context.DEF() != null)
             {
                 // --- We do this visit just for syntax highlighting
-                if (context.operand() != null)
-                {
-                    var op = (Operand)VisitOperand(context.operand());
-                    if (!MacroParsingPhase && (op.Type != OperandType.Expr || !(op.Expression is MacroParamNode)))
-                    {
-                        // --- DEF can use only macro parameters during the collection phase
-                        _emitIssue = Errors.Z0421;
-                    }
-
-                }
+                CheckForMacroParamNode(context);
                 return new LiteralNode(context.operand() != null && context.operand().NONEARG() == null);
             }
 
+            if (context.ISREG8() != null)
+            {
+                // --- We do this visit just for syntax highlighting
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg8() != null 
+                    && context.operand().NONEARG() == null);
+            }
+
             return null;
+        }
+
+        /// <summary>
+        /// Checks if the operand is used as a macro parameter node
+        /// </summary>
+        /// <param name="context"></param>
+        private void CheckForMacroParamNode(Z80AsmParser.BuiltinFunctionInvocationContext context)
+        {
+            if (context.operand() == null) return;
+
+            var op = (Operand) VisitOperand(context.operand());
+            if (!MacroParsingPhase && (op.Type != OperandType.Expr || !(op.Expression is MacroParamNode)))
+            {
+                // --- Built in function can use only macro parameters during the collection phase
+                _emitIssue = Errors.Z0421;
+            }
         }
 
         #endregion

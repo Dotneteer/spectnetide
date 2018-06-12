@@ -306,6 +306,13 @@ functionInvocation
 builtinFunctionInvocation
 	: (TEXTOF | LTEXTOF) LPAR (mnemonic | regsAndConds | macroParam) RPAR
 	| DEF LPAR operand? RPAR
+	| ISREG8 LPAR operand? RPAR
+	| ISREG8SPEC LPAR operand? RPAR
+	| ISREG8IDX LPAR operand? RPAR
+	| ISREG16 LPAR operand? RPAR
+	| ISREG16IDX LPAR operand? RPAR
+	| ISCPORT LPAR operand? RPAR
+	| ISCONDITION LPAR operand? RPAR
 	;
 
 literalExpr
@@ -591,6 +598,14 @@ LTEXTOF	: 'ltextof' | 'LTEXTOF' ;
 HREG	: 'hreg' | 'HREG' ;
 LREG	: 'lreg' | 'LREG' ;
 DEF		: 'def' | 'DEF' ;
+ISREG8	: 'isreg8' | 'ISREG8' ;
+ISREG8SPEC: 'isreg8spec' | 'ISREG8SPEC' ;
+ISREG8IDX: 'isreg8idx' | 'ISREG8IDX' ;
+ISREG16: 'isreg16' | 'ISREG16' ;
+ISREG16IDX: 'isreg16idx' | 'ISREG16IDX' ;
+ISREGINDIRECT: 'isregindirect' | 'ISREGINDIRECT' ;
+ISCPORT: 'iscport' | 'ISCPORT' ;
+ISCONDITION: 'iscondition' | 'ISCONDITION' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?
