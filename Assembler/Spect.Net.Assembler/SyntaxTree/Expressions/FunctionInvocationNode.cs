@@ -494,7 +494,43 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     new FunctionEvaluator(
                         args => new ExpressionValue(args[0].AsReal() - args[0].AsLong()), ExpressionValueType.Real)
                 }
-            }
+            },
+            { "lowercase", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString().ToLower()), ExpressionValueType.String)
+                }
+            },
+            { "lcase", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString().ToLower()), ExpressionValueType.String)
+                }
+            },
+            { "uppercase", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString().ToUpper()), ExpressionValueType.String)
+                }
+            },
+            { "ucase", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString().ToUpper()), ExpressionValueType.String)
+                }
+            },
+            { "str", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString()), ExpressionValueType.Bool),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString()), ExpressionValueType.Integer),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString()), ExpressionValueType.Real),
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsString()), ExpressionValueType.String)
+                }
+            },
         };
     }
 }

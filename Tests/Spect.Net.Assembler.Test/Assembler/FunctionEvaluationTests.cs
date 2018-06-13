@@ -1117,11 +1117,62 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        [DataRow("int(\"fail\")")]
-        [DataRow("int(\"\")")]
+        [DataRow("frac(\"fail\")")]
+        [DataRow("frac(\"\")")]
         public void FracWithStringFails(string source)
         {
             EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("lowercase(false)")]
+        [DataRow("lowercase(12)")]
+        [DataRow("lowercase(12.5)")]
+        [DataRow("lcase(false)")]
+        [DataRow("lcase(12)")]
+        [DataRow("lcase(12.5)")]
+        public void LowerCaseWithInvalidArgsFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("lowercase(\"AbC\")", "abc")]
+        [DataRow("lcase(\"AbC\")", "abc")]
+        public void LowerCaseWithStringWorks(string source, string expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("uppercase(false)")]
+        [DataRow("uppercase(12)")]
+        [DataRow("uppercase(12.5)")]
+        [DataRow("ucase(false)")]
+        [DataRow("ucase(12)")]
+        [DataRow("ucase(12.5)")]
+        public void UpperCaseWithInvalidArgsFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("uppercase(\"abC\")", "ABC")]
+        [DataRow("ucase(\"abC\")", "ABC")]
+        public void UpperCaseWithStringWorks(string source, string expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("str(\"abC\")", "abC")]
+        [DataRow("str(false)", "false")]
+        [DataRow("str(true)", "true")]
+        [DataRow("str(123+123)", "246")]
+        [DataRow("str(123.1+123.0)", "246.1")]
+        public void StrWorksAsExpected(string source, string expected)
+        {
+            EvalExpression(source, expected);
         }
     }
 }

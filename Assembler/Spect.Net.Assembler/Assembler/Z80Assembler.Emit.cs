@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -98,6 +99,14 @@ namespace Spect.Net.Assembler.Assembler
         {
             CurrentSourceLine = asmLine;
 
+            // --- Report any parse-time function issue
+            if (asmLine.EmitIssue != null)
+            {
+                ReportError(asmLine.EmitIssue, asmLine);
+                return;
+            }
+
+            // --- No parse-time issue, process the line
             if (asmLine is NoInstructionLine noInstrLine)
             {
                 if (noInstrLine.Label != null)
@@ -1389,6 +1398,12 @@ namespace Spect.Net.Assembler.Assembler
                 case DefgPragma defgPragma:
                     ProcessDefgPragma(defgPragma);
                     break;
+                case ErrorPragma errorPragma:
+                    ProcessErrorPragma(errorPragma);
+                    break;
+                case IncludeBinPragma incBinPragma:
+                    ProcessIncBinPragma(incBinPragma);
+                    break;
             }
         }
 
@@ -1896,6 +1911,121 @@ namespace Spect.Net.Assembler.Assembler
             }
         }
 
+        /// <summary>
+        /// Processes the ERROR pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFG pragma</param>
+        private void ProcessErrorPragma(ErrorPragma pragma)
+        {
+            var errorValue = EvalImmediate(pragma, pragma.Expr);
+            if (!errorValue.IsValid) return;
+            ReportError(Errors.Z0500, pragma, errorValue.AsString());
+        }
+
+        /// <summary>
+        /// Processes the INCLUDEBIN pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFG pragma</param>
+        private void ProcessIncBinPragma(IncludeBinPragma pragma)
+        {
+            // --- Obtain the file name
+            var fileNameValue = EvalImmediate(pragma, pragma.FileExpr);
+            if (!fileNameValue.IsValid) return;
+
+            if (fileNameValue.Type != ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0306, pragma);
+                return;
+            }
+
+            // --- Obtain optional offset
+            var offset = 0;
+            if (pragma.OffsetExpr != null)
+            {
+                var offsValue = EvalImmediate(pragma, pragma.OffsetExpr);
+                if (offsValue.Type != ExpressionValueType.Integer)
+                {
+                    ReportError(Errors.Z0308, pragma);
+                    return;
+                }
+                offset = (int)offsValue.AsLong();
+                if (offset < 0)
+                {
+                    ReportError(Errors.Z0424, pragma);
+                    return;
+                }
+            }
+
+            // --- Obtain optional length
+            int? length = null;
+            if (pragma.LengthExpr != null)
+            {
+                var lengthValue = EvalImmediate(pragma, pragma.LengthExpr);
+                if (lengthValue.Type != ExpressionValueType.Integer)
+                {
+                    ReportError(Errors.Z0308, pragma);
+                    return;
+                }
+                length = (int)lengthValue.AsLong();
+                if (length < 0)
+                {
+                    ReportError(Errors.Z0425, pragma);
+                    return;
+                }
+            }
+
+            // --- Read the binary file
+            var currentSourceFile = _output.SourceFileList[pragma.FileIndex];
+            var dirname = Path.GetDirectoryName(currentSourceFile.Filename) ?? string.Empty;
+            var filename = Path.Combine(dirname, fileNameValue.AsString());
+
+            byte[] contents;
+            try
+            {
+                var fileLength = new FileInfo(filename).Length;
+                using (var reader = new BinaryReader(File.OpenRead(filename)))
+                {
+                    contents = reader.ReadBytes((int)fileLength);
+                }
+            }
+            catch (Exception e)
+            {
+                ReportError(Errors.Z0423, pragma, e.Message);
+                return;
+            }
+
+            // --- Check content segment
+            if (offset >= contents.Length)
+            {
+                ReportError(Errors.Z0424, pragma);
+                return;
+            }
+
+            if (length == null)
+            {
+                length = contents.Length - offset;
+            }
+
+            // --- Check length
+            if (offset + length > contents.Length)
+            {
+                ReportError(Errors.Z0425, pragma);
+                return;
+            }
+
+            // --- Check for too long binary segment
+            if (GetCurrentAssemblyAddress() + length >= 0x10000)
+            {
+                ReportError(Errors.Z0426, pragma);
+                return;
+            }
+
+            // --- Everything is ok, emit the binary data
+            for (var i = offset; i < offset + length; i++)
+            {
+                EmitByte(contents[i]);
+            }
+        }
 
         #endregion
 

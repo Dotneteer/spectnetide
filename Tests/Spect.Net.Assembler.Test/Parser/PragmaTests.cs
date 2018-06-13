@@ -861,5 +861,91 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
 
+        [TestMethod]
+        [DataRow(".error \"message\"")]
+        [DataRow(".ERROR \"message\"")]
+        [DataRow("error \"message\"")]
+        [DataRow("ERROR \"message\"")]
+        public void ErrorPragmaWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ErrorPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        [DataRow(".includebin \"file\"")]
+        [DataRow(".INCLUDEBIN \"file\"")]
+        [DataRow("includebin \"file\"")]
+        [DataRow("INCLUDEBIN \"file\"")]
+        [DataRow(".include_bin \"file\"")]
+        [DataRow(".INCLUDE_BIN \"file\"")]
+        [DataRow("include_bin \"file\"")]
+        [DataRow("INCLUDE_BIN \"file\"")]
+        public void IncBinPragmaWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as IncludeBinPragma;
+            line.ShouldNotBeNull();
+            line.FileExpr.ShouldBeOfType<LiteralNode>();
+            line.OffsetExpr.ShouldBeNull();
+            line.LengthExpr.ShouldBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".includebin \"file\", 100")]
+        [DataRow(".INCLUDEBIN \"file\", 100")]
+        [DataRow("includebin \"file\", 100")]
+        [DataRow("INCLUDEBIN \"file\", 100")]
+        [DataRow(".include_bin \"file\", 100")]
+        [DataRow(".INCLUDE_BIN \"file\", 100")]
+        [DataRow("include_bin \"file\", 100")]
+        [DataRow("INCLUDE_BIN \"file\", 100")]
+        public void IncBinPragmaWithOffsetWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as IncludeBinPragma;
+            line.ShouldNotBeNull();
+            line.FileExpr.ShouldBeOfType<LiteralNode>();
+            line.OffsetExpr.ShouldBeOfType<LiteralNode>();
+            line.LengthExpr.ShouldBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".includebin \"file\", 100, 200")]
+        [DataRow(".INCLUDEBIN \"file\", 100, 200")]
+        [DataRow("includebin \"file\", 100, 200")]
+        [DataRow("INCLUDEBIN \"file\", 100, 200")]
+        [DataRow(".include_bin \"file\", 100, 200")]
+        [DataRow(".INCLUDE_BIN \"file\", 100, 200")]
+        [DataRow("include_bin \"file\", 100, 200")]
+        [DataRow("INCLUDE_BIN \"file\", 100, 200")]
+        public void IncBinPragmaWithOffsetAndLengthWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as IncludeBinPragma;
+            line.ShouldNotBeNull();
+            line.FileExpr.ShouldBeOfType<LiteralNode>();
+            line.OffsetExpr.ShouldBeOfType<LiteralNode>();
+            line.LengthExpr.ShouldBeOfType<LiteralNode>();
+        }
+
     }
 }

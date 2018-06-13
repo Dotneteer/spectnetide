@@ -541,6 +541,51 @@ namespace Spect.Net.Assembler
                 context);
         }
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.errorPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitErrorPragma(Z80AsmParser.ErrorPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new ErrorPragma(
+                    context.expr() != null
+                        ? (ExpressionNode)VisitExpr(context.expr())
+                        : null),
+                context);
+        }
+
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.incBinPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitIncBinPragma(Z80AsmParser.IncBinPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            var filenameExpr = context.expr().Length > 0
+                ? (ExpressionNode) VisitExpr(context.expr()[0])
+                : null;
+            var offsetExpr = context.expr().Length > 1
+                ? (ExpressionNode)VisitExpr(context.expr()[1])
+                : null;
+            var lengthExpr = context.expr().Length > 2
+                ? (ExpressionNode)VisitExpr(context.expr()[2])
+                : null;
+            return AddLine(new IncludeBinPragma(filenameExpr, offsetExpr, lengthExpr), 
+                context);
+        }
+
         #endregion
 
         #region Operations
@@ -1654,7 +1699,7 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
             AddFunction(context);
             string token = null;
-            if (context.TEXTOF() != null)
+            if (context.TEXTOF() != null || context.LTEXTOF() != null)
             {
                 if (context.macroParam() != null)
                 {
@@ -1675,26 +1720,128 @@ namespace Spect.Net.Assembler
                     AddOperand(context.regsAndConds());
                     token = context.regsAndConds().NormalizeToken();
                 }
+
+                if (context.LTEXTOF() != null)
+                {
+                    token = token.ToLower();
+                }
                 return new LiteralNode(token);
             }
 
             if (context.DEF() != null)
             {
-                // --- We do this visit just for syntax highlighting
-                if (context.operand() != null)
-                {
-                    var op = (Operand)VisitOperand(context.operand());
-                    if (!MacroParsingPhase && (op.Type != OperandType.Expr || !(op.Expression is MacroParamNode)))
-                    {
-                        // --- DEF can use only macro parameters during the collection phase
-                        _emitIssue = Errors.Z0421;
-                    }
-
-                }
+                CheckForMacroParamNode(context);
                 return new LiteralNode(context.operand() != null && context.operand().NONEARG() == null);
             }
 
+            if (context.ISREG8() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(
+                    (context.operand()?.reg8() != null 
+                        || context.operand()?.reg8Spec() != null
+                        || context.operand()?.reg8Idx() != null)
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG8STD() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg8() != null
+                                       && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG8SPEC() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg8Spec() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG8IDX() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg8Idx() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG16() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(
+                    (context.operand()?.reg16() != null
+                        || context.operand()?.reg16Idx() != null
+                        || context.operand()?.reg16Spec() != null)
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG16IDX() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg16Idx() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG16STD() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg16() != null
+                                       && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREGINDIRECT() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.regIndirect() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISCPORT() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.cPort() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISINDEXEDADDR() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.indexedAddr() != null
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISCONDITION() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(
+                    (context.operand()?.condition() != null || context.operand().reg8()?.GetText()?.ToLower() == "c")
+                    && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISEXPR() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.expr() != null
+                                       && context.operand().NONEARG() == null);
+            }
+
             return null;
+        }
+
+        /// <summary>
+        /// Checks if the operand is used as a macro parameter node
+        /// </summary>
+        /// <param name="context"></param>
+        private void CheckForMacroParamNode(Z80AsmParser.BuiltinFunctionInvocationContext context)
+        {
+            if (context.operand() == null) return;
+
+            var op = (Operand) VisitOperand(context.operand());
+            if (!MacroParsingPhase && (op.Type != OperandType.Expr || !(op.Expression is MacroParamNode)))
+            {
+                // --- Built in function can use only macro parameters during the collection phase
+                _emitIssue = Errors.Z0421;
+            }
         }
 
         #endregion

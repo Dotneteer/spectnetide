@@ -44,6 +44,8 @@ pragma
 	|	tracePragma
 	|	rndSeedPragma
 	|	defgPragma
+	|   errorPragma
+	|	incBinPragma
 	;
 
 directive
@@ -112,6 +114,8 @@ alignPragma : ALGPRAG expr? ;
 tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
 rndSeedPragma: RNDSEED expr? ;
 defgPragma	: DGPRAG expr ;
+errorPragma : ERRORPR expr ;
+incBinPragma: INCBIN expr ( ',' expr ( ',' expr)? )? ;
 
 operation
 	:	trivialOperation
@@ -300,8 +304,20 @@ functionInvocation
 	;
 
 builtinFunctionInvocation
-	: TEXTOF LPAR (mnemonic | regsAndConds | macroParam) RPAR
+	: (TEXTOF | LTEXTOF) LPAR (mnemonic | regsAndConds | macroParam) RPAR
 	| DEF LPAR operand? RPAR
+	| ISREG8 LPAR operand? RPAR
+	| ISREG8STD LPAR operand? RPAR
+	| ISREG8SPEC LPAR operand? RPAR
+	| ISREG8IDX LPAR operand? RPAR
+	| ISREG16 LPAR operand? RPAR
+	| ISREG16STD LPAR operand? RPAR
+	| ISREG16IDX LPAR operand? RPAR
+	| ISREGINDIRECT LPAR operand? RPAR
+	| ISCPORT LPAR operand? RPAR
+	| ISINDEXEDADDR LPAR operand? RPAR
+	| ISCONDITION LPAR operand? RPAR
+	| ISEXPR LPAR operand? RPAR
 	;
 
 literalExpr
@@ -556,6 +572,9 @@ TRACE	: '.trace' | '.TRACE' | 'trace' | 'TRACE' ;
 TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;
 RNDSEED	: '.rndseed' | 'rndseed' | '.RNDSEED' | 'RNDSEED' ;
 DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
+ERRORPR	: '.error' | '.ERROR' | 'error' | 'ERROR' ;
+INCBIN	: '.includebin' | 'includebin' | '.INCLUDEBIN' | 'INCLUDEBIN' 
+		  | '.include_bin' | 'include_bin' | '.INCLUDE_BIN' | 'INCLUDE_BIN' ;
 
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
@@ -579,10 +598,23 @@ BREAK	: '.break' | 'break' | '.BREAK' | 'BREAK' ;
 CONTINUE: '.continue' | 'continue' | '.CONTINUE' | 'CONTINUE' ;
 
 // --- Built-in function names
-TEXTOF	: 'textof' ;
+TEXTOF	: 'textof' | 'TEXTOF' ;
+LTEXTOF	: 'ltextof' | 'LTEXTOF' ;
 HREG	: 'hreg' | 'HREG' ;
 LREG	: 'lreg' | 'LREG' ;
 DEF		: 'def' | 'DEF' ;
+ISREG8	: 'isreg8' | 'ISREG8' ;
+ISREG8STD: 'isreg8std' | 'ISREG8STD' ;
+ISREG8SPEC: 'isreg8spec' | 'ISREG8SPEC' ;
+ISREG8IDX: 'isreg8idx' | 'ISREG8IDX' ;
+ISREG16: 'isreg16' | 'ISREG16' ;
+ISREG16STD: 'isreg16std' | 'ISREG16STD' ;
+ISREG16IDX: 'isreg16idx' | 'ISREG16IDX' ;
+ISREGINDIRECT: 'isregindirect' | 'ISREGINDIRECT' ;
+ISCPORT: 'iscport' | 'ISCPORT' ;
+ISINDEXEDADDR: 'isindexedaddr' | 'ISINDEXEDADDR' ;
+ISCONDITION: 'iscondition' | 'ISCONDITION' ;
+ISEXPR: 'isexpr' | 'ISEXPR' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?

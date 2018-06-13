@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		CHANGELOG.md = CHANGELOG.md
 		README.md = README.md
+		Documentation\Z80Assembly\Z80AssemblerReference.md = Documentation\Z80Assembly\Z80AssemblerReference.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.RomResources", "Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj", "{9F90CF6B-CCEF-4B30-AA35-9205BEB6EB21}"

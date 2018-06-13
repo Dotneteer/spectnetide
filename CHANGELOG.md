@@ -1,3 +1,13 @@
+### Version under development
+
+__FEATURE__: The SpectNetIde VS Package now loads asynchronously.  
+__FEATURE__: You can raise a custom error with the `.error` pragma.  
+__FEATURE__: Now, you can use the `str()`, `lowercase()` and `uppercase()` functions.  
+__FEATURE__: You can include binary files with the `.includebin` pragma.  
+__FEATURE__: New parse-time functions are available: `isreg8()`, `isreg8std()`, 
+`isreg8spec()`, `isreg8idx()`, `isreg16()`, `isreg16std()`,`isreg16idx()`, 
+`isregindirect()`, `iscport()`, `isindexedaddr()`, `isexpr()`, and `iscondition()`.
+
 ### Version 1.9.0
 
 __FEATURE:__ Floppy drive emulation added to Spectrum +3e.
@@ -9,7 +19,6 @@ can be created, inserted, or ejected.
 * The contents of the disks are stored in `.vfdd` files that are now part of
 the ZX Spectrum project
 * `.vfdd` files have an editor that displays the format information of the virtual disk
-
 
 ### Version 1.8.0
 
