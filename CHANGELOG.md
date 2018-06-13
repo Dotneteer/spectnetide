@@ -1,4 +1,4 @@
-### Version under development
+### Version 1.10.0
 
 __FEATURE__: The SpectNetIde VS Package now loads asynchronously.  
 __FEATURE__: You can raise a custom error with the `.error` pragma.  
