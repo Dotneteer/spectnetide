@@ -1820,6 +1820,54 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        [DataRow("i", 0x57)]
+        [DataRow("r", 0x5F)]
+        [DataRow("bc", 0x00)]
+        public void IsReg8WithSpecRegistersWorksAsExpected(string param, int expected)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreg8({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            .defb 0xED, 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, 0xED, (byte)expected);
+        }
+
+        [TestMethod]
+        [DataRow("xh", 0xDD, 0x7C)]
+        [DataRow("ixh", 0xDD, 0x7C)]
+        [DataRow("xl", 0xDD, 0x7D)]
+        [DataRow("ixl", 0xDD, 0x7D)]
+        [DataRow("yh", 0xFD, 0x7C)]
+        [DataRow("iyh", 0xFD, 0x7C)]
+        [DataRow("yl", 0xFD, 0x7D)]
+        [DataRow("iyl", 0xFD, 0x7D)]
+        [DataRow("bc", 0x00, 0x00)]
+        public void IsReg8WithIndexRegistersWorksAsExpected(string param, int exp1, int exp2)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreg8({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            .defb 0x00, 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)exp1, (byte)exp2);
+        }
+
+        [TestMethod]
         public void IsReg8FailsOutOfMacro()
         {
             // --- Arrange
@@ -1886,6 +1934,7 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeEmitWorks(source, (byte)exp1, (byte)exp2);
         }
+
         [TestMethod]
         public void IsReg8IdxFailsOutOfMacro()
         {
@@ -1916,6 +1965,27 @@ namespace Spect.Net.Assembler.Test.Assembler
                 MyMacro(" + param + ")";
 
             CodeEmitWorks(source, (byte)expected, 0x34, 0x12);
+        }
+
+        [TestMethod]
+        [DataRow("ix", 0xDD, 0x21)]
+        [DataRow("iy", 0xFD, 0x21)]
+        [DataRow("a", 0x00, 0x00)]
+        public void IsReg16WithIndexRegistersWorksAsExpected(string param, int exp1, int exp2)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreg16({{mpar}})
+                            ld {{mpar}},0x1234
+                        .else
+                            .defb 0x00, 0x00, 0x34, 0x12
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, (byte)exp1, (byte)exp2, 0x34, 0x12);
         }
 
         [TestMethod]
@@ -2093,5 +2163,38 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeRaisesError(source, Errors.Z0421);
         }
+
+        [TestMethod]
+        [DataRow("1 * 3", 0x03)]
+        [DataRow("1 << 2", 0x04)]
+        [DataRow("#10", 0x10)]
+        [DataRow("a", 0x00)]
+        public void IsExprWorksAsExpected(string param, int expexted)
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isexpr({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            .defb 0x3E, 0x00
+                        .endif
+                .endm
+                MyMacro(" + param + ")";
+
+            CodeEmitWorks(source, 0x3E, (byte)expexted);
+        }
+
+        [TestMethod]
+        public void IsExprFailsOutOfMacro()
+        {
+            // --- Arrange
+            var source = @"
+                ld a,isexpr(a)";
+
+            CodeRaisesError(source, Errors.Z0421);
+        }
+
     }
 }

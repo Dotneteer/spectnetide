@@ -1737,8 +1737,18 @@ namespace Spect.Net.Assembler
             if (context.ISREG8() != null)
             {
                 CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.reg8() != null 
+                return new LiteralNode(
+                    (context.operand()?.reg8() != null 
+                        || context.operand()?.reg8Spec() != null
+                        || context.operand()?.reg8Idx() != null)
                     && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG8STD() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg8() != null
+                                       && context.operand().NONEARG() == null);
             }
 
             if (context.ISREG8SPEC() != null)
@@ -1758,7 +1768,10 @@ namespace Spect.Net.Assembler
             if (context.ISREG16() != null)
             {
                 CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.reg16() != null
+                return new LiteralNode(
+                    (context.operand()?.reg16() != null
+                        || context.operand()?.reg16Idx() != null
+                        || context.operand()?.reg16Spec() != null)
                     && context.operand().NONEARG() == null);
             }
 
@@ -1767,6 +1780,13 @@ namespace Spect.Net.Assembler
                 CheckForMacroParamNode(context);
                 return new LiteralNode(context.operand()?.reg16Idx() != null
                     && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISREG16STD() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.reg16() != null
+                                       && context.operand().NONEARG() == null);
             }
 
             if (context.ISREGINDIRECT() != null)
@@ -1796,6 +1816,13 @@ namespace Spect.Net.Assembler
                 return new LiteralNode(
                     (context.operand()?.condition() != null || context.operand().reg8()?.GetText()?.ToLower() == "c")
                     && context.operand().NONEARG() == null);
+            }
+
+            if (context.ISEXPR() != null)
+            {
+                CheckForMacroParamNode(context);
+                return new LiteralNode(context.operand()?.expr() != null
+                                       && context.operand().NONEARG() == null);
             }
 
             return null;

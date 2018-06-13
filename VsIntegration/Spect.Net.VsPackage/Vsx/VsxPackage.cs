@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Threading;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OutputWindow = Spect.Net.VsPackage.Vsx.Output.OutputWindow;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Vsx
 {
     /// <summary>
     /// This class is intended to be the base class of Visual Studio packages
     /// </summary>
-    public abstract class VsxPackage: Package
+    public abstract class VsxPackage: AsyncPackage
     {
         private DTE2 _applicationObject;
         private static readonly List<Assembly> s_AssembliesToScan = new List<Assembly>();
@@ -62,9 +64,9 @@ namespace Spect.Net.VsPackage.Vsx
             }
         }
 
-        protected sealed override void Initialize()
+        protected sealed override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            base.Initialize();
+            await base.InitializeAsync(cancellationToken, progress);
             s_AssembliesToScan.Add(Assembly.GetExecutingAssembly());
 
             // --- Discover the assemblies to scan for metadata
@@ -96,7 +98,7 @@ namespace Spect.Net.VsPackage.Vsx
                 {
                     var commandInstance = (IVsxCommand)Activator.CreateInstance(type);
                     if (s_CommandSets.TryGetValue(commandInstance.CommandSetType, 
-                        out IVsxCommandSet commandSetInstance))
+                        out var commandSetInstance))
                     {
                         commandInstance.Site(commandSetInstance);
                         s_Commands.Add(type, commandInstance);
@@ -107,13 +109,13 @@ namespace Spect.Net.VsPackage.Vsx
             Console.SetOut(OutputWindow.General);
 
             // --- No it is time to allow the package-specific initialization
-            OnInitialize();
+            await OnInitialize();
         }
 
         /// <summary>
         /// Override this method to initialize the package.
         /// </summary>
-        protected virtual void OnInitialize() { }
+        protected virtual Task OnInitialize() => Task.FromResult(0);
 
         /// <summary>
         /// Gets the specified tool window with the given instance id.

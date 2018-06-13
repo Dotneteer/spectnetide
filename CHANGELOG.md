@@ -1,10 +1,12 @@
 ### Version under development
 
+__FEATURE__: The SpectNetIde VS Package now loads asynchronously.  
 __FEATURE__: You can raise a custom error with the `.error` pragma.  
 __FEATURE__: Now, you can use the `str()`, `lowercase()` and `uppercase()` functions.  
 __FEATURE__: You can include binary files with the `.includebin` pragma.  
-__FEATURE__: New parse-time functions are available: `isreg8()`, `isreg8spec()`, `isreg8idx()`,
-`isreg16()`, `isreg16idx()`, `isregindirect()`, `iscport()`, `isindexedaddr()`, and `iscondition()`.
+__FEATURE__: New parse-time functions are available: `isreg8()`, `isreg8std()`, 
+`isreg8spec()`, `isreg8idx()`, `isreg16()`, `isreg16std()`,`isreg16idx()`, 
+`isregindirect()`, `iscport()`, `isindexedaddr()`, `isexpr()`, and `iscondition()`.
 
 ### Version 1.9.0
 

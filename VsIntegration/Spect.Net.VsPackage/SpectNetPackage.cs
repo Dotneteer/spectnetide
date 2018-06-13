@@ -36,6 +36,7 @@ using Spect.Net.VsPackage.Z80Programs.Providers;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
 using OutputWindow = Spect.Net.VsPackage.Vsx.Output.OutputWindow;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage
 {
@@ -191,7 +192,7 @@ namespace Spect.Net.VsPackage
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override void OnInitialize()
+        protected override Task OnInitialize()
         {
             // --- Prepare project system extension files
             CheckCpsFiles();
@@ -232,6 +233,7 @@ namespace Spect.Net.VsPackage
             StateFileManager = new VmStateFileManager();
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
+            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -294,7 +296,7 @@ namespace Spect.Net.VsPackage
             try
             {
                 CheckCpsFiles();
-                await System.Threading.Tasks.Task.Delay(2000);
+                await Task.Delay(2000);
 
                 // --- Let's create the ZX Spectrum virtual machine view model
                 // --- that is used all around in tool windows
@@ -427,7 +429,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        private static async System.Threading.Tasks.Task ExecuteOnMainThread(Action action)
+        private static async Task ExecuteOnMainThread(Action action)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             action();

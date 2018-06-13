@@ -1019,13 +1019,47 @@ Here are a few samples:
 
 ### The ERROR Pragma
 
-You cas raise custom error messages with this pragma. __ERROR__ accepts an expression
+You can raise custom error messages with this pragma. __ERROR__ accepts an expression
 and displays an error message with code `Z0500` using the text you provide. Here is a sample:
 
 ```
 .error "The value must be greater than" + str(minvalue)
 ```
 
+### The INCLUDEBIN Pragma
+
+You can include a binary file into the source code to emit all bytes just as if you used the 
+`.defb` pragma. You can include the entire file, or a single segment of it. The pragma has a 
+mandatory argument &mdash; the name of the binary file to include &mdash; and two optional 
+ones, the start offset of the segment, and its length, respectively. Let's see a few examples:
+
+```
+.includebin "./myfile.bin"
+.includebin "./myfile.bin" 2
+.includebin "./myfile.bin" 2, 3
+```
+
+This snippet loads the `myfile.bin` file from the same directory that contains the source 
+with the `.includebin` directive.
+
+Let's assume that `myfile.bin` contains these bytes:
+
+```
+#00, #01, #02, #03, #04, #05, #06, #07 
+```
+
+The three lines of code above are the same as if we had written these code lines:
+
+```
+.defb #00, #01, #02, #03, #04, #05, #06, #07 ; .includebin "./myfile.bin"
+.defb #02, #03, #04, #05, #06, #07           ; .includebin "./myfile.bin" 2
+.defb #02, #03, #04                          ; .includebin "./myfile.bin" 2, 3
+```
+
+> Of course, the compiler does not allow negative file offset or length. It alse raises
+> an error if you define a segment that does not fit into the binary file.  
+> You can use alternative syntax for `.includebin`. The compiler accepts these tokens and their
+> uppercase versions, too: `includebin`, `.include_bin`, and `include_bin`.
 ## Statements
 
 Statements are __SpectNetIde__ specific control flow constructs &mdash; thanks again for the inspiration by
@@ -2381,6 +2415,51 @@ out (#fe),a
 ld b,20
 WaitLoop_2: djnz WaitLoop_2
 ```
+
+### Macro-Related Parse-Time Functions
+
+The __SpectNetIde__ Assembler allows using several parse-time functions with macro arguments the
+similar way as you can use the `def()` function to check whether a macro argument has been passed
+to the macro invocation.
+
+These functions check if the argument is an operand the name of the function suggest. Each
+of them returns true, provided the function recognizes the operand; otherwise, false.
+
+The assembler support these functions:
+
+Name | Description
+-----|------------
+`isreg8std()` | The operand is an 8-bit register, one of these: `a`, `b`, `c`, `d`, `e`, `h`, `l`, `i`, `r`, `xh` (`ixh`), `xl` (`ixl`), `yh` (`iyh`), or `yl` (`iyl`)
+`isreg8std()` | The operand is a standard 8-bit register, one of these: `a`, `b`, `c`, `d`, `e`, `h`, or `l`
+`isreg8spec()` | The operand is a special 8-bit register, `i`, or `r`
+`isreg8idx()` | One of these 8-bit index registers: `xh` (`ixh`), `xl` (`ixl`), `yh` (`iyh`), or `yl` (`iyl`)
+`isreg16()` | Any of these 16-bit registers: `af`, `bc`, `de`, `hl`, `sp`, `ix` or `iy`
+`isreg16std()` | Any of the standard 16-bit registers: `bc`, `de`, `hl`, or `sp`
+`isreg16idx()` | Any of the `ix` or `iy` registers
+`isregindirect()` | The operand is one of these: `(bc)`, `(de)`, `(hl)`, or `(sp)`
+`isindexedaddr()` | The operand is an indexed address like `(ix)`, `(iy)`, `(ix+#12)`, `(iy-#23)`, and so on
+`iscport()` | The operand is `(c)` (e.g. in the `out (c),a` instruction)
+`iscondition()` | The operand is one of these conditions: `z`, `nz`, `c`, `nc`, `po`, `pe`, `p`, or `m`
+`isexpr()` | The operand is an expression, for example: `1 + 2`, `#1000`, `myvalue + 23`, etc.
+
+> When you pass `'c'` as a macro argument, both the `isreg8()` and `iscondition()` parse-time functions accept it,
+> as the `'c'` token can be either an 8-bit register or a condition (carry flag is set).
+
+Here is a short sample:
+
+```
+MyRegMacro: .macro(arg)
+    .if isreg8({{arg}})
+        ld a,{{arg}}
+    .else
+        .error "Only 8-bit registers are allowed"
+    .endif
+.endm
+```
+
+`MyRegMacro` allows using only an 8-bit register as its argument. If you provide another type of
+parameter, the macro raises an error.
+
 
 ## Directives
 
