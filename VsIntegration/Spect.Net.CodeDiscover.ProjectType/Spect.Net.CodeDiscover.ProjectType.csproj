@@ -126,7 +126,6 @@
     <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
-      <TargetPath>%24%28LocalAppData%29\CustomProjectSystems1\Spect.Net.CodeDiscover\Spect.Net.CodeDiscover.props</TargetPath>
     </Content>
     <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
       <SubType>Designer</SubType>
@@ -143,39 +142,33 @@
     <Content Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="BuildSystem\Rules\general.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="BuildSystem\Rules\folder.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="BuildSystem\Rules\none.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="BuildSystem\Rules\scc.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="BuildSystem\Rules\general.browseobject.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -183,7 +176,6 @@
     <Content Include="BuildSystem\Rules\DisassAnn.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -203,7 +195,6 @@
     <Content Include="BuildSystem\Rules\Rom.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -217,7 +208,6 @@
     <Content Include="BuildSystem\Rules\Tzx.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -231,7 +221,6 @@
     <Content Include="BuildSystem\Rules\VmState.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -283,7 +272,6 @@
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -298,7 +286,6 @@
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -325,7 +312,6 @@
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -340,7 +326,6 @@
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>C:\Temp\SP</TargetPath>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -360,6 +345,7 @@
     <Content Include="BuildSystem\Rules\Vfdd.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

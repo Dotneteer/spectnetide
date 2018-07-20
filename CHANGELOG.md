@@ -1,3 +1,8 @@
+### Version 1.10.1
+
+__FIX__: Issue #73 fixed: Now, no files are installed outside of the
+extension path.
+
 ### Version 1.10.0
 
 __FEATURE__: The SpectNetIde VS Package now loads asynchronously.  
