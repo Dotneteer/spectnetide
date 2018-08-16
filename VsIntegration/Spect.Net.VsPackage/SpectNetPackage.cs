@@ -49,7 +49,7 @@ namespace Spect.Net.VsPackage
     /// whenever the solution is closed.
     /// </remarks>
     [Export(typeof(SpectNetPackage))]
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
     [ProvideMenuResource("Menus.ctmenu", 1)]

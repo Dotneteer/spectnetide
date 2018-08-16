@@ -42,6 +42,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
         /// The floppy configuration of this revision
         /// </summary>
         public FloppyConfiguration Floppy { get; set; }
+
+        /// <summary>
+        /// ULA Issue #
+        /// </summary>
+        public string UlaIssue { get; set; } = "3";
         
         /// <summary>
         /// Returns a clone of this revision
@@ -57,7 +62,8 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Models
                 Screen = Screen.Clone(),
                 Beeper = Beeper.Clone(),
                 Sound = Sound?.Clone(),
-                Floppy = Floppy?.Clone()
+                Floppy = Floppy?.Clone(),
+                UlaIssue = UlaIssue
             };
         }
     }

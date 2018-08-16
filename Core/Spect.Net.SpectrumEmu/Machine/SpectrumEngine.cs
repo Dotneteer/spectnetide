@@ -71,6 +71,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IZ80Cpu Cpu { get; }
 
         /// <summary>
+        /// Gets the ULA revision (2/3)
+        /// </summary>
+        public string UlaIssue { get; private set; }
+
+        /// <summary>
         /// The CPU tact at which the last execution cycle started
         /// </summary>
         public long LastExecutionStartTact { get; private set; }
@@ -256,9 +261,10 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Initializes a class instance using a collection of devices
         /// </summary>
-        public SpectrumEngine(DeviceInfoCollection deviceData)
+        public SpectrumEngine(DeviceInfoCollection deviceData, string ulaIssue = "3")
         {
             DeviceData = deviceData ?? throw new ArgumentNullException(nameof(deviceData));
+            UlaIssue = ulaIssue == "3" ? "3" : "2";
 
             // --- Check for Spectrum Next
             var nextInfo = GetDeviceInfo<INextFeatureSetDevice>();

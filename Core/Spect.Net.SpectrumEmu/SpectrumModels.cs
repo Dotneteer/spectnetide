@@ -66,6 +66,51 @@ namespace Spect.Net.SpectrumEmu
                             }
                         },
                         {
+                            PAL2, new SpectrumEdition
+                            {
+                                Cpu = new CpuConfigurationData
+                                {
+                                    BaseClockFrequency = 3_500_000,
+                                    ClockMultiplier = 1,
+                                    SupportsNextOperations = false
+                                },
+                                Rom = new RomConfigurationData
+                                {
+                                    RomName = "ZxSpectrum48",
+                                    NumberOfRoms = 1,
+                                    Spectrum48RomIndex = 0
+                                },
+                                Memory = new MemoryConfigurationData
+                                {
+                                    SupportsBanking = false,
+                                    ContentionType = MemoryContentionType.Ula
+                                },
+                                Screen = new ScreenConfigurationData
+                                {
+                                    InterruptTact = 11,
+                                    VerticalSyncLines = 8,
+                                    NonVisibleBorderTopLines = 8,
+                                    BorderTopLines = 48,
+                                    BorderBottomLines = 48,
+                                    NonVisibleBorderBottomLines = 8,
+                                    DisplayLines = 192,
+                                    BorderLeftTime = 24,
+                                    BorderRightTime = 24,
+                                    DisplayLineTime = 128,
+                                    HorizontalBlankingTime = 40,
+                                    NonVisibleBorderRightTime = 8,
+                                    PixelDataPrefetchTime = 2,
+                                    AttributeDataPrefetchTime = 1
+                                },
+                                Beeper = new AudioConfigurationData
+                                {
+                                    AudioSampleRate = 35000,
+                                    SamplesPerFrame = 699,
+                                    TactsPerSample = 100
+                                }
+                            }
+                        },
+                        {
                             NTSC, new SpectrumEdition
                             {
                                 Cpu = new CpuConfigurationData
@@ -525,6 +570,11 @@ namespace Spect.Net.SpectrumEmu
         public const string PAL = "PAL";
 
         /// <summary>
+        /// Key for PAL with ULA 2 revision
+        /// </summary>
+        public const string PAL2 = "PAL2";
+
+        /// <summary>
         /// Key for NTSC revisions
         /// </summary>
         public const string NTSC = "NTSC";
@@ -559,6 +609,12 @@ namespace Spect.Net.SpectrumEmu
         /// </summary>
         public static SpectrumEdition ZxSpectrum48Pal => 
             StockModels[ZX_SPECTRUM_48].Editions[PAL].Clone();
+
+        /// <summary>
+        /// Shortcut to access ZX Spectrum 48K model PAL ULA 2 Revision
+        /// </summary>
+        public static SpectrumEdition ZxSpectrum48Pal2 =>
+            StockModels[ZX_SPECTRUM_48].Editions[PAL2].Clone();
 
         /// <summary>
         /// Shortcut to access ZX Spectrum 48K model PAL Revision

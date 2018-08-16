@@ -18,6 +18,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IZ80Cpu Cpu { get; }
 
         /// <summary>
+        /// Gets the ULA revision (2/3)
+        /// </summary>
+        string UlaIssue { get; }
+
+        /// <summary>
         /// Gets the frequency of the virtual machine's clock in Hz
         /// </summary>
         int BaseClockFrequency { get; }
