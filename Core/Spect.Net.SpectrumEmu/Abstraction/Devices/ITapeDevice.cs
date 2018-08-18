@@ -9,6 +9,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     public interface ITapeDevice : ISpectrumBoundDevice
     {
         /// <summary>
+        /// This flag indicates if the tape is in load mode (EAR bit is set by the tape)
+        /// </summary>
+        bool IsInLoadMode { get; }
+
+        /// <summary>
         /// Gets the EAR bit read from the tape
         /// </summary>
         /// <param name="cpuTicks"></param>

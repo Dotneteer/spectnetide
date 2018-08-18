@@ -13,7 +13,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SpectrumAdvancedTestMachine(IScreenFrameProvider renderer = null, 
-            IScreenConfiguration screenConfig = null, ICpuConfiguration cpuConfig = null): 
+            IScreenConfiguration screenConfig = null, ICpuConfiguration cpuConfig = null, string ulaIssue = "3"): 
             base(new DeviceInfoCollection
             {
                 new CpuDeviceInfo(cpuConfig ?? SpectrumModels.ZxSpectrum48Pal.Cpu),
@@ -40,7 +40,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                 }, null),
                 new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen, 
                     renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen))
-            })
+            }, ulaIssue)
         {
         }
 

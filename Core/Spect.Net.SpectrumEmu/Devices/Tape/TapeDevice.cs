@@ -384,13 +384,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         #region Read bits during LOAD
 
         /// <summary>
+        /// This flag indicates if the tape is in load mode (EAR bit is set by the tape)
+        /// </summary>
+        public bool IsInLoadMode => _currentMode == TapeOperationMode.Load;
+
+        /// <summary>
         /// Gets the EAR bit read from the tape
         /// </summary>
         /// <param name="cpuTicks"></param>
         /// <returns></returns>
         public bool GetEarBit(long cpuTicks)
         {
-            if (_currentMode != TapeOperationMode.Load)
+            if (!IsInLoadMode)
             {
                 return true;
             }

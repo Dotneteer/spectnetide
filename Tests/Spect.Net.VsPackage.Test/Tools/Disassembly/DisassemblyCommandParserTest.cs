@@ -1,12 +1,15 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
+using System.Runtime;
 
 namespace Spect.Net.VsPackage.Test.Tools.Disassembly
 {
     [TestClass]
     public class DisassemblyCommandParserTest
     {
+        private GCLatencyMode _dummy;
+
         [TestMethod]
         public void ParserRecognizesEmptyCommand()
         {

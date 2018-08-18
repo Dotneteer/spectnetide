@@ -16,6 +16,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         private IKeyboardDevice _keyboardDevice;
         private ITapeDevice _tapeDevice;
 
+        private bool _bit3LastValue;
+        private bool _bit4LastValue;
+        private long _bit4ChangedTact;
 
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
@@ -36,6 +39,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _beeperDevice = hostVm.BeeperDevice;
             _keyboardDevice = hostVm.KeyboardDevice;
             _tapeDevice = hostVm.TapeDevice;
+            _bit3LastValue = true;
+            _bit4LastValue = true;
+            _bit4ChangedTact = 0;
         }
 
         /// <summary>
@@ -47,10 +53,17 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public override bool HandleRead(ushort addr, out byte readValue)
         {
             readValue = _keyboardDevice.GetLineStatus((byte)(addr >> 8));
-            var earBit = _tapeDevice.GetEarBit(_cpu.Tacts);
-            if (!earBit)
+            if (_tapeDevice.IsInLoadMode)
             {
-                readValue = (byte)(readValue & 0b1011_1111);
+                var earBit = _tapeDevice.GetEarBit(_cpu.Tacts);
+                if (!earBit)
+                {
+                    readValue = (byte)(readValue & 0b1011_1111);
+                }
+            }
+            else
+            {
+                // TODO: Set bit 6 according to ULA Revision 
             }
             return true;
         }

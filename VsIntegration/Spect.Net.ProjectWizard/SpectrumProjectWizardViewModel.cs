@@ -63,10 +63,10 @@ namespace Spect.Net.ProjectWizard
                 {
                     IconPath = "Images/Spectrum48.ico",
                     ModelKey = SpectrumModels.ZX_SPECTRUM_48,
-                    RevisionKey = SpectrumModels.NTSC_2_X,
+                    RevisionKey = SpectrumModels.PAL2,
                     ModelName = "ZX Spectrum 48K",
-                    ScreenMode = "NTSC",
-                    CpuMode = "Turbo x2",
+                    ScreenMode = "PAL",
+                    CpuMode = "ULA Issue 2",
                     RevisionNo = "1.0"
                 },
                 new SpectrumRepositoryItemViewModel

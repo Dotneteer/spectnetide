@@ -68,6 +68,7 @@ namespace Spect.Net.SpectrumEmu
                         {
                             PAL2, new SpectrumEdition
                             {
+                                UlaIssue = "2",
                                 Cpu = new CpuConfigurationData
                                 {
                                     BaseClockFrequency = 3_500_000,
