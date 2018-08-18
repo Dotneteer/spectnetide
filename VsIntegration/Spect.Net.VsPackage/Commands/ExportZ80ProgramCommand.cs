@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 using Spect.Net.VsPackage.Z80Programs.Export;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Commands
 {
@@ -44,7 +45,7 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Step #2: Collect export parameters from the UI
-            await SwitchToMainThreadAsync();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (DisplayExportParameterDialog(out var vm)) return;
 
             // --- Step #3: Create code segments
@@ -81,9 +82,9 @@ namespace Spect.Net.VsPackage.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override async Task FinallyOnMainThread()
+        protected override async Task FinallyOnMainThreadAsync()
         {
-            await base.FinallyOnMainThread();
+            await base.FinallyOnMainThreadAsync();
             if (!IsCancelled && Package.Options.ConfirmCodeExport && Output.ErrorCount == 0)
             {
                 VsxDialogs.Show("The code has been exported.");

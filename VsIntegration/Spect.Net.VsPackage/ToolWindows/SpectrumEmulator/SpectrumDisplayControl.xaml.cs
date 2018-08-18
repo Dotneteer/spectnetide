@@ -8,6 +8,8 @@ using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 using Spect.Net.Wpf.Providers;
 
+#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
+
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
     /// <summary>
@@ -101,7 +103,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private void OnVmStateChanged(object sender, VmStateChangedEventArgs args)
         {
             Dispatcher.Invoke(() =>
-                {
+            {
                     switch (args.NewState)
                     {
                         case VmState.Stopped:
@@ -215,3 +217,5 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
     }
 }
+
+#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs

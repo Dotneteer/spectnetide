@@ -130,7 +130,9 @@ namespace Spect.Net.VsPackage.ToolWindows
 
             if (!(Package.GetGlobalService(typeof(IVsWebBrowsingService)) is IVsWebBrowsingService service)) return;
             var url = $"{SpectNetPackage.COMMANDS_BASE_URL}/{HelpUrl}";
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
             service.Navigate(url, (uint)__VSWBNAVIGATEFLAGS.VSNWB_AddToMRU, out var ppFrame);
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
         }
     }
 }

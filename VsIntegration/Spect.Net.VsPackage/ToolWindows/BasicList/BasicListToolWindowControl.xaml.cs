@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.VisualStudio.Shell;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 
@@ -50,7 +51,9 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
 
         private void RefreshBasicList()
         {
+#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
             Dispatcher.InvokeAsync(() => Vm.RefreshBasicList());
+#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
         }
     }
 }

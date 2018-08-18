@@ -40,8 +40,10 @@ namespace Spect.Net.VsPackage.Vsx
         {
             if (ToolWindowType == null) return;
             var window = Package.GetToolWindow(ToolWindowType);
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
         }
     }
 }

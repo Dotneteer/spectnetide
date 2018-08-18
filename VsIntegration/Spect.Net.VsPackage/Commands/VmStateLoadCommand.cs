@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
+using Task = System.Threading.Tasks.Task;
+
 // ReSharper disable SuspiciousTypeConversion.Global
 
 namespace Spect.Net.VsPackage.Commands
@@ -21,12 +23,13 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override async Task ExecuteAsync()
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             VmStateLoaded = false;
             GetItem(out var hierarchy, out var itemId);
             if (!(hierarchy is IVsProject project)) return;
             project.GetMkDocument(itemId, out var itemFullPath);
 
-            await SwitchToMainThreadAsync();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var vm = Package.MachineViewModel;
 
             // --- Prepare the machine to be in the appropriate mode
@@ -53,7 +56,7 @@ namespace Spect.Net.VsPackage.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override Task FinallyOnMainThread()
+        protected override Task FinallyOnMainThreadAsync()
         {
             if (VmStateLoaded && Package.Options.ConfirmVmStateLoad)
             {

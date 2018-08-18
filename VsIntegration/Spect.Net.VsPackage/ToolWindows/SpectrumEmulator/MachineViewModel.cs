@@ -263,7 +263,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Resets the Spectrum virtual machine
         /// </summary>
-        public async Task Reset()
+        public async Task ResetAsync()
         {
             await Stop();
             Start();

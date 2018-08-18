@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.VisualStudio.Shell;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Machine;
@@ -10,6 +10,7 @@ using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
 using Spect.Net.VsPackage.Z80Programs;
 using Spect.Net.VsPackage.Z80Programs.Commands;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Commands
 {
@@ -118,7 +119,7 @@ namespace Spect.Net.VsPackage.Commands
                 }
             }
 
-            await SwitchToMainThreadAsync();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var vm = Package.MachineViewModel;
             var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
             Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
@@ -136,7 +137,7 @@ namespace Spect.Net.VsPackage.Commands
             }
             else
             {
-                var stopped = await Package.CodeManager.StopSpectrumVm(options.ConfirmMachineRestart);
+                var stopped = await Package.CodeManager.StopSpectrumVmAsync(options.ConfirmMachineRestart);
                 if (!stopped) return;
             }
 
@@ -212,9 +213,9 @@ namespace Spect.Net.VsPackage.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override async Task FinallyOnMainThread()
+        protected override async Task FinallyOnMainThreadAsync()
         {
-            await base.FinallyOnMainThread();
+            await base.FinallyOnMainThreadAsync();
             if (IsInInjectMode)
             {
                 if (Package.Options.ConfirmInjectCode && CodeInjected)

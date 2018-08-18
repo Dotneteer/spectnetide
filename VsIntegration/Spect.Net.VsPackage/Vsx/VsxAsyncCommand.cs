@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 using Task = System.Threading.Tasks.Task;
@@ -82,22 +81,6 @@ namespace Spect.Net.VsPackage.Vsx
         }
 
         /// <summary>
-        /// Switches back to the main thread of Visual Studio
-        /// </summary>
-        protected async Task SwitchToMainThreadAsync()
-        {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-        }
-
-        /// <summary>
-        /// Switches to the background thread
-        /// </summary>
-        protected async Task SwitchToBackgroundThreadAsync()
-        {
-            await TaskScheduler.Default;
-        }
-
-        /// <summary>
         /// Override this method to execute the command
         /// </summary>
         protected override void OnExecute()
@@ -115,7 +98,7 @@ namespace Spect.Net.VsPackage.Vsx
                 {
                     await Task.Yield(); // get off the caller's callstack.
                     await ExecuteAsync();
-                    await SwitchToMainThreadAsync();
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     CompleteOnMainThread();
                 }
                 catch (OperationCanceledException)
@@ -140,7 +123,7 @@ namespace Spect.Net.VsPackage.Vsx
                 finally
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    await FinallyOnMainThread();
+                    await FinallyOnMainThreadAsync();
                     if (UpdateUiWhenComplete)
                     {
                         SpectNetPackage.UpdateCommandUi();
@@ -189,6 +172,6 @@ namespace Spect.Net.VsPackage.Vsx
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected virtual Task FinallyOnMainThread() => Task.FromResult(0);
+        protected virtual Task FinallyOnMainThreadAsync() => Task.FromResult(0);
     }
 }

@@ -5,6 +5,8 @@ using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+
 namespace Spect.Net.VsPackage.ProjectStructure
 {
     /// <summary>
@@ -164,3 +166,5 @@ namespace Spect.Net.VsPackage.ProjectStructure
         #endregion
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

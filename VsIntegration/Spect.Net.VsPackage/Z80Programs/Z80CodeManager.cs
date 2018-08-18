@@ -11,6 +11,7 @@ using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 // ReSharper disable SuspiciousTypeConversion.Global
 
 namespace Spect.Net.VsPackage.Z80Programs
@@ -325,7 +326,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// Stops the Spectrum VM, displays confirmation, if required
         /// </summary>
         /// <returns>Tru, if start confirmed; otherwise, false</returns>
-        public async Task<bool> StopSpectrumVm(bool needConfirm)
+        public async Task<bool> StopSpectrumVmAsync(bool needConfirm)
         {
             var vm = Package.MachineViewModel;
             var machineState = vm.MachineState;
@@ -350,7 +351,7 @@ namespace Spect.Net.VsPackage.Z80Programs
 
                 const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
                 var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
-                pane.WriteLine(MESSAGE);
+                await pane.WriteLineAsync(MESSAGE);
                 VsxDialogs.Show(MESSAGE, "Unexpected issue",
                     MessageBoxButton.OK, VsxMessageBoxIcon.Error);
                 return false;
@@ -368,3 +369,5 @@ namespace Spect.Net.VsPackage.Z80Programs
         }
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

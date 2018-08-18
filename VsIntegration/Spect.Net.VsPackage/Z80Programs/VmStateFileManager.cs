@@ -42,7 +42,9 @@ namespace Spect.Net.VsPackage.Z80Programs
         protected override string GetStateFolder()
         {
             var solution = SpectNetPackage.Default.CodeDiscoverySolution.Root;
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
             var folder = Path.GetDirectoryName(solution.FileName);
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
             if (folder == null)
             {
                 throw new InvalidOperationException("Project root folder seems to be null.");

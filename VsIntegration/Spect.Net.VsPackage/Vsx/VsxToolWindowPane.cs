@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Wpf.Mvvm;
 
+
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace Spect.Net.VsPackage.Vsx
@@ -155,3 +157,5 @@ namespace Spect.Net.VsPackage.Vsx
         }
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

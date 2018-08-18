@@ -38,7 +38,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         {
             if (TestTree.SelectedItem is TestItemBase selected)
             {
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
                 Package.ApplicationObject.Documents.Open(selected.FileName);
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
                 Package.ApplicationObject.ExecuteCommand($"Edit.GoTo {selected.LineNo + 1}");
             }
             e.Handled = true;

@@ -24,9 +24,9 @@ namespace Spect.Net.VsPackage.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override async Task FinallyOnMainThread()
+        protected override async Task FinallyOnMainThreadAsync()
         {
-            await base.FinallyOnMainThread();
+            await base.FinallyOnMainThreadAsync();
             if (Package.Options.ConfirmCodeCompile && Output.ErrorCount == 0)
             {
                 VsxDialogs.Show("The code has been successfully compiled.");

@@ -7,6 +7,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.Vsx;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+
 namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
     /// <summary>
@@ -87,3 +89,5 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         }
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

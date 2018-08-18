@@ -43,7 +43,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Floppy
             }
             try
             {
-                await InsertFloppy(floppyDevice, ItemPath);
+                await InsertFloppyAsync(floppyDevice, ItemPath);
             }
             catch (Exception)
             {
@@ -64,6 +64,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Floppy
         /// <param name="device">Floppy device</param>
         /// <param name="vfddPath">Path of the floppy file</param>
         /// <returns></returns>
-        protected abstract Task InsertFloppy(FloppyDevice device, string vfddPath);
+        protected abstract Task InsertFloppyAsync(FloppyDevice device, string vfddPath);
     }
 }

@@ -65,7 +65,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
             e.Handled = true;
             _isDown = true;
-            await SetExtendedMode();
+            await SetExtendedModeAsync();
             await WaitKeyReleased(keycontrol.Code);
         }
 
@@ -78,7 +78,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
             e.Handled = true;
             _isDown = true;
-            await SetExtendedMode();
+            await SetExtendedModeAsync();
             await WaitKeyReleased(keycontrol.Code, SpectrumKeyCode.SShift);
         }
 
@@ -91,7 +91,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
             e.Handled = true;
             _isDown = true;
-            await SetExtendedMode();
+            await SetExtendedModeAsync();
             await WaitKeyReleased(keycontrol.Code, e.ChangedButton == MouseButton.Left
                 ? (SpectrumKeyCode?)null
                 : SpectrumKeyCode.CShift);
@@ -106,11 +106,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
             e.Handled = true;
             _isDown = true;
-            var set = await SetGraphicsMode();
+            var set = await SetGraphicsModeAsync();
             await WaitKeyReleased(keycontrol.Code);
             if (set)
             {
-                await ReleaseGraphicsMode();
+                await ReleaseGraphicsModeAsync();
             }
         }
 
@@ -123,7 +123,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 
             e.Handled = true;
             _isDown = true;
-            await ReleaseGraphicsMode();
+            await ReleaseGraphicsModeAsync();
             await WaitKeyReleased(keycontrol.Code, SpectrumKeyCode.SShift);
         }
 
@@ -177,7 +177,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// <summary>
         /// Sets the keyboard in Graphics mode
         /// </summary>
-        private async Task<bool> SetGraphicsMode()
+        private async Task<bool> SetGraphicsModeAsync()
         {
             if (!GetModeValue(out var modeVal)) return false;
             if ((modeVal & 0x02) != 0) return false;
@@ -190,7 +190,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// <summary>
         /// Remove the keyboard from Graphics mode
         /// </summary>
-        private async Task<bool> ReleaseGraphicsMode()
+        private async Task<bool> ReleaseGraphicsModeAsync()
         {
             await Task.Delay(RefreshPeriod);
             if (!GetModeValue(out var modeVal)) return false;
@@ -204,7 +204,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// <summary>
         /// Sets the keyboard in Exteded mode
         /// </summary>
-        private async Task SetExtendedMode()
+        private async Task SetExtendedModeAsync()
         {
             if (!GetModeValue(out var modeVal)) return;
             if ((modeVal & 0x01) != 0) return;

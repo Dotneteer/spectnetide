@@ -176,7 +176,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <param name="vm">Test explorer view model</param>
         /// <param name="node">Root node of the subtree to run the tests for</param>
         /// <param name="token">Token to stop tests</param>
-        public Task RunTestsFromNode(TestExplorerToolWindowViewModel vm, TestItemBase node, CancellationToken token)
+        public Task RunTestsFromNodeAsync(TestExplorerToolWindowViewModel vm, TestItemBase node, CancellationToken token)
         {
             TestRootItem rootToRun = null;
             switch (node)
@@ -241,7 +241,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             }
 
             return rootToRun != null 
-                ? ExecuteTestTree(vm, rootToRun, token) 
+                ? ExecuteTestTreeAsync(vm, rootToRun, token) 
                 : Task.FromResult(0);
         }
 
@@ -251,7 +251,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <param name="vm">Test explorer view model</param>
         /// <param name="rootToRun">Root node instance</param>
         /// <param name="token">Token to cancel tests</param>
-        private async Task ExecuteTestTree(TestExplorerToolWindowViewModel vm, TestRootItem rootToRun, CancellationToken token)
+        private async Task ExecuteTestTreeAsync(TestExplorerToolWindowViewModel vm, TestRootItem rootToRun, CancellationToken token)
         {
             if (token.IsCancellationRequested) return;
 
@@ -344,7 +344,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     if (token.IsCancellationRequested) break;
                     setToRun.State = TestState.Running;
                     SetTestFileState(fileToRun);
-                    await ExecuteSetTests(vm, setToRun, token);
+                    await ExecuteSetTestsAsync(vm, setToRun, token);
                     SetTestFileState(fileToRun);
                     vm.UpdateCounters();
                 }
@@ -376,7 +376,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <param name="vm">Test explorer view model</param>
         /// <param name="setToRun">Test set to run</param>
         /// <param name="token">Token to cancel tests</param>
-        private async Task ExecuteSetTests(TestExplorerToolWindowViewModel vm, TestSetItem setToRun, CancellationToken token)
+        private async Task ExecuteSetTestsAsync(TestExplorerToolWindowViewModel vm, TestSetItem setToRun, CancellationToken token)
         {
             if (token.IsCancellationRequested) return;
 
@@ -409,7 +409,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     if (token.IsCancellationRequested) return;
                     testToRun.State = TestState.Running;
                     SetTestSetState(setToRun);
-                    await ExecuteTests(vm, testToRun, token);
+                    await ExecuteTestsAsync(vm, testToRun, token);
                     SetTestSetState(setToRun);
                     vm.UpdateCounters();
                 }
@@ -444,7 +444,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <param name="vm">Test explorer view model</param>
         /// <param name="testToRun">The test to run</param>
         /// <param name="token">Token to cancel tests</param>
-        private async Task ExecuteTests(TestExplorerToolWindowViewModel vm, TestItem testToRun, CancellationToken token)
+        private async Task ExecuteTestsAsync(TestExplorerToolWindowViewModel vm, TestItem testToRun, CancellationToken token)
         {
             if (token.IsCancellationRequested) return;
 
@@ -464,7 +464,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 if (plan.Setup != null)
                 {
                     cpu?.SetIffValues(!testToRun.Plan.DisableInterrupt);
-                    var success = await InvokeCode(testToRun, plan.Setup, plan.TimeoutValue, token, watch);
+                    var success = await InvokeCodeAsync(testToRun, plan.Setup, plan.TimeoutValue, token, watch);
                     ReportTimeDetail("Setup:", testToRun, watch);
                     if (!success)
                     {
@@ -484,7 +484,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     cpu?.SetIffValues(!testToRun.Plan.DisableInterrupt);
 
                     // --- Execute the test code
-                    var success = await InvokeCode(testToRun, testToRun.Plan.Act, timeout, token, watch);
+                    var success = await InvokeCodeAsync(testToRun, testToRun.Plan.Act, timeout, token, watch);
                     ReportTimeDetail("Act:", testToRun, watch);
 
                     if (success)
@@ -512,7 +512,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                         if (token.IsCancellationRequested) return;
                         caseToRun.State = TestState.Running;
                         testToRun.Plan.CurrentTestCaseIndex++;
-                        await ExecuteCase(vm, testToRun, caseToRun, token);
+                        await ExecuteCaseAsync(vm, testToRun, caseToRun, token);
                         vm.UpdateCounters();
                     }
                 }
@@ -521,7 +521,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 {
                     // --- Execute cleanup code
                     cpu?.SetIffValues(!testToRun.Plan.DisableInterrupt);
-                    var success = await InvokeCode(testToRun, plan.Cleanup, plan.TimeoutValue, token, watch);
+                    var success = await InvokeCodeAsync(testToRun, plan.Cleanup, plan.TimeoutValue, token, watch);
                     ReportTimeDetail("Cleanup:", testToRun, watch);
                     if (!success)
                     {
@@ -561,7 +561,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <param name="testToRun">Test that hosts the test case</param>
         /// <param name="caseToRun">Test case to run</param>
         /// <param name="token">Token to cancel tests</param>
-        private async Task ExecuteCase(TestExplorerToolWindowViewModel vm, TestItem testToRun, TestCaseItem caseToRun, CancellationToken token)
+        private async Task ExecuteCaseAsync(TestExplorerToolWindowViewModel vm, TestItem testToRun, TestCaseItem caseToRun, CancellationToken token)
         {
             if (token.IsCancellationRequested) return;
 
@@ -579,7 +579,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 ReportTimeDetail("Arrange:", caseToRun, watch);
 
                 // --- Execute the test code
-                var success = await InvokeCode(caseToRun, testToRun.Plan.Act, timeout, token, watch);
+                var success = await InvokeCodeAsync(caseToRun, testToRun.Plan.Act, timeout, token, watch);
                 ReportTimeDetail("Act:", caseToRun, watch);
 
                 if (success)
@@ -801,7 +801,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
         /// <param name="token">Token to cancel test run</param>
         /// <param name="watch">Optional stopwatch for diagnostics</param>
         /// <returns>True, if code completed; otherwise, false</returns>
-        private async Task<bool> InvokeCode(TestItemBase testItem, InvokePlanBase invokePlan, int timeout, CancellationToken token,
+        private async Task<bool> InvokeCodeAsync(TestItemBase testItem, InvokePlanBase invokePlan, int timeout, CancellationToken token,
             Stopwatch watch = null)
         {
             if (invokePlan == null) return true;

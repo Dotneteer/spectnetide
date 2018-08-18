@@ -186,7 +186,9 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             if (testFiles.TestFilePlans.Count == 0) return;
 
             // --- Compilation successfull, create tree view items
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
             var projectFolder = Path.GetDirectoryName(Package.CodeDiscoverySolution.CurrentProject.Root.FileName);
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
             var testTreeItems = new ObservableCollection<TestItemBase>();
             TestRoot = new TestRootItem(this, null)
             {

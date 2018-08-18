@@ -34,7 +34,7 @@ namespace Spect.Net.VsPackage.Commands
         protected override async Task ExecuteAsync()
         {
             // --- Collect export parameters from the UI
-            await SwitchToMainThreadAsync();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (DisplayCreateVfddDialog(out var vm)) return;
 
             // --- Create a temporary file

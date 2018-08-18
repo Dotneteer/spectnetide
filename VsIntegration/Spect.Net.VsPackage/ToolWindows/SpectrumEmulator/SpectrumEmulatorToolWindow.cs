@@ -129,7 +129,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
             protected override async Task ExecuteAsync()
-                => await Package.MachineViewModel.Reset();
+                => await Package.MachineViewModel.ResetAsync();
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = GetVmState(Package) == VmState.Running;
@@ -264,7 +264,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     if (vm.MachineState != VmState.Stopped)
                     {
                         const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
-                        pane.WriteLine(MESSAGE);
+                        await pane.WriteLineAsync(MESSAGE);
                         VsxDialogs.Show(MESSAGE, "Unexpected issue",
                             MessageBoxButton.OK, VsxMessageBoxIcon.Error);
                         return;
@@ -308,7 +308,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             /// </summary>
             protected override async Task ExecuteAsync()
             {
-                await SwitchToMainThreadAsync();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (DisplayExportParameterDialog(out var vm)) return;
 
                 // --- Save the file into the vmstate folder

@@ -24,7 +24,7 @@ namespace Spect.Net.VsPackage.Commands
         /// We conclude the command with sending the message to
         /// notify any views that use the annotation file
         /// </summary>
-        protected override Task FinallyOnMainThread()
+        protected override Task FinallyOnMainThreadAsync()
         {
             Package.CodeManager.RaiseAnnotationFileChanged();
             return Task.FromResult(0);

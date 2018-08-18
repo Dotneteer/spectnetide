@@ -61,7 +61,9 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </remarks>
         protected void DispatchOnUiThread(Action action, DispatcherPriority priority = DispatcherPriority.Send)
         {
+#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
             Dispatcher.InvokeAsync(() =>
+#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
             {
                 try
                 {

@@ -37,7 +37,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="device">Floppy device</param>
         /// <param name="vfddPath">Path of the floppy file</param>
         /// <returns></returns>
-        protected override Task InsertFloppy(FloppyDevice device, string vfddPath)
+        protected override Task InsertFloppyAsync(FloppyDevice device, string vfddPath)
             => device.InsertDriveB(vfddPath);
     }
 }

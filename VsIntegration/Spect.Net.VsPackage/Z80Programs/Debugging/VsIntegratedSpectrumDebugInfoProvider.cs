@@ -9,6 +9,8 @@ using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
 using Spect.Net.VsPackage.ProjectStructure;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+
 namespace Spect.Net.VsPackage.Z80Programs.Debugging
 {
     /// <summary>
@@ -244,3 +246,5 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         }
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

@@ -38,6 +38,9 @@ using Spect.Net.Wpf.Providers;
 using OutputWindow = Spect.Net.VsPackage.Vsx.Output.OutputWindow;
 using Task = System.Threading.Tasks.Task;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+#pragma warning disable VSTHRD100 // Avoid async void methods
+
 namespace Spect.Net.VsPackage
 {
     /// <summary>
@@ -53,7 +56,9 @@ namespace Spect.Net.VsPackage
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+#pragma warning disable VSSDK004 // Use BackgroundLoad flag in ProvideAutoLoad attribute for asynchronous auto load.
     [ProvideAutoLoad(UIContextGuids.NoSolution)]
+#pragma warning restore VSSDK004 // Use BackgroundLoad flag in ProvideAutoLoad attribute for asynchronous auto load.
 
     // --- Tool windows
     [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
@@ -192,7 +197,7 @@ namespace Spect.Net.VsPackage
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override Task OnInitialize()
+        protected override Task OnInitializeAsync()
         {
             // --- Prepare project system extension files
             CheckCpsFiles();
@@ -288,9 +293,9 @@ namespace Spect.Net.VsPackage
             File.WriteAllText(versionFile, CURRENT_CPS_VERSION);
         }
 
-        /// <summary>
-        /// Initializes the members used by a solution
-        /// </summary>
+                                 /// <summary>
+                                 /// Initializes the members used by a solution
+                                 /// </summary>
         private async void OnSolutionOpened()
         {
             try
@@ -357,7 +362,7 @@ namespace Spect.Net.VsPackage
             var machine = SpectrumMachine.CreateMachine(
                 CodeDiscoverySolution.CurrentProject.ModelName,
                 CodeDiscoverySolution.CurrentProject.EditionName);
-            machine.ExecuteOnMainThread = ExecuteOnMainThread;
+            machine.ExecuteOnMainThread = ExecuteOnMainThreadAsync;
 
             // --- Set up diagnostics
             machine.VmStoppedWithException += MachineOnVmStoppedWithException;
@@ -429,7 +434,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        private static async Task ExecuteOnMainThread(Action action)
+        private static async Task ExecuteOnMainThreadAsync(Action action)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             action();
@@ -685,3 +690,6 @@ namespace Spect.Net.VsPackage
         #endregion Helpers
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
+#pragma warning restore VSTHRD100 // Avoid async void methods

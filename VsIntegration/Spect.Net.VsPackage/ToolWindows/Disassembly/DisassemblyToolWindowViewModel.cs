@@ -816,7 +816,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private void TapeDeviceOnLeftLoadMode(object sender, EventArgs eventArgs)
         {
+#pragma warning disable VSTHRD110 // Observe result of async calls
             Task.Run(() =>
+#pragma warning restore VSTHRD110 // Observe result of async calls
             {
                 // --- Disassemble in the background
                 if (!Disassemble(out var disItems, out var lineIndexes)) return;

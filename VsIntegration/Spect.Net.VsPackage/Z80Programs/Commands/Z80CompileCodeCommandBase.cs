@@ -194,7 +194,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override Task FinallyOnMainThread()
+        protected override Task FinallyOnMainThreadAsync()
         {
             Package.CodeManager.CompilatioInProgress = false;
             return Task.FromResult(0);

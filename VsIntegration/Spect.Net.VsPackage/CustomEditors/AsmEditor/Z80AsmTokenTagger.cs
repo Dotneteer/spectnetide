@@ -12,6 +12,7 @@ using Spect.Net.VsPackage.ProjectStructure;
 
 #pragma warning disable 649
 #pragma warning disable 67
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
 namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 {
@@ -243,3 +244,4 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 
 #pragma warning restore 67
 #pragma warning restore 649
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

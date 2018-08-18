@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using Microsoft.VisualStudio.Shell.Interop;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+
 namespace Spect.Net.VsPackage.Vsx.Output
 {
     /// <summary>
@@ -158,3 +160,5 @@ namespace Spect.Net.VsPackage.Vsx.Output
         #endregion
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

@@ -77,7 +77,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         {
             GetItem(out var hierarchy, out var itemId);
             if (!(hierarchy is IVsProject project)) return false;
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
             project.GetMkDocument(itemId, out var itemFullPath);
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
 
             var testPlan = Package.TestManager.CompileFile(itemFullPath);
             Output.Add(testPlan);
@@ -97,7 +99,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override Task FinallyOnMainThread()
+        protected override Task FinallyOnMainThreadAsync()
         {
             Package.TestManager.CompilatioInProgress = false;
             if (Package.Options.ConfirmTestCompile && Output.ErrorCount == 0)

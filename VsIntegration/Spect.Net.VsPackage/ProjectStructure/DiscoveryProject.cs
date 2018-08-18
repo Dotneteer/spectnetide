@@ -15,6 +15,8 @@ using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+
 namespace Spect.Net.VsPackage.ProjectStructure
 {
     /// <summary>
@@ -666,3 +668,5 @@ namespace Spect.Net.VsPackage.ProjectStructure
         #endregion
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

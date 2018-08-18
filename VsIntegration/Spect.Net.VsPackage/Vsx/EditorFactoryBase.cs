@@ -8,6 +8,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+
 namespace Spect.Net.VsPackage.Vsx
 {
     /// <summary>
@@ -207,3 +209,5 @@ namespace Spect.Net.VsPackage.Vsx
         }
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

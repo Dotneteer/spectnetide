@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using OutputWindow = Spect.Net.VsPackage.Vsx.Output.OutputWindow;
 using Task = System.Threading.Tasks.Task;
 
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+
 namespace Spect.Net.VsPackage.Vsx
 {
     /// <summary>
@@ -57,7 +59,7 @@ namespace Spect.Net.VsPackage.Vsx
                 {
                     // Get an instance of the currently running Visual Studio IDE
                     var dte = (DTE)GetService(typeof(DTE));
-                    // ReSharper disable once SuspiciousTypeConversion.Global
+                                 // ReSharper disable once SuspiciousTypeConversion.Global
                     _applicationObject = dte as DTE2;
                 }
                 return _applicationObject;
@@ -109,13 +111,13 @@ namespace Spect.Net.VsPackage.Vsx
             Console.SetOut(OutputWindow.General);
 
             // --- No it is time to allow the package-specific initialization
-            await OnInitialize();
+            await OnInitializeAsync();
         }
 
         /// <summary>
         /// Override this method to initialize the package.
         /// </summary>
-        protected virtual Task OnInitialize() => Task.FromResult(0);
+        protected virtual Task OnInitializeAsync() => Task.FromResult(0);
 
         /// <summary>
         /// Gets the specified tool window with the given instance id.
@@ -226,3 +228,5 @@ namespace Spect.Net.VsPackage.Vsx
         }
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

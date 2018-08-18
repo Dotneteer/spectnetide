@@ -102,7 +102,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// Override this method to define the action to execute on the main
             /// thread of Visual Studio -- finally
             /// </summary>
-            protected override async Task FinallyOnMainThread()
+            protected override async Task FinallyOnMainThreadAsync()
             {
                 await Package.MachineViewModel.Stop();
                 SpectNetPackage.UpdateCommandUi();
@@ -143,12 +143,12 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 //await SwitchToBackgroundThreadAsync();
                 try
                 {
-                    var stopped = await Package.CodeManager.StopSpectrumVm(
+                    var stopped = await Package.CodeManager.StopSpectrumVmAsync(
                         Package.Options.ConfirmTestMachineRestart);
                     if (!stopped) return;
 
                     Package.TestManager.SetSubTreeState(vm.TestRoot, TestState.NotRun);
-                    await Package.TestManager.RunTestsFromNode(vm, GetTestRootToRun(), vm.GetNewCancellationToken());
+                    await Package.TestManager.RunTestsFromNodeAsync(vm, GetTestRootToRun(), vm.GetNewCancellationToken());
                 }
                 finally
                 {
@@ -159,7 +159,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
             /// <summary>
             /// Stop the virtual machine and update the UI
             /// </summary>
-            protected override async Task FinallyOnMainThread()
+            protected override async Task FinallyOnMainThreadAsync()
             {
                 await Package.MachineViewModel.Stop();
                 SpectNetPackage.UpdateCommandUi();
