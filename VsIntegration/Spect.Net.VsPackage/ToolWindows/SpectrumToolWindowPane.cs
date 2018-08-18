@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Controls;
-using GalaSoft.MvvmLight;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {

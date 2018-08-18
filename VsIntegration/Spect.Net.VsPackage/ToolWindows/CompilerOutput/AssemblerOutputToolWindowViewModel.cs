@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using GalaSoft.MvvmLight.Command;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Z80Programs;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.CompilerOutput
 {

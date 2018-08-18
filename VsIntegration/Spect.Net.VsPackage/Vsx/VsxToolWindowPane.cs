@@ -2,9 +2,9 @@
 using System.ComponentModel.Design;
 using System.Reflection;
 using System.Windows.Controls;
-using GalaSoft.MvvmLight;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.Wpf.Mvvm;
 
 // ReSharper disable VirtualMemberCallInConstructor
 

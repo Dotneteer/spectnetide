@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+﻿using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.Vsx
 {

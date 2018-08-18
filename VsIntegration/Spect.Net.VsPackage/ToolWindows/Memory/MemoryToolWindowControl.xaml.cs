@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.VsPackage.Vsx;
 

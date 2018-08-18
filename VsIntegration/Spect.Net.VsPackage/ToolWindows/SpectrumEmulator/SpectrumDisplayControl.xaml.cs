@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using GalaSoft.MvvmLight.Messaging;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;

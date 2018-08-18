@@ -39,18 +39,6 @@
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MvvmLightLibs.5.4.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MvvmLightLibs.5.4.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MvvmLightLibs.5.4.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -92,9 +80,23 @@
     </Compile>
     <Compile Include="Behaviors\ViewModelStateGroupInfo.cs" />
     <Compile Include="Behaviors\VsmChangerBehavior.cs" />
+    <Compile Include="Mvvm\DesignerLibrary.cs" />
     <Compile Include="Mvvm\EnhancedViewModelBase.cs" />
+    <Compile Include="Mvvm\ICleanup.cs" />
+    <Compile Include="Mvvm\IExecuteWithObject.cs" />
+    <Compile Include="Mvvm\IExecuteWithObjectAndResult.cs" />
+    <Compile Include="Mvvm\IMessenger.cs" />
+    <Compile Include="Mvvm\MessageBase.cs" />
+    <Compile Include="Mvvm\Messenger.cs" />
+    <Compile Include="Mvvm\ObservableObject.cs" />
+    <Compile Include="Mvvm\PropertyChangedMessage.cs" />
+    <Compile Include="Mvvm\PropertyChangedMessageBase.cs" />
+    <Compile Include="Mvvm\RelayCommand.cs" />
     <Compile Include="Mvvm\SpectrumDisplayMode.cs" />
+    <Compile Include="Mvvm\ViewModelBase.cs" />
     <Compile Include="Mvvm\ViewModelBaseWithDesignTimeFix.cs" />
+    <Compile Include="Mvvm\WeakAction.cs" />
+    <Compile Include="Mvvm\WeakFunc.cs" />
     <Compile Include="Providers\DelegatingScreenFrameProvider.cs" />
     <Compile Include="Providers\KeyboardProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -105,7 +107,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Key.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">

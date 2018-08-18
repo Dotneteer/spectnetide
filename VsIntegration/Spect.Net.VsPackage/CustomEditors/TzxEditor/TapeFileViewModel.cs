@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tap;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.ToolWindows.BasicList;

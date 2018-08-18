@@ -34,7 +34,7 @@ namespace Spect.Net.VsPackage.Test.Z80Programs
         {
             // --- Arrange
             var vm = new ExportZ80ProgramViewModel();
-            
+
             // --- Act
             vm.Name = "MyCode";
             vm.Filename = "MyCode.tzx";

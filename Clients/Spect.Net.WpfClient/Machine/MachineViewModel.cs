@@ -1,5 +1,4 @@
 ﻿using System;
-using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
