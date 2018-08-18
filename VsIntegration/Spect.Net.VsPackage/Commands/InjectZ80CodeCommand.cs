@@ -143,7 +143,7 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #6: Start the virtual machine and run it to the injection point
             if (vm.MachineState == VmState.Stopped || vm.MachineState == VmState.None)
             {
-                pane.WriteLine("Starting the virtual machine in code injection mode.");
+                await pane.WriteLineAsync("Starting the virtual machine in code injection mode.");
 
                 // --- Use specific startup for each model.
                 var started = true;
@@ -194,7 +194,7 @@ namespace Spect.Net.VsPackage.Commands
 
             // --- Step #7: Inject the code into the memory, and force
             // --- new disassembly
-            pane.WriteLine("Injecting code into the Spectrum virtual machine.");
+            await pane.WriteLineAsync("Injecting code into the Spectrum virtual machine.");
             Package.CodeManager.InjectCodeIntoVm(Output);
             CodeInjected = true;
 
@@ -203,7 +203,7 @@ namespace Spect.Net.VsPackage.Commands
             if (continuationPoint.HasValue)
             {
                 vm.SpectrumVm.Cpu.Registers.PC = continuationPoint.Value;
-                pane.WriteLine($"Resuming code execution at address {vm.SpectrumVm.Cpu.Registers.PC:X4}.");
+                await pane.WriteLineAsync($"Resuming code execution at address {vm.SpectrumVm.Cpu.Registers.PC:X4}.");
             }
             ResumeVm();
         }
@@ -212,9 +212,9 @@ namespace Spect.Net.VsPackage.Commands
         /// Override this method to define the action to execute on the main
         /// thread of Visual Studio -- finally
         /// </summary>
-        protected override Task FinallyOnMainThread()
+        protected override async Task FinallyOnMainThread()
         {
-            base.FinallyOnMainThread();
+            await base.FinallyOnMainThread();
             if (IsInInjectMode)
             {
                 if (Package.Options.ConfirmInjectCode && CodeInjected)
@@ -229,7 +229,6 @@ namespace Spect.Net.VsPackage.Commands
                     VsxDialogs.Show("The code has been started.");
                 }
             }
-            return Task.FromResult(0);
         }
     }
 }

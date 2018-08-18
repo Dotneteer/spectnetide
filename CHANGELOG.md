@@ -1,3 +1,7 @@
+### Version 1.10.2
+__FIX__: Issue #75 fixed: The virtual machine now handles Bit 6 of 
+port `$FE` properly for ULA Issue 2/3 configurations.
+
 ### Version 1.10.1
 
 __FIX__: Issue #73 fixed: Now, no files are installed outside of the

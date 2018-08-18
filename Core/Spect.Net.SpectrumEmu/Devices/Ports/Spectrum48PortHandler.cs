@@ -1,4 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
@@ -15,10 +16,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         private IBeeperDevice _beeperDevice;
         private IKeyboardDevice _keyboardDevice;
         private ITapeDevice _tapeDevice;
+        private bool _isUla3;
 
         private bool _bit3LastValue;
         private bool _bit4LastValue;
-        private long _bit4ChangedTact;
+        private long _bit4ChangedFrom0;
+        private long _bit4ChangedFrom1;
 
         /// <summary>
         /// Initializes a new port handler with the specified attributes.
@@ -34,6 +37,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
+            _isUla3 = hostVm.UlaIssue == "3";
             _cpu = hostVm.Cpu;
             _screenDevice = hostVm.ScreenDevice;
             _beeperDevice = hostVm.BeeperDevice;
@@ -41,7 +45,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _tapeDevice = hostVm.TapeDevice;
             _bit3LastValue = true;
             _bit4LastValue = true;
-            _bit4ChangedTact = 0;
+            _bit4ChangedFrom0 = 0;
+            _bit4ChangedFrom1 = 0;
         }
 
         /// <summary>
@@ -63,7 +68,22 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             }
             else
             {
-                // TODO: Set bit 6 according to ULA Revision 
+                var bit4Sensed = _bit4LastValue;
+                if (!bit4Sensed)
+                {
+                    var chargeTime = _bit4ChangedFrom1 - _bit4ChangedFrom0;
+                    if (chargeTime > 0)
+                    {
+                        var delay = Math.Min(chargeTime * 4, 2800);
+                        bit4Sensed = _cpu.Tacts - _bit4ChangedFrom1 < delay;
+                    }
+                }
+                var bit6Value = (_bit3LastValue || bit4Sensed) ? 0b0100_0000 : 0x00;
+                if (_bit3LastValue && !bit4Sensed && _isUla3)
+                {
+                    bit6Value = 0x00;
+                }
+                readValue = (byte)((readValue & 0b1011_1111) | bit6Value);
             }
             return true;
         }
@@ -78,6 +98,23 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _screenDevice.BorderColor = writeValue & 0x07;
             _beeperDevice.ProcessEarBitValue(false, (writeValue & 0x10) != 0);
             _tapeDevice.ProcessMicBit((writeValue & 0x08) != 0);
+
+            // --- Set the lates value of bit 3
+            _bit3LastValue = (writeValue & 0x08) != 0;
+
+            // --- Manage bit 4 value
+            var curBit4 = (writeValue & 0x10) != 0;
+            if (!_bit4LastValue && curBit4)
+            {
+                // --- Bit 4 goers from0 to 1
+                _bit4ChangedFrom0 = _cpu.Tacts;
+                _bit4LastValue = true;
+            }
+            else if (_bit4LastValue && !curBit4)
+            {
+                _bit4ChangedFrom1 = _cpu.Tacts;
+                _bit4LastValue = false;
+            }
         }
     }
 }
