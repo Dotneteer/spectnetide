@@ -1,3 +1,6 @@
+### Version 1.10.3
+__FIX__: Rebuild with the latest source to eliminate issue #77
+
 ### Version 1.10.2
 __FIX__: Issue #75 fixed: The virtual machine now handles Bit 6 of 
 port `$FE` properly for ULA Issue 2/3 configurations.

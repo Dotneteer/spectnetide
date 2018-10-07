@@ -382,9 +382,9 @@
   </Target>
   <Import Project="..\..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets" Condition="Exists('..\..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)obj\$(ConfigurationName)\Spect.Net.Assembler.dll $(ProjectDir)..\..\VsIntegration\Spect.Net.Scripting.ConsoleAppTemplate\SpectNetLib
-copy $(ProjectDir)obj\$(ConfigurationName)\Spect.Net.RomResources.dll $(ProjectDir)..\..\VsIntegration\Spect.Net.Scripting.ConsoleAppTemplate\SpectNetLib
-copy $(ProjectDir)obj\$(ConfigurationName)\Spect.Net.SpectrumEmu.dll $(ProjectDir)..\..\VsIntegration\Spect.Net.Scripting.ConsoleAppTemplate\SpectNetLib
+    <PostBuildEvent>copy "$(ProjectDir)obj\$(ConfigurationName)\Spect.Net.Assembler.dll" "$(ProjectDir)..\..\VsIntegration\Spect.Net.Scripting.ConsoleAppTemplate\SpectNetLib"
+copy "$(ProjectDir)obj\$(ConfigurationName)\Spect.Net.RomResources.dll" "$(ProjectDir)..\..\VsIntegration\Spect.Net.Scripting.ConsoleAppTemplate\SpectNetLib"
+copy "$(ProjectDir)obj\$(ConfigurationName)\Spect.Net.SpectrumEmu.dll" "$(ProjectDir)..\..\VsIntegration\Spect.Net.Scripting.ConsoleAppTemplate\SpectNetLib"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
