@@ -116,6 +116,12 @@
         <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
     </Style>
 
+    <Style x:Key="SmallDialogButton" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+    </Style>
 
     <Style x:Key="Z80Text" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Consolas" />

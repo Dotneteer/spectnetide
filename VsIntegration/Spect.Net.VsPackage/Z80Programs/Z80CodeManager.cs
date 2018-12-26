@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,12 +25,16 @@ namespace Spect.Net.VsPackage.Z80Programs
         private const byte CLEAR_TKN = 0xFD;
         private const byte LOAD_TKN = 0xEF;
         private const byte CODE_TKN = 0xAF;
+        private const byte SCREEN_TKN = 0xAA;
         private const byte DQUOTE = 0x22;
         private const byte COLON = 0x3A;
+        private const byte COMMA = 0x2C;
         private const byte RAND_TKN = 0xF9;
         private const byte USER_TKN = 0xC0;
         private const byte NUMB_SIGN = 0x0E;
         private const byte NEW_LINE = 0x0D;
+        private const byte PAUSE_TKN = 0xF2;
+        private const byte POKE_TKN = 0xF4;
         private const int RAMTOP_GAP = 0x100;
 
         /// <summary>
@@ -214,14 +219,34 @@ namespace Spect.Net.VsPackage.Z80Programs
         }
 
         /// <summary>
+        /// Creates screen blocks from the specified screen file
+        /// </summary>
+        /// <param name="screenFile">Screen file name</param>
+        /// <returns></returns>
+        public List<byte[]> CreatScreenBlocks(string screenFile)
+        {
+            var result = new List<byte[]>();
+            using (var reader = new BinaryReader(File.OpenRead(screenFile)))
+            {
+                var player = new CommonTapeFilePlayer(reader);
+                player.ReadContent();
+                result.Add(((ITapeData)player.DataBlocks[0]).Data);
+                result.Add(((ITapeData)player.DataBlocks[1]).Data);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Creates auto start block (header+data) to save 
         /// </summary>
         /// <param name="name">Program name</param>
+        /// <param name="useScreenFile">Indicates if a screen file is used</param>
+        /// <param name="addPause0">Indicates if a "PAUSE 0" should be added</param>
         /// <param name="blockNo">Number of blocks to load</param>
         /// <param name="startAddr">Auto start address</param>
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns></returns>
-        public List<byte[]> CreateAutoStartBlock(string name, int blockNo, ushort startAddr, ushort? clearAddr = null)
+        public List<byte[]> CreateAutoStartBlock(string name, bool useScreenFile, bool addPause0, int blockNo, ushort startAddr, ushort? clearAddr = null)
         {
             if (blockNo > 128)
             {
@@ -240,6 +265,21 @@ namespace Spect.Net.VsPackage.Z80Programs
                 codeLine.Add(COLON);
             }
 
+            // --- Add optional screen loader, 'LOAD "" SCREEN$ : POKE 23739,111
+            if (useScreenFile)
+            {
+                codeLine.Add(LOAD_TKN);
+                codeLine.Add(DQUOTE);
+                codeLine.Add(DQUOTE);
+                codeLine.Add(SCREEN_TKN);
+                codeLine.Add(COLON);
+                codeLine.Add(POKE_TKN);
+                WriteNumber(codeLine, 23739);
+                codeLine.Add(COMMA);
+                WriteNumber(codeLine, 111);
+                codeLine.Add(COLON);
+            }
+
             // --- Add 'LOAD "" CODE' for each block
             for (int i = 0; i < blockNo; i++)
             {
@@ -247,6 +287,14 @@ namespace Spect.Net.VsPackage.Z80Programs
                 codeLine.Add(DQUOTE);
                 codeLine.Add(DQUOTE);
                 codeLine.Add(CODE_TKN);
+                codeLine.Add(COLON);
+            }
+
+            // --- Add 'PAUSE 0'
+            if (addPause0)
+            {
+                codeLine.Add(PAUSE_TKN);
+                WriteNumber(codeLine, 0);
                 codeLine.Add(COLON);
             }
 

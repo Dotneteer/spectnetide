@@ -19,6 +19,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         private bool _addToProject;
         private string _startAddress;
         private string _startAddressHex;
+        private string _screenFile;
+        private bool _addPause0;
 
         /// <summary>
         /// Gets or sets the tape format of the export
@@ -99,6 +101,15 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
             set => Set(ref _addToProject, value);
         }
 
+        /**
+         * Indicates if a "PAUSE 0" shoudl be added before running the code
+         */
+        public bool AddPause0
+        {
+            get => _addPause0;
+            set => Set(ref _addPause0, value);
+        }
+
         /// <summary>
         /// Signs if the dialog content is valid
         /// </summary>
@@ -117,7 +128,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
             {
                 if (Set(ref _startAddress, value))
                 {
-                    StarAddressHex = int.TryParse(value, out var intVal) 
+                    StartAddressHex = int.TryParse(value, out var intVal) 
                         ? $"#{intVal:X4}" 
                         : "#????";
                 };
@@ -127,10 +138,19 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         /// <summary>
         /// Start address of the code in hex format
         /// </summary>
-        public string StarAddressHex
+        public string StartAddressHex
         {
             get => _startAddressHex;
             set => Set(ref _startAddressHex, value);
+        }
+
+        /// <summary>
+        /// Optional screen file
+        /// </summary>
+        public string ScreenFile
+        {
+            get => _screenFile;
+            set => Set(ref _screenFile, value);
         }
 
         /// <summary>

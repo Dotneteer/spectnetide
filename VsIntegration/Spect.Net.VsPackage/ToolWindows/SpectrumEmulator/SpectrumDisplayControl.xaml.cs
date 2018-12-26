@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -83,6 +84,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Vm.SpectrumVm.SoundProvider?.PlaySound();
             }
             Vm.VmScreenRefreshed += OnVmScreenRefreshed;
+            ResizeFor(ActualWidth, ActualHeight);
         }
 
         /// <summary>
@@ -217,5 +219,3 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
     }
 }
-
-#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs

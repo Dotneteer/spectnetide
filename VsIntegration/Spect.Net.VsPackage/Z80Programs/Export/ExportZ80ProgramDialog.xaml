@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:local="clr-namespace:Spect.Net.VsPackage.Z80Programs"
              xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
              x:Class="Spect.Net.VsPackage.Z80Programs.Export.ExportZ80ProgramDialog"
              Background="{DynamicResource BKeyboardBackground}"
@@ -83,6 +82,9 @@
             <CheckBox Content="Add the exported tape file to the project" 
                       Style="{DynamicResource DialogCheckBox}" 
                       IsChecked="{Binding AddToProject, Mode=TwoWay}"/>
+            <CheckBox Content="Add 'PAUSE 0' before starting the code" 
+                      Style="{DynamicResource DialogCheckBox}" 
+                      IsChecked="{Binding AddPause0, Mode=TwoWay}"/>
         </StackPanel>
         <TextBlock Grid.Row="5" Grid.Column="0" 
                    Text="Start Address: " 
@@ -92,10 +94,24 @@
                      Width="60"
                      Style="{DynamicResource DialogTextBox}" 
                      MaxLength="5" Text="{Binding StartAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
-            <TextBlock Text="{Binding StarAddressHex}" Style="{DynamicResource DialogLabelText}"/>
+            <TextBlock Text="{Binding StartAddressHex}" Style="{DynamicResource DialogLabelText}"/>
         </StackPanel>
-
-        <Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+        <TextBlock Grid.Row="6" Grid.Column="0" 
+                   Text="Screen file: " 
+                   Style="{DynamicResource DialogLabelText}"/>
+        <Grid Grid.Row="6" Grid.Column="1" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0"
+                     Style="{DynamicResource DialogTextBox}" HorizontalAlignment="Stretch"
+                     MaxLength="1024" Text="{Binding ScreenFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="12,4,4,4"/>
+            <Button Grid.Column="1" Content="..." Margin="0,4,12,4"
+                    Style="{DynamicResource SmallDialogButton}"
+                    Template="{DynamicResource DialogButtonTemplate}" Click="OnSelectScreenFileClick" />
+        </Grid>
+        <Border Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
                 Margin="0,12,0,0"
                 Padding="12,8" 
                 Background="{DynamicResource BDebugHeaderBackground}">
@@ -111,4 +127,6 @@
         </Border>
     </Grid>
 </platformUi:DialogWindow>
+
+
 

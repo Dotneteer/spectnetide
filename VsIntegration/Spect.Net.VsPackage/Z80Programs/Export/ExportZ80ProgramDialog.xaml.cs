@@ -1,6 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 
 namespace Spect.Net.VsPackage.Z80Programs.Export
 {
@@ -68,5 +70,31 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
             return regex.IsMatch(text);
         }
 
+        /// <summary>
+        /// Selects the screen file for export
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnSelectScreenFileClick(object sender, RoutedEventArgs e)
+        {
+            // --- Get the file name
+            var dialog = new OpenFileDialog
+            {
+                Filter = "TZX files (*.tzx)|*.tzx|TAP files (*.tap)|*.tap",
+                Title = "Select the screen file"
+            };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            // --- Save and test for ZX Spectrum scrren file
+            Vm.ScreenFile = dialog.FileName;
+            if (!CommonTapeFilePlayer.CheckScreenFile(Vm.ScreenFile))
+            {
+                MessageBox.Show("The selected file is not a valid ZX Spectrum screen file.",
+                    "Invalid Screen File", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

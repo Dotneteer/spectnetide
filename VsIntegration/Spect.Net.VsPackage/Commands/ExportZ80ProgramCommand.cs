@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Microsoft.VisualStudio.Shell;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
@@ -23,6 +25,8 @@ namespace Spect.Net.VsPackage.Commands
         private const string INVALID_FOLDER_MESSAGE = "The tape folder specified in the Options dialog " +
                                                       "contains invalid characters or an absolute path. Go to the Options dialog and " +
                                                       "fix the issue so that you can add the tape file to the project.";
+        
+        protected bool Success { get; set; }
 
         /// <summary>
         /// Compiles the Z80 code file
@@ -30,6 +34,7 @@ namespace Spect.Net.VsPackage.Commands
         protected override async Task ExecuteAsync()
         {
             // --- Prepare the appropriate file to export
+            Success = true;
             GetCodeItem(out var hierarchy, out var itemId);
 
             // --- Step #1: Compile the code
@@ -41,6 +46,7 @@ namespace Spect.Net.VsPackage.Commands
                 VsxDialogs.Show("The length of the compiled code is 0, " +
                                 "so there is no code to export.",
                     "No code to export.");
+                Success = false;
                 return;
             }
 
@@ -48,17 +54,32 @@ namespace Spect.Net.VsPackage.Commands
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (DisplayExportParameterDialog(out var vm)) return;
 
-            // --- Step #3: Create code segments
-            var codeBlocks = Package.CodeManager.CreateTapeBlocks(vm.Name, Output, vm.SingleBlock);
+            // --- Step #3: Check screen file again
+            var useScreenFile = !string.IsNullOrEmpty(vm.ScreenFile) && vm.ScreenFile.Trim().Length > 0;
+            if (useScreenFile && !CommonTapeFilePlayer.CheckScreenFile(vm.ScreenFile))
+            {
+                VsxDialogs.Show("The specified screen file cannot be read as a ZX Spectrum compatible screen file.",
+                    "Screen file error.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                Success = false;
+                return;
+            }
 
-            // --- Step #4: Create Auto Start header block, if required
+            // --- Step #4: Create code segments
+            var codeBlocks = Package.CodeManager.CreateTapeBlocks(vm.Name, Output, vm.SingleBlock);
+            List<byte[]> screenBlocks = null;
+            if (useScreenFile)
+            {
+                screenBlocks = Package.CodeManager.CreatScreenBlocks(vm.ScreenFile);
+            }
+
+            // --- Step #5: Create Auto Start header block, if required
             var blocksToSave = new List<byte[]>();
             if (!ushort.TryParse(vm.StartAddress, out var startAddress))
             {
                 startAddress = (ushort)ExportStartAddress;
             }
             var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(
-                vm.Name,
+                vm.Name, useScreenFile, vm.AddPause0,
                 codeBlocks.Count >> 1,
                 startAddress,
                 vm.ApplyClear
@@ -66,7 +87,11 @@ namespace Spect.Net.VsPackage.Commands
                     : (ushort?) null);
             blocksToSave.AddRange(autoStartBlocks);
 
-            // --- Step #5: Save all the blocks
+            // --- Step #6: Save all the blocks
+            if (screenBlocks != null)
+            {
+                blocksToSave.AddRange(screenBlocks);
+            }
             blocksToSave.AddRange(codeBlocks);
             SaveDataBlocks(vm, blocksToSave);
 
@@ -85,7 +110,7 @@ namespace Spect.Net.VsPackage.Commands
         protected override async Task FinallyOnMainThreadAsync()
         {
             await base.FinallyOnMainThreadAsync();
-            if (!IsCancelled && Package.Options.ConfirmCodeExport && Output.ErrorCount == 0)
+            if (Success && !IsCancelled && Package.Options.ConfirmCodeExport && Output.ErrorCount == 0)
             {
                 VsxDialogs.Show("The code has been exported.");
             }
@@ -117,6 +142,7 @@ namespace Spect.Net.VsPackage.Commands
                 AddToProject = false,
                 AutoStart = true,
                 ApplyClear = true,
+                AddPause0 = false,
                 StartAddress = ExportStartAddress.ToString()
             };
             exportDialog.SetVm(vm);
