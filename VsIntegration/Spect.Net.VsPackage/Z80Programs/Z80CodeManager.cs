@@ -35,6 +35,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         private const byte NEW_LINE = 0x0D;
         private const byte PAUSE_TKN = 0xF2;
         private const byte POKE_TKN = 0xF4;
+        private const byte BORDER_TKN = 0xE7;
         private const int RAMTOP_GAP = 0x100;
 
         /// <summary>
@@ -242,11 +243,12 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <param name="name">Program name</param>
         /// <param name="useScreenFile">Indicates if a screen file is used</param>
         /// <param name="addPause0">Indicates if a "PAUSE 0" should be added</param>
+        /// <param name="borderColor">Border color ("0"-"7")</param>
         /// <param name="blockNo">Number of blocks to load</param>
         /// <param name="startAddr">Auto start address</param>
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns></returns>
-        public List<byte[]> CreateAutoStartBlock(string name, bool useScreenFile, bool addPause0, int blockNo, ushort startAddr, ushort? clearAddr = null)
+        public List<byte[]> CreateAutoStartBlock(string name, bool useScreenFile, bool addPause0, string borderColor, int blockNo, ushort startAddr, ushort? clearAddr = null)
         {
             if (blockNo > 128)
             {
@@ -262,6 +264,15 @@ namespace Spect.Net.VsPackage.Z80Programs
                 // --- Add clear statement
                 codeLine.Add(CLEAR_TKN);
                 WriteNumber(codeLine, (ushort)(clearAddr.Value - RAMTOP_GAP));
+                codeLine.Add(COLON);
+            }
+
+            // --- Add optional border color
+            if (borderColor != null)
+            {
+                var border = int.Parse(borderColor);
+                codeLine.Add(BORDER_TKN);
+                WriteNumber(codeLine, (ushort)border);
                 codeLine.Add(COLON);
             }
 

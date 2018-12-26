@@ -36,6 +36,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
                 Margin="0,0,0,12"
@@ -93,13 +94,24 @@
             <TextBox HorizontalAlignment="Left"
                      Width="60"
                      Style="{DynamicResource DialogTextBox}" 
-                     MaxLength="5" Text="{Binding StartAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                     MaxLength="5" Text="{Binding StartAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="PreviewDigitOnlyTextInput"/>
             <TextBlock Text="{Binding StartAddressHex}" Style="{DynamicResource DialogLabelText}"/>
         </StackPanel>
         <TextBlock Grid.Row="6" Grid.Column="0" 
+                   Text="Border color:" 
+                   Style="{DynamicResource DialogLabelText}"/>
+        <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Vertical" Margin="0,4">
+            <TextBox HorizontalAlignment="Left"
+                     Width="28"
+                     Style="{DynamicResource DialogTextBox}" 
+                     MaxLength="1" Text="{Binding Border, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     PreviewTextInput="UIElement_OnPreviewTextInput">
+            </TextBox>
+        </StackPanel>
+        <TextBlock Grid.Row="7" Grid.Column="0" 
                    Text="Screen file: " 
                    Style="{DynamicResource DialogLabelText}"/>
-        <Grid Grid.Row="6" Grid.Column="1" HorizontalAlignment="Stretch">
+        <Grid Grid.Row="7" Grid.Column="1" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -111,7 +123,7 @@
                     Style="{DynamicResource SmallDialogButton}"
                     Template="{DynamicResource DialogButtonTemplate}" Click="OnSelectScreenFileClick" />
         </Grid>
-        <Border Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
+        <Border Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                 Margin="0,12,0,0"
                 Padding="12,8" 
                 Background="{DynamicResource BDebugHeaderBackground}">

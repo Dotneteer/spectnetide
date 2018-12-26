@@ -21,6 +21,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         private string _startAddressHex;
         private string _screenFile;
         private bool _addPause0;
+        private string _border;
 
         /// <summary>
         /// Gets or sets the tape format of the export
@@ -151,6 +152,15 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         {
             get => _screenFile;
             set => Set(ref _screenFile, value);
+        }
+
+        /// <summary>
+        /// Border color
+        /// </summary>
+        public string Border
+        {
+            get => _border;
+            set => Set(ref _border, value);
         }
 
         /// <summary>

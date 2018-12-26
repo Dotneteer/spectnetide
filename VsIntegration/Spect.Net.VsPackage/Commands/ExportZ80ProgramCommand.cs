@@ -79,7 +79,10 @@ namespace Spect.Net.VsPackage.Commands
                 startAddress = (ushort)ExportStartAddress;
             }
             var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(
-                vm.Name, useScreenFile, vm.AddPause0,
+                vm.Name, 
+                useScreenFile, 
+                vm.AddPause0, 
+                vm.Border,
                 codeBlocks.Count >> 1,
                 startAddress,
                 vm.ApplyClear

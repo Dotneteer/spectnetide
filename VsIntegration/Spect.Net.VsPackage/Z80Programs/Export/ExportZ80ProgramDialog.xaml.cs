@@ -56,7 +56,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         /// <summary>
         /// Does not allow typing non-digit chars for a text box
         /// </summary>
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void PreviewDigitOnlyTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !ContainsOnlyDigits(e.Text);
         }
@@ -95,6 +95,17 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
                 MessageBox.Show("The selected file is not a valid ZX Spectrum screen file.",
                     "Invalid Screen File", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        /// <summary>
+        /// Allows the border only 0-7 digits.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UIElement_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var regex = new Regex("[0-7]");
+            e.Handled = !regex.IsMatch(e.Text);
         }
     }
 }
