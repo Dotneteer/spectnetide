@@ -560,6 +560,58 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void DefsPragmaWorksAsExpected5()
+        {
+            // --- Act
+            var visitor = Parse(".ds 22");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksAsExpected6()
+        {
+            // --- Act
+            var visitor = Parse(".DS 22");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksAsExpected7()
+        {
+            // --- Act
+            var visitor = Parse("ds 22");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksAsExpected8()
+        {
+            // --- Act
+            var visitor = Parse("DS 22");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
         public void FillbPragmaWorksAsExpected1()
         {
             // --- Act

@@ -32,9 +32,13 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// This property signs if an expression is ready to be evaluated,
         /// namely, all subexpression values are known
         /// </summary>
-        public override bool ReadyToEvaluate(IEvaluationContext evalContext) 
-            => LeftOperand.ReadyToEvaluate(evalContext) 
-                && RightOperand.ReadyToEvaluate(evalContext);
+        public override bool ReadyToEvaluate(IEvaluationContext evalContext)
+        {
+            // --- Note: We intentionally avoid short-curcuit evaluation!
+            var leftResult = LeftOperand.ReadyToEvaluate(evalContext);
+            var rightResult = RightOperand.ReadyToEvaluate(evalContext);
+            return leftResult && rightResult;
+        }
 
         /// <summary>
         /// Retrieves the value of the expression

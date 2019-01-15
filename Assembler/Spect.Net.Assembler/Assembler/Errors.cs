@@ -143,7 +143,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0101, "Unexpected end of line" },
             { Z0102, "To use this Spectrum Next-specific instruction, you need to set MODEL type to NEXT explicitly." },
             { Z0200, "Expression evaluation resulted an error: {0}" },
-            { Z0201, "This expression cannot be evaluated promptly, it may refer to an undefined symbol" },
+            { Z0201, "This expression cannot be evaluated promptly, it may refer to one or more undefined symbols ({0})" },
             { Z0300, "Cannot find include file: '{0}'" },
             { Z0301, "Error reading include file: '{0}' ({1})" },
             { Z0302, "Include file '{0}' is included more than once into the same parent source file" },

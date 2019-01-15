@@ -199,6 +199,7 @@ namespace Spect.Net.Assembler.Assembler
                 throw new ArgumentNullException(nameof(expr));
             }
             if (!expr.ReadyToEvaluate(this)) return ExpressionValue.NonEvaluated;
+            ExpressionNode.ClearErrors();
             var result = expr.Evaluate(this);
 
             // --- Certain symbols may not bee be evaluated
@@ -224,9 +225,10 @@ namespace Spect.Net.Assembler.Assembler
             {
                 throw new ArgumentNullException(nameof(expr));
             }
+            ExpressionNode.ClearErrors();
             if (!expr.ReadyToEvaluate(this))
             {
-                ReportError(Errors.Z0201, opLine);
+                ReportError(Errors.Z0201, opLine, ExpressionNode.SymbolErrors);
                 return ExpressionValue.NonEvaluated;
             }
             var result = expr.Evaluate(this);
@@ -366,11 +368,12 @@ namespace Spect.Net.Assembler.Assembler
             out ExpressionValue exprValue)
         {
             exprValue = new ExpressionValue(0L);
+            ExpressionNode.ClearErrors();
             if (!fixup.Expression.ReadyToEvaluate(fixup))
             {
                 if (signNotEvaluable)
                 {
-                    ReportError(Errors.Z0201, fixup.SourceLine);
+                    ReportError(Errors.Z0201, fixup.SourceLine, ExpressionNode.SymbolErrors);
                 }
                 return false;
             }

@@ -1661,7 +1661,7 @@ namespace Spect.Net.Assembler.Assembler
             var count = Eval(pragma, pragma.Expression);
             if (!count.IsValid)
             {
-                ReportError(Errors.Z0201, pragma);
+                ReportError(Errors.Z0201, pragma, ExpressionNode.SymbolErrors);
                 return;
             }
             for (var i = 0; i < count.Value; i++)
@@ -1677,10 +1677,17 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessFillbPragma(FillbPragma pragma)
         {
             var count = Eval(pragma, pragma.Count);
+            if (!count.IsValid)
+            {
+                ReportError(Errors.Z0201, pragma, ExpressionNode.SymbolErrors);
+            }
             var value = Eval(pragma, pragma.Expression);
+            if (!value.IsValid)
+            {
+                ReportError(Errors.Z0201, pragma, ExpressionNode.SymbolErrors);
+            }
             if (!count.IsValid || !value.IsValid)
             {
-                ReportError(Errors.Z0201, pragma);
                 return;
             }
 
@@ -1700,7 +1707,7 @@ namespace Spect.Net.Assembler.Assembler
             var value = Eval(pragma, pragma.Expression);
             if (!count.IsValid || !value.IsValid)
             {
-                ReportError(Errors.Z0201, pragma);
+                ReportError(Errors.Z0201, pragma, ExpressionNode.SymbolErrors);
                 return;
             }
 

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -1373,5 +1374,22 @@ namespace Spect.Net.Assembler.Test.Assembler
             EvalExpression("23+11 > 3 ? 123 : 456", 123);
             EvalExpression("23+11 < 3 ? 123 : 456", 456);
         }
+
+        [TestMethod]
+        public void UndefinedSymbolFails1()
+        {
+            var result = EvalImmediate("UNKNOWN");
+            result.ShouldBe(ExpressionValue.NonEvaluated);
+            ExpressionNode.SymbolErrors.ShouldBe("UNKNOWN");
+        }
+
+        [TestMethod]
+        public void UndefinedSymbolFails2()
+        {
+            var result = EvalImmediate("UNKNOWN + NOTKNOWN");
+            result.ShouldBe(ExpressionValue.NonEvaluated);
+            ExpressionNode.SymbolErrors.ShouldBe("UNKNOWN, NOTKNOWN");
+        }
+
     }
 }

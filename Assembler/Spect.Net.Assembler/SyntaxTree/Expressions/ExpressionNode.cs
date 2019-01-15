@@ -1,10 +1,39 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Expressions
+﻿using System.Collections.Generic;
+
+namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
     /// Represents an expression node that can be evaluated
     /// </summary>
     public abstract class ExpressionNode
     {
+        /// <summary>
+        /// Gets the list of symbol errors
+        /// </summary>
+        public static List<string> SymbolErrorList { get; } = new List<string>();
+
+        /// <summary>
+        /// Symbol names concatenated.
+        /// </summary>
+        public static string SymbolErrors => $"{string.Join(", ", SymbolErrorList)}";
+
+        /// <summary>
+        /// Clears the error list
+        /// </summary>
+        public static void ClearErrors()
+        {
+            SymbolErrorList.Clear();
+        }
+
+        /// <summary>
+        /// Adds a new symbol to the error list
+        /// </summary>
+        /// <param name="id"></param>
+        public static void AddError(string id)
+        {
+            SymbolErrorList.Add(id);
+        }
+
         /// <summary>
         /// The source text of the expression
         /// </summary>

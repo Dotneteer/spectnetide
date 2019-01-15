@@ -17,7 +17,14 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>True, if the expression is ready; otherwise, false</returns>
         public override bool ReadyToEvaluate(IEvaluationContext evalContext)
-            => evalContext.GetSymbolValue(SymbolName) != null;
+        {
+            var result = evalContext.GetSymbolValue(SymbolName) != null;
+            if (!result)
+            {
+                AddError(SymbolName);
+            }
+            return result;
+        }
 
         /// <summary>
         /// Retrieves the value of the expression
@@ -27,7 +34,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
             var idExpr = evalContext.GetSymbolValue(SymbolName);
-            return idExpr ?? ExpressionValue.NonEvaluated;
+            if (idExpr != null)
+            {
+                return idExpr;
+            }
+            AddError(SymbolName);
+            return ExpressionValue.NonEvaluated;
         }
     }
 }

@@ -342,6 +342,7 @@ namespace Spect.Net.VsPackage
                 // --- When the current solution has been closed,
                 // --- stop the virtual machine and clean up
                 SolutionClosed?.Invoke(this, EventArgs.Empty);
+                ErrorList.Clear();
                 DebugInfoProvider.Clear();
                 MachineViewModel?.Stop();
             }

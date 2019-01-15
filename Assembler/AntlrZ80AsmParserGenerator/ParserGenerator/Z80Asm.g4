@@ -61,6 +61,8 @@ statement
 	|	macroEndMarker
 	|	loopStatement
 	|	loopEndMarker
+	|	procStatement
+	|	procEndMarker
 	|	repeatStatement
 	|	untilStatement
 	|	whileStatement
@@ -79,6 +81,8 @@ macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
 macroEndMarker: ENDMACRO ;
 loopStatement: LOOP expr ;
 loopEndMarker: ENDLOOP ;
+procStatement: PROC;
+procEndMarker: ENDPROC;
 repeatStatement: REPEAT ;
 untilStatement: UNTIL expr ;
 whileStatement: WHILE expr ;
@@ -563,7 +567,7 @@ DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' | 'dw' | '.dw' | 'DW' | '.DW' ;
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' | 'dm' | '.dm' | 'DM' | '.DM' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
-DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' ;
+DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' | '.ds' | '.DS' | 'ds' | 'DS' ;
 FBPRAG	: '.fillb' | '.FILLB' | 'fillb' | 'FILLB' ;
 FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
 MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
@@ -579,6 +583,8 @@ INCBIN	: '.includebin' | 'includebin' | '.INCLUDEBIN' | 'INCLUDEBIN'
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
 ENDMACRO: '.endm' | '.ENDM' | 'endm' | 'ENDM' | '.mend' | '.MEND' | 'mend' | 'MEND' ;
+PROC	: '.proc' | '.PROC' | 'proc' | 'PROC' ;
+ENDPROC	: '.endp' | '.ENDP' | 'endp' | 'ENDP' | '.pend' | '.PEND' | 'pend' | 'PEND' ;
 LOOP	: '.loop' | '.LOOP' | 'loop' | 'LOOP' ;
 ENDLOOP	: '.endl' | '.ENDL' | 'endl' | 'ENDL' | '.lend' | '.LEND' | 'lend' | 'LEND' ;
 REPEAT	: '.repeat' | '.REPEAT' | 'repeat' | 'REPEAT' ;
