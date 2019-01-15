@@ -34,6 +34,7 @@ pragma
 	|	defbPragma
 	|	defwPragma
 	|	defmPragma
+	|	defhPragma
 	|	skipPragma
 	|	externPragma
 	|	defsPragma
@@ -108,6 +109,7 @@ varPragma	: (VARPRAG | ASSIGN) expr ;
 defbPragma	: DBPRAG expr (COMMA expr)* ;
 defwPragma	: DWPRAG expr (COMMA expr)* ;
 defmPragma	: DMPRAG expr ;
+defhPragma	: DHPRAG expr ;
 skipPragma	: SKIPRAG expr (COMMA expr)?;
 externPragma: EXTPRAG ;
 defsPragma	: DSPRAG expr ;
@@ -565,6 +567,7 @@ DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
 DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' | 'db' | '.db' | 'DB' | '.DB' ;
 DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' | 'dw' | '.dw' | 'DW' | '.DW' ;
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' | 'dm' | '.dm' | 'DM' | '.DM' ;
+DHPRAG	: '.defh' | '.DEFH' | 'defh' | 'DEFH' | 'dh' | '.dh' | 'DH' | '.DH' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' | '.ds' | '.DS' | 'ds' | 'DS' ;

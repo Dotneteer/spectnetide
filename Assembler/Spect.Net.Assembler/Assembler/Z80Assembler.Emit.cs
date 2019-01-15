@@ -1440,6 +1440,9 @@ namespace Spect.Net.Assembler.Assembler
                 case DefmPragma defmPragma:
                     ProcessDefmPragma(defmPragma);
                     break;
+                case DefhPragma defhPragma:
+                    ProcessDefhPragma(defhPragma);
+                    break;
                 case DefsPragma defsPragma:
                     ProcessDefsPragma(defsPragma);
                     break;
@@ -1712,6 +1715,46 @@ namespace Spect.Net.Assembler.Assembler
             foreach (var msgByte in bytes)
             {
                 EmitByte(msgByte);
+            }
+        }
+
+        /// <summary>
+        /// Processes the DEFH pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFH pragma</param>
+        // ReSharper disable once UnusedParameter.Local
+        private void ProcessDefhPragma(DefhPragma pragma)
+        {
+            var byteVector = Eval(pragma, pragma.ByteVector);
+            if (byteVector.IsValid && byteVector.Type != ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0093, pragma);
+                return;
+            }
+
+            // --- Check if the byte vector is valid
+            var bytesString = byteVector.AsString();
+            if (bytesString.Length % 2 != 0)
+            {
+                ReportError(Errors.Z0094, pragma);
+                return;
+            }
+
+            // --- Convert the byte vector
+            try
+            {
+                var bytes = Enumerable.Range(0, bytesString.Length)
+                    .Where(x => x % 2 == 0)
+                    .Select(x => Convert.ToByte(bytesString.Substring(x, 2), 16))
+                    .ToArray();
+                foreach (var msgByte in bytes)
+                {
+                    EmitByte(msgByte);
+                }
+            }
+            catch (Exception e)
+            {
+                ReportError(Errors.Z0094, pragma);
             }
         }
 

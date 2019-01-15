@@ -514,7 +514,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0305);
         }
 
-
         [TestMethod]
         public void DefmPragmaWorksAsExpected()
         {
@@ -536,6 +535,100 @@ namespace Spect.Net.Assembler.Test.Assembler
             }
         }
 
+        [TestMethod]
+        public void DefmPragmaFailsWithNonString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defm 123");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0091);
+        }
+
+        [TestMethod]
+        public void DefhPragmaWorksAsExpected()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x01, 0x05, 0xC1, 0xaf, 0x27, 0xd3 };
+
+            // --- Act
+            var output = compiler.Compile(".defh \"0105C1af27d3\"");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void DefhPragmaWorksWithEmptyString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(".defh \"\"");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void DefhPragmaFailsWithNonString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defh 123");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0093);
+        }
+
+        [TestMethod]
+        public void DefhPragmaFailsWithOddLengthString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(".defh \"0105C1af27d\"");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0094);
+        }
+
+        [TestMethod]
+        public void DefhPragmaFailsWithBobHexaDigitString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(".defh \"0105C1Xaf27d\"");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0094);
+        }
 
         [TestMethod]
         public void SkipPragmaWorksWithoutFillValue()

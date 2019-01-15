@@ -455,6 +455,27 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        [DataRow("defh")]
+        [DataRow("DEFH")]
+        [DataRow("dh")]
+        [DataRow("DH")]
+        [DataRow(".defh")]
+        [DataRow(".DEFH")]
+        [DataRow(".dh")]
+        [DataRow(".DH")]
+        public void DefhPragmaWorksAsExpected(string pragma)
+        {
+            // --- Act
+            var visitor = Parse($"{pragma} \"Message with \\\" mark\"");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefhPragma;
+            line.ShouldNotBeNull();
+            line.ByteVector.ShouldNotBeNull();
+        }
+
+        [TestMethod]
         public void SkipPragmaWorksAsExpected1()
         {
             // --- Act
