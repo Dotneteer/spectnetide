@@ -253,6 +253,14 @@ namespace Spect.Net.Assembler.Assembler
                     ReportError(Errors.Z0405, macroEndStmt, "ENDM/MEND", "MACRO");
                     break;
 
+                case ProcStatement procStatement:
+                    ProcessProcStatement(procStatement, allLines, scopeLines, ref currentLineIndex);
+                    break;
+
+                case ProcEndStatement procEndStmt:
+                    ReportError(Errors.Z0405, procEndStmt, "ENDP/PEND", "PROC");
+                    break;
+
                 case LoopStatement loopStatement:
                     ProcessLoopStatement(loopStatement, allLines, scopeLines, ref currentLineIndex);
                     break;
@@ -490,6 +498,61 @@ namespace Spect.Net.Assembler.Assembler
                     break;
                 }
             }
+
+            // --- Clean up the loop's scope
+            _output.LocalScopes.Pop();
+        }
+
+        /// <summary>
+        /// Processes the PROC statement
+        /// </summary>
+        /// <param name="proc">LOOP statement</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
+        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        private void ProcessProcStatement(ProcStatement proc, List<SourceLineBase> allLines,
+            List<SourceLineBase> scopeLines, ref int currentLineIndex)
+        {
+            // --- Search for the end of the loop
+            var firstLine = currentLineIndex;
+            if (!proc.SearchForEnd(this, scopeLines, ref currentLineIndex, out var endLabel)) return;
+
+            // --- End found
+            var lastLine = currentLineIndex;
+
+            // --- Create a scope for the proc
+            var procScope = new SymbolScope {IsLoopScope = false};
+            _output.LocalScopes.Push(procScope);
+
+            // --- Create a local scope for the loop body
+            var loopLineIndex = firstLine + 1;
+            while (loopLineIndex < lastLine)
+            {
+                var curLine = scopeLines[loopLineIndex];
+                EmitSingleLine(allLines, scopeLines, curLine, ref loopLineIndex);
+                loopLineIndex++;
+            }
+
+            // --- Add the end label to the local scope
+            if (endLabel != null)
+            {
+                // --- Add the end label to the loop scope
+                var endLine = scopeLines[currentLineIndex];
+                if (SymbolExists(endLabel))
+                {
+                    ReportError(Errors.Z0040, endLine, endLabel);
+                }
+                else
+                {
+                    AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                }
+            }
+
+            // --- Clean up the hanging label
+            OverflowLabelLine = null;
+
+            // --- Fixup the symbols locally
+            FixupSymbols(procScope.Fixups, procScope.Symbols, false);
 
             // --- Clean up the loop's scope
             _output.LocalScopes.Pop();

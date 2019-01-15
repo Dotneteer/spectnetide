@@ -1001,6 +1001,38 @@ namespace Spect.Net.Assembler
         }
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.procStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitProcStatement(Z80AsmParser.ProcStatementContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new ProcStatement(),
+                context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.procEndMarker"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitProcEndMarker(Z80AsmParser.ProcEndMarkerContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new ProcEndStatement(), context);
+        }
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>

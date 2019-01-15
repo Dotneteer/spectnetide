@@ -167,6 +167,8 @@
     <Compile Include="SyntaxTree\Statements\MacroEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroStatement.cs" />
     <Compile Include="SyntaxTree\Statements\NextStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\ProcEndStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\ProcStatement.cs" />
     <Compile Include="SyntaxTree\Statements\RepeatStatement.cs" />
     <Compile Include="SyntaxTree\Statements\UntilStatement.cs" />
     <Compile Include="SyntaxTree\Statements\WhileEndStatement.cs" />

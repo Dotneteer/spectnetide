@@ -70,6 +70,7 @@
     <Compile Include="Assembler\IoOperationEmitTests.cs" />
     <Compile Include="Assembler\LoadOperationEmitTests.cs" />
     <Compile Include="Assembler\PragmaEmitTests.cs" />
+    <Compile Include="Assembler\ProcEmitTests.cs" />
     <Compile Include="Assembler\ShiftRotateOperationEmitTests.cs" />
     <Compile Include="Assembler\SourceLineBaseTests.cs" />
     <Compile Include="Assembler\StackOperationEmitTests.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Parser\LoadOperationTests.cs" />
     <Compile Include="Parser\PragmaTests.cs" />
     <Compile Include="Parser\PreprocessorTests.cs" />
+    <Compile Include="Parser\ProcTests.cs" />
     <Compile Include="Parser\StackOperationTests.cs" />
     <Compile Include="Parser\TextSpanTests.cs" />
     <Compile Include="Parser\TrivialOperationTests.cs" />
