@@ -843,7 +843,7 @@ This simple code above will emit these four bytes: 0x34, 0x12, 0xcd, 0xab.
 ### The DEFM pragma
 
 The __DEFM__ pragma emits the byte-array representation of a string. Each character
-in the string is replaced with the correcponding byte. Tak a look at this code:
+in the string is replaced with the correcponding byte. Take a look at this code:
 
 ```
     .defm "\C by me"
@@ -854,6 +854,36 @@ sequence represents the copyrigh sign) : 0x7f, 0x20, 0x62, 0x69, 0x20, 0x6d, 0x6
 
 > __DEFM__ has extra syntax variants: `dm`, `.dm`, `DM`, and `.DM` are accepted, too.
 
+### The DEFN pragma
+
+The __DEFN__ pragma works just like the `DEFM` pragma but it emits an additional `0x00`
+byte to terminate the string. Look at this code:
+
+```
+    .defn "\C by me"
+```
+
+Here, the __DEFN__ pragma emits 8 bytes for the seven characters (the first escape 
+sequence represents the copyrigh sign) plus the terminating zero:
+0x7f, 0x20, 0x62, 0x69, 0x20, 0x6d, 0x65, 0x00.
+
+> __DEFN__ has extra syntax variants: `dn`, `.dn`, `DN`, and `.DN` are also accepted.
+
+### The DEFH pragma
+
+The __DEFH__ pragma uses a string with even number of hexadecimal digits to emits a 
+byte-array representation of the input. Each character pair in the string is replaced
+with the correcponding byte. Take a look at this code:
+
+```
+    .defh "12E4afD2"
+```
+
+Here, the __DEFH__ pragma emits 4 bytes: 0x12, 0xe4, 0xaf, 0xd2.
+
+> __DEFH__ has extra aliases: `dh`, `.dh`, `DH`, and `.DH`.
+
+
 ### The DEFS pragma
 
 You can emit zero (`0x00`) bytes with this pragma. It accepts a single argument,
@@ -862,6 +892,8 @@ the number of zeros to emit. This code sends 16 zeros to the generated output:
 ```
     .defs 16
 ```
+
+> __DEFS__ has extra syntax variants: `ds`, `.ds`, `DS`, and `.DS` are also accepted.
 
 ### The FILLB pragma
 
@@ -1317,6 +1349,63 @@ You can observe that each loop has its spearate `$cnt` value.
 
 > The `$ctn` value has several syntax versions that the compiler accepts: `$CNT`, 
 > `.cnt`, and `.CNT`.
+
+### The PROC..ENDP Block
+
+In the previous section you could understand how labels and scopes work for the `.loop` statement.
+You can utilize this scoping mechanism with the help of the `.proc`..`.endp` statement.
+This sample code demonstrates the concepts (just as you learned earlier):
+
+```
+.org #8000
+MyLabel:
+  ld de,Outer
+  ld hl,Mylabel
+  call MyProc
+  halt
+
+MyProc: 
+  .proc
+    ld bc,MyProc
+  MyLabel: 
+    ld de,MyEnd
+    ld hl,MyLabel
+    ld ix,Outer
+    ret
+MyEnd:
+    .endp
+Outer: nop
+```
+
+The first `MyLabel` label belongs to the global scope, while the second (within `MyProc`)
+to the local scope of the procedure wrapped between `.proc` and `endp`. `MyProc` belongs to the
+global scope too, however, `MyEnd` is the part of the `MyProc` scope, so it is visible only from
+within the procedure.
+
+The assembler emits this code:
+
+```
+MyLabel  (#8000): ld de,#8018 (Outer)
+         (#8003): ld hl,#8000 (MyLabel)
+         (#8006): call #800A (MyProc)
+         (#8009): halt
+MyProc   (#800A): ld bc,#800A (MyProc)
+MyLabel_ (#800D): ld de,#8018 (MyEnd)
+         (#8010): ld hl,#800D (MyLabel_)
+         (#8013): ld ix,#8018 (Outer)
+         (#8017): ret
+MyEnd
+Outer    (#8018): nop
+```
+
+You can nest `PROC` bloks just as `LOOP` blocks. Each `PROC` block has its private scope.
+When the compiler sees a `PROC` block, it works just as if you wrote `.loop 1`.
+
+> NOTE: `PROC` is different than a loop. You cannot use the `$cnt` value. Similarly, the `break` 
+> and `continue` instructions are unavailable within a `PROC` block.
+
+> The assembler accepts these aliases for `PROC` and `ENDP`: `.proc`, `proc`, `.PROC`
+> , `PROC`, `.endp`, `.ENDP`, `endp`, `ENDP`, `.pend`, `.PEND`, `pend`, `PEND`.
 
 ### The REPEAT..UNTIL Block
 

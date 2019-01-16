@@ -1,3 +1,11 @@
+### Version 1.12.0
+__FEATURE__: The Z80 assembler supports the `PROC`..`ENDP` statement to create local labels.  
+__FEATURE__: You can use new pragmas: `DEFH` (emit bytes from a string with hexadecimal digits),
+`DEFN` (emits zero-terminated strings).  
+__FEATURE__: The `DEFS` pragma now supports new aliases: `.ds`, `ds`, `.DS`, and  `DS`.  
+__FEATURE__: The `Z0201` error message displays the name of symbols that cannot be resolved.  
+__FIX__: When you close the current project, the IDE clears the Error List.
+
 ### Version 1.11.0
 __FEATURE__: Now, yo can specify a LOAD screen when exporting Z80 programs, and
 you can set an option for "PAUSE 0" statement before running tho code. You can also
