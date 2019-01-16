@@ -1971,7 +1971,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             // --- Obtain and check the DEFG pattern expression
             var pattern = pragma.Pattern;
-            EmitDefgBytes(pragma, pattern);
+            EmitDefgBytes(pragma, pattern, false);
         }
 
         /// <summary>
@@ -1999,7 +1999,8 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="pragma">Pragma instance</param>
         /// <param name="pattern">Pattern to emit</param>
-        private void EmitDefgBytes(PragmaBase pragma, string pattern)
+        /// <param name="allowAlign">Signs if alignment indicators are allowed or not.</param>
+        private void EmitDefgBytes(PragmaBase pragma, string pattern, bool allowAlign = true)
         {
             if (string.IsNullOrEmpty(pattern))
             {
@@ -2009,11 +2010,11 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Go through all values
             var alignToLeft = true;
-            if (pattern[0] == '<')
+            if (pattern[0] == '<' && allowAlign)
             {
                 pattern = pattern.Substring(1);
             }
-            else if (pattern[0] == '>')
+            else if (pattern[0] == '>' && allowAlign)
             {
                 alignToLeft = false;
                 pattern = pattern.Substring(1);

@@ -937,14 +937,14 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        [DataRow(".defg")]
-        [DataRow("defg")]
-        [DataRow(".DEFG")]
-        [DataRow("DEFG")]
-        [DataRow(".dg")]
-        [DataRow("dg")]
-        [DataRow(".DG")]
-        [DataRow("DG")]
+        [DataRow(".defg _")]
+        [DataRow("defg _")]
+        [DataRow(".DEFG _")]
+        [DataRow("DEFG _")]
+        [DataRow(".dg _")]
+        [DataRow("dg _")]
+        [DataRow(".DG _")]
+        [DataRow("DG _")]
         public void DefgPragmaWorksAsExpected(string source)
         {
             // --- Act
@@ -954,6 +954,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefgPragma;
             line.ShouldNotBeNull();
+            line.Pattern.ShouldBe("_");
         }
 
         [TestMethod]

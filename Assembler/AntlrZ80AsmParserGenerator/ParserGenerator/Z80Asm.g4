@@ -574,7 +574,7 @@ DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' | 'dm' | '.dm' | 'DM' | '.DM' ;
 DNPRAG	: '.defn' | '.DEFN' | 'defn' | 'DEFN' | 'dn' | '.dn' | 'DN' | '.DN' ;
 DHPRAG	: '.defh' | '.DEFH' | 'defh' | 'DEFH' | 'dh' | '.dh' | 'DH' | '.DH' ;
 DGXPRAG	: '.defgx' | '.DEFGX' | 'defgx' | 'DEFGX' | 'dgx' | '.dgx' | 'DGX' | '.DGX' ;
-DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
+DGPRAG	: ( '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ) WS+ ~('\r' | '\n')+;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' | '.ds' | '.DS' | 'ds' | 'DS' ;
@@ -663,7 +663,7 @@ CURADDR	: '$' | '.' ;
 CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
 NONEARG	: '$<none>$' ;
 
-// --- Any invalid charecter should be converted into an ErrorCharacter token.
+// --- Any invalid character should be converted into an ErrorCharacter token.
 ErrorCharacter
     :   .
     ;
@@ -713,4 +713,3 @@ fragment BinDigit
 fragment ExponentPart
 	: [eE] (PLUS | MINUS)? [0-9]+
 	;
-

@@ -1016,12 +1016,12 @@ uses the system clock to set up the seed.
 .rndseed 123 ; sets the seed to 123
 ```
 
-### The DEFG pragma
+### The DEFGX pragma
 
 This pragma helps you define bitmaps in the code. This pragma excepts a string expression 
 and utilizes that string as a pattern to generate bytes for the bitmap.
 
-> __DEFG__ has extra syntax variants: `dg`, `.dg`, `DG`, and `.DG` are accepted, too.
+> __DEFGX__ has extra syntax variants: `dgx`, `.dgx`, `DGX`, and `.DGX` are accepted, too.
 
 If the very first character of the string pattern is `<`, the pattern is left aligned, 
 and starts with the second character. Should the first character be `>`, the pattern is 
@@ -1048,6 +1048,32 @@ Here are a few samples:
 .dg "....OOOO ..OO"    ; #0F, #30
 .dg ">....OO OO..OOOO" ; #03, #CF
 ```
+
+### The DEFG pragma
+
+This pragma helps you define bitmaps in the code. This pragma excepts a string pattern (_note: not a string expression!_) 
+and utilizes that string as a pattern to generate bytes for the bitmap.
+
+> __DEFG__ has extra syntax variants: `dg`, `.dg`, `DG`, and `.DG` are also accepted.
+
+Any space within the pattern are ignored, taken into account as helpers. Other characters
+are converted into bits one-by-one. The pixels in a byte are planted with the LHS as the 
+most-significant bit, and multiple bytes are planted LHS byte first.
+
+The `.` (dot), `-` (dash), and `_` (underscore) sign 0, any other characters stand for 1. 
+Every 8 bits in the pattern emit a byte.
+
+Here are a few samples:
+
+```
+.dg ....OOOO        ; #0F
+.dg ___OOOO         ; #1E
+.dg ....OOOO ..OO"  ; #0F, #30
+.dg ....OO OO..OOOO ; #0F, #3C
+```
+
+> Please note, unlinke in the pattern used with `DEFGX`, here, the leading `>` and `<` characters 
+> are taken as bit 1. They do not specify bit alignment.
 
 ### The ERROR Pragma
 

@@ -574,7 +574,28 @@ namespace Spect.Net.Assembler
         public override object VisitDefgPragma(Z80AsmParser.DefgPragmaContext context)
         {
             if (IsInvalidContext(context)) return null;
-            return AddLine(new DefgPragma(""), context);
+            var text = context.DGPRAG().GetText();
+            // --- Cut off the pragma token
+            var firstSpace = text.IndexOf("\u0020", StringComparison.Ordinal);
+            var firstTab = text.IndexOf("\t", StringComparison.Ordinal);
+            if (firstSpace < 0 && firstTab < 0)
+            {
+                // --- This should not happen according to the grammar definition of DGPRAG
+                return null;
+            }
+            if (firstTab > 0 && firstTab < firstSpace)
+            {
+                firstSpace = firstTab;
+            }
+
+            // --- Cut off the comment
+            var commentIndex = text.IndexOf(";", StringComparison.Ordinal);
+            if (commentIndex > 0)
+            {
+                text = text.Substring(0, commentIndex);
+            }
+            var pattern = text.Substring(firstSpace + 1).TrimStart();
+            return AddLine(new DefgPragma(pattern), context);
         }
 
         /// <summary>
