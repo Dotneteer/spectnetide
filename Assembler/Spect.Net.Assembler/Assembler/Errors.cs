@@ -155,7 +155,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0304, "The current assembly address overflew #FFFF." },
             { Z0305, "A string value is used where a numeric value is expected." },
             { Z0306, "A string value is expected." },
-            { Z0307, "Cannot use an empty string with DEFG pragma." },
+            { Z0307, "Cannot use an empty pattern with DEFG pragma." },
             { Z0308, "An integral value is expected." },
             { Z0400, "You cannot define a macro without a name." },
             { Z0401, "Missing {0} statement." },

@@ -1464,6 +1464,9 @@ namespace Spect.Net.Assembler.Assembler
                 case DefgPragma defgPragma:
                     ProcessDefgPragma(defgPragma);
                     break;
+                case DefgxPragma defgxPragma:
+                    ProcessDefgxPragma(defgxPragma);
+                    break;
                 case ErrorPragma errorPragma:
                     ProcessErrorPragma(errorPragma);
                     break;
@@ -1967,6 +1970,17 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessDefgPragma(DefgPragma pragma)
         {
             // --- Obtain and check the DEFG pattern expression
+            var pattern = pragma.Pattern;
+            EmitDefgBytes(pragma, pattern);
+        }
+
+        /// <summary>
+        /// Processes the DEFG pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFG pragma</param>
+        private void ProcessDefgxPragma(DefgxPragma pragma)
+        {
+            // --- Obtain and check the DEFG pattern expression
             var value = EvalImmediate(pragma, pragma.Expr);
             if (!value.IsValid) return;
 
@@ -1977,6 +1991,16 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             var pattern = value.AsString().Trim();
+            EmitDefgBytes(pragma, pattern);
+        }
+
+        /// <summary>
+        /// Emits the pattern bytes for DEFG/DEFGX
+        /// </summary>
+        /// <param name="pragma">Pragma instance</param>
+        /// <param name="pattern">Pattern to emit</param>
+        private void EmitDefgBytes(PragmaBase pragma, string pattern)
+        {
             if (string.IsNullOrEmpty(pattern))
             {
                 ReportError(Errors.Z0307, pragma);
@@ -2000,8 +2024,8 @@ namespace Spect.Net.Assembler.Assembler
             var remainingBits = pattern.Length % 8;
             if (remainingBits > 0)
             {
-                pattern = alignToLeft 
-                    ? pattern.PadRight(pattern.Length + 8 - remainingBits, '_') 
+                pattern = alignToLeft
+                    ? pattern.PadRight(pattern.Length + 8 - remainingBits, '_')
                     : pattern.PadLeft(pattern.Length + 8 - remainingBits, '_');
             }
 

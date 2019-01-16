@@ -1,5 +1,3 @@
-using Spect.Net.Assembler.SyntaxTree.Expressions;
-
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
@@ -10,11 +8,11 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
         /// <summary>
         /// The DEFG pattern value
         /// </summary>
-        public ExpressionNode Expr { get; }
+        public string Pattern { get; }
 
-        public DefgPragma(ExpressionNode expr)
+        public DefgPragma(string pattern)
         {
-            Expr = expr;
+            Pattern = pattern;
         }
     }
 }

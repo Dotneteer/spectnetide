@@ -937,14 +937,14 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        [DataRow(".defg \"___O\"")]
-        [DataRow("defg \"___O\"")]
-        [DataRow(".DEFG \"___O\"")]
-        [DataRow("DEFG \"___O\"")]
-        [DataRow(".dg \"___O\"")]
-        [DataRow("dg \"___O\"")]
-        [DataRow(".DG \"___O\"")]
-        [DataRow("DG \"___O\"")]
+        [DataRow(".defg")]
+        [DataRow("defg")]
+        [DataRow(".DEFG")]
+        [DataRow("DEFG")]
+        [DataRow(".dg")]
+        [DataRow("dg")]
+        [DataRow(".DG")]
+        [DataRow("DG")]
         public void DefgPragmaWorksAsExpected(string source)
         {
             // --- Act
@@ -953,6 +953,26 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefgPragma;
+            line.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".defgx \"___O\"")]
+        [DataRow("defgx \"___O\"")]
+        [DataRow(".DEFGX \"___O\"")]
+        [DataRow("DEFGX \"___O\"")]
+        [DataRow(".dgx \"___O\"")]
+        [DataRow("dgx \"___O\"")]
+        [DataRow(".DGX \"___O\"")]
+        [DataRow("DGX \"___O\"")]
+        public void DefgxPragmaWorksAsExpected(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefgxPragma;
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
         }

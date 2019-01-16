@@ -574,10 +574,25 @@ namespace Spect.Net.Assembler
         public override object VisitDefgPragma(Z80AsmParser.DefgPragmaContext context)
         {
             if (IsInvalidContext(context)) return null;
-            return AddLine(new DefgPragma(
+            return AddLine(new DefgPragma(""), context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.defgxPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitDefgxPragma(Z80AsmParser.DefgxPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+            return AddLine(new DefgxPragma(
                     context.expr() != null
                         ? (ExpressionNode)VisitExpr(context.expr())
-                        : null), 
+                        : null),
                 context);
         }
 

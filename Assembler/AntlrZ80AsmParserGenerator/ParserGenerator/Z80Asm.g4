@@ -45,6 +45,7 @@ pragma
 	|	alignPragma
 	|	tracePragma
 	|	rndSeedPragma
+	|   defgxPragma
 	|	defgPragma
 	|   errorPragma
 	|	incBinPragma
@@ -121,7 +122,8 @@ modelPragma : MODPRAG (IDENTIFIER | NEXT) ;
 alignPragma : ALGPRAG expr? ;
 tracePragma : (TRACE | TRACEHEX) expr ( ',' expr)* ;
 rndSeedPragma: RNDSEED expr? ;
-defgPragma	: DGPRAG expr ;
+defgxPragma	: DGXPRAG expr ;
+defgPragma	: DGPRAG ;
 errorPragma : ERRORPR expr ;
 incBinPragma: INCBIN expr ( ',' expr ( ',' expr)? )? ;
 
@@ -571,8 +573,8 @@ DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' | 'dw' | '.dw' | 'DW' | '.DW' ;
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' | 'dm' | '.dm' | 'DM' | '.DM' ;
 DNPRAG	: '.defn' | '.DEFN' | 'defn' | 'DEFN' | 'dn' | '.dn' | 'DN' | '.DN' ;
 DHPRAG	: '.defh' | '.DEFH' | 'defh' | 'DEFH' | 'dh' | '.dh' | 'DH' | '.DH' ;
-DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
 DGXPRAG	: '.defgx' | '.DEFGX' | 'defgx' | 'DEFGX' | 'dgx' | '.dgx' | 'DGX' | '.DGX' ;
+DGPRAG	: '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' | '.ds' | '.DS' | 'ds' | 'DS' ;
