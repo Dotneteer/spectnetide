@@ -139,7 +139,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0088, "A MODEL pragma can be used only once." },
             { Z0089, "A MODEL pragma can have only these values: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'." },
             { Z0090, "An #ifmod or #ifnmod directive cen be used only with these identifiers: 'SPECTRUM48', 'SPECTRUM128', 'SPECTRUMP3', 'NEXT'." },
-            { Z0091, "DEFM pragma requires a string argument." },
+            { Z0091, "DEFM/DEFN pragma requires a string argument." },
             { Z0092, "ALIGN pragma must be used with a parameter value between 1 and #4000; {0} in an invalid value." },
             { Z0093, "DEFH pragma requires a string argument." },
             { Z0094, "DEFH pragma requires a string with even hexadecimal digits." },

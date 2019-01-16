@@ -1437,8 +1437,8 @@ namespace Spect.Net.Assembler.Assembler
                 case DefwPragma defwPragma:
                     ProcessDefwPragma(defwPragma);
                     return;
-                case DefmPragma defmPragma:
-                    ProcessDefmPragma(defmPragma);
+                case DefmnPragma defmnPragma:
+                    ProcessDefmnPragma(defmnPragma);
                     break;
                 case DefhPragma defhPragma:
                     ProcessDefhPragma(defhPragma);
@@ -1700,11 +1700,11 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
-        /// Processes the DEFM pragma
+        /// Processes the DEFN pragma
         /// </summary>
-        /// <param name="pragma">Assembly line of DEFM pragma</param>
+        /// <param name="pragma">Assembly line of DEFN pragma</param>
         // ReSharper disable once UnusedParameter.Local
-        private void ProcessDefmPragma(DefmPragma pragma)
+        private void ProcessDefmnPragma(DefmnPragma pragma)
         {
             var message = Eval(pragma, pragma.Message);
             if (message.IsValid && message.Type != ExpressionValueType.String)
@@ -1715,6 +1715,10 @@ namespace Spect.Net.Assembler.Assembler
             foreach (var msgByte in bytes)
             {
                 EmitByte(msgByte);
+            }
+            if (pragma.NullTerminator)
+            {
+                EmitByte(0x00);
             }
         }
 
@@ -1752,7 +1756,7 @@ namespace Spect.Net.Assembler.Assembler
                     EmitByte(msgByte);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ReportError(Errors.Z0094, pragma);
             }

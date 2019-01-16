@@ -373,9 +373,30 @@ namespace Spect.Net.Assembler
         {
             if (IsInvalidContext(context)) return null;
 
-            return AddLine(new DefmPragma
+            return AddLine(new DefmnPragma()
             {
-                Message = (ExpressionNode)VisitExpr(context.expr())
+                Message = (ExpressionNode)VisitExpr(context.expr()),
+                NullTerminator = false
+            }, context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.defnPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitDefnPragma(Z80AsmParser.DefnPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            return AddLine(new DefmnPragma
+            {
+                Message = (ExpressionNode)VisitExpr(context.expr()),
+                NullTerminator = true
             }, context);
         }
 

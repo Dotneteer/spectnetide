@@ -449,9 +449,32 @@ namespace Spect.Net.Assembler.Test.Parser
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as DefmPragma;
+            var line = visitor.Compilation.Lines[0] as DefmnPragma;
             line.ShouldNotBeNull();
             line.Message.ShouldNotBeNull();
+            line.NullTerminator.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        [DataRow("defn")]
+        [DataRow("DEFN")]
+        [DataRow("dn")]
+        [DataRow("DN")]
+        [DataRow(".defn")]
+        [DataRow(".DEFN")]
+        [DataRow(".dn")]
+        [DataRow(".DN")]
+        public void DefnPragmaWorksAsExpected(string pragma)
+        {
+            // --- Act
+            var visitor = Parse($"{pragma} \"Message with \\\" mark\"");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefmnPragma;
+            line.ShouldNotBeNull();
+            line.Message.ShouldNotBeNull();
+            line.NullTerminator.ShouldBeTrue();
         }
 
         [TestMethod]
