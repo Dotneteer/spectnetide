@@ -38,6 +38,11 @@ namespace Spect.Net.Assembler.Assembler
         public int CurrentOffset => EmittedCode.Count;
 
         /// <summary>
+        /// Shows the offset of the instruction being compiled.
+        /// </summary>
+        public int CurrentInstructionOffset { get; set; }
+
+        /// <summary>
         /// Emits a new data byte
         /// </summary>
         /// <param name="data"></param>

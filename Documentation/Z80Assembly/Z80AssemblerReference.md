@@ -212,7 +212,7 @@ are all valid binary literals:
 
 > You can use escape sequences to define non-visible or control characters, as you will learn soon.
 
-* __The `$` or `.` tokens__. These literals are equivalent; both represent the current assembly address.
+* __The `$`, `*` or `.` tokens__. These literals are equivalent; all represent the current assembly address.
 
 ### Identifiers
 
@@ -353,7 +353,7 @@ You can use the following operands in epressions:
 * Boolean, Decimal and hexadecimal literals
 * Character literals
 * Identifiers
-* The `$` token
+* The current assembly address
 
 > String literals cannot be used as operands.
 
@@ -1933,6 +1933,10 @@ The __SpectNetIde__ assembler provides you a powerful way to declare macros, and
 While in most programming languages and assemblers the macros are preprocessor constructs and use simple
 text replacement, the __SpectNetIde__ implementation is different.
 
+> Unlike in C, C++ (and some Z80 Assemblers), __SpectNetIde__ macros emit only code (through instructions
+and pragmas), they cannot be used as user-defined functions. When you pass parameters to macros, any expression in the parameters is evaluated instantly, so you cannot
+use unknown symbols or variables &mdash; ones that will get their values only somewhere later in the code.
+
 ### Getting Started with Macros
 
 The best way to show you what macros can do is real code. Let's start with a simple parameterless macro:
@@ -2352,8 +2356,8 @@ SetHlValue(#4000+#20)
 SetHlValue([#4000+#20])
 ```
 
-When you pass parameters to macros, any expression in the parameters is evaluated instantly, so you cannot
-use unknown symbols or variables &mdash; ones that will get their values only somewhere later in the code.
+_When you pass parameters to macros, any expression in the parameters is evaluated instantly, so you cannot
+use unknown symbols or variables &mdash; ones that will get their values only somewhere later in the code._
 
 The compiler replaces the macro argument references to their current values passed in parameters. 
 Whenever you use an expression, its value is converted into a string and put into the place of the 

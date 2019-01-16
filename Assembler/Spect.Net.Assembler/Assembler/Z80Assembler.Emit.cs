@@ -54,6 +54,19 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
+        /// Gets the current assembly address (represented by the "$" sign
+        /// in the assembly language)
+        /// </summary>
+        /// <returns></returns>
+        public ushort GetCurrentInstructionAddress()
+        {
+            EnsureCodeSegment();
+            return (ushort)(CurrentSegment.StartAddress
+                            + (CurrentSegment?.Displacement ?? 0)
+                            + CurrentSegment.CurrentInstructionOffset);
+        }
+
+        /// <summary>
         /// Emits the code after processing the directives
         /// </summary>
         /// <returns></returns>
@@ -194,6 +207,8 @@ namespace Spect.Net.Assembler.Assembler
                 if (asmLine is PragmaBase pragmaLine)
                 {
                     // --- Process a pragma
+                    GetCurrentAssemblyAddress();
+                    CurrentSegment.CurrentInstructionOffset = CurrentSegment.EmittedCode.Count;
                     ApplyPragma(pragmaLine, currentLabel);
                 }
                 else if (asmLine is StatementBase statement)
@@ -204,6 +219,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // --- Emit the code output
                     var addr = GetCurrentAssemblyAddress();
+                    CurrentSegment.CurrentInstructionOffset = CurrentSegment.EmittedCode.Count;
                     EmitAssemblyOperationCode(opLine);
 
                     // --- Generate source map information
@@ -3618,6 +3634,7 @@ namespace Spect.Net.Assembler.Assembler
                 CurrentSegment = new BinarySegment
                 {
                     StartAddress = _options?.DefaultStartAddress ?? 0x8000,
+                    CurrentInstructionOffset = 0
                 };
                 _output.Segments.Add(CurrentSegment);
             }

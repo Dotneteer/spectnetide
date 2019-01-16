@@ -339,6 +339,7 @@ literalExpr
 	| BOOLLIT
 	| STRING
 	| CURADDR
+	| MULOP   // Functions as the third CURADDR token
 	| CURCNT
 	;
 

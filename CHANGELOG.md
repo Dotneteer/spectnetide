@@ -1,3 +1,11 @@
+### Version 1.13.0
+__BREAK__: The `DEFG` pragma uses a string pattern and not a string expression any more.  
+__FEATURE__: The new `DEFGX` pragma overtakes the role of the former `DEFG` pragma. This change
+was done to be compatible with other Z80 Assemblers.  
+__FEATURE__: Now, you can use the `*` token just like `$` and `.` to obtain the current
+assembly address.  
+
+
 ### Version 1.12.0
 __FEATURE__: The Z80 assembler supports the `PROC`..`ENDP` statement to create local labels.  
 __FEATURE__: You can use new pragmas: `DEFH` (emit bytes from a string with hexadecimal digits),

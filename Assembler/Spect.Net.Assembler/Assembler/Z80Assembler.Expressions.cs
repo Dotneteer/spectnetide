@@ -16,7 +16,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Gets the current assembly address
         /// </summary>
-        ushort IEvaluationContext.GetCurrentAddress() => GetCurrentAssemblyAddress();
+        ushort IEvaluationContext.GetCurrentAddress() => GetCurrentInstructionAddress();
 
         /// <summary>
         /// Gets the value of the specified symbol

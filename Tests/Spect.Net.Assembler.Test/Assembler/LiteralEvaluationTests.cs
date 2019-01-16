@@ -78,9 +78,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             // --- Arrange
             var assembler = new Z80Assembler();
-            assembler.Compile("");
-            assembler.EmitByte(0x00);
-            assembler.EmitByte(0x00);
+            assembler.Compile("nop \n nop \n nop");
 
             // --- Act
             var exprNode = ParseExpr("$");
@@ -95,7 +93,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             // --- Arrange
             var assembler = new Z80Assembler();
-            assembler.Compile("");
+            assembler.Compile("nop \n nop \n nop");
             assembler.GetCurrentAssemblyAddress();
             assembler.CurrentSegment.StartAddress = 0x6800;
             assembler.EmitByte(0x00);
@@ -114,7 +112,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             // --- Arrange
             var assembler = new Z80Assembler();
-            assembler.Compile("");
+            assembler.Compile("nop \n nop \n nop");
             assembler.GetCurrentAssemblyAddress();
             assembler.CurrentSegment.StartAddress = 0x6800;
             assembler.CurrentSegment.Displacement = 0x200;

@@ -151,8 +151,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)0x8004);
             output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)0x8003);
+            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)0x8004);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {

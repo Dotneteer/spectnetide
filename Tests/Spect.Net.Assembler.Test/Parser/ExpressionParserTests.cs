@@ -521,6 +521,7 @@ namespace Spect.Net.Assembler.Test.Parser
         [TestMethod]
         [DataRow("$")]
         [DataRow(".")]
+        [DataRow("*")]
         public void CurrentAssemblyAddressParsingWorks(string source)
         {
             // --- Act

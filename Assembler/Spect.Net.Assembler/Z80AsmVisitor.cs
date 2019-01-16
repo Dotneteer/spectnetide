@@ -1668,7 +1668,7 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
 
             var token = context.NormalizeToken();
-            if (context.CURADDR() != null)
+            if (context.CURADDR() != null || context.MULOP() != null)
             {
                 AddSemiVar(context);
                 return new CurrentAddressNode();
