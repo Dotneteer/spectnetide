@@ -531,6 +531,119 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                         args => new ExpressionValue(args[0].AsString()), ExpressionValueType.String)
                 }
             },
+            { "scraddr", new []
+                {
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var line = args[0].AsLong();
+                            if (line < 0 || line > 191)
+                            {
+                                throw new InvalidOperationException(
+                                    $"The 'line' argument of scraddr must be between 0 and 191. It cannot be {line}.");
+                            }
+
+                            var col = args[1].AsLong();
+                            if (col < 0 || col > 192)
+                            {
+                                throw new InvalidOperationException(
+                                    $"The 'col' argument of scraddr must be between 0 and 255. It cannot be {col}.");
+                            }
+                            return new ExpressionValue(0L);
+                        },
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "attraddr", new []
+                {
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var line = args[0].AsLong();
+                            if (line < 0 || line > 191)
+                            {
+                                throw new InvalidOperationException(
+                                    $"The 'line' argument of attraddr must be between 0 and 191. It cannot be {line}.");
+                            }
+
+                            var col = args[1].AsLong();
+                            if (col < 0 || col > 192)
+                            {
+                                throw new InvalidOperationException(
+                                    $"The 'col' argument of attraddr must be between 0 and 255. It cannot be {col}.");
+                            }
+                            return new ExpressionValue(0L);
+                        },
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "ink", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsLong() & 0x07),
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "paper", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue((args[0].AsLong() & 0x07) << 3),
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "bright", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsLong() == 0 ? 0x00 : 0x40),
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "flash", new []
+                {
+                    new FunctionEvaluator(
+                        args => new ExpressionValue(args[0].AsLong() == 0 ? 0x00 : 0x80),
+                        ExpressionValueType.Integer)
+                }
+            },
+            { "attr", new []
+                {
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var ink = (byte)(args[0].AsLong() & 0x07);
+                            var paper = (byte)((args[1].AsLong() & 0x07) << 3);
+                            var bright = (byte)(args[2].AsLong() == 0 ? 0x00 : 0x40);
+                            var flash = (byte)(args[3].AsLong() == 0 ? 0x00 : 0x80);
+                            return new ExpressionValue(flash | bright | paper | ink);
+                        },
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer),
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var ink = (byte)(args[0].AsLong() & 0x07);
+                            var paper = (byte)((args[1].AsLong() & 0x07) << 3);
+                            var bright = (byte)(args[2].AsLong() == 0 ? 0x00 : 0x40);
+                            return new ExpressionValue(bright | paper | ink);
+                        },
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer),
+                    new FunctionEvaluator(
+                        args =>
+                        {
+                            var ink = (byte)(args[0].AsLong() & 0x07);
+                            var paper = (byte)((args[1].AsLong() & 0x07) << 3);
+                            return new ExpressionValue(paper | ink);
+                        },
+                        ExpressionValueType.Integer,
+                        ExpressionValueType.Integer)
+                }
+            },
         };
     }
 }

@@ -1174,5 +1174,147 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             EvalExpression(source, expected);
         }
+
+        [TestMethod]
+        [DataRow("ink(0)", 0x00)]
+        [DataRow("ink(1)", 0x01)]
+        [DataRow("ink(2)", 0x02)]
+        [DataRow("ink(3)", 0x03)]
+        [DataRow("ink(4)", 0x04)]
+        [DataRow("ink(5)", 0x05)]
+        [DataRow("ink(6)", 0x06)]
+        [DataRow("ink(7)", 0x07)]
+        [DataRow("ink(8)", 0x00)]
+        public void InkWithIntegerWorks(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("paper(0)", 0x00)]
+        [DataRow("paper(1)", 0x08)]
+        [DataRow("paper(2)", 0x10)]
+        [DataRow("paper(3)", 0x18)]
+        [DataRow("paper(4)", 0x20)]
+        [DataRow("paper(5)", 0x28)]
+        [DataRow("paper(6)", 0x30)]
+        [DataRow("paper(7)", 0x38)]
+        [DataRow("paper(9)", 0x08)]
+        public void PaperWithIntegerWorks(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("bright(0)", 0x00)]
+        [DataRow("bright(1)", 0x40)]
+        [DataRow("bright(-1)", 0x40)]
+        [DataRow("bright(2)", 0x40)]
+        public void BrightWithIntegerWorks(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("flash(0)", 0x00)]
+        [DataRow("flash(1)", 0x80)]
+        [DataRow("flash(-1)", 0x80)]
+        [DataRow("flash(3)", 0x80)]
+        public void FlashWithIntegerWorks(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("attr(0, 0, 0, 0)", 0x00)]
+        [DataRow("attr(1, 0, 0, 0)", 0x01)]
+        [DataRow("attr(5, 0, 0, 0)", 0x05)]
+        [DataRow("attr(9, 0, 0, 0)", 0x01)]
+        [DataRow("attr(1, 3, 0, 0)", 0x19)]
+        [DataRow("attr(5, 3, 0, 0)", 0x1D)]
+        [DataRow("attr(9, 3, 0, 0)", 0x19)]
+        [DataRow("attr(1, 11, 0, 0)", 0x19)]
+        [DataRow("attr(5, 11, 0, 0)", 0x1D)]
+        [DataRow("attr(9, 11, 0, 0)", 0x19)]
+
+        [DataRow("attr(0, 0, 1, 0)", 0x40)]
+        [DataRow("attr(1, 0, 1, 0)", 0x41)]
+        [DataRow("attr(5, 0, 1, 0)", 0x45)]
+        [DataRow("attr(9, 0, 1, 0)", 0x41)]
+        [DataRow("attr(1, 3, 1, 0)", 0x59)]
+        [DataRow("attr(5, 3, 1, 0)", 0x5D)]
+        [DataRow("attr(9, 3, 1, 0)", 0x59)]
+        [DataRow("attr(1, 11, 1, 0)", 0x59)]
+        [DataRow("attr(5, 11, 1, 0)", 0x5D)]
+        [DataRow("attr(9, 11, 1, 0)", 0x59)]
+
+        [DataRow("attr(0, 0, 1, 1)", 0xC0)]
+        [DataRow("attr(1, 0, 1, 1)", 0xC1)]
+        [DataRow("attr(5, 0, 1, 1)", 0xC5)]
+        [DataRow("attr(9, 0, 1, 1)", 0xC1)]
+        [DataRow("attr(1, 3, 1, 1)", 0xD9)]
+        [DataRow("attr(5, 3, 1, 1)", 0xDD)]
+        [DataRow("attr(9, 3, 1, 1)", 0xD9)]
+        [DataRow("attr(1, 11, 1, 1)", 0xD9)]
+        [DataRow("attr(5, 11, 1, 1)", 0xDD)]
+        [DataRow("attr(9, 11, 1, 1)", 0xD9)]
+
+        [DataRow("attr(0, 0, 0, 1)", 0x80)]
+        [DataRow("attr(1, 0, 0, 1)", 0x81)]
+        [DataRow("attr(5, 0, 0, 1)", 0x85)]
+        [DataRow("attr(9, 0, 0, 1)", 0x81)]
+        [DataRow("attr(1, 3, 0, 1)", 0x99)]
+        [DataRow("attr(5, 3, 0, 1)", 0x9D)]
+        [DataRow("attr(9, 3, 0, 1)", 0x99)]
+        [DataRow("attr(1, 11, 0, 1)", 0x99)]
+        [DataRow("attr(5, 11, 0, 1)", 0x9D)]
+        [DataRow("attr(9, 11, 0, 1)", 0x99)]
+
+        [DataRow("attr(0, 0, 0)", 0x00)]
+        [DataRow("attr(1, 0, 0)", 0x01)]
+        [DataRow("attr(5, 0, 0)", 0x05)]
+        [DataRow("attr(9, 0, 0)", 0x01)]
+        [DataRow("attr(1, 3, 0)", 0x19)]
+        [DataRow("attr(5, 3, 0)", 0x1D)]
+        [DataRow("attr(9, 3, 0)", 0x19)]
+        [DataRow("attr(1, 11, 0)", 0x19)]
+        [DataRow("attr(5, 11, 0)", 0x1D)]
+        [DataRow("attr(9, 11, 0)", 0x19)]
+
+        [DataRow("attr(0, 0)", 0x00)]
+        [DataRow("attr(1, 0)", 0x01)]
+        [DataRow("attr(5, 0)", 0x05)]
+        [DataRow("attr(9, 0)", 0x01)]
+        [DataRow("attr(1, 3)", 0x19)]
+        [DataRow("attr(5, 3)", 0x1D)]
+        [DataRow("attr(9, 3)", 0x19)]
+        [DataRow("attr(1, 11)", 0x19)]
+        [DataRow("attr(5, 11)", 0x1D)]
+        [DataRow("attr(9, 11)", 0x19)]
+        public void AttrWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("scraddr(-1, 0)")]
+        [DataRow("scraddr(192, 0)")]
+        [DataRow("scraddr(0, -1)")]
+        [DataRow("scraddr(0, 256)")]
+        public void ScrAddrWithInvalidArgsFails(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("attraddr(-1, 0)")]
+        [DataRow("attraddr(192, 0)")]
+        [DataRow("attraddr(0, -1)")]
+        [DataRow("attraddr(0, 256)")]
+        public void AttrAddrWithInvalidArgsFails(string source)
+        {
+            EvalFails(source);
+        }
+
     }
 }
