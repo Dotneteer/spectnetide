@@ -544,12 +544,16 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                             }
 
                             var col = args[1].AsLong();
-                            if (col < 0 || col > 192)
+                            if (col < 0 || col > 255)
                             {
                                 throw new InvalidOperationException(
                                     $"The 'col' argument of scraddr must be between 0 and 255. It cannot be {col}.");
                             }
-                            return new ExpressionValue(0L);
+                            var da = 0x4000 | (col >> 3) | (line << 5);
+                            var addr = (ushort)((da & 0xF81F)
+                                            | ((da & 0x0700) >> 3)
+                                            | ((da & 0x00E0) << 3));
+                            return new ExpressionValue(addr);
                         },
                         ExpressionValueType.Integer,
                         ExpressionValueType.Integer)
@@ -568,12 +572,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                             }
 
                             var col = args[1].AsLong();
-                            if (col < 0 || col > 192)
+                            if (col < 0 || col > 255)
                             {
                                 throw new InvalidOperationException(
                                     $"The 'col' argument of attraddr must be between 0 and 255. It cannot be {col}.");
                             }
-                            return new ExpressionValue(0L);
+                            return new ExpressionValue(0x5800 + (line >> 3) * 32 + (col >> 3) );
                         },
                         ExpressionValueType.Integer,
                         ExpressionValueType.Integer)

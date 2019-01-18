@@ -454,14 +454,19 @@ Signature | Value | Description
 `asin(float)` | `float` | The angle whose sine is the specified number.
 `atan(float)` | `float` | The angle whose tangent is the specified number.
 `atan2(float, float)` | `float` | The angle whose tangent is the quotient of two specified numbers.
-`ceiling(float)` | `float` | The smallest integral value that is greater than or equal to the specified number.
+`attr(integer, integer, boolean, boolean)` | `integer` | Retrieves the color attribute byte value defined by `ink` (first argument, 0 to 7), `paper` (second argument, 0 to 7), `bright` (third argument, 0 - non-zero), and `flash` (fourth argument, 0 - non-zero). The `bright` and `flash` values are optional.
+`attraddr(integer, integer)` | `integer` | Returns the memory address of the byte specified screen attribute in the given line (first argument, from top to bottom, 0-192) and column (second argumment, from left to right, 0-255).`ceiling(float)`
+`bright(boolean)` | `integer` | Retrieves the bright flag defined by the attribute (0 - non-zero). Can be ORed to create color attribute value.
+`ceiling(float`) | `float` | The smallest integral value that is greater than or equal to the specified number.
 `cos(float)` | `float` | The cosine of the specified angle.
 `cosh(float)` | `float` | The hyperbolic cosine of the specified angle.
 `exp(float)` | `float` | __e__ raised to the specified power.
 `fill(string, integer)` | `string` | Creates a new string by concatenating the specified one with the given times.
+`flash(boolean)` | `integer` | Retrieves the flash flag defined by the argument (0 - non-zero). Can be ORed to create color attribute value.
 `floor(float)` | `float` | The largest integer less than or equal to the specified number.
 `frac(float)` | `float` | The fractional part of the specified number.
 `high(integer)` | `integer` | The leftmost 8 bits (MSB) of a 16-bit integer number.
+`ink(integer)` | `integer` | Retrieves the three ink bits defined by the color argument (0 to 7). Can be ORed to create color attribute value.
 `int(float)` | `integer` | The integer part of the specified number.
 `lcase(string)` | `string` | The lowercase version of the input string.
 `left(string, integer)` | `string` | Takes the leftmost characters of the string with the length specified.
@@ -477,6 +482,7 @@ Signature | Value | Description
 `min(integer, integer)` | `integer` |  The smaller of two *integer* numbers.
 `min(float, float)` | `float` | The smaller of two *float* numbers.
 `nat()` | `float` | Represents the natural logarithmic base, specified by the constant, __e__.
+`paper(integer)` | `integer` | retrieves the three paper bits defined by the argument (0 to 7). Can be ORed to create color attribute value.
 `pi()` | `float` | Represents the ratio of the circumference of a circle to its diameter, specified by the constant, __&pi;__.
 `pow(float, float)` | `float` | The specified number raised to the specified power.
 `right(string, integer)` | `string` | Takes the rightmost characters of the string with the length specified.
@@ -484,6 +490,7 @@ Signature | Value | Description
 `round(float, int)` | `float` | Rounds a *float* value to a specified number of fractional digits.
 `rnd()` | `integer` | Returns a random 32-bit number.
 `rnd(integer, integer)` | `integer` | Returns a random 32-bit integer between the first and second number.
+`scraddr(integer, integer)` | `integer` | Retrieves the memory address of the screen pixel byte in the specified line (first argument, from top to bottom, 0-192) and in the specified column (second argument, from left to right, 0-255).
 `sign(integer)` | `integer` | Returns an integer that indicates the sign of an *integer* number.
 `sign(float)` | `integer` | Returns an integer that indicates the sign of a *float* number.
 `sin(float)` | `float` | The sine of the specified angle.

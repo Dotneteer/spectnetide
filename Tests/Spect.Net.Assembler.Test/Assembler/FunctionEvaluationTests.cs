@@ -1297,6 +1297,54 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        [DataRow("scraddr(0, 0)", 0x4000)]
+        [DataRow("scraddr(0, 3)", 0x4000)]
+        [DataRow("scraddr(0, 7)", 0x4000)]
+        [DataRow("scraddr(0, 8)", 0x4001)]
+        [DataRow("scraddr(1, 0)", 0x4100)]
+        [DataRow("scraddr(1, 3)", 0x4100)]
+        [DataRow("scraddr(1, 7)", 0x4100)]
+        [DataRow("scraddr(1, 8)", 0x4101)]
+        [DataRow("scraddr(3, 0)", 0x4300)]
+        [DataRow("scraddr(3, 3)", 0x4300)]
+        [DataRow("scraddr(3, 7)", 0x4300)]
+        [DataRow("scraddr(3, 8)", 0x4301)]
+        [DataRow("scraddr(7, 255)", 0x471f)]
+        [DataRow("scraddr(7, 254)", 0x471f)]
+        [DataRow("scraddr(7, 246)", 0x471e)]
+        [DataRow("scraddr(7, 244)", 0x471e)]
+        [DataRow("scraddr(8, 0)", 0x4020)]
+        [DataRow("scraddr(8, 3)", 0x4020)]
+        [DataRow("scraddr(8, 7)", 0x4020)]
+        [DataRow("scraddr(8, 8)", 0x4021)]
+        [DataRow("scraddr(9, 0)", 0x4120)]
+        [DataRow("scraddr(9, 3)", 0x4120)]
+        [DataRow("scraddr(9, 7)", 0x4120)]
+        [DataRow("scraddr(9, 8)", 0x4121)]
+        [DataRow("scraddr(64, 0)", 0x4800)]
+        [DataRow("scraddr(64, 3)", 0x4800)]
+        [DataRow("scraddr(64, 7)", 0x4800)]
+        [DataRow("scraddr(64, 8)", 0x4801)]
+        [DataRow("scraddr(65, 0)", 0x4900)]
+        [DataRow("scraddr(65, 3)", 0x4900)]
+        [DataRow("scraddr(65, 7)", 0x4900)]
+        [DataRow("scraddr(65, 8)", 0x4901)]
+        [DataRow("scraddr(128, 0)", 0x5000)]
+        [DataRow("scraddr(128, 3)", 0x5000)]
+        [DataRow("scraddr(128, 7)", 0x5000)]
+        [DataRow("scraddr(128, 8)", 0x5001)]
+        [DataRow("scraddr(129, 0)", 0x5100)]
+        [DataRow("scraddr(129, 3)", 0x5100)]
+        [DataRow("scraddr(129, 7)", 0x5100)]
+        [DataRow("scraddr(129, 8)", 0x5101)]
+        [DataRow("scraddr(191, 255)", 0x57ff)]
+        [DataRow("scraddr(190, 255)", 0x56ff)]
+        public void ScrAddrWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
         [DataRow("scraddr(-1, 0)")]
         [DataRow("scraddr(192, 0)")]
         [DataRow("scraddr(0, -1)")]
@@ -1304,6 +1352,24 @@ namespace Spect.Net.Assembler.Test.Assembler
         public void ScrAddrWithInvalidArgsFails(string source)
         {
             EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("attraddr(0, 0)", 0x5800)]
+        [DataRow("attraddr(0, 4)", 0x5800)]
+        [DataRow("attraddr(0, 8)", 0x5801)]
+        [DataRow("attraddr(7, 0)", 0x5800)]
+        [DataRow("attraddr(7, 4)", 0x5800)]
+        [DataRow("attraddr(7, 8)", 0x5801)]
+        [DataRow("attraddr(8, 0)", 0x5820)]
+        [DataRow("attraddr(8, 4)", 0x5820)]
+        [DataRow("attraddr(8, 8)", 0x5821)]
+        [DataRow("attraddr(70, 255)", 0x591f)]
+        [DataRow("attraddr(130, 25)", 0x5a03)]
+        [DataRow("attraddr(191, 255)", 0x5aff)]
+        public void AttrAddrWorksAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
         }
 
         [TestMethod]

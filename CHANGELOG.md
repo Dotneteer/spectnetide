@@ -4,7 +4,9 @@ __FEATURE__: The new `DEFGX` pragma overtakes the role of the former `DEFG` prag
 was done to be compatible with other Z80 Assemblers.  
 __FEATURE__: Now, you can use the `*` token just like `$` and `.` to obtain the current
 assembly address.  
-
+__FEATURE__: New built-in functions support screen and color handling: `scraddr()`, `attraddr()`, 
+ink(), `paper()`, `bright()`, `flash()`, and `attr()`.  
+__FIX__: Documentation of macros now contains explicit statement that macros cannot be used as user-defined functions.  
 
 ### Version 1.12.0
 __FEATURE__: The Z80 assembler supports the `PROC`..`ENDP` statement to create local labels.  
