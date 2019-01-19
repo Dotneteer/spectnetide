@@ -32,7 +32,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// <param name="mc"></param>
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
-            mc.Visible = ItemPath != null;
+            mc.Visible = Package?.CodeDiscoverySolution?.CurrentProject != null 
+                && ItemPath != null;
         }
 
         /// <summary>

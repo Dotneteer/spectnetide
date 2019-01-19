@@ -345,6 +345,7 @@ namespace Spect.Net.VsPackage
                 ErrorList.Clear();
                 DebugInfoProvider.Clear();
                 MachineViewModel?.Stop();
+                CodeDiscoverySolution = null;
             }
             catch (Exception e)
             {

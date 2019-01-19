@@ -39,6 +39,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Floppy
         {
             base.OnQueryStatus(mc);
             if (!mc.Visible) return;
+
             var state = Package.MachineViewModel.MachineState;
             mc.Visible = state == VmState.Paused || state == VmState.Running;
         }

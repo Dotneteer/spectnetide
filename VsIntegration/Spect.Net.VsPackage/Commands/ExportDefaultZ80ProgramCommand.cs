@@ -25,6 +25,9 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
+            base.OnQueryStatus(mc);
+            if (!mc.Visible) return;
+
             var project = Package.CodeDiscoverySolution.CurrentProject;
             var enabled = project.DefaultZ80CodeItem != null;
             if (enabled)

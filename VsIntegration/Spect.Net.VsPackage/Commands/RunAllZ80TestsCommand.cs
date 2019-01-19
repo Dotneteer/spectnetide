@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Spect.Net.VsPackage.Vsx;
+﻿using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Z80Programs.Commands;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Commands
 {

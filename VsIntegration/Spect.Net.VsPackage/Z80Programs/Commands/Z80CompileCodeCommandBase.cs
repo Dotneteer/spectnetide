@@ -67,6 +67,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
             base.OnQueryStatus(mc);
+            if (!mc.Visible) return;
+
             mc.Enabled = !Package.CodeManager.CompilatioInProgress;
         }
 
