@@ -716,6 +716,15 @@
 
   </Commands>
 
+  <KeyBindings>  
+    <KeyBinding guid="guidSpectNetCmdSet" id="RunZ80DefaultProgramCommandId"   
+      editor="guidVSStd97" key1="M" mod1="Control" key2="R" mod2="Control"/>  
+    <KeyBinding guid="guidSpectNetCmdSet" id="DebugZ80DefaultProgramCommandId"   
+                editor="guidVSStd97" key1="M" mod1="Control" key2="R"/>  
+    <KeyBinding guid="guidSpectNetCmdSet" id="EmulatorStop"   
+                editor="guidVSStd97" key1="M" mod1="Control" key2="S" mod2="Control"/>  
+  </KeyBindings>  
+
   <VisibilityConstraints>
     <VisibilityItem guid="guidSpectNetCmdSet" id="TopLevelMenu" context="SpectrumCodeDiscoveryProject" />
   </VisibilityConstraints>

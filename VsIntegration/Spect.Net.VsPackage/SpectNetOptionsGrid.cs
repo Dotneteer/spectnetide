@@ -66,22 +66,22 @@ namespace Spect.Net.VsPackage
         [DisplayName("Confirm machine restart")]
         [Description("Asks the user to confirm restarting the virtual " +
                      "machine before running injected Z80 code")]
-        public bool ConfirmMachineRestart { get; set; } = true;
+        public bool ConfirmMachineRestart { get; set; } = false;
 
         [Category("Run Z80 Code")]
         [DisplayName("Confirm code start")]
         [Description("Displays a confirmation message about starting the code")]
-        public bool ConfirmCodeStart { get; set; } = true;
+        public bool ConfirmCodeStart { get; set; } = false;
 
         [Category("Run Z80 Code")]
         [DisplayName("Confirm successful code compilation")]
         [Description("Displays a confirmation message about successfully compiling code")]
-        public bool ConfirmCodeCompile { get; set; } = true;
+        public bool ConfirmCodeCompile { get; set; } = false;
 
         [Category("Run Z80 Code")]
         [DisplayName("Confirm code injection")]
         [Description("Displays a confirmation message about injecting the code")]
-        public bool ConfirmInjectCode { get; set; } = true;
+        public bool ConfirmInjectCode { get; set; } = false;
 
         [Category("Run Z80 Code")]
         [DisplayName("Predefined debug symbols")]
