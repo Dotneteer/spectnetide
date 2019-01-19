@@ -52,6 +52,20 @@ namespace Spect.Net.ProjectWizard
             var selected = spectrumDialog.Vm.SelectedItem;
             if (result == null || !result.Value || selected == null)
             {
+                if (replacementsDictionary.TryGetValue("$solutiondirectory$", out var solutionDir)
+                    && replacementsDictionary.TryGetValue("$projectname$", out var projectName))
+                {
+                    var innerDir = Path.Combine(solutionDir, projectName);
+                    try
+                    {
+                        Directory.Delete(innerDir);
+                        Directory.Delete(solutionDir);
+                    }
+                    catch
+                    {
+                        // --- This exception in intntionally ignored.
+                    }
+                }
                 throw new WizardCancelledException();
             }
 

@@ -45,6 +45,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         private void OnLoaded(object s, RoutedEventArgs e)
         {
+            Vm.MachineViewModel.MemViewPointChanged += OnMemViewPointChanged;
             if (!Vm.ViewInitializedWithSolution)
             {
                 Vm.ViewInitializedWithSolution = true;
@@ -57,7 +58,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     Vm.SetFullViewMode();
                 }
             }
-            ScrollToTop(0);
+            ScrollToTop(Vm.MachineViewModel.MemViewPoint);
+            Vm.RefreshViewMode();
+        }
+
+        private void OnMemViewPointChanged(object sender, EventArgs e)
+        {
+            ScrollToTop(Vm.MachineViewModel.MemViewPoint);
             Vm.RefreshViewMode();
         }
 
@@ -65,6 +72,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             Prompt.IsValid = true;
             Prompt.CommandText = "";
+            Vm.MachineViewModel.MemViewPointChanged -= OnMemViewPointChanged;
         }
 
         /// <summary>

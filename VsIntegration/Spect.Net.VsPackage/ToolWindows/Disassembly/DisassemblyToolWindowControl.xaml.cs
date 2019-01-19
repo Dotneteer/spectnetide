@@ -35,6 +35,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             InitializeComponent();
             Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
             PreviewKeyDown += (s, e) => DisassemblyControl.DisassemblyList.HandleListViewKeyEvents(e);
             PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
             Prompt.CommandLineEntered += OnCommandLineEntered;
@@ -49,6 +50,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private void OnLoaded(object s, RoutedEventArgs e)
         {
+            Vm.MachineViewModel.MemViewPointChanged += OnDisAssViewPointChanged;
             if (!Vm.ViewInitializedWithSolution)
             {
                 // --- Set the proper view mode when first initialized 
@@ -62,9 +64,21 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     Vm.SetFullViewMode();
                 }
             }
-            ScrollToTop(Vm.VmPaused ? Vm.MachineViewModel.SpectrumVm.Cpu.Registers.PC : (ushort)0);
+            ScrollToTop(Vm.VmPaused ? Vm.MachineViewModel.SpectrumVm.Cpu.Registers.PC : Vm.MachineViewModel.DisAssViewPoint);
             Vm.RefreshViewMode();
         }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            Vm.MachineViewModel.MemViewPointChanged -= OnDisAssViewPointChanged;
+        }
+
+        private void OnDisAssViewPointChanged(object sender, EventArgs e)
+        {
+            ScrollToTop(Vm.MachineViewModel.DisAssViewPoint);
+            Vm.RefreshViewMode();
+        }
+
 
         /// <summary>
         /// Refreshes the disassembly view whenever the view model asks to do so.

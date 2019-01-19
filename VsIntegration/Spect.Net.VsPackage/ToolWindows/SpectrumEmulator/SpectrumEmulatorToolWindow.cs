@@ -82,7 +82,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override void OnExecute()
             {
                 PrepareRunOptions();
-                Package.MachineViewModel.Start();
+                var vm = Package.MachineViewModel;
+
+                if (vm.MachineState == VmState.None || vm.MachineState == VmState.Stopped)
+                {
+                    vm.MemViewPoint = 0x000;
+                    vm.DisAssViewPoint = 0x000;
+                }
+                vm.Start();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc) 
@@ -96,8 +103,13 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public class StopVmCommand :
             VsxAsyncCommand<SpectNetPackage, SpectNetCommandSet>
         {
-            protected override async Task ExecuteAsync() 
-                => await Package.MachineViewModel.Stop();
+            protected override async Task ExecuteAsync()
+            {
+                var vm = Package.MachineViewModel;
+                await vm.Stop();
+                vm.MemViewPoint = 0x000;
+                vm.DisAssViewPoint = 0x000;
+            }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
             {

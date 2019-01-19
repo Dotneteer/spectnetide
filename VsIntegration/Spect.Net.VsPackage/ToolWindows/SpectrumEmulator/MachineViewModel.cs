@@ -17,6 +17,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     {
         private SpectrumDisplayMode _displayMode;
         private bool _runsInDebugMode;
+        private ushort _memViewPoint;
+        private ushort _disAssViewPoint;
 
         #region ViewModel properties
 
@@ -143,6 +145,40 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// routine should be skipped
         /// </summary>
         public bool SkipInterruptRoutine { get; set; }
+
+        /// <summary>
+        /// Sets the memory address to navigate to when showing the ZX Spectrum Memory window
+        /// </summary>
+        public ushort MemViewPoint
+        {
+            get => _memViewPoint;
+            set
+            {
+                Set(ref _memViewPoint, value);
+                MemViewPointChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Sign that the screen of the virtual machnine has been refresehd
+        /// </summary>
+        public event EventHandler MemViewPointChanged;
+
+        /// <summary>
+        /// Sets the memory address to navigate to when showing the Z80 Disassembly window
+        /// </summary>
+        public ushort DisAssViewPoint
+        {
+            get => _disAssViewPoint;
+            set
+            {
+                Set(ref _disAssViewPoint, value);
+                DisAssViewPointChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler DisAssViewPointChanged;
+
 
         #endregion
 

@@ -539,7 +539,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             base.OnFirstStart();
             DisassemblyViewRefreshed?.Invoke(this,
-                new DisassemblyViewRefreshedEventArgs(0));
+                new DisassemblyViewRefreshedEventArgs(MachineViewModel.DisAssViewPoint));
         }
 
         /// <summary>

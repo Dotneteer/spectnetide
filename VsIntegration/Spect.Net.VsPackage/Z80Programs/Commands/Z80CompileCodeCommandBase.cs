@@ -16,6 +16,34 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         protected AssemblerOutput Output { get; set; }
 
         /// <summary>
+        /// The start address of the memory view
+        /// </summary>
+        public int MemoryStartAddress
+        {
+            get
+            {
+                if (Output == null) return -1;
+                if (Output.EntryAddress != null) return Output.EntryAddress.Value;
+                return Output.ExportEntryAddress 
+                    ?? Output.Segments[0].StartAddress;
+            }
+        }
+
+        /// <summary>
+        /// The start address of the diassembly view
+        /// </summary>
+        public int DisassemblyStartAddress
+        {
+            get
+            {
+                if (Output == null) return -1;
+                if (Output.EntryAddress != null) return Output.EntryAddress.Value;
+                return Output.ExportEntryAddress
+                       ?? Output.Segments[0].StartAddress;
+            }
+        }
+
+        /// <summary>
         /// Gets the start address to use when running code
         /// </summary>
         public int StartAddress => 
