@@ -258,7 +258,7 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>Start</ButtonText>
+          <ButtonText>Start (Ctrl+F5)</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorStop" priority="0x0100" type="Button">

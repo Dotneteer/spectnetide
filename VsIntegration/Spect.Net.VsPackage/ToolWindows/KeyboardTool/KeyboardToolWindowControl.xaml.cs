@@ -43,6 +43,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
                 ReleaseKeys(Row3);
                 ReleaseKeys(Row4);
             };
+            PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
         }
 
         private void SetupKeys(StackPanel panel)

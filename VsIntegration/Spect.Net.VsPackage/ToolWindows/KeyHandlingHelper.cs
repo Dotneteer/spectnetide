@@ -69,27 +69,40 @@ namespace Spect.Net.VsPackage.ToolWindows
 
         public static void HandleDebugKeys(this SpectrumGenericToolWindowViewModel vm, KeyEventArgs args)
         {
-            if (!vm.VmPaused) return;
-
-            if (args.Key == Key.F5 && Keyboard.Modifiers == ModifierKeys.None)
+            if (args.Key == Key.F5)
             {
-                // --- Run
-                args.Handled = true;
-                SpectNetPackage.UpdateCommandUi();
-                vm.MachineViewModel.StartDebugVm();
+                if (Keyboard.Modifiers == ModifierKeys.None)
+                {
+                    // --- Run in Debug mode
+                    args.Handled = true;
+                    vm.MachineViewModel.StartDebugVm();
+                } else if (Keyboard.Modifiers == ModifierKeys.Control)
+                {
+                    args.Handled = true;
+                    vm.MachineViewModel.Start();
+                }
             }
-            else if (args.Key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
+            else
             {
-                // --- Step into
-                args.Handled = true;
-                SpectNetPackage.UpdateCommandUi();
-                vm.MachineViewModel.StepInto();
-            } else if (args.Key == Key.System && args.SystemKey == Key.F10 && Keyboard.Modifiers == ModifierKeys.None)
+                if (!vm.VmPaused) return;
+
+                if (args.Key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
+                {
+                    // --- Step into
+                    args.Handled = true;
+                    vm.MachineViewModel.StepInto();
+                }
+                else if (args.Key == Key.System && args.SystemKey == Key.F10 && Keyboard.Modifiers == ModifierKeys.None)
+                {
+                    // --- Step over
+                    args.Handled = true;
+                    vm.MachineViewModel.StepOver();
+                }
+            }
+
+            if (args.Handled)
             {
-                // --- Step over
-                args.Handled = true;
                 SpectNetPackage.UpdateCommandUi();
-                vm.MachineViewModel.StepOver();
             }
         }
     }

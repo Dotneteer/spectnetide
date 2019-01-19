@@ -35,6 +35,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             InitializeComponent();
             PreviewKeyDown += (s, e) => MemoryDumpListBox.HandleListViewKeyEvents(e);
+            PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
             Prompt.CommandLineEntered += OnCommandLineEntered;

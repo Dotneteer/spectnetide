@@ -36,6 +36,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         public StackToolWindowControl()
         {
             InitializeComponent();
+            PreviewKeyDown += (s, arg) => Vm.HandleDebugKeys(arg);
         }
 
         /// <summary>

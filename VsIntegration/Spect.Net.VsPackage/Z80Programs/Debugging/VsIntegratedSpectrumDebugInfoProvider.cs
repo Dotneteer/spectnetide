@@ -8,6 +8,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
 using Spect.Net.VsPackage.ProjectStructure;
+using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
@@ -201,6 +202,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                         .SourceFileList[fileInfo.FileIndex].Filename;
                     CurrentBreakpointLine = fileInfo.Line - 1;
                     Package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
+                    Package.ShowToolWindow<SpectrumEmulatorToolWindow>();
                     await Task.Delay(10);
                     UpdateBreakpointVisuals(CurrentBreakpointFile, CurrentBreakpointLine, true);
                 }

@@ -7,9 +7,10 @@
              xmlns:registersTool="clr-namespace:Spect.Net.VsPackage.ToolWindows.RegistersTool"
              Background="{DynamicResource BToolBackground}"
              mc:Ignorable="d"
+             Focusable="True"
              d:DesignHeight="400" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance {x:Type registersTool:RegistersToolWindowViewModel}, IsDesignTimeCreatable=True}">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -67,6 +68,8 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="IF2" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" />
                     <TextBlock Grid.Column="1" Text="{Binding IFF2}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+                    <!-- We need this dummy textbox so that the form may receive the focus -->
+                    <TextBox Grid.Column="1" Width="0"></TextBox>
                 </Grid>
             </WrapPanel>
         </Border>
@@ -74,15 +77,17 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="95*"/>
+                <ColumnDefinition Width="336*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="HLT" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+            <TextBlock Text="HLT" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}" Grid.ColumnSpan="2" Margin="0,0,16,0">
                 <TextBlock.ToolTip>
                     <ToolTip>
                         <TextBlock Text="Indicates (1) if the CPU is in HALTED state" />
                     </ToolTip>
                 </TextBlock.ToolTip>
             </TextBlock>
-            <TextBlock Grid.Column="1" Text="{Binding Halted}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+            <TextBlock Grid.Column="1" Text="{Binding Halted}" Margin="1,0,6,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
         <Grid Row="3">
             <Grid.ColumnDefinitions>
