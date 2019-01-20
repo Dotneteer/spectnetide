@@ -12,6 +12,9 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
     public class Z80TestMachine : IStackDebugSupport, IBranchDebugSupport
     {
         private bool _breakReceived;
+        private readonly Stack<ushort> _stepOutStack = new Stack<ushort>();
+        private bool _callExecuted;
+        private bool _retExecuted;
 
         public Z80Cpu Cpu { get; }
 
@@ -40,6 +43,15 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         public List<StackContentManipulationEvent> StackContentManipulations { get; }
 
         public List<BranchEvent> BranchEvents { get; }
+
+        public List<ushort> CallStepOutEvents = new List<ushort>();
+
+        public List<ushort> RetStepOutEvents = new List<ushort>();
+
+        public List<ushort> StepOutPushEvents = new List<ushort>();
+
+        public List<ushort> StepOutPopEvents = new List<ushort>();
+
 
         public Z80TestMachine(RunMode runMode = RunMode.Normal, bool allowExtendedInstructions = false,
             ITbBlueControlDevice tbBlue = null)
@@ -419,6 +431,88 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         {
             StackContentManipulations.Add(ev);
         }
+
+        /// <summary>
+        /// Checks if the Step-Out stack contains any information
+        /// </summary>
+        /// <returns></returns>
+        public bool HasStepOutInfo()
+        {
+            return _stepOutStack.Count > 0;
+        }
+
+        /// <summary>
+        /// Clears the content of the Step-Out stack
+        /// </summary>
+        public void ClearStepOutStack()
+        {
+            _stepOutStack.Clear();
+        }
+
+        /// <summary>
+        /// Pushes the specified return address to the Step-Out stack
+        /// </summary>
+        /// <param name="address"></param>
+        public void PushStepOutAddress(ushort address)
+        {
+            _stepOutStack.Push(address);
+            StepOutPushEvents.Add(address);
+        }
+
+        /// <summary>
+        /// Pops a Step-Out return point address from the stack
+        /// </summary>
+        /// <returns>Address popped from the stack</returns>
+        /// <returns>Zeor, if the Step-Out stack is empty</returns>
+        public ushort PopStepOutAddress()
+        {
+            if (_stepOutStack.Count > 0)
+            {
+                StepOutAddress = _stepOutStack.Pop();
+                StepOutPopEvents.Add(StepOutAddress.Value);
+                return StepOutAddress.Value;
+            }
+            StepOutAddress = null;
+            StepOutPopEvents.Add(0);
+            return 0;
+        }
+
+        /// <summary>
+        /// Indicates that the last instruction executed by the CPU was a CALL
+        /// </summary>
+        public bool CallExecuted
+        {
+            get => _callExecuted;
+            set
+            {
+                _callExecuted = value;
+                if (value)
+                {
+                    CallStepOutEvents.Add(Cpu.Registers.PC);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates that the last instruction executed by the CPU was a RET
+        /// </summary>
+        public bool RetExecuted
+        {
+            get => _retExecuted;
+            set
+            {
+                _retExecuted = value;
+                if (value)
+                {
+                    RetStepOutEvents.Add(Cpu.Registers.PC);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the last popped Step-Out address
+        /// </summary>
+        public ushort? StepOutAddress { get; set; }
 
         /// <summary>
         /// Records a branching event

@@ -53,6 +53,12 @@
         /// be a subroutine call, the execution stops after returning
         /// from the subroutine.
         /// </summary>
-        StepOver
+        StepOver,
+
+        /// <summary>
+        /// Execution stops after the first RET (unconditional or conditional)
+        /// returns from the lates subroutine call.
+        /// </summary>
+        StepOut
     }
 }

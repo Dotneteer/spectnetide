@@ -73,7 +73,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the ULA revision (2/3)
         /// </summary>
-        public string UlaIssue { get; private set; }
+        public string UlaIssue { get; }
 
         /// <summary>
         /// The CPU tact at which the last execution cycle started

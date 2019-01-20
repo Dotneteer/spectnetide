@@ -4360,12 +4360,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret nz",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -4532,12 +4535,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call nz,#{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -4612,12 +4618,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ = 0x0000;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
                     "rst #00",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -4658,12 +4667,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret z",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -4697,12 +4709,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -4797,12 +4812,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call z,#{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -4854,12 +4872,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call #{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -4898,12 +4919,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ = 0x0008;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
                     "rst #08",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -4944,12 +4968,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret nc",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -5111,12 +5138,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call nc,#{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -5191,12 +5221,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ = 0x0010;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
                     "rst #10",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -5237,12 +5270,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret c",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -5386,12 +5422,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call c,#{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -5430,12 +5469,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ = 0x0018;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
                     "rst #18",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -5476,12 +5518,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret po",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -5673,12 +5718,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call po,#{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -5753,12 +5801,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ = 0x0020;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
                     "rst #20",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -5799,12 +5850,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret pe",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -5941,12 +5995,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call pe,#{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -5985,12 +6042,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ = 0x0028;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
                     "rst #28",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -6031,12 +6091,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret p",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -6186,12 +6249,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call p,#{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -6266,12 +6332,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ = 0x0030;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
                     "rst #30",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -6312,12 +6381,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.SP++;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "ret m",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -6458,12 +6530,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             ClockP3();
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 3),
                     $"call m,#{_registers.PC:X4}",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>
@@ -6502,12 +6577,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.WZ = 0x0038;
             _registers.PC = _registers.WZ;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)(oldPc - 1),
                     "rst #38",
                     _registers.SP,
                     oldPc,
                     Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
         }
 
         /// <summary>

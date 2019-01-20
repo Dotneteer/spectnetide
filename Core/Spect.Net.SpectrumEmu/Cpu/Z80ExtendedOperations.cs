@@ -1025,12 +1025,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC = addr;
             _registers.WZ = addr;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "reti",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>
@@ -1067,12 +1070,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
             _registers.PC = addr;
             _registers.WZ = addr;
 
-            StackDebugSupport?.RecordStackContentManipulationEvent(
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
                 new StackContentManipulationEvent((ushort)oldPc,
                     "retn",
                     oldSp,
                     null,
                     Tacts));
+            StackDebugSupport.RetExecuted = true;
+            StackDebugSupport.PopStepOutAddress();
         }
 
         /// <summary>

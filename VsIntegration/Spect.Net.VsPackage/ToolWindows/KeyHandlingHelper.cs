@@ -98,6 +98,12 @@ namespace Spect.Net.VsPackage.ToolWindows
                     args.Handled = true;
                     vm.MachineViewModel.StepOver();
                 }
+                else if (args.Key == Key.F12 && Keyboard.Modifiers == ModifierKeys.None)
+                {
+                    // --- Step over
+                    args.Handled = true;
+                    vm.MachineViewModel.StepOver();
+                }
             }
 
             if (args.Handled)

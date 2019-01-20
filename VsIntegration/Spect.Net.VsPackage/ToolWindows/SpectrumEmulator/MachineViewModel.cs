@@ -342,6 +342,19 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     skipInterruptRoutine: SkipInterruptRoutine));
         }
 
+        /// <summary>
+        /// Enters into the step-out debug mode
+        /// </summary>
+        public void StepOut()
+        {
+            if (MachineState != VmState.Paused) return;
+
+            RunsInDebugMode = true;
+            Machine.Start(new ExecuteCycleOptions(EmulationMode.Debugger,
+                DebugStepMode.StepOut, FastTapeMode,
+                skipInterruptRoutine: SkipInterruptRoutine));
+        }
+
         #endregion
     }
 }

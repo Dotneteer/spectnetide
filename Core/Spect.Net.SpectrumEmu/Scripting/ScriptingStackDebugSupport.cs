@@ -2,13 +2,14 @@
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Utility;
 
-namespace Spect.Net.VsPackage.ToolWindows.StackTool
+namespace Spect.Net.SpectrumEmu.Scripting
 {
     /// <summary>
     /// This class provides stack debug support
     /// </summary>
-    public class SimpleStackDebugSupport: IStackDebugSupport, IStackEventData
+    public class ScriptingStackDebugSupport : IStackDebugSupport
     {
+        // --- The Step-Out stack
         private readonly Stack<ushort> _stepOutStack = new Stack<ushort>();
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// <summary>
         /// Stack content events
         /// </summary>
-        public Dictionary<ushort, StackContentManipulationEvent>  StackContentEvents { get; private set; }
+        public Dictionary<ushort, StackContentManipulationEvent> StackContentEvents { get; private set; }
             = new Dictionary<ushort, StackContentManipulationEvent>();
 
         /// <summary>
@@ -28,9 +29,7 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         /// </summary>
         public void Reset()
         {
-            var package = SpectNetPackage.Default;
-            StackPointerEvents = new LruList<StackPointerManipulationEvent>(
-                package.Options.StackPointerEvents);
+            StackPointerEvents = new LruList<StackPointerManipulationEvent>(16);
             StackContentEvents = new Dictionary<ushort, StackContentManipulationEvent>();
         }
 

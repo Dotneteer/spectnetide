@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Scripting;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
 // ReSharper disable InconsistentNaming
@@ -16,7 +18,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         public void FullResetWhenCreatingZ80()
         {
             // --- Act
-            var z80 = new Z80Cpu(new Z80TestMemoryDevice(), new Z80TestPortDevice());
+            var z80 = CreateZ80Cpu();
 
             // --- Assert
             z80.Registers.AF.ShouldBe((ushort)0);
@@ -48,7 +50,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         public void HaltedStateExecutesNops()
         {
             // --- Arrange
-            var z80 = new Z80Cpu(new Z80TestMemoryDevice(), new Z80TestPortDevice());
+            var z80 = CreateZ80Cpu();
             z80.StateFlags |= Z80StateFlags.Halted;
 
             // --- Act
@@ -71,7 +73,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         public void RSTSignalIsProcessed()
         {
             // --- Arrange
-            var z80 = new Z80Cpu(new Z80TestMemoryDevice(), new Z80TestPortDevice());
+            var z80 = CreateZ80Cpu();
             z80.Registers.AF = 0x0001;
             z80.Registers.BC = 0x2345;
             z80.Registers.DE = 0x3456;
@@ -127,7 +129,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         public void MaskableInterruptModeIsReached()
         {
             // --- Arrange
-            var z80 = new Z80Cpu(new Z80SimpleMemoryDevice(), new Z80TestPortDevice());
+            var z80 = CreateZ80Cpu();
             z80.IFF1 = z80.IFF2 = true;
             z80.Registers.SP = 0x100;
 
@@ -143,7 +145,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         public void MaskableInterruptModeIsLeft()
         {
             // --- Arrange
-            var z80 = new Z80Cpu(new Z80SimpleMemoryDevice(), new Z80TestPortDevice());
+            var z80 = CreateZ80Cpu();
             z80.IFF1 = z80.IFF2 = true;
             z80.Registers.SP = 0x100;
             z80.StateFlags |= Z80StateFlags.Int;
@@ -154,6 +156,15 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
 
             // --- Assert
             z80.MaskableInterruptModeEntered.ShouldBeFalse();
+        }
+
+        private Z80Cpu CreateZ80Cpu()
+        {
+            var z80 = new Z80Cpu(new Z80TestMemoryDevice(), new Z80TestPortDevice())
+            {
+                StackDebugSupport = new ScriptingStackDebugSupport()
+            };
+            return z80;
         }
 
         private class Z80TestMemoryDevice : IMemoryDevice
@@ -363,6 +374,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public void OnAttachedToVm(ISpectrumVm hostVm)
             {
             }
+
         }
     }
 }

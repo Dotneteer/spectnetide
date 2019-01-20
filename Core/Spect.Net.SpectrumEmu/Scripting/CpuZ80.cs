@@ -20,6 +20,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         internal CpuZ80(IZ80Cpu cpu)
         {
             _cpu = cpu;
+            _cpu.StackDebugSupport = new ScriptingStackDebugSupport();
             if (!(cpu is IZ80CpuTestSupport runSupport))
             {
                 throw new ArgumentException("The cpu instance should implement IZ80CpuTestSupport", 

@@ -391,18 +391,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
 
                     default:
                         // --- Normal (8-bit) operation code received
-                        _isInterruptBlocked = false;
-                        _opCode = opCode;
-                        OperationExecuting?.Invoke(this, 
-                            new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
-                        ProcessStandardOrIndexedOperations();
-                        OperationExecuted?.Invoke(this, 
-                            new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
-                        _prefixMode = OpPrefixMode.None;
-                        _indexMode = OpIndexMode.None;
-                        _isInOpExecution = false;
-                        _instructionBytes.Clear();
-                        _lastPC = Registers.PC;
+                        ProcessInstruction(opCode, ProcessStandardOrIndexedOperations);
                         return;
                 }
             }
@@ -410,36 +399,14 @@ namespace Spect.Net.SpectrumEmu.Cpu
             if (_prefixMode == OpPrefixMode.Bit)
             {
                 // --- The CPU is already in BIT operations (0xCB) prefix mode
-                _isInterruptBlocked = false;
-                _opCode = opCode;
-                OperationExecuting?.Invoke(this,
-                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
-                ProcessCBPrefixedOperations();
-                OperationExecuted?.Invoke(this,
-                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
-                _indexMode = OpIndexMode.None;
-                _prefixMode = OpPrefixMode.None;
-                _isInOpExecution = false;
-                _instructionBytes.Clear();
-                _lastPC = Registers.PC;
+                ProcessInstruction(opCode, ProcessCBPrefixedOperations);
                 return;
             }
 
             if (_prefixMode == OpPrefixMode.Extended)
             {
                 // --- The CPU is already in Extended operations (0xED) prefix mode
-                _isInterruptBlocked = false;
-                _opCode = opCode;
-                OperationExecuting?.Invoke(this,
-                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
-                ProcessEDOperations();
-                OperationExecuted?.Invoke(this,
-                    new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
-                _indexMode = OpIndexMode.None;
-                _prefixMode = OpPrefixMode.None;
-                _isInOpExecution = false;
-                _instructionBytes.Clear();
-                _lastPC = Registers.PC;
+                ProcessInstruction(opCode, ProcessEDOperations);
             }
         }
 
@@ -639,6 +606,30 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// Processes the specified instruction with the given process action
+        /// </summary>
+        /// <param name="opCode">Operation vode</param>
+        /// <param name="process">Process action</param>
+        private void ProcessInstruction(byte opCode, Action process)
+        {
+            _isInterruptBlocked = false;
+            _opCode = opCode;
+            StackDebugSupport.CallExecuted = false;
+            StackDebugSupport.RetExecuted = false;
+            StackDebugSupport.StepOutAddress = null;
+            OperationExecuting?.Invoke(this,
+                new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
+            process();
+            OperationExecuted?.Invoke(this,
+                new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
+            _prefixMode = OpPrefixMode.None;
+            _indexMode = OpIndexMode.None;
+            _isInOpExecution = false;
+            _instructionBytes.Clear();
+            _lastPC = Registers.PC;
+        }
+
+        /// <summary>
         /// Processes the CPU signals coming from peripheral devices
         /// of the computer
         /// </summary>
@@ -741,6 +732,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
             }
             _iff1 = false;
             _iff2 = false;
+            var oldPc = _registers.PC;
             _registers.SP--;
             ClockP1();
             WriteMemory(_registers.SP, (byte)(_registers.PC >> 8));
@@ -801,6 +793,15 @@ namespace Spect.Net.SpectrumEmu.Cpu
                     break;
             }
             _registers.PC = _registers.WZ;
+            if (StackDebugSupport == null) return;
+            StackDebugSupport.RecordStackContentManipulationEvent(
+                new StackContentManipulationEvent((ushort)(oldPc - 3),
+                    $"interrupt: {_registers.PC:X4}",
+                    _registers.SP,
+                    oldPc,
+                    Tacts));
+            StackDebugSupport.PushStepOutAddress(oldPc);
+            StackDebugSupport.CallExecuted = true;
             MaskableInterruptModeEntered = true;
         }
 

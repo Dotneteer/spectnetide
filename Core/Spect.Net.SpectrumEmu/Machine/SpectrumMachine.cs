@@ -263,6 +263,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (IsFirstStart)
             {
                 SpectrumVm.Reset();
+                SpectrumVm.Cpu.StackDebugSupport.ClearStepOutStack();
             }
             SpectrumVm.DebugInfoProvider?.PrepareBreakpoints();
 

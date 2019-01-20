@@ -315,6 +315,15 @@
           <ButtonText>Step Over (F10)</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidSpectNetCmdSet" id="EmulatorStepOut" priority="0x0100" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarDebugGroup" />
+        <Icon guid="ImageCatalogGuid" id="StepOut" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Step Out (F12)</ButtonText>
+        </Strings>
+      </Button>
       <Button guid="guidSpectNetCmdSet" id="EmulatorSaveState" priority="0x0100" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="EmulatorToolbarStateGroup" />
         <Icon guid="ImageCatalogGuid" id="Save" />
@@ -784,6 +793,7 @@
       <IDSymbol name="EmulatorSaveState" value="0x1088" />
       <IDSymbol name="EmulatorLoadState" value="0x1089" />
       <IDSymbol name="EmulatorAddState" value="0x1090" />
+      <IDSymbol name="EmulatorStepOut" value="0x1091" />
 
       <!-- Z80 Registers tool window -->
       <IDSymbol name="RegistersToolWindowCommandId" value="0x1100" />

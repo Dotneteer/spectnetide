@@ -163,6 +163,8 @@
       <DependentUpon>AddVmStateDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\AddVmStateViewModel.cs" />
+    <Compile Include="ToolWindows\StackTool\IStackEventData.cs" />
+    <Compile Include="ToolWindows\StackTool\SimpleStackDebugSupport.cs" />
     <Compile Include="ToolWindows\TapeFileExplorer\TzxBlockSelectedEventArgs.cs" />
     <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
@@ -255,8 +257,6 @@
     <Compile Include="ToolWindows\KeyboardTool\SingleKeyControl.xaml.cs">
       <DependentUpon>SingleKeyControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\StackTool\IStackEventData.cs" />
-    <Compile Include="ToolWindows\StackTool\SimpleStackDebugSupport.cs" />
     <Compile Include="ToolWindows\StackTool\SpContentItemControl.xaml.cs">
       <DependentUpon>SpContentItemControl.xaml</DependentUpon>
     </Compile>

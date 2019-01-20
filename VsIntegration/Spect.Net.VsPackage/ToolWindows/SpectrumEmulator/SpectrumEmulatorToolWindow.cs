@@ -199,6 +199,26 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
+        /// Steps out from the current Z80 subroutine call in debug mode
+        /// </summary>
+        [CommandId(0x1091)]
+        public class StepOutCommand :
+            VsxCommand<SpectNetPackage, SpectNetCommandSet>
+        {
+            protected override void OnExecute()
+            {
+                PrepareRunOptions();
+                Package.MachineViewModel.StepOver();
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+            {
+                mc.Enabled = GetVmState(Package) == VmState.Paused &&
+                    Package.MachineViewModel.SpectrumVm.Cpu.StackDebugSupport.HasStepOutInfo();
+            }
+        }
+
+        /// <summary>
         /// Saves the state of the ZX Spectrum virtual machine
         /// </summary>
         [CommandId(0x1088)]

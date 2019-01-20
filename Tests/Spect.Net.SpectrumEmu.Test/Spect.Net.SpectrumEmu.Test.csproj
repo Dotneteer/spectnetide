@@ -73,6 +73,7 @@
     <Compile Include="Cpu\BitOps\BitOpTestsBitN.cs" />
     <Compile Include="Cpu\BitOps\BitOpTestSetN.cs" />
     <Compile Include="Cpu\BitOps\BitOpTestsResN.cs" />
+    <Compile Include="Cpu\DebugSupport\StepOutTests.cs" />
     <Compile Include="Cpu\Discovery\BranchDebugSupportTest.cs" />
     <Compile Include="Cpu\ExtendedOps\BlockOpTests.cs" />
     <Compile Include="Cpu\ExtendedOps\ExtendedOpTests.cs" />
