@@ -16,6 +16,7 @@
 `Spect.Net.VsPackage` project's `DeploymentResources` folder. The __Build Action__ property 
 of these items should be __Embedded Resource__.
 1. The `CURRENT_CPS_VERSION` value in `SpectNetPackage.cs` (`Spect.Net.VsPackage project`) is updated 
+1. The `InstalledProductRegistration` attribute of `SpectNetPackage` class is updated
 to the number used within the VSX manifest info.
 1. The entire soution builds with the Release configuration (__Clean Solution__, __Rebuil Solution__)
 1. All unit tests run successfully (no failed or ignored test cases)

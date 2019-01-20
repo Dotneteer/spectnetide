@@ -1,3 +1,20 @@
+### Version 1.13.1
+__FIX__: ZX Spectrum Code Discovery project commands does not show up in Solution Explorer anymore
+if you work with a non-ZX-Spectrum project.  
+__FIX__: When you cancel creating a ZX Spectrun Code Discovery project, it does not create an empty
+project folder.  
+__FEATURE__: When you run or debug a Z80 program, the ZX Spectrum Memory and Z80 Disassembly 
+tool windows automatically position to the entry address of the code.  
+__FIX__: Now, you can use the F5, F10, and F11 function keys seamlessly to debug your Z80 code.
+Whenever a breakpoint is reached, the focus shifts back to the ZX Spectrum emulator window.
+__FIX__: To provide a beeter UX for running and debugging Z80 programs, by default the
+"Confirm code injection", "Confirm code start", and "Confirm machine options" are turned off.
+You can use these double-key shortcuts:
+* __Run Z80 Program__: `Ctrl+M`, `Ctrl+R`
+* __Debug Z80 Program__: `Ctrl+M`, `R`
+* __Stop the virtual machine__: `Ctrl+M`, `Ctrl+S`
+
+
 ### Version 1.13.0
 __BREAK__: The `DEFG` pragma uses a string pattern and not a string expression any more.  
 __FEATURE__: The new `DEFGX` pragma overtakes the role of the former `DEFG` pragma. This change
