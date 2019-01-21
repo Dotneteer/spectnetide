@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.Vsx;
 
@@ -16,7 +15,11 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override void ResumeVm()
         {
-            Package.MachineViewModel.StartDebugVm();
+            var vm = Package.MachineViewModel;
+            vm.MemViewPoint = (ushort)MemoryStartAddress;
+            vm.DisAssViewPoint = (ushort)DisassemblyStartAddress;
+            vm.StackDebugSupport.ClearStepOutStack();
+            vm.StartDebugVm();
         }
 
         /// <summary>

@@ -102,7 +102,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 {
                     // --- Step over
                     args.Handled = true;
-                    vm.MachineViewModel.StepOver();
+                    vm.MachineViewModel.StepOut();
                 }
             }
 

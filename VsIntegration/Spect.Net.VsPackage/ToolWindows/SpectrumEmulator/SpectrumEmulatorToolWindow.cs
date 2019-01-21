@@ -208,7 +208,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override void OnExecute()
             {
                 PrepareRunOptions();
-                Package.MachineViewModel.StepOver();
+                Package.MachineViewModel.StepOut();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

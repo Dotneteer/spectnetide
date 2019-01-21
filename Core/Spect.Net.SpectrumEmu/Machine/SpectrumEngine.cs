@@ -566,8 +566,9 @@ namespace Spect.Net.SpectrumEmu.Machine
             var cycleStartTact = Cpu.Tacts;
             var cycleFrameCount = 0;
 
-            // --- We use this variable to check whether to stop in Debug mode
+            // --- We use this variables to check whether to stop in Debug mode
             var executedInstructionCount = -1;
+            var entryStepOutDepth = Cpu.StackDebugSupport.StepOutStackDepth;
 
             // --- Loop #1: The main cycle that goes on until cancelled
             while (!token.IsCancellationRequested)
@@ -651,7 +652,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                         // --- Check for a debugging stop point
                         if (options.EmulationMode == EmulationMode.Debugger)
                         {
-                            if (IsDebugStop(options, executedInstructionCount))
+                            if (IsDebugStop(options, executedInstructionCount, entryStepOutDepth))
                             {
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
@@ -731,8 +732,9 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="executedInstructionCount">
         /// The count of instructions already executed in this cycle
         /// </param>
+        /// <param name="entryStepOutStackDepth">The initial depth of the Step-Out stack</param>
         /// <returns>True, if the execution should be stopped</returns>
-        private bool IsDebugStop(ExecuteCycleOptions options, int executedInstructionCount)
+        private bool IsDebugStop(ExecuteCycleOptions options, int executedInstructionCount, int entryStepOutStackDepth)
         {
             // --- No debug provider, no stop
             if (DebugInfoProvider == null)
@@ -802,6 +804,19 @@ namespace Spect.Net.SpectrumEmu.Machine
                     {
                         return true;
                     }
+                }
+            } else if (options.DebugStepMode == DebugStepMode.StepOut)
+            {
+                // --- We're in Step-Out mode and want to complete the current subroutine call
+                if (Cpu.StackDebugSupport.RetExecuted 
+                    && executedInstructionCount > 0 
+                    && entryStepOutStackDepth == Cpu.StackDebugSupport.StepOutStackDepth + 1)
+                {
+                    if (Cpu.Registers.PC != Cpu.StackDebugSupport.StepOutAddress)
+                    {
+                        Cpu.StackDebugSupport.ClearStepOutStack();
+                    }
+                    return true;
                 }
             }
 

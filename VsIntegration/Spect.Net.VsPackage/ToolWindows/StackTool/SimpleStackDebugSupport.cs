@@ -66,6 +66,11 @@ namespace Spect.Net.VsPackage.ToolWindows.StackTool
         }
 
         /// <summary>
+        /// The depth of the Step-Out stack
+        /// </summary>
+        public int StepOutStackDepth => _stepOutStack.Count;
+
+        /// <summary>
         /// Clears the content of the Step-Out stack
         /// </summary>
         public void ClearStepOutStack()

@@ -102,6 +102,13 @@ namespace Spect.Net.VsPackage.ToolWindows
                 case VmState.Paused:
                     additional = " (Paused)";
                     break;
+                case VmState.Running:
+                    var vm = SpectNetPackage.Default.MachineViewModel;
+                    if (vm.RunsInDebugMode)
+                    {
+                        additional = " (Debugging)";
+                    }
+                    break;
             }
             Caption = BaseCaption + additional;
         }

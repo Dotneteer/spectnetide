@@ -15,6 +15,7 @@ using Spect.Net.SpectrumEmu.Devices.Next;
 using Spect.Net.SpectrumEmu.Devices.Ports;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
+using Spect.Net.SpectrumEmu.Scripting;
 
 namespace Spect.Net.SpectrumEmu.Machine
 {
@@ -207,6 +208,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 machine.SpectrumVm.DebugInfoProvider = debugProvider;
             }
+            machine.SpectrumVm.Cpu.StackDebugSupport = new ScriptingStackDebugSupport();
 
             var screenDevice = machine.SpectrumVm.ScreenDevice;
             screenDevice.FrameCompleted += (sender, args) =>

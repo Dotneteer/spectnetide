@@ -16,6 +16,7 @@ namespace Spect.Net.VsPackage.Commands
             var vm = Package.MachineViewModel;
             vm.MemViewPoint = (ushort)MemoryStartAddress;
             vm.DisAssViewPoint = (ushort) DisassemblyStartAddress;
+            vm.StackDebugSupport.ClearStepOutStack();
             vm.Start();
         }
 

@@ -29,6 +29,11 @@
         bool HasStepOutInfo();
 
         /// <summary>
+        /// The depth of the Step-Out stack
+        /// </summary>
+        int StepOutStackDepth { get; }
+
+        /// <summary>
         /// Clears the content of the Step-Out stack
         /// </summary>
         void ClearStepOutStack();
