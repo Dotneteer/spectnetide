@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
+using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.VsPackage.Utility;
 using Spect.Net.Wpf.Mvvm;
 
@@ -10,6 +14,17 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
     /// </summary>
     public class MemoryLineViewModel: EnhancedViewModelBase
     {
+        private static readonly Regex s_ColorSpecRegex = new Regex(@"^\s*([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$");
+
+        private static Brush s_BcBrush;
+        private static Brush s_DeBrush;
+        private static Brush s_HlBrush;
+        private static Brush s_IxBrush;
+        private static Brush s_IyBrush;
+        private static Brush s_SpBrush;
+        private static Brush s_PcBrush;
+
+        private readonly Registers _regs;
         private string _addr1;
         private string _value0;
         private string _value1;
@@ -30,6 +45,22 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         private string _valueE;
         private string _valueF;
         private string _dump2;
+        private Brush _mark0;
+        private Brush _mark1;
+        private Brush _mark2;
+        private Brush _mark3;
+        private Brush _mark4;
+        private Brush _mark5;
+        private Brush _mark6;
+        private Brush _mark7;
+        private Brush _mark8;
+        private Brush _mark9;
+        private Brush _markA;
+        private Brush _markB;
+        private Brush _markC;
+        private Brush _markD;
+        private Brush _markE;
+        private Brush _markF;
 
         /// <summary>
         /// Base address of the memory line
@@ -161,6 +192,103 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             set => Set(ref _dump2, value);
         }
 
+        public Brush Mark0
+        {
+            get => _mark0;
+            set => Set( ref _mark0, value);
+        }
+
+        public Brush Mark1
+        {
+            get => _mark1;
+            set => Set(ref _mark1, value);
+        }
+
+        public Brush Mark2
+        {
+            get => _mark2;
+            set => Set(ref _mark2, value);
+        }
+
+        public Brush Mark3
+        {
+            get => _mark3;
+            set => Set(ref _mark3, value);
+        }
+
+        public Brush Mark4
+        {
+            get => _mark4;
+            set => Set(ref _mark4, value);
+        }
+
+        public Brush Mark5
+        {
+            get => _mark5;
+            set => Set(ref _mark5, value);
+        }
+
+        public Brush Mark6
+        {
+            get => _mark6;
+            set => Set(ref _mark6, value);
+        }
+
+        public Brush Mark7
+        {
+            get => _mark7;
+            set => Set(ref _mark7, value);
+        }
+
+        public Brush Mark8
+        {
+            get => _mark8;
+            set => Set(ref _mark8, value);
+        }
+
+        public Brush Mark9
+        {
+            get => _mark9;
+            set => Set(ref _mark9, value);
+        }
+
+        public Brush MarkA
+        {
+            get => _markA;
+            set => Set(ref _markA, value);
+        }
+
+        public Brush MarkB
+        {
+            get => _markB;
+            set => Set(ref _markB, value);
+        }
+
+        public Brush MarkC
+        {
+            get => _markC;
+            set => Set(ref _markC, value);
+        }
+
+        public Brush MarkD
+        {
+            get => _markD;
+            set => Set(ref _markD, value);
+        }
+
+        public Brush MarkE
+        {
+            get => _markE;
+            set => Set(ref _markE, value);
+        }
+
+        public Brush MarkF
+        {
+            get => _markF;
+            set => Set(ref _markF, value);
+        }
+
+
         public MemoryLineViewModel()
         {
             if (IsInDesignMode)
@@ -186,15 +314,21 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 ValueF = "F0";
                 Dump2 = "..AB..EF";
             }
+
+            Mark0 = Mark1 = Mark2 = Mark3 = Mark4 = Mark5 = Mark6 = Mark7 =
+            Mark8 = Mark9 = MarkA = MarkB = MarkC = MarkD = MarkE = MarkF =
+                Brushes.Transparent;
         }
 
         /// <summary>
         /// Creates a memory line with the specified base address and top address
         /// </summary>
+        /// <param name="regs">Z80 register current values</param>
         /// <param name="baseAddr">Memory base address</param>
         /// <param name="topAddress">Memory top address</param>
-        public MemoryLineViewModel(int baseAddr, int topAddress = 0xFFFF)
+        public MemoryLineViewModel(Registers regs, int baseAddr, int topAddress = 0xFFFF)
         {
+            _regs = regs;
             BaseAddress = baseAddr;
             TopAddress = topAddress;
         }
@@ -208,6 +342,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             Addr1 = BaseAddress.AsHexWord();
             Dump1 = DumpValue(memory, BaseAddress);
             Value0 = GetByte(memory, 0);
+            if (_regs != null)
+            {
+                Mark0 = s_BcBrush;
+            }
             Value1 = GetByte(memory, 1);
             Value2 = GetByte(memory, 2);
             Value3 = GetByte(memory, 3);
@@ -228,6 +366,37 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             ValueD = GetByte(memory, 13);
             ValueE = GetByte(memory, 14);
             ValueF = GetByte(memory, 15);
+        }
+
+        /// <summary>
+        /// Refreshes the register highlight brush colors from SpectNet options
+        /// </summary>
+        public static void RefreshRegisterBrushes()
+        {
+            s_BcBrush = GetBrushFromColor(SpectNetPackage.Default.Options.BcColor);
+            s_DeBrush = GetBrushFromColor(SpectNetPackage.Default.Options.DeColor);
+            s_HlBrush = GetBrushFromColor(SpectNetPackage.Default.Options.HlColor);
+            s_IxBrush = GetBrushFromColor(SpectNetPackage.Default.Options.IxColor);
+            s_IyBrush = GetBrushFromColor(SpectNetPackage.Default.Options.IyColor);
+            s_SpBrush = GetBrushFromColor(SpectNetPackage.Default.Options.SpColor);
+            s_PcBrush = GetBrushFromColor(SpectNetPackage.Default.Options.PcColor);
+        }
+
+        private static Brush GetBrushFromColor(string color)
+        {
+            var prop = typeof(Brushes).GetProperty(color,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static);
+            if (prop != null && prop.PropertyType == typeof(SolidColorBrush))
+            {
+                return (SolidColorBrush) prop.GetValue(null);
+            }
+
+            var match = s_ColorSpecRegex.Match(color);
+            if (!match.Success)
+            {
+                return Brushes.Green;
+            }
+            return Brushes.Transparent;
         }
 
         private string DumpValue(IReadOnlyList<byte> memory, int startAddr)

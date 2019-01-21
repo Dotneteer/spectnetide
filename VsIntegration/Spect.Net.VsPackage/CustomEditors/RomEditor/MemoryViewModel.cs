@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.Memory;
@@ -17,6 +18,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         private bool _allowDisassembly;
         private bool _showDisassembly;
         private ObservableCollection<DisassemblyItemViewModel> _disassemblyItems;
+        private Registers _registers;
 
         /// <summary>
         /// The contents of the memory
@@ -89,6 +91,15 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         }
 
         /// <summary>
+        /// The current values of Z80 registers
+        /// </summary>
+        public Registers Registers
+        {
+            get => _registers;
+            set => Set(ref _registers, value);
+        }
+
+        /// <summary>
         /// The lines (16 byte each) that represent the entire memory
         /// </summary>
         public ObservableCollection<MemoryLineViewModel> MemoryLines { get; } =
@@ -133,7 +144,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
 
             for (var addr = 0x0000; addr < _memoryBuffer.Length; addr += 16)
             {
-                var line = new MemoryLineViewModel(addr, _memoryBuffer.Length - 1);
+                var line = new MemoryLineViewModel(Registers, addr, _memoryBuffer.Length - 1);
                 line.BindTo(MemoryBuffer);
                 MemoryLines.Add(line);
             }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
@@ -29,6 +31,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         }
 
         /// <summary>
+        /// Refresh the view mode for every start/continue
+        /// </summary>
+        protected override void OnStart()
+        {
+            base.OnStart();
+            MemoryLineViewModel.RefreshRegisterBrushes();
+        }
+
+        /// <summary>
         /// Refreshes the specified memory line
         /// </summary>
         /// <param name="addr">Address of the memory line</param>
@@ -40,7 +51,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
 
             if (addr < 0 || addr >= length) return;
 
-            var memLine = new MemoryLineViewModel(addr);
+            Registers regs = null;
+            if (MachineViewModel != null)
+            {
+                if (MachineViewModel.MachineState != VmState.None && MachineViewModel.MachineState != VmState.Stopped)
+                {
+                    regs = MachineViewModel.SpectrumVm.Cpu.Registers;
+                }
+            }
+            var memLine = new MemoryLineViewModel(regs, addr);
             memLine.BindTo(memory);
             var lineNo = addr >> 4;
             if (lineNo < MemoryLines.Count)
@@ -191,9 +210,17 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             if (memory == null || length == null) return;
 
             MemoryLines.Clear();
+            Registers regs = null;
+            if (MachineViewModel != null)
+            {
+                if (MachineViewModel.MachineState != VmState.None && MachineViewModel.MachineState != VmState.Stopped)
+                {
+                    regs = MachineViewModel.SpectrumVm.Cpu.Registers;
+                }
+            }
             for (var i = 0; i < length; i+= 16)
             {
-                var line = new MemoryLineViewModel((ushort)i);
+                var line = new MemoryLineViewModel(regs, (ushort)i);
                 line.BindTo(memory);
                 MemoryLines.Add(line);
             }

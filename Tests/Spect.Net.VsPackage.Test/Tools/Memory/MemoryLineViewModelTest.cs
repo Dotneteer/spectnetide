@@ -11,7 +11,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Memory
         public void ConstructionSavesStartAndTopAddresses()
         {
             // --- Act
-            var ml = new MemoryLineViewModel(0x1234, 0x2345);
+            var ml = new MemoryLineViewModel(null, 0x1234, 0x2345);
 
             // --- Assert
             ml.BaseAddress.ShouldBe(0x1234);
@@ -29,7 +29,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Memory
                 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
                 0x12, 0x13
             };
-            var ml = new MemoryLineViewModel(0x0002, 0x0100);
+            var ml = new MemoryLineViewModel(null, 0x0002, 0x0100);
 
             // --- Act
             ml.BindTo(memory);
@@ -50,7 +50,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Memory
                 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
                 0x12, 0x13
             };
-            var ml = new MemoryLineViewModel(0x0002, 0x0100);
+            var ml = new MemoryLineViewModel(null, 0x0002, 0x0100);
 
             // --- Act
             ml.BindTo(memory);
@@ -85,7 +85,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Memory
                 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
                 0x12, 0x13
             };
-            var ml = new MemoryLineViewModel(0x0002, 0x0008);
+            var ml = new MemoryLineViewModel(null, 0x0002, 0x0008);
 
             // --- Act
             ml.BindTo(memory);
@@ -107,7 +107,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Memory
                 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
                 0x12, 0x13
             };
-            var ml = new MemoryLineViewModel(0x0002, 0x0008);
+            var ml = new MemoryLineViewModel(null, 0x0002, 0x0008);
 
             // --- Act
             ml.BindTo(memory);
@@ -142,7 +142,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Memory
                 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
                 0x12, 0x13
             };
-            var ml = new MemoryLineViewModel(0x0002, 0x000C);
+            var ml = new MemoryLineViewModel(null, 0x0002, 0x000C);
 
             // --- Act
             ml.BindTo(memory);

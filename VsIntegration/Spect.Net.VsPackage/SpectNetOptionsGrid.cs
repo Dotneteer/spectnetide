@@ -198,6 +198,42 @@ namespace Spect.Net.VsPackage
         [Description("Logs the low level commands sent to the uPD765a FDC")]
         public bool LogFloppyCommands { get; set; } = false;
 
+        [Category("Memory View")]
+        [DisplayName("BC Highlighted Background")]
+        [Description("Background color used for the BC register pair (#rrggbb)")]
+        public string BcColor { get; set; } = @"#ff0000";
+
+        [Category("Memory View")]
+        [DisplayName("DE Highlighted Background")]
+        [Description("Background color used for the DE register pair (#rrggbb)")]
+        public string DeColor { get; set; } = @"#00ff00";
+
+        [Category("Memory View")]
+        [DisplayName("HL Highlighted Background")]
+        [Description("Background color used for the HL register pair (#rrggbb)")]
+        public string HlColor { get; set; } = @"#0000ff";
+
+        [Category("Memory View")]
+        [DisplayName("IX Highlighted Background")]
+        [Description("Background color used for the IX register pair (#rrggbb)")]
+        public string IxColor { get; set; } = @"#ffff00";
+
+        [Category("Memory View")]
+        [DisplayName("IY Highlighted Background")]
+        [Description("Background color used for the IY register pair (#rrggbb)")]
+        public string IyColor { get; set; } = @"#ff00ff";
+
+        [Category("Memory View")]
+        [DisplayName("SP Highlighted Background")]
+        [Description("Background color used for the Stack Pointer (#rrggbb)")]
+        public string SpColor { get; set; } = @"#00ffff";
+
+        [Category("Memory View")]
+        [DisplayName("PC Highlighted Background")]
+        [Description("Background color used for the Program Counter (#rrggbb)")]
+        public string PcColor { get; set; } = @"#ffff00";
+
+
         /// <summary>
         /// Signs that the keyboard layout type has changed
         /// </summary>
