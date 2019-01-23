@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Input;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
@@ -34,27 +35,45 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             Unloaded += OnUnloaded;
         }
 
-        private void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
             foreach (var c in _byteControls)
             {
                 c.MouseEnter += OnByteMouseEnter;
+                c.MouseLeave += OnByteMouseLeave;
             }
         }
 
-        private void OnByteMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnByteMouseEnter(object sender, MouseEventArgs e)
         {
             if (sender is TextBlock tb)
             {
-                // TODO:...
+                if (!(DataContext is MemoryLineViewModel ml)) return;
+                var addr = (int) tb.Tag;
+                var regs = ml.GetAffectedRegisters(addr);
+                var toolTip = $"(${addr:X4}): ${tb.Text}";
+                if (regs.Count > 0)
+                {
+                    toolTip += "\n<-- " + string.Join(", ", regs);
+                }
+                tb.ToolTip = toolTip;
             }
         }
 
-        private void OnUnloaded(object sender, System.Windows.RoutedEventArgs e)
+        private void OnByteMouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is TextBlock tb)
+            {
+                tb.ToolTip = null;
+            }
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             foreach (var c in _byteControls)
             {
                 c.MouseEnter -= OnByteMouseEnter;
+                c.MouseLeave -= OnByteMouseLeave;
             }
         }
     }

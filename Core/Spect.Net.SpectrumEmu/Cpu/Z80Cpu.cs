@@ -411,6 +411,27 @@ namespace Spect.Net.SpectrumEmu.Cpu
         }
 
         /// <summary>
+        /// Turns off the CPU and fills register values accordingly.
+        /// </summary>
+        public void TurnOffCpu()
+        {
+            Registers.AF = 0xFFFF;
+            Registers.BC = 0xFFFF;
+            Registers.DE = 0xFFFF;
+            Registers.HL = 0xFFFF;
+            Registers._AF_ = 0xFFFF;
+            Registers._BC_ = 0xFFFF;
+            Registers._DE_ = 0xFFFF;
+            Registers._HL_ = 0xFFFF;
+            Registers.IX = 0xFFFF;
+            Registers.IY = 0xFFFF;
+            Registers.SP = 0xFFFF;
+            Registers.PC = 0xFFFF;
+            Registers.IR = 0xFFFF;
+            Registers.WZ = 0xFFFF;
+        }
+
+        /// <summary>
         /// Gets the memory device associated with the CPU
         /// </summary>
         public IMemoryDevice MemoryDevice => _memoryDevice;

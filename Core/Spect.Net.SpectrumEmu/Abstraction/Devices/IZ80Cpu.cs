@@ -88,6 +88,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         void ExecuteCpuCycle();
 
         /// <summary>
+        /// Turns off the CPU and fills register values accordingly.
+        /// </summary>
+        void TurnOffCpu();
+
+        /// <summary>
         /// Checks if the next instruction to be executed is a call instruction or not
         /// </summary>
         /// <returns>

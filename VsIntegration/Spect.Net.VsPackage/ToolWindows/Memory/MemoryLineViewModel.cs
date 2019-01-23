@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,7 +15,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
     /// </summary>
     public class MemoryLineViewModel: EnhancedViewModelBase
     {
-        private static readonly Regex s_ColorSpecRegex = new Regex(@"^\s*([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$");
+        private static readonly Regex s_ColorSpecRegex = new Regex(@"^\s*#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$");
 
         private static Brush s_BcBrush;
         private static Brush s_DeBrush;
@@ -61,6 +62,22 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         private Brush _markD;
         private Brush _markE;
         private Brush _markF;
+        private int _tag0;
+        private int _tag1;
+        private int _tag2;
+        private int _tag3;
+        private int _tag4;
+        private int _tag5;
+        private int _tag6;
+        private int _tag7;
+        private int _tag8;
+        private int _tag9;
+        private int _tagA;
+        private int _tagB;
+        private int _tagC;
+        private int _tagD;
+        private int _tagE;
+        private int _tagF;
 
         /// <summary>
         /// Base address of the memory line
@@ -288,6 +305,101 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             set => Set(ref _markF, value);
         }
 
+        public int Tag0
+        {
+            get => _tag0;
+            set => Set(ref _tag0, value);
+        }
+
+        public int Tag1
+        {
+            get => _tag1;
+            set => Set(ref _tag1, value);
+        }
+
+        public int Tag2
+        {
+            get => _tag2;
+            set => Set(ref _tag2, value);
+        }
+
+        public int Tag3
+        {
+            get => _tag3;
+            set => Set(ref _tag3, value);
+        }
+
+        public int Tag4
+        {
+            get => _tag4;
+            set => Set(ref _tag4, value);
+        }
+
+        public int Tag5
+        {
+            get => _tag5;
+            set => Set(ref _tag5, value);
+        }
+
+        public int Tag6
+        {
+            get => _tag6;
+            set => Set(ref _tag6, value);
+        }
+
+        public int Tag7
+        {
+            get => _tag7;
+            set => Set(ref _tag7, value);
+        }
+
+        public int Tag8
+        {
+            get => _tag8;
+            set => Set(ref _tag8, value);
+        }
+
+        public int Tag9
+        {
+            get => _tag9;
+            set => Set(ref _tag9, value);
+        }
+
+        public int TagA
+        {
+            get => _tagA;
+            set => Set(ref _tagA, value);
+        }
+
+        public int TagB
+        {
+            get => _tagB;
+            set => Set(ref _tagB, value);
+        }
+
+        public int TagC
+        {
+            get => _tagC;
+            set => Set(ref _tagC, value);
+        }
+
+        public int TagD
+        {
+            get => _tagD;
+            set => Set(ref _tagD, value);
+        }
+
+        public int TagE
+        {
+            get => _tagE;
+            set => Set(ref _tagE, value);
+        }
+
+        public int TagF
+        {
+            get => _tagF;
+            set => Set(ref _tagF, value);
+        }
 
         public MemoryLineViewModel()
         {
@@ -342,30 +454,74 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             Addr1 = BaseAddress.AsHexWord();
             Dump1 = DumpValue(memory, BaseAddress);
             Value0 = GetByte(memory, 0);
-            if (_regs != null)
-            {
-                Mark0 = s_BcBrush;
-            }
+            Mark0 = GetBrush(0);
+            Tag0 = BaseAddress + 0;
             Value1 = GetByte(memory, 1);
+            Mark1 = GetBrush(1);
+            Tag1 = BaseAddress + 1;
             Value2 = GetByte(memory, 2);
+            Mark2 = GetBrush(2);
+            Tag2 = BaseAddress + 2;
             Value3 = GetByte(memory, 3);
+            Mark3 = GetBrush(3);
+            Tag3 = BaseAddress + 3;
             Value4 = GetByte(memory, 4);
+            Mark4 = GetBrush(4);
+            Tag4 = BaseAddress + 4;
             Value5 = GetByte(memory, 5);
+            Mark5 = GetBrush(5);
+            Tag5 = BaseAddress + 5;
             Value6 = GetByte(memory, 6);
+            Mark6 = GetBrush(6);
+            Tag6 = BaseAddress + 6;
             Value7 = GetByte(memory, 7);
+            Mark7 = GetBrush(7);
+            Tag7 = BaseAddress + 8;
 
             if (BaseAddress + 8 > TopAddress) return;
 
             Addr2 = (BaseAddress + 8).AsHexWord();
             Dump2 = DumpValue(memory, BaseAddress + 8);
             Value8 = GetByte(memory, 8);
+            Mark8 = GetBrush(8);
+            Tag8 = BaseAddress + 8;
             Value9 = GetByte(memory, 9);
+            Mark9 = GetBrush(9);
+            Tag9 = BaseAddress + 9;
             ValueA = GetByte(memory, 10);
+            MarkA = GetBrush(10);
+            TagA = BaseAddress + 10;
             ValueB = GetByte(memory, 11);
+            MarkB = GetBrush(11);
+            TagB = BaseAddress + 11;
             ValueC = GetByte(memory, 12);
+            MarkC = GetBrush(12);
+            TagC = BaseAddress + 12;
             ValueD = GetByte(memory, 13);
+            MarkD = GetBrush(13);
+            TagD = BaseAddress + 13;
             ValueE = GetByte(memory, 14);
+            MarkE = GetBrush(14);
+            TagE = BaseAddress + 14;
             ValueF = GetByte(memory, 15);
+            MarkF = GetBrush(15);
+            TagF = BaseAddress + 15;
+        }
+
+        public List<string> GetAffectedRegisters(int address)
+        {
+            var result = new List<string>();
+            if (_regs != null)
+            {
+                if (_regs.BC == address) result.Add("BC");
+                if (_regs.DE == address) result.Add("DE");
+                if (_regs.HL == address) result.Add("HL");
+                if (_regs.IX == address) result.Add("IX");
+                if (_regs.IY == address) result.Add("IY");
+                if (_regs.PC == address) result.Add("PC");
+                if (_regs.SP == address) result.Add("SP");
+            }
+            return result;
         }
 
         /// <summary>
@@ -392,9 +548,12 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             }
 
             var match = s_ColorSpecRegex.Match(color);
-            if (!match.Success)
+            if (match.Success)
             {
-                return Brushes.Green;
+                var red = byte.Parse(match.Groups[1].Captures[0].Value, NumberStyles.HexNumber);
+                var green = byte.Parse(match.Groups[2].Captures[0].Value, NumberStyles.HexNumber);
+                var blue = byte.Parse(match.Groups[3].Captures[0].Value, NumberStyles.HexNumber);
+                return new SolidColorBrush(Color.FromRgb(red, green, blue));
             }
             return Brushes.Transparent;
         }
@@ -422,6 +581,22 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             var memAddr = BaseAddress + offset;
             return memAddr <= TopAddress ? (memory == null ? "--" : memory[memAddr].AsHexaByte()) : null;
+        }
+
+        private Brush GetBrush(int offset)
+        {
+            if (_regs != null)
+            {
+                var addr = BaseAddress + offset;
+                if (_regs.BC == addr) return s_BcBrush;
+                if (_regs.DE == addr) return s_DeBrush;
+                if (_regs.HL == addr) return s_HlBrush;
+                if (_regs.IX == addr) return s_IxBrush;
+                if (_regs.IY == addr) return s_IyBrush;
+                if (_regs.PC == addr) return s_PcBrush;
+                if (_regs.SP == addr) return s_SpBrush;
+            }
+            return Brushes.Transparent;
         }
     }
 }

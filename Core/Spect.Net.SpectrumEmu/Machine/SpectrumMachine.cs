@@ -343,7 +343,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             switch (VmState)
             {
                 case VmState.Stopped:
-                    return;
+                    break;
 
                 case VmState.Paused:
                     // --- The machine is paused, it can be quicky stopped
@@ -366,6 +366,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     }
                     break;
             }
+            SpectrumVm.Cpu.TurnOffCpu();
         }
 
         /// <summary>

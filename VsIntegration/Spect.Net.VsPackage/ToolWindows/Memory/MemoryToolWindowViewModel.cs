@@ -40,6 +40,16 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         }
 
         /// <summary>
+        /// Override this method to define how to refresh the view 
+        /// when the virtual machine is paused
+        /// </summary>
+        public override void RefreshOnPause()
+        {
+            base.RefreshOnPause();
+            RefreshViewMode();
+        }
+
+        /// <summary>
         /// Refreshes the specified memory line
         /// </summary>
         /// <param name="addr">Address of the memory line</param>

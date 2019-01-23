@@ -216,27 +216,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         /// </summary>
         public RegistersToolWindowViewModel()
         {
-            AF = 0xFFFF;
-            F = 0xFF;
-            BC = 0xFFFF;
-            DE = 0xFFFF;
-            HL = 0xFFFF;
-            PC = 0xFFFF;
-            SP = 0xFFFF;
-            _AF_ = 0xFFFF;
-            _BC_ = 0xFFFF;
-            _DE_ = 0xFFFF;
-            _HL_ = 0xFFFF;
-            IX = 0xFFFF;
-            IY = 0xFFFF;
-            IR = 0xFFFF;
-            MW = 0xFFFF;
-            IM = 0;
-            IFF1 = IFF2 = 0;
-            Halted = 0;
-            Tacts = 0;
-            FrameCount = 0;
-            LastStepTacts = 0;
+            ResetRegisters();
         }
 
         /// <summary>
@@ -333,6 +313,31 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
             LastStepTacts = spectrumVm.Cpu.Tacts - spectrumVm.LastExecutionStartTact;
             ContentionAccumulated = spectrumVm.ContentionAccumulated;
             LastContentionValue = spectrumVm.ContentionAccumulated - spectrumVm.LastExecutionContentionValue;
+        }
+
+        private void ResetRegisters()
+        {
+            AF = 0xFFFF;
+            F = 0xFF;
+            BC = 0xFFFF;
+            DE = 0xFFFF;
+            HL = 0xFFFF;
+            PC = 0xFFFF;
+            SP = 0xFFFF;
+            _AF_ = 0xFFFF;
+            _BC_ = 0xFFFF;
+            _DE_ = 0xFFFF;
+            _HL_ = 0xFFFF;
+            IX = 0xFFFF;
+            IY = 0xFFFF;
+            IR = 0xFFFF;
+            MW = 0xFFFF;
+            IM = 0;
+            IFF1 = IFF2 = 0;
+            Halted = 0;
+            Tacts = 0;
+            FrameCount = 0;
+            LastStepTacts = 0;
         }
     }
 }

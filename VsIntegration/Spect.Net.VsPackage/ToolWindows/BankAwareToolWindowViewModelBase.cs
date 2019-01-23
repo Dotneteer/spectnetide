@@ -1,5 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Devices.Memory;
-using Spect.Net.VsPackage.Z80Programs;
+﻿using Spect.Net.VsPackage.Z80Programs;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
