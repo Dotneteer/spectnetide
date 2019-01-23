@@ -79,6 +79,7 @@
     <Compile Include="Commands\ShowSpectrumMemoryCommand.cs" />
     <Compile Include="Commands\ShowTestExplorerCommand.cs" />
     <Compile Include="Commands\ShowTzxExplorerCommand.cs" />
+    <Compile Include="Commands\ShowWatchMemoryCommand.cs" />
     <Compile Include="Commands\ShowZ80AssemblerOutputCommand.cs" />
     <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\ShowZ80DisassemblyCommand.cs" />
@@ -191,6 +192,17 @@
     <Compile Include="ToolWindows\TestExplorer\TestTreeViewItems.cs" />
     <Compile Include="Commands\InsertDriveACommand.cs" />
     <Compile Include="Commands\EjectFloppyCommand.cs" />
+    <Compile Include="ToolWindows\Watch\WatchCommandParser.cs" />
+    <Compile Include="ToolWindows\Watch\WatchCommandType.cs" />
+    <Compile Include="ToolWindows\Watch\WatchItemControl.xaml.cs">
+      <DependentUpon>WatchItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Watch\WatchItemViewModel.cs" />
+    <Compile Include="ToolWindows\Watch\WatchToolWindow.cs" />
+    <Compile Include="ToolWindows\Watch\WatchToolWindowControl.xaml.cs">
+      <DependentUpon>WatchToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Watch\WatchToolWindowViewModel.cs" />
     <Compile Include="Z80Programs\Floppy\CreateVfddFileViewModel.cs" />
     <Compile Include="Z80Programs\Floppy\DiskFormatConverter.cs" />
     <Compile Include="Z80Programs\Floppy\CreateVfddFileDialog.xaml.cs">
@@ -806,6 +818,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Watch\WatchItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Watch\WatchToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -28,10 +28,7 @@ namespace Spect.Net.VsPackage.ToolWindows.RegistersTool
         {
             InitializeComponent();
             Loaded += (s, e) => { Vm.Refresh(); };
-            PreviewKeyDown += (s, arg) =>
-            {
-                Vm?.HandleDebugKeys(arg);
-            };
+            PreviewKeyDown += (s, arg) => Vm?.HandleDebugKeys(arg);
         }
     }
 }

@@ -190,6 +190,18 @@
         </Strings>
       </Button>
 
+      <!-- Watch Memory tool window command -->
+      <Button guid="guidSpectNetCmdSet" id="WatchMemoryCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="Watch" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Watch Memory</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- ZX Spectrum List BASIC tool window command -->
       <Button guid="guidSpectNetCmdSet" id="BasicToolWindowCommandId" priority="0x0103" type="Button">
         <Parent guid="guidSpectNetCmdSet" id="InfoWindowsGroup" />
@@ -844,6 +856,10 @@
 
       <!-- Create Virtual Floppy Disk File window -->
       <IDSymbol name="CreateVfddCommandId" value="0x1B00" />
+
+      <!-- Watch memory tool window -->
+      <IDSymbol name="WatchMemoryCommandId" value="0x1C00" />
+
 
     </GuidSymbol>
   </Symbols>

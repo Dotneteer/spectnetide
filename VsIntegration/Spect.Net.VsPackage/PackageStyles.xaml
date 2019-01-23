@@ -3,7 +3,8 @@
                     xmlns:memory1="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
                     xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
                     xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
-                    xmlns:floppy="clr-namespace:Spect.Net.VsPackage.Z80Programs.Floppy">
+                    xmlns:floppy="clr-namespace:Spect.Net.VsPackage.Z80Programs.Floppy"
+                    xmlns:watch="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch">
 
     <!-- Colors -->
     <Color x:Key="Cz80Text">#FF51c351</Color>
@@ -238,6 +239,10 @@
         <memory1:MemoryLineControl />
     </DataTemplate>
 
+    <DataTemplate x:Key="WatchItemTemplate">
+        <watch:WatchItemControl />
+    </DataTemplate>
+
     <Style x:Key="StackLineItemStyle" TargetType="{x:Type ListBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -461,6 +466,43 @@
     </Style>
     <Style x:Key="Sp128SimpleButtonText" TargetType="TextBlock" BasedOn="{StaticResource Sp128ButtonText}">
         <Setter Property="FontSize" Value="24" />
+    </Style>
+
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+        <Setter Property="OverridesDefaultStyle"
+                Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope"
+                Value="true" />
+        <Setter Property="HasDropShadow"
+                Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border"
+                            Background="#202020"
+                            BorderThickness="1">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="#101010" />
+                        </Border.BorderBrush>
+                        <StackPanel IsItemsHost="True"
+                                    KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasDropShadow"
+                                 Value="true">
+                            <Setter TargetName="Border"
+                                    Property="Padding"
+                                    Value="0,3,0,3" />
+                            <Setter TargetName="Border"
+                                    Property="CornerRadius"
+                                    Value="4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- ViewBoxes used as Icons -->

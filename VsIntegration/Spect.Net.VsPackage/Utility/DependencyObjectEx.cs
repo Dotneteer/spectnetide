@@ -55,5 +55,17 @@ namespace Spect.Net.VsPackage.Utility
             }
             return null;
         }
+
+        public static TParent GetParent<TParent>(this DependencyObject element)
+            where TParent: DependencyObject
+        {
+            var parent = element;
+            while (parent != null)
+            {
+                if (parent.GetType() == typeof(TParent)) return (TParent)parent;
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+            return null;
+        }
     }
 }
