@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
+      <HintPath>..\..\packages\Antlr4.Runtime.4.6.6\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -146,13 +146,13 @@
     <Compile Include="Z80TestVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
       <Name>Spect.Net.Assembler</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
