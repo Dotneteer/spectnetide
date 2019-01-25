@@ -4,6 +4,7 @@
                     xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
                     xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
                     xmlns:floppy="clr-namespace:Spect.Net.VsPackage.Z80Programs.Floppy"
+                    xmlns:shell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
                     xmlns:watch="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch">
 
     <!-- Colors -->
@@ -468,15 +469,31 @@
         <Setter Property="FontSize" Value="24" />
     </Style>
 
+    <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
+        <Setter Property="Height"
+                Value="1" />
+        <Setter Property="Margin"
+                Value="0,4,0,4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Border BorderThickness="1">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{StaticResource CPromptBackground}" />
+                        </Border.BorderBrush>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type ContextMenu}">
-        <Setter Property="SnapsToDevicePixels"
-                Value="True" />
-        <Setter Property="OverridesDefaultStyle"
-                Value="True" />
-        <Setter Property="Grid.IsSharedSizeScope"
-                Value="true" />
-        <Setter Property="HasDropShadow"
-                Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+        <Setter Property="Foreground" Value="White" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
@@ -490,14 +507,9 @@
                                     KeyboardNavigation.DirectionalNavigation="Cycle" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="HasDropShadow"
-                                 Value="true">
-                            <Setter TargetName="Border"
-                                    Property="Padding"
-                                    Value="0,3,0,3" />
-                            <Setter TargetName="Border"
-                                    Property="CornerRadius"
-                                    Value="4" />
+                        <Trigger Property="HasDropShadow" Value="true">
+                            <Setter TargetName="Border" Property="Padding" Value="0,3,0,3" />
+                            <Setter TargetName="Border" Property="CornerRadius" Value="0" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
