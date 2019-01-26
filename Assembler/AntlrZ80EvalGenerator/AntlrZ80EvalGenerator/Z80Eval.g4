@@ -10,12 +10,15 @@ compileUnit
 
 formatSpec
 	: BYTEF
+	| SBYTEF
 	| CHARF
 	| HEX2F
 	| HEX4F
 	| HEX8F
 	| WORDF
+	| SWORDF
 	| DWORDF
+	| SDWORDF
 	| BITV8F
 	| BITV16F
 	| STR0F
@@ -40,7 +43,7 @@ andExpr
 	;
 
 equExpr
-	: relExpr ((EQOP | NEQOP | CIEQOP | CINEQOP) relExpr)*
+	: relExpr ((EQOP | NEQOP) relExpr)*
 	;
 
 relExpr
@@ -67,6 +70,7 @@ unaryExpr
 	| LPAR expr RPAR
 	| literalExpr
 	| symbolExpr
+	| z80Spec
 	;
 
 literalExpr
@@ -74,7 +78,6 @@ literalExpr
 	| DECNUM 
 	| CHAR
 	| BINNUM
-	| z80Spec
 	;
 
 symbolExpr
@@ -83,25 +86,18 @@ symbolExpr
 
 z80Spec
 	: reg8
-	| reg8Idx
-	| reg8Spec
 	| reg16
-	| reg16Idx
-	| reg16Spec
 	| regIndirect
 	| memIndirect
+	| wordMemIndirect
 	| flags
 	;
 
-reg8: A | B | C | D | E | H | L ;
-reg8Idx: XL | XH | YL | YH ;
-reg8Spec: I | R ;
-reg16: BC | DE | HL | SP ;
-reg16Idx: IX | IY ;
-reg16Std: BC | DE | HL | IX | IY ;
-reg16Spec: AF | AF_ ;
+reg8: A | B | C | D | E | F | H | L | XL | XH | YL | YH | I | R ;
+reg16: AF | BC | DE | HL | AF_ | BC_ | DE_ | HL_ | IX | IY | SP | PC | WZ ;
 regIndirect: LPAR (reg16) RPAR ;
 memIndirect: LSBRAC expr RSBRAC ;
+wordMemIndirect: LCBRAC expr RCBRAC ;
 flags: ZF | NZF | CF | NCF | POF | PEF | PF | MF ;
 
 /*
@@ -120,6 +116,8 @@ LPAR	: '(' ;
 RPAR	: ')' ;
 LSBRAC	: '[' ;
 RSBRAC	: ']' ;
+LCBRAC	: '{' ;
+RCBRAC	: '}' ;
 QMARK	: '?' ;
 PLUS	: '+' ;
 MINUS	: '-' ;
@@ -127,9 +125,7 @@ VBAR	: '|' ;
 UPARR	: '^' ;
 AMP		: '&' ;
 EQOP	: '==' ;
-CIEQOP	: '===' ;
 NEQOP	: '!=' ;
-CINEQOP	: '!==' ;
 LTOP	: '<' ;
 LTEOP	: '<=' ;
 GTOP	: '>' ;
@@ -152,6 +148,7 @@ D	: 'd'|'D' ;
 E	: 'e'|'E' ;
 H	: 'h'|'H' ;
 L	: 'l'|'L' ;
+F	: 'f'|'F' ;
 I	: 'i'|'I' ;
 R	: 'r'|'R' ;
 XL	: 'xl'|'XL'|'ixl'|'IXL'|'IXl' ;
@@ -166,6 +163,11 @@ IX	: 'ix'|'IX' ;
 IY	: 'iy'|'IY' ;
 AF	: 'af'|'AF' ;
 AF_	: 'af\''|'AF\'' ;
+BC_	: 'bc\''|'BC\'' ;
+DE_	: 'de\''|'DE\'' ;
+HL_	: 'hl\''|'HL\'' ;
+PC	: 'pc'|'PC' ;
+WZ	: 'wz'|'WZ' ;
 ZF	: '`z'|'`Z' ;
 NZF	: '`nz'|'`NZ' ;
 CF	: '`c'|'`C' ;
@@ -195,12 +197,15 @@ IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 // --- Format specifiers
 BYTEF	: ':b' | ':B' ;
+SBYTEF	: ':-b' | ':-B' ;
 CHARF	: ':c' | ':C' ;
 HEX2F	: ':h2' | ':H2' ;
 HEX4F	: ':h4' | ':H4' ;
 HEX8F	: ':h8' | ':H8' ;
 WORDF	: ':w' | ':W' ;
+SWORDF	: ':-w' | ':-W' ;
 DWORDF	: ':dw' | ':DW' ;
+SDWORDF	: ':-dw' | ':-DW' ;
 BITV8F	: ':bv8' | ':BV8' ;
 BITV16F	: ':bv16' | ':BV16' ;
 STR0F	: ':s0' | ':S0' ;

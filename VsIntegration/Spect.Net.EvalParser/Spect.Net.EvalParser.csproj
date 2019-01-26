@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>CS3021</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,10 +55,43 @@
     <Compile Include="Generated\Z80EvalParser.cs" />
     <Compile Include="Generated\Z80EvalVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyntaxTree\AddOperationNode.cs" />
+    <Compile Include="SyntaxTree\BinaryOperationNode.cs" />
+    <Compile Include="SyntaxTree\BitwiseAndOperationNode.cs" />
+    <Compile Include="SyntaxTree\BitwiseOrOperationNode.cs" />
+    <Compile Include="SyntaxTree\BitwiseXorOperationNode.cs" />
+    <Compile Include="SyntaxTree\ConditionalExpressionNode.cs" />
+    <Compile Include="SyntaxTree\DivideOperationNode.cs" />
+    <Compile Include="SyntaxTree\EqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\ExpressionNode.cs" />
+    <Compile Include="SyntaxTree\ExpressionValue.cs" />
+    <Compile Include="SyntaxTree\GreaterThanOperationNode.cs" />
+    <Compile Include="SyntaxTree\GreaterThanOrEqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\LiteralNode.cs" />
+    <Compile Include="SyntaxTree\MemoryIndirectNode.cs" />
+    <Compile Include="SyntaxTree\ModuloOperationNode.cs" />
+    <Compile Include="SyntaxTree\MultiplyOperationNode.cs" />
+    <Compile Include="SyntaxTree\ShiftLeftOperationNode.cs" />
+    <Compile Include="SyntaxTree\ShiftRightOperationNode.cs" />
+    <Compile Include="SyntaxTree\SubtractOperationNode.cs" />
+    <Compile Include="SyntaxTree\SymbolNode.cs" />
+    <Compile Include="SyntaxTree\IExpressionEvaluationContext.cs" />
+    <Compile Include="SyntaxTree\LessThanOperationNode.cs" />
+    <Compile Include="SyntaxTree\LessThanOrEqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\NotEqualOperationNode.cs" />
+    <Compile Include="SyntaxTree\SyntaxHelper.cs" />
+    <Compile Include="SyntaxTree\UnaryBitwiseNotNode.cs" />
+    <Compile Include="SyntaxTree\UnaryExpressionNode.cs" />
+    <Compile Include="SyntaxTree\UnaryLogicalNotNode.cs" />
+    <Compile Include="SyntaxTree\UnaryMinusNode.cs" />
+    <Compile Include="SyntaxTree\UnaryPlusNode.cs" />
+    <Compile Include="SyntaxTree\WordMemoryIndirectNode.cs" />
+    <Compile Include="SyntaxTree\Z80FlagNode.cs" />
+    <Compile Include="SyntaxTree\Z80RegisterIndirectNode.cs" />
+    <Compile Include="SyntaxTree\Z80RegisterNode.cs" />
+    <Compile Include="Z80EvalVisitor.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SyntaxTree\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

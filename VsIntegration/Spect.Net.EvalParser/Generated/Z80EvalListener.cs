@@ -208,28 +208,6 @@ public interface IZ80EvalListener : IParseTreeListener {
 	void ExitReg8([NotNull] Z80EvalParser.Reg8Context context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg8Idx"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterReg8Idx([NotNull] Z80EvalParser.Reg8IdxContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg8Idx"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitReg8Idx([NotNull] Z80EvalParser.Reg8IdxContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg8Spec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterReg8Spec([NotNull] Z80EvalParser.Reg8SpecContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg8Spec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitReg8Spec([NotNull] Z80EvalParser.Reg8SpecContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg16"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -239,39 +217,6 @@ public interface IZ80EvalListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitReg16([NotNull] Z80EvalParser.Reg16Context context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg16Idx"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterReg16Idx([NotNull] Z80EvalParser.Reg16IdxContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg16Idx"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitReg16Idx([NotNull] Z80EvalParser.Reg16IdxContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg16Std"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterReg16Std([NotNull] Z80EvalParser.Reg16StdContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg16Std"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitReg16Std([NotNull] Z80EvalParser.Reg16StdContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg16Spec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterReg16Spec([NotNull] Z80EvalParser.Reg16SpecContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg16Spec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitReg16Spec([NotNull] Z80EvalParser.Reg16SpecContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.regIndirect"/>.
@@ -294,6 +239,17 @@ public interface IZ80EvalListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMemIndirect([NotNull] Z80EvalParser.MemIndirectContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.flags"/>.

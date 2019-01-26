@@ -244,32 +244,6 @@ public partial class Z80EvalBaseListener : IZ80EvalListener {
 	public virtual void ExitReg8([NotNull] Z80EvalParser.Reg8Context context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg8Idx"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReg8Idx([NotNull] Z80EvalParser.Reg8IdxContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg8Idx"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReg8Idx([NotNull] Z80EvalParser.Reg8IdxContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg8Spec"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReg8Spec([NotNull] Z80EvalParser.Reg8SpecContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg8Spec"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReg8Spec([NotNull] Z80EvalParser.Reg8SpecContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg16"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -281,45 +255,6 @@ public partial class Z80EvalBaseListener : IZ80EvalListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitReg16([NotNull] Z80EvalParser.Reg16Context context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg16Idx"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReg16Idx([NotNull] Z80EvalParser.Reg16IdxContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg16Idx"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReg16Idx([NotNull] Z80EvalParser.Reg16IdxContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg16Std"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReg16Std([NotNull] Z80EvalParser.Reg16StdContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg16Std"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReg16Std([NotNull] Z80EvalParser.Reg16StdContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.reg16Spec"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReg16Spec([NotNull] Z80EvalParser.Reg16SpecContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.reg16Spec"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReg16Spec([NotNull] Z80EvalParser.Reg16SpecContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.regIndirect"/>.
@@ -346,6 +281,19 @@ public partial class Z80EvalBaseListener : IZ80EvalListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMemIndirect([NotNull] Z80EvalParser.MemIndirectContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.flags"/>.

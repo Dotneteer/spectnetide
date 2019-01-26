@@ -145,46 +145,11 @@ public interface IZ80EvalVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitReg8([NotNull] Z80EvalParser.Reg8Context context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80EvalParser.reg8Idx"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitReg8Idx([NotNull] Z80EvalParser.Reg8IdxContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80EvalParser.reg8Spec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitReg8Spec([NotNull] Z80EvalParser.Reg8SpecContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80EvalParser.reg16"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitReg16([NotNull] Z80EvalParser.Reg16Context context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80EvalParser.reg16Idx"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitReg16Idx([NotNull] Z80EvalParser.Reg16IdxContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80EvalParser.reg16Std"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitReg16Std([NotNull] Z80EvalParser.Reg16StdContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80EvalParser.reg16Spec"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitReg16Spec([NotNull] Z80EvalParser.Reg16SpecContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80EvalParser.regIndirect"/>.
@@ -199,6 +164,13 @@ public interface IZ80EvalVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMemIndirect([NotNull] Z80EvalParser.MemIndirectContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80EvalParser.flags"/>.
