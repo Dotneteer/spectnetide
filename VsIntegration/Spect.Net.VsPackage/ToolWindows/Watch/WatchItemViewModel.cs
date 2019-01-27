@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.Watch
@@ -29,6 +30,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
             get => _format;
             set => Set(ref _format, value);
         }
+
+        /// <summary>
+        /// The expression node to evaluate
+        /// </summary>
+        public ExpressionNode ExpressionNode { get; set; }
 
         /// <summary>
         /// Watch expression to evaluate

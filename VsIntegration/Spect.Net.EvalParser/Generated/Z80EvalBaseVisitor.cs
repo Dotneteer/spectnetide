@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace AntlrZ80EvalGenerator {
+namespace Spect.Net.EvalParser.Generated {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -222,17 +222,6 @@ public partial class Z80EvalBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	public virtual Result VisitReg16([NotNull] Z80EvalParser.Reg16Context context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80EvalParser.regIndirect"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitRegIndirect([NotNull] Z80EvalParser.RegIndirectContext context) { return VisitChildren(context); }
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80EvalParser.memIndirect"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -265,4 +254,4 @@ public partial class Z80EvalBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// <return>The visitor result.</return>
 	public virtual Result VisitFlags([NotNull] Z80EvalParser.FlagsContext context) { return VisitChildren(context); }
 }
-} // namespace AntlrZ80EvalGenerator
+} // namespace Spect.Net.EvalParser.Generated

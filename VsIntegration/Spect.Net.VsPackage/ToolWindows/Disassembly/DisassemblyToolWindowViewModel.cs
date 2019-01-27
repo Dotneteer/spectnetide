@@ -116,7 +116,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Refrehses the disassembly line with the given address
+        /// Refreshes the disassembly line with the given address
         /// </summary>
         /// <param name="addr"></param>
         public void RefreshDisassembly(ushort addr)

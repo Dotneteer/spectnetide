@@ -20,6 +20,7 @@
             } 
             if (right.Value != 0)
             {
+                SuggestWiderType();
                 return new ExpressionValue(left.Value / right.Value);
             }
             EvaluationError = "Divide by zero error";

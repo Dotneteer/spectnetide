@@ -32,6 +32,7 @@ namespace Spect.Net.EvalParser.SyntaxTree
             }
 
             var msb = evalContext.GetMemoryIndirectValue(new ExpressionValue(address.Value + 1));
+            SuggestType(ExpressionValueType.Word);
             return !msb.IsValid 
                 ? ExpressionValue.Error 
                 : new ExpressionValue(lsb.Value + (msb.Value << 8));

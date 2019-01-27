@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Scripting.Console
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.EvalParser", "VsIntegration\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj", "{ADEC05F1-8D6C-4282-85C5-E12A22869F36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.EvalParser.Test", "Tests\Spect.Net.EvalParser.Test\Spect.Net.EvalParser.Test.csproj", "{0D2E4379-B808-41F3-9990-AF3BB040C376}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,10 @@ Global
 		{ADEC05F1-8D6C-4282-85C5-E12A22869F36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADEC05F1-8D6C-4282-85C5-E12A22869F36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADEC05F1-8D6C-4282-85C5-E12A22869F36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D2E4379-B808-41F3-9990-AF3BB040C376}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D2E4379-B808-41F3-9990-AF3BB040C376}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D2E4379-B808-41F3-9990-AF3BB040C376}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D2E4379-B808-41F3-9990-AF3BB040C376}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +177,7 @@ Global
 		{2BDBACFF-23E2-4441-984F-3C835FA27A90} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{D5D8533C-E56A-4374-A5D9-FA1815E364BE} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{ADEC05F1-8D6C-4282-85C5-E12A22869F36} = {61B00143-1411-4891-B064-15B6E276B08B}
+		{0D2E4379-B808-41F3-9990-AF3BB040C376} = {C1E57370-ADB2-4B95-A791-454DCAE84708}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {470717C5-BD47-46B0-A255-7687A092812B}

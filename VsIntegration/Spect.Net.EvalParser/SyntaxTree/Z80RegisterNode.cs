@@ -15,8 +15,12 @@
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext) 
-            => evalContext.GetZ80RegisterValue(Register);
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
+        {
+            var result = evalContext.GetZ80RegisterValue(Register, out var is8Bit);
+            SuggestType(is8Bit ? ExpressionValueType.Byte : ExpressionValueType.Word);
+            return result;
+        }
 
         /// <summary>
         /// Initializes with the specified register

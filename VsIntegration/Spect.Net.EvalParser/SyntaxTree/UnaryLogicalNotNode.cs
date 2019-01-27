@@ -13,6 +13,7 @@
         public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
             var operand = Operand.Evaluate(evalContext);
+            SuggestType(ExpressionValueType.Bool);
             return new ExpressionValue((uint)(operand.Value == 0 ? 0 : 1));
         }
     }

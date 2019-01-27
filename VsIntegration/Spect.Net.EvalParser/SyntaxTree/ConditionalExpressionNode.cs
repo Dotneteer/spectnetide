@@ -33,9 +33,18 @@
                 return ExpressionValue.Error;
             }
 
-            return cond.Value != 0
-                ? TrueExpression.Evaluate(evalContext)
-                : FalseExpression.Evaluate(evalContext);
+            if (cond.Value != 0)
+            {
+                var result = TrueExpression.Evaluate(evalContext);
+                SuggestTypeOf(TrueExpression);
+                return result;
+            }
+            else
+            {
+                var result = FalseExpression.Evaluate(evalContext);
+                SuggestTypeOf(FalseExpression);
+                return result;
+            }
         }
     }
 }

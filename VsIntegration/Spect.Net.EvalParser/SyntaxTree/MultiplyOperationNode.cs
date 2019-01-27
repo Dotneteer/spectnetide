@@ -14,6 +14,7 @@
         {
             var left = LeftOperand.Evaluate(evalContext);
             var right = RightOperand.Evaluate(evalContext);
+            SuggestWidestType();
             return left.IsValid && right.IsValid
                 ? new ExpressionValue(left.Value * right.Value)
                 : ExpressionValue.Error;

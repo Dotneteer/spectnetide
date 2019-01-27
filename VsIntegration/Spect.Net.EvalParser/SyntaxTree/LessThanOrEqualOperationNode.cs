@@ -14,6 +14,7 @@
         {
             var left = LeftOperand.Evaluate(evalContext);
             var right = RightOperand.Evaluate(evalContext);
+            SuggestType(ExpressionValueType.Bool);
             return left.IsValid && right.IsValid
                 ? new ExpressionValue(left.Value <= right.Value ? 1u : 0u)
                 : ExpressionValue.Error;

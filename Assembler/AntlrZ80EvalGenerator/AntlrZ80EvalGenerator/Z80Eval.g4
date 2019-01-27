@@ -87,7 +87,6 @@ symbolExpr
 z80Spec
 	: reg8
 	| reg16
-	| regIndirect
 	| memIndirect
 	| wordMemIndirect
 	| flags
@@ -95,10 +94,9 @@ z80Spec
 
 reg8: A | B | C | D | E | F | H | L | XL | XH | YL | YH | I | R ;
 reg16: AF | BC | DE | HL | AF_ | BC_ | DE_ | HL_ | IX | IY | SP | PC | WZ ;
-regIndirect: LPAR (reg16) RPAR ;
 memIndirect: LSBRAC expr RSBRAC ;
 wordMemIndirect: LCBRAC expr RCBRAC ;
-flags: ZF | NZF | CF | NCF | POF | PEF | PF | MF ;
+flags: ZF | NZF | CF | NCF | POF | PEF | PF | MF | R3F | NR3F | R5F | NR5F | NF | NNF | HF | NHF ;
 
 /*
  * Lexer Rules
@@ -176,11 +174,19 @@ POF	: '`po'|'`PO' ;
 PEF	: '`pe'|'`PE' ;
 PF	: '`p'|'`P' ;
 MF	: '`m'|'`M' ;
+HF	: '`h'|'`H' ;
+NHF	: '`nh'|'`NH' ;
+NF	: '`n'|'`N' ;
+NNF	: '`nn'|'`NN' ;
+R3F : '`3' ;
+NR3F: '`N3'|'`n3' ;
+R5F : '`5' ;
+NR5F: '`N5'|'`n5' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?
 		| Digit HexDigit? HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
-BINNUM	: ('%'| ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
+BINNUM	: ('%' '_'? | ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?

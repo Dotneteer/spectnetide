@@ -20,6 +20,7 @@
             var idExpr = evalContext.GetSymbolValue(SymbolName);
             if (idExpr != null)
             {
+                SuggestType(ExpressionValueType.Word);
                 return idExpr;
             }
             EvaluationError = $"Symbol '{SymbolName}' cannot be found";

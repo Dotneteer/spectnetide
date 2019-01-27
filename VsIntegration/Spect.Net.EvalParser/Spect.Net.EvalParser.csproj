@@ -65,6 +65,8 @@
     <Compile Include="SyntaxTree\EqualOperationNode.cs" />
     <Compile Include="SyntaxTree\ExpressionNode.cs" />
     <Compile Include="SyntaxTree\ExpressionValue.cs" />
+    <Compile Include="SyntaxTree\ExpressionValueType.cs" />
+    <Compile Include="SyntaxTree\FormatSpecifierNode.cs" />
     <Compile Include="SyntaxTree\GreaterThanOperationNode.cs" />
     <Compile Include="SyntaxTree\GreaterThanOrEqualOperationNode.cs" />
     <Compile Include="SyntaxTree\LiteralNode.cs" />
@@ -86,9 +88,13 @@
     <Compile Include="SyntaxTree\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\UnaryPlusNode.cs" />
     <Compile Include="SyntaxTree\WordMemoryIndirectNode.cs" />
+    <Compile Include="SyntaxTree\Z80EvalParserErrorInfo.cs" />
+    <Compile Include="SyntaxTree\Z80ExpressionNode.cs" />
     <Compile Include="SyntaxTree\Z80FlagNode.cs" />
-    <Compile Include="SyntaxTree\Z80RegisterIndirectNode.cs" />
     <Compile Include="SyntaxTree\Z80RegisterNode.cs" />
+    <Compile Include="Z80Eval.g4.parser.cs">
+      <DependentUpon>Z80Eval.g4</DependentUpon>
+    </Compile>
     <Compile Include="Z80EvalVisitor.cs" />
   </ItemGroup>
   <ItemGroup />

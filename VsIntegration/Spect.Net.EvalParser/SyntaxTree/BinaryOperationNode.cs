@@ -42,5 +42,44 @@
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
         public abstract ExpressionValue Calculate(IExpressionEvaluationContext evalContext);
+
+        /// <summary>
+        /// Suggests the expression type to be one size larger than the wider operand
+        /// </summary>
+        protected void SuggestWidestType()
+        {
+            if (LeftOperand.ValueType == ExpressionValueType.DWord
+                || LeftOperand.ValueType == ExpressionValueType.Word
+                || RightOperand.ValueType == ExpressionValueType.DWord
+                || RightOperand.ValueType == ExpressionValueType.Word)
+            {
+                ValueType = ExpressionValueType.DWord;
+            }
+            else
+            {
+                ValueType = ExpressionValueType.Word;
+            }
+        }
+
+        /// <summary>
+        /// Suggests the expression type to be the size of the wider operand
+        /// </summary>
+        protected void SuggestWiderType()
+        {
+            if (LeftOperand.ValueType == ExpressionValueType.DWord
+                || RightOperand.ValueType == ExpressionValueType.DWord)
+            {
+                ValueType = ExpressionValueType.DWord;
+            }
+            else if (LeftOperand.ValueType == ExpressionValueType.Word
+                || RightOperand.ValueType == ExpressionValueType.Word)
+            {
+                ValueType = ExpressionValueType.Word;
+            }
+            else
+            {
+                ValueType = ExpressionValueType.Byte;
+            }
+        }
     }
 }

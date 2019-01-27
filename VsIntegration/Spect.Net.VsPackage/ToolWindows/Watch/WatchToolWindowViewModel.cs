@@ -1,5 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using Antlr4.Runtime;
+using Spect.Net.EvalParser;
+using Spect.Net.EvalParser.Generated;
+using Spect.Net.EvalParser.SyntaxTree;
 
 namespace Spect.Net.VsPackage.ToolWindows.Watch
 {
@@ -21,6 +25,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         public ObservableCollection<WatchItemViewModel> WatchItems { get; } =
             new ObservableCollection<WatchItemViewModel>();
 
+        public SpectrumEvaluationContext EvalContext { get; }
         /// <summary>
         /// The width of the label
         /// </summary>
@@ -47,6 +52,17 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
             }
 
             LabelWidth = 100;
+            EvalContext = new SpectrumEvaluationContext(MachineViewModel.SpectrumVm);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, 
+        /// or resetting unmanaged resources.
+        /// </summary>
+        public override void Dispose()
+        {
+            EvalContext.Dispose();
+            base.Dispose();
         }
 
         /// <summary>
@@ -104,9 +120,24 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     return false;
 
                 case WatchCommandType.AddWatch:
+                    // --- Parse the given expression
+                    var inputStream = new AntlrInputStream(parser.Arg1);
+                    var lexer = new Z80EvalLexer(inputStream);
+                    var tokenStream = new CommonTokenStream(lexer);
+                    var evalParser = new Z80EvalParser(tokenStream);
+                    var context = evalParser.compileUnit();
+                    var visitor = new Z80EvalVisitor();
+                    var z80Expr = (Z80ExpressionNode)visitor.Visit(context);
+                    if (evalParser.SyntaxErrors.Count > 1 || z80Expr?.Expression == null)
+                    {
+                        validationMessage = "Syntax error in the specified watch expression";
+                        return false;
+                    }
                     var newItem = new WatchItemViewModel
                     {
                         SeqNo = WatchItems.Count + 1,
+                        ExpressionNode = z80Expr.Expression,
+                        Format = z80Expr.FormatSpecifier?.Format,
                         Expression = parser.Arg1,
                         Value = "<not evaluated yet>",
                         Parent = this,
@@ -220,10 +251,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         {
             base.OnScreenRefreshed();
             if (ScreenRefreshCount % 10 != 0) return;
-            foreach (var item in WatchItems)
-            {
-                item.Value = ScreenRefreshCount.ToString();
-            }
+            EvaluateWatchItems();
         }
 
         /// <summary>
@@ -235,6 +263,34 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
             {
                 WatchItems[i].SeqNo = i + 1;
                 WatchItems[i].RefreshCommandStatus();
+            }
+        }
+
+        /// <summary>
+        /// Evaluates the watch items
+        /// </summary>
+        private void EvaluateWatchItems()
+        {
+            foreach (var item in WatchItems)
+            {
+                try
+                {
+                    if (item.ExpressionNode == null) continue;
+                    var value = item.ExpressionNode.Evaluate(EvalContext);
+                    if (value == ExpressionValue.Error)
+                    {
+                        item.HasError = true;
+                        item.Value = item.ExpressionNode.EvaluationError;
+                    }
+                    else
+                    {
+                        item.Value = value.Value.ToString();
+                    }
+                }
+                catch
+                {
+                    // --- This exception is intentionally ignored.
+                }
             }
         }
     }

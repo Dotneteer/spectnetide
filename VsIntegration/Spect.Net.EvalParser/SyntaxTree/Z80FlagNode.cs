@@ -15,8 +15,11 @@
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext) 
-            => evalContext.GetZ80FlagValue(Flag);
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
+        {
+            SuggestType(ExpressionValueType.Byte);
+            return evalContext.GetZ80FlagValue(Flag);
+        }
 
         /// <summary>
         /// Initializes with the specified flag

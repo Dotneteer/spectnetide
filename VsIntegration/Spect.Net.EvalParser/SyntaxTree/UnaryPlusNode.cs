@@ -11,6 +11,9 @@
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
         public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
-            => Operand.Evaluate(evalContext);
+        {
+            SuggestTypeOf(Operand);
+            return Operand.Evaluate(evalContext);
+        }
     }
 }

@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace AntlrZ80EvalGenerator {
+namespace Spect.Net.EvalParser.Generated {
 using Antlr4.Runtime.Misc;
 using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;
 using IToken = Antlr4.Runtime.IToken;
@@ -219,17 +219,6 @@ public interface IZ80EvalListener : IParseTreeListener {
 	void ExitReg16([NotNull] Z80EvalParser.Reg16Context context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.regIndirect"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterRegIndirect([NotNull] Z80EvalParser.RegIndirectContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.regIndirect"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitRegIndirect([NotNull] Z80EvalParser.RegIndirectContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.memIndirect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -262,4 +251,4 @@ public interface IZ80EvalListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFlags([NotNull] Z80EvalParser.FlagsContext context);
 }
-} // namespace AntlrZ80EvalGenerator
+} // namespace Spect.Net.EvalParser.Generated

@@ -59,7 +59,7 @@
     <None Include="packages.config" />
     <Antlr4 Include="Z80Eval.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>AntlrZ80EvalGenerator</CustomToolNamespace>
+      <CustomToolNamespace>Spect.Net.EvalParser.Generated</CustomToolNamespace>
     </Antlr4>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -22,6 +22,7 @@
             {
                 return ExpressionValue.Error;
             }
+            SuggestType(ExpressionValueType.Byte);
             return evalContext.GetMemoryIndirectValue(address);
         }
 

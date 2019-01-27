@@ -13,6 +13,7 @@
         public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
             var operand = Operand.Evaluate(evalContext);
+            SuggestTypeOf(Operand);
             return new ExpressionValue(~operand);
         }
     }

@@ -5,22 +5,28 @@
     /// </summary>
     public sealed class LiteralNode : ExpressionNode
     {
-        public ExpressionValue LiteralValue { get; }
+        public uint LiteralValue { get; }
 
         /// <summary>
         /// Retrieves the value of the expression
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Evaluated expression value</returns>
-        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext) => LiteralValue;
-
-        /// <summary>
-        /// Initialize an ushort literal value
-        /// </summary>
-        /// <param name="value">Ushort value</param>
-        public LiteralNode(ExpressionValue value)
+        public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
-            LiteralValue = value;
+            if (LiteralValue <= byte.MaxValue)
+            {
+                SuggestType(ExpressionValueType.Byte);
+            }
+            else if (LiteralValue <= ushort.MaxValue)
+            {
+                SuggestType(ExpressionValueType.Word);
+            }
+            else
+            {
+                SuggestType(ExpressionValueType.DWord);
+            }
+            return new ExpressionValue(LiteralValue);
         }
 
         /// <summary>

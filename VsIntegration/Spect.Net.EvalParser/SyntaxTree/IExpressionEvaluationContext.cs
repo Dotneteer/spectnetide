@@ -18,8 +18,9 @@
         /// Gets the current value of the specified Z80 register
         /// </summary>
         /// <param name="registerName">Name of the register</param>
+        /// <param name="is8Bit">Is it an 8-bit register?</param>
         /// <returns>Z80 register value</returns>
-        ExpressionValue GetZ80RegisterValue(string registerName);
+        ExpressionValue GetZ80RegisterValue(string registerName, out bool is8Bit);
 
         /// <summary>
         /// Gets the current value of the specified Z80 flag
