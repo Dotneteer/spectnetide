@@ -5,7 +5,15 @@
     /// </summary>
     public sealed class LiteralNode : ExpressionNode
     {
+        /// <summary>
+        /// The value of the literal node
+        /// </summary>
         public uint LiteralValue { get; }
+
+        /// <summary>
+        /// The source of the literal node
+        /// </summary>
+        public string Source { get; }
 
         /// <summary>
         /// Retrieves the value of the expression
@@ -33,9 +41,15 @@
         /// Initialize a double literal value
         /// </summary>
         /// <param name="value">Double value</param>
-        public LiteralNode(uint value)
+        /// <param name="source">Source representation</param>
+        public LiteralNode(uint value, string source)
         {
             LiteralValue = new ExpressionValue(value);
+            Source = source;
         }
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() => Source;
     }
 }

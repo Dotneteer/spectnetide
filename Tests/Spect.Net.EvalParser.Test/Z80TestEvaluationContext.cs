@@ -162,16 +162,6 @@ namespace Spect.Net.EvalParser.Test
         /// <summary>
         /// Gets the current value of the memory pointed by the specified Z80 register
         /// </summary>
-        /// <param name="registerName">Name of the register</param>
-        /// <returns>Z80 register value</returns>
-        public ExpressionValue GetZ80RegisterIndirectValue(string registerName)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the current value of the memory pointed by the specified Z80 register
-        /// </summary>
         /// <param name="address">Memory address</param>
         /// <returns>Z80 register value</returns>
         public ExpressionValue GetMemoryIndirectValue(ExpressionValue address)

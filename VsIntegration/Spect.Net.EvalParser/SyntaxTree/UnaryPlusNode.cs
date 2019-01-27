@@ -15,5 +15,10 @@
             SuggestTypeOf(Operand);
             return Operand.Evaluate(evalContext);
         }
+
+        /// <summary>
+        /// Operator token
+        /// </summary>
+        public override string Operator => "+";
     }
 }

@@ -230,17 +230,6 @@ public interface IZ80EvalListener : IParseTreeListener {
 	void ExitMemIndirect([NotNull] Z80EvalParser.MemIndirectContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.flags"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

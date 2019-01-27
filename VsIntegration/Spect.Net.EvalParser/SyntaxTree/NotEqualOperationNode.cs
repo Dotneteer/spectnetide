@@ -6,6 +6,11 @@
     public sealed class NotEqualOperationNode : BinaryOperationNode
     {
         /// <summary>
+        /// Operator token
+        /// </summary>
+        public override string Operator => "!=";
+
+        /// <summary>
         /// Calculates the result of the binary operation.
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>

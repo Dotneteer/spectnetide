@@ -75,12 +75,12 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         /// <summary>
         /// Tests if this item can move up
         /// </summary>
-        public bool CanMoveUp => SeqNo < Parent.WatchItems.Count;
+        public bool CanMoveUp => SeqNo > 1;
 
         /// <summary>
         /// Tests if this item can move down
         /// </summary>
-        public bool CanMoveDown => SeqNo > 1;
+        public bool CanMoveDown => SeqNo < Parent.WatchItems.Count;
 
         /// <summary>
         /// Notifies the parent to remove this item

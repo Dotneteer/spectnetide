@@ -16,5 +16,10 @@
             SuggestTypeOf(Operand);
             return new ExpressionValue((uint)-operand.Value);
         }
+
+        /// <summary>
+        /// Operator token
+        /// </summary>
+        public override string Operator => "-";
     }
 }

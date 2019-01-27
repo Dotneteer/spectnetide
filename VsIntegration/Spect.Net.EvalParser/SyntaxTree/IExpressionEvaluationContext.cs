@@ -32,13 +32,6 @@
         /// <summary>
         /// Gets the current value of the memory pointed by the specified Z80 register
         /// </summary>
-        /// <param name="registerName">Name of the register</param>
-        /// <returns>Z80 register value</returns>
-        ExpressionValue GetZ80RegisterIndirectValue(string registerName);
-
-        /// <summary>
-        /// Gets the current value of the memory pointed by the specified Z80 register
-        /// </summary>
         /// <param name="address">Memory address</param>
         /// <returns>Z80 register value</returns>
         ExpressionValue GetMemoryIndirectValue(ExpressionValue address);

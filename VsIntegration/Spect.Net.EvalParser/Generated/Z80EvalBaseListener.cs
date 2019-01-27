@@ -270,19 +270,6 @@ public partial class Z80EvalBaseListener : IZ80EvalListener {
 	public virtual void ExitMemIndirect([NotNull] Z80EvalParser.MemIndirectContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80EvalParser.flags"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

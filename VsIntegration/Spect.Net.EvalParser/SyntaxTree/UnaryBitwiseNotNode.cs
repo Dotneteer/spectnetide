@@ -16,5 +16,10 @@
             SuggestTypeOf(Operand);
             return new ExpressionValue(~operand);
         }
+
+        /// <summary>
+        /// Operator token
+        /// </summary>
+        public override string Operator => "~";
     }
 }

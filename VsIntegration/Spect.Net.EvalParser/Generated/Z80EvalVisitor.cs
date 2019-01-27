@@ -159,13 +159,6 @@ public interface IZ80EvalVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMemIndirect([NotNull] Z80EvalParser.MemIndirectContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80EvalParser.wordMemIndirect"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitWordMemIndirect([NotNull] Z80EvalParser.WordMemIndirectContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80EvalParser.flags"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

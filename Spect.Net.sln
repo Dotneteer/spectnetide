@@ -42,7 +42,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assembler", "Assembler", "{F42659D3-2385-4C73-976C-E6156FA46CD9}"
 	ProjectSection(SolutionItems) = preProject
 		Assembler\README.md = Assembler\README.md
-		Assembler\Spect.Net.TestParser\Z80TestVisitor.cs = Assembler\Spect.Net.TestParser\Z80TestVisitor.cs
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Assembler", "Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj", "{BB7BD2CA-017A-43BE-993B-B8C4D58EE4B5}"

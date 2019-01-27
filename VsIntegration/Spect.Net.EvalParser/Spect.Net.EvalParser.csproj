@@ -87,7 +87,6 @@
     <Compile Include="SyntaxTree\UnaryLogicalNotNode.cs" />
     <Compile Include="SyntaxTree\UnaryMinusNode.cs" />
     <Compile Include="SyntaxTree\UnaryPlusNode.cs" />
-    <Compile Include="SyntaxTree\WordMemoryIndirectNode.cs" />
     <Compile Include="SyntaxTree\Z80EvalParserErrorInfo.cs" />
     <Compile Include="SyntaxTree\Z80ExpressionNode.cs" />
     <Compile Include="SyntaxTree\Z80FlagNode.cs" />

@@ -5,11 +5,12 @@ grammar Z80Eval;
  */
 
 compileUnit
-	: expr? formatSpec? EOF
+	: expr formatSpec? EOF
 	;
 
 formatSpec
 	: BYTEF
+	| BOOLF
 	| SBYTEF
 	| CHARF
 	| HEX2F
@@ -21,8 +22,7 @@ formatSpec
 	| SDWORDF
 	| BITV8F
 	| BITV16F
-	| STR0F
-	| STRF
+	| BITV32F
 	;
 
 // --- Expressions
@@ -88,14 +88,12 @@ z80Spec
 	: reg8
 	| reg16
 	| memIndirect
-	| wordMemIndirect
 	| flags
 	;
 
 reg8: A | B | C | D | E | F | H | L | XL | XH | YL | YH | I | R ;
 reg16: AF | BC | DE | HL | AF_ | BC_ | DE_ | HL_ | IX | IY | SP | PC | WZ ;
-memIndirect: LSBRAC expr RSBRAC ;
-wordMemIndirect: LCBRAC expr RCBRAC ;
+memIndirect: LSBRAC expr (BYTEF | WORDF | DWORDF)? RSBRAC ;
 flags: ZF | NZF | CF | NCF | POF | PEF | PF | MF | R3F | NR3F | R5F | NR5F | NF | NNF | HF | NHF ;
 
 /*
@@ -114,8 +112,6 @@ LPAR	: '(' ;
 RPAR	: ')' ;
 LSBRAC	: '[' ;
 RSBRAC	: ']' ;
-LCBRAC	: '{' ;
-RCBRAC	: '}' ;
 QMARK	: '?' ;
 PLUS	: '+' ;
 MINUS	: '-' ;
@@ -202,20 +198,20 @@ IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 // --- Format specifiers
-BYTEF	: ':b' | ':B' ;
-SBYTEF	: ':-b' | ':-B' ;
-CHARF	: ':c' | ':C' ;
-HEX2F	: ':h2' | ':H2' ;
-HEX4F	: ':h4' | ':H4' ;
-HEX8F	: ':h8' | ':H8' ;
-WORDF	: ':w' | ':W' ;
-SWORDF	: ':-w' | ':-W' ;
-DWORDF	: ':dw' | ':DW' ;
-SDWORDF	: ':-dw' | ':-DW' ;
-BITV8F	: ':bv8' | ':BV8' ;
-BITV16F	: ':bv16' | ':BV16' ;
-STR0F	: ':s0' | ':S0' ;
-STRF	: ':s' | ':S' ;
+BOOLF	: '@f' | '@F' ;
+BYTEF	: '@b' | '@B' ;
+SBYTEF	: '@-b' | '@-B' ;
+CHARF	: '@c' | '@C' ;
+HEX2F	: '@h2' | '@H2' ;
+HEX4F	: '@h4' | '@H4' ;
+HEX8F	: '@h8' | '@H8' ;
+WORDF	: '@w' | '@W' ;
+SWORDF	: '@-w' | '@-W' ;
+DWORDF	: '@dw' | '@DW' ;
+SDWORDF	: '@-dw' | '@-DW' ;
+BITV8F	: '@%8' | '@%8' ;
+BITV16F	: '@%16' | '@%16' ;
+BITV32F	: '@%32' | '@%32' ;
 
 // --- Any invalid character should be converted into an ErrorCharacter token.
 ErrorCharacter

@@ -53,7 +53,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         /// </returns>
         public ExpressionValue GetSymbolValue(string symbol)
         {
-            throw new NotImplementedException();
+            return CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue)
+                ? new ExpressionValue(symbolValue.Value)
+                : ExpressionValue.Error;
         }
 
         /// <summary>
@@ -151,17 +153,44 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         /// <returns>Z80 register value</returns>
         public ExpressionValue GetZ80FlagValue(string flagName)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the current value of the memory pointed by the specified Z80 register
-        /// </summary>
-        /// <param name="registerName">Name of the register</param>
-        /// <returns>Z80 register value</returns>
-        public ExpressionValue GetZ80RegisterIndirectValue(string registerName)
-        {
-            throw new NotImplementedException();
+            var regs = SpectrumVm.Cpu.Registers;
+            switch (flagName.Substring(1).ToLower())
+            {
+                case "z":
+                    return new ExpressionValue(regs.ZFlag);
+                case "nz":
+                    return new ExpressionValue(!regs.ZFlag);
+                case "c":
+                    return new ExpressionValue(regs.CFlag);
+                case "nc":
+                    return new ExpressionValue(!regs.CFlag);
+                case "pe":
+                    return new ExpressionValue(regs.PFlag);
+                case "po":
+                    return new ExpressionValue(!regs.PFlag);
+                case "m":
+                    return new ExpressionValue(regs.SFlag);
+                case "p":
+                    return new ExpressionValue(!regs.SFlag);
+                case "h":
+                    return new ExpressionValue(regs.HFlag);
+                case "nh":
+                    return new ExpressionValue(!regs.HFlag);
+                case "n":
+                    return new ExpressionValue(regs.NFlag);
+                case "nn":
+                    return new ExpressionValue(!regs.NFlag);
+                case "3":
+                    return new ExpressionValue(regs.R3Flag);
+                case "n3":
+                    return new ExpressionValue(!regs.R3Flag);
+                case "5":
+                    return new ExpressionValue(regs.R5Flag);
+                case "n5":
+                    return new ExpressionValue(!regs.R5Flag);
+                default:
+                    return ExpressionValue.Error;
+            }
         }
 
         /// <summary>
@@ -171,7 +200,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         /// <returns>Z80 register value</returns>
         public ExpressionValue GetMemoryIndirectValue(ExpressionValue address)
         {
-            throw new NotImplementedException();
+            var memAddress = (ushort)address.Value;
+            return new ExpressionValue(SpectrumVm.MemoryDevice.Read(memAddress, true));
         }
     }
 }

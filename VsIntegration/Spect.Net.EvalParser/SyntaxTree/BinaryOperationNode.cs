@@ -27,6 +27,11 @@
         }
 
         /// <summary>
+        /// Operator token
+        /// </summary>
+        public abstract string Operator { get; }
+
+        /// <summary>
         /// Retrieves the value of the expression
         /// </summary>
         /// <param name="evalContext">Evaluation context</param>
@@ -42,6 +47,10 @@
         /// <param name="evalContext">Evaluation context</param>
         /// <returns>Result of the operation</returns>
         public abstract ExpressionValue Calculate(IExpressionEvaluationContext evalContext);
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() => $"{LeftOperand} {Operator} {RightOperand}";
 
         /// <summary>
         /// Suggests the expression type to be one size larger than the wider operand

@@ -17,7 +17,7 @@
         /// <returns>Evaluated expression value</returns>
         public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
-            SuggestType(ExpressionValueType.Byte);
+            SuggestType(ExpressionValueType.Bool);
             return evalContext.GetZ80FlagValue(Flag);
         }
 
@@ -29,5 +29,10 @@
         {
             Flag = flag;
         }
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() 
+            => Flag == null ? "" : Flag.ToUpper();
     }
 }

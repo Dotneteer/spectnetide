@@ -1,9 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using Antlr4.Runtime;
 using Spect.Net.EvalParser;
 using Spect.Net.EvalParser.Generated;
 using Spect.Net.EvalParser.SyntaxTree;
+using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.VsPackage.ToolWindows.Watch
 {
@@ -128,23 +130,33 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     var context = evalParser.compileUnit();
                     var visitor = new Z80EvalVisitor();
                     var z80Expr = (Z80ExpressionNode)visitor.Visit(context);
-                    if (evalParser.SyntaxErrors.Count > 1 || z80Expr?.Expression == null)
+                    if (evalParser.SyntaxErrors.Count > 0)
                     {
                         validationMessage = "Syntax error in the specified watch expression";
                         return false;
                     }
+
+                    // --- Create the watch item
+                    var formatStr = z80Expr.FormatSpecifier?.Format == null
+                        ? null
+                        : $"{z80Expr.FormatSpecifier.Format}";
                     var newItem = new WatchItemViewModel
                     {
                         SeqNo = WatchItems.Count + 1,
                         ExpressionNode = z80Expr.Expression,
-                        Format = z80Expr.FormatSpecifier?.Format,
-                        Expression = parser.Arg1,
-                        Value = "<not evaluated yet>",
+                        Format = formatStr,
+                        Expression = z80Expr.Expression.ToString(),
+                        Value = "(not evaluated yet)",
                         Parent = this,
                         HasError = false
                     };
                     WatchItems.Add(newItem);
                     RefreshWatchItems();
+                    if (MachineViewModel.MachineState == VmState.Paused
+                        || MachineViewModel.MachineState == VmState.Running)
+                    {
+                        EvaluateWatchItems();
+                    }
                     break;
 
                 case WatchCommandType.RemoveWatch:
@@ -184,7 +196,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                 default:
                     return false;
             }
-
             return true;
         }
 
@@ -219,29 +230,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         }
 
         /// <summary>
-        /// Override to handle the start of the virtual machine.
-        /// </summary>
-        /// <remarks>This method is called for the first start, too</remarks>
-        protected override void OnStart()
-        {
-            base.OnStart();
-            foreach (var item in WatchItems)
-            {
-                item.Value = "(not evaluated yet)";
-            }
-        }
-
-        /// <summary>
         /// Override to handle the paused state of the virtual machine.
         /// </summary>
         /// <remarks>This method is called for the first pause, too</remarks>
         protected override void OnPaused()
         {
             base.OnPaused();
-            foreach (var item in WatchItems)
-            {
-                item.Value = "(paused)";
-            }
+            EvaluateWatchItems();
         }
 
         /// <summary>
@@ -277,20 +272,108 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                 {
                     if (item.ExpressionNode == null) continue;
                     var value = item.ExpressionNode.Evaluate(EvalContext);
-                    if (value == ExpressionValue.Error)
-                    {
-                        item.HasError = true;
-                        item.Value = item.ExpressionNode.EvaluationError;
-                    }
-                    else
-                    {
-                        item.Value = value.Value.ToString();
-                    }
+                    item.HasError = value == ExpressionValue.Error;
+                    item.Value = item.HasError 
+                        ? item.ExpressionNode.EvaluationError 
+                        : FormatWatchExpression(item.ExpressionNode, value, item.Format);
                 }
                 catch
                 {
                     // --- This exception is intentionally ignored.
                 }
+            }
+        }
+
+        /// <summary>
+        /// Formats a watch expression
+        /// </summary>
+        /// <param name="expression">Expression node</param>
+        /// <param name="exprValue">Evaluated expression value</param>
+        /// <param name="formatSpecifier">Format specifier</param>
+        /// <returns></returns>
+        public static string FormatWatchExpression(ExpressionNode expression, ExpressionValue exprValue,
+            string formatSpecifier)
+        {
+            // --- We do not accept error
+            if (exprValue == ExpressionValue.Error)
+            {
+                return expression.EvaluationError;
+            }
+
+            // --- No format provided, use default based on expression type
+            if (string.IsNullOrEmpty(formatSpecifier))
+            {
+                switch (expression.ValueType)
+                {
+                    case ExpressionValueType.Bool:
+                        formatSpecifier = "F";
+                        break;
+                    case ExpressionValueType.Byte:
+                        formatSpecifier = "B";
+                        break;
+                    case ExpressionValueType.DWord:
+                        formatSpecifier = "DW";
+                        break;
+                    default:
+                        formatSpecifier = "W";
+                        break;
+                }
+            }
+
+            // --- Convert value to the specified output
+            var v = exprValue.Value;
+            switch (formatSpecifier)
+            {
+                case "F":
+                    return v == 0 ? "FALSE" : "TRUE";
+                case "B":
+                    var b = (byte) v;
+                    return $"#{b:X2} ({b})";
+                case "-B":
+                    var sb = (sbyte)v;
+                    return $"#{sb:X2} ({sb})";
+                case "C":
+                    var c = (char) (byte) v;
+                    return (byte)v >= 32 && (byte)v <= 127 ? $"'{c}'" : $"'\\0x{(byte)v:X2}'";
+                case "H2":
+                    var b0 = (byte) v;
+                    return $"#{b0:X2}";
+                case "H4":
+                    b0 = (byte)v;
+                    var b1 = (byte)(v >> 8);
+                    return $"#{b0:X2} #{b1:X2}";
+                case "H8":
+                    b0 = (byte)v;
+                    b1 = (byte)(v >> 8);
+                    var b2 = (byte)(v >> 16);
+                    var b3 = (byte)(v >> 24);
+                    return $"#{b0:X2} #{b1:X2} #{b2:X2} #{b3:X2}";
+                case "W":
+                    var w = (ushort)v;
+                    return $"#{w:X4} ({w})";
+                case "-W":
+                    var sw = (short)v;
+                    return $"#{sw:X4} ({sw})";
+                case "DW":
+                    return $"{v:X8} ({v})";
+                case "-DW":
+                    var sdw = (int) v;
+                    return $"{sdw:X8} ({sdw})";
+                case "%8":
+                    var s0 = Convert.ToString((byte) v, 2).PadLeft(8, '0');
+                    return $"{s0}";
+                case "%16":
+                    s0 = Convert.ToString((byte)v, 2).PadLeft(8, '0');
+                    var s1 = Convert.ToString((byte)(v >> 8), 2).PadLeft(8, '0');
+                    return $"{s0} {s1}";
+                case "%32":
+                    s0 = Convert.ToString((byte)v, 2).PadLeft(8, '0');
+                    s1 = Convert.ToString((byte)(v >> 8), 2).PadLeft(8, '0');
+                    var s2 = Convert.ToString((byte)(v >> 16), 2).PadLeft(8, '0');
+                    var s3 = Convert.ToString((byte)(v >> 24), 2).PadLeft(8, '0');
+                    return $"{s0} {s1} {s2} {s3}";
+                default:
+                    return v.ToString();
             }
         }
     }

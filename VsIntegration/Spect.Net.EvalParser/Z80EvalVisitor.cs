@@ -45,15 +45,12 @@ namespace Spect.Net.EvalParser
             var expr = (ExpressionNode)VisitOrExpr(context.orExpr());
             if (context.ChildCount == 1) return expr;
 
-            var result = new ConditionalExpressionNode()
+            return new ConditionalExpressionNode()
             {
                 Condition = expr,
                 TrueExpression = (ExpressionNode)VisitExpr(context.expr()[0]),
                 FalseExpression = (ExpressionNode)VisitExpr(context.expr()[1])
             };
-            return result.Condition == null || result.TrueExpression == null || result.FalseExpression == null
-                ? null
-                : result;
         }
 
         /// <summary>
@@ -73,16 +70,11 @@ namespace Spect.Net.EvalParser
             for (var i = 1; i < context.xorExpr().Length; i++)
             {
                 var rightExpr = VisitXorExpr(context.xorExpr()[i]);
-                var binExpr = new BitwiseOrOperationNode()
+                expr = new BitwiseOrOperationNode()
                 {
                     LeftOperand = (ExpressionNode)expr,
                     RightOperand = (ExpressionNode)rightExpr
                 };
-                if (binExpr.LeftOperand == null || binExpr.RightOperand == null)
-                {
-                    return null;
-                }
-                expr = binExpr;
             }
             return expr;
         }
@@ -104,16 +96,11 @@ namespace Spect.Net.EvalParser
             for (var i = 1; i < context.andExpr().Length; i++)
             {
                 var rightExpr = VisitAndExpr(context.andExpr()[i]);
-                var binExpr = new BitwiseXorOperationNode()
+                expr = new BitwiseXorOperationNode()
                 {
                     LeftOperand = (ExpressionNode)expr,
                     RightOperand = (ExpressionNode)rightExpr
                 };
-                if (binExpr.LeftOperand == null || binExpr.RightOperand == null)
-                {
-                    return null;
-                }
-                expr = binExpr;
             }
             return expr;
         }
@@ -135,16 +122,11 @@ namespace Spect.Net.EvalParser
             for (var i = 1; i < context.equExpr().Length; i++)
             {
                 var rightExpr = VisitEquExpr(context.equExpr()[i]);
-                var binExpr = new BitwiseAndOperationNode()
+                expr = new BitwiseAndOperationNode()
                 {
                     LeftOperand = (ExpressionNode)expr,
                     RightOperand = (ExpressionNode)rightExpr
                 };
-                if (binExpr.LeftOperand == null || binExpr.RightOperand == null)
-                {
-                    return null;
-                }
-                expr = binExpr;
             }
             return expr;
         }
@@ -175,10 +157,6 @@ namespace Spect.Net.EvalParser
                 equExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = equExpr;
                 opIndex += 2;
-                if (equExpr.LeftOperand == null || equExpr.RightOperand == null)
-                {
-                    return null;
-                }
             }
             return expr;
         }
@@ -214,10 +192,6 @@ namespace Spect.Net.EvalParser
                 relExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = relExpr;
                 opIndex += 2;
-                if (relExpr.LeftOperand == null || relExpr.RightOperand == null)
-                {
-                    return null;
-                }
             }
             return expr;
         }
@@ -248,10 +222,6 @@ namespace Spect.Net.EvalParser
                 shiftExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = shiftExpr;
                 opIndex += 2;
-                if (shiftExpr.LeftOperand == null || shiftExpr.RightOperand == null)
-                {
-                    return null;
-                }
             }
             return expr;
         }
@@ -282,10 +252,6 @@ namespace Spect.Net.EvalParser
                 addExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = addExpr;
                 opIndex += 2;
-                if (addExpr.LeftOperand == null || addExpr.RightOperand == null)
-                {
-                    return null;
-                }
             }
             return expr;
         }
@@ -318,10 +284,6 @@ namespace Spect.Net.EvalParser
                 multExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = multExpr;
                 opIndex += 2;
-                if (multExpr.LeftOperand == null || multExpr.RightOperand == null)
-                {
-                    return null;
-                }
             }
             return expr;
         }
@@ -422,7 +384,7 @@ namespace Spect.Net.EvalParser
             {
                 value = int.TryParse(context.GetText(), out var shortVal) ? (ushort)shortVal : (ushort)0;
             }
-            return new LiteralNode(value);
+            return new LiteralNode(value, token);
         }
 
         /// <summary>
@@ -448,14 +410,21 @@ namespace Spect.Net.EvalParser
             }
             if (context.memIndirect() != null)
             {
-                var result = new MemoryIndirectNode((ExpressionNode)VisitExpr(context.memIndirect().expr()));
-                return context.memIndirect().RSBRAC().Symbol.StartIndex < 0 ? null : result;
-            }
-
-            if (context.wordMemIndirect() != null)
-            {
-                var result = new WordMemoryIndirectNode((ExpressionNode) VisitExpr(context.wordMemIndirect().expr()));
-                return context.wordMemIndirect().RCBRAC().Symbol.StartIndex < 0 ? null : result;
+                var specifier = "";
+                if (context.memIndirect().BYTEF() != null)
+                {
+                    specifier = "B";
+                }
+                else if (context.memIndirect().WORDF() != null)
+                {
+                    specifier = "W";
+                }
+                else if (context.memIndirect().DWORDF() != null)
+                {
+                    specifier = "DW";
+                }
+                return new MemoryIndirectNode((ExpressionNode)VisitExpr(context.memIndirect().expr()),
+                    specifier);
             }
             return null;
         }
@@ -485,7 +454,7 @@ namespace Spect.Net.EvalParser
         /// Checks if the current context is invalid for further visiting
         /// </summary>
         /// <param name="context"></param>
-        private bool IsInvalidContext(ITree context) => context == null || context.ChildCount == 0;
+        private static bool IsInvalidContext(ITree context) => context == null || context.ChildCount == 0;
 
         #endregion
     }

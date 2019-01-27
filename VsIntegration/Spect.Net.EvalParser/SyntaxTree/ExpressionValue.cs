@@ -32,6 +32,15 @@
         }
 
         /// <summary>
+        /// Initializes a new instance of the class with the specified bool value.
+        /// </summary>
+        /// <param name="value">Bool value</param>
+        public ExpressionValue(bool value)
+        {
+            Value = value ? 1u : 0u;
+        }
+
+        /// <summary>
         /// Shortcut property to get the 16-bit value behind the expression
         /// </summary>
         public uint Value { get; }

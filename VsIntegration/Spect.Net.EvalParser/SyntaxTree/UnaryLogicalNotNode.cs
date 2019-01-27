@@ -16,5 +16,10 @@
             SuggestType(ExpressionValueType.Bool);
             return new ExpressionValue((uint)(operand.Value == 0 ? 0 : 1));
         }
+
+        /// <summary>
+        /// Operator token
+        /// </summary>
+        public override string Operator => "!";
     }
 }

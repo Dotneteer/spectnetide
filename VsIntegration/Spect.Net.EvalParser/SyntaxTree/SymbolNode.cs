@@ -18,7 +18,7 @@
         public override ExpressionValue Evaluate(IExpressionEvaluationContext evalContext)
         {
             var idExpr = evalContext.GetSymbolValue(SymbolName);
-            if (idExpr != null)
+            if (idExpr != ExpressionValue.Error)
             {
                 SuggestType(ExpressionValueType.Word);
                 return idExpr;
@@ -26,5 +26,10 @@
             EvaluationError = $"Symbol '{SymbolName}' cannot be found";
             return ExpressionValue.Error;
         }
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() 
+            => SymbolName == null ? "" : SymbolName.ToUpper();
     }
 }
