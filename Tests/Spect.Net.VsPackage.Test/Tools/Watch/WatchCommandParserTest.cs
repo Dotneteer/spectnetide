@@ -60,6 +60,23 @@ namespace Spect.Net.VsPackage.Test.Tools.Watch
         }
 
         [TestMethod]
+        public void ParserRecognizesUpdateWatchCommand()
+        {
+            // --- Act
+            var p1 = new WatchCommandParser("* 23 This is a command");
+            var p2 = new WatchCommandParser("* 234 This is another");
+
+            // --- Assert
+            p1.Command.ShouldBe(WatchCommandType.UpdateWatch);
+            p1.Address.ShouldBe((ushort)23);
+            p1.Arg1.ShouldBe("This is a command");
+            p2.Command.ShouldBe(WatchCommandType.UpdateWatch);
+            p2.Address.ShouldBe((ushort)234);
+            p2.Arg1.ShouldBe("This is another");
+        }
+
+
+        [TestMethod]
         public void ParserRefusesInvalidRemoveWatchCommand()
         {
             // --- Act

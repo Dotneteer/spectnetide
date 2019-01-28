@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Microsoft.VisualStudio.TextManager.Interop;
 using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.Wpf.Mvvm;
 
@@ -83,6 +84,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         public bool CanMoveDown => SeqNo < Parent.WatchItems.Count;
 
         /// <summary>
+        /// Notifies the parent to modify this item
+        /// </summary>
+        public RelayCommand UpdateCommand { get; set; }
+
+        /// <summary>
         /// Notifies the parent to remove this item
         /// </summary>
         public RelayCommand RemoveCommand { get; set; }
@@ -109,6 +115,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                 Value = "003457683";
                 HasError = false;
             }
+            UpdateCommand = new RelayCommand(() =>
+            {
+                Parent.UpdateWatchItem(this);
+            });
             RemoveCommand = new RelayCommand(() =>
             {
                 Parent.RemoveWatchItem(this);

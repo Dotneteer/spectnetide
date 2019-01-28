@@ -22,8 +22,6 @@ namespace Spect.Net.EvalParser.Test.Parser
         [DataRow(":-B", "-B")]
         [DataRow(":c", "C")]
         [DataRow(":C", "C")]
-        [DataRow(":h2", "H2")]
-        [DataRow(":H2", "H2")]
         [DataRow(":h4", "H4")]
         [DataRow(":H4", "H4")]
         [DataRow(":h8", "H8")]

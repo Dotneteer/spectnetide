@@ -60,7 +60,7 @@
         /// <returns>A string that represents the current object.</returns>
         public override string ToString() =>
             !string.IsNullOrEmpty(WidthSpecifier)
-                ? $"[{Address} @{WidthSpecifier}]" 
+                ? $"[{Address} :{WidthSpecifier}]" 
                 : $"[{Address}]";
     }
 }

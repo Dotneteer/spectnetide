@@ -27,6 +27,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         public ObservableCollection<WatchItemViewModel> WatchItems { get; } =
             new ObservableCollection<WatchItemViewModel>();
 
+        public bool ItemsVisible => WatchItems.Count > 0;
+
         public SpectrumEvaluationContext EvalContext { get; }
         /// <summary>
         /// The width of the label
@@ -55,6 +57,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
 
             LabelWidth = 100;
             EvalContext = new SpectrumEvaluationContext(MachineViewModel.SpectrumVm);
+            WatchItems.CollectionChanged += ItemsCollectionChanged;
         }
 
         /// <summary>
@@ -63,8 +66,25 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         /// </summary>
         public override void Dispose()
         {
+            WatchItems.CollectionChanged -= ItemsCollectionChanged;
             EvalContext.Dispose();
             base.Dispose();
+        }
+
+        /// <summary>
+        /// This event is raised when the command line has been modified
+        /// </summary>
+        public event EventHandler<string> CommandLineModified;
+
+        /// <summary>
+        /// Updates the watch item
+        /// </summary>
+        /// <param name="item">Watch item to update</param>
+        public void UpdateWatchItem(WatchItemViewModel item)
+        {
+            var format = string.IsNullOrEmpty(item.Format) ? "" : $" :{item.Format}";
+            var commandLine = $"* {item.SeqNo} {item.ExpressionNode}{format}";
+            CommandLineModified?.Invoke(this, commandLine);
         }
 
         /// <summary>
@@ -78,10 +98,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         }
 
         /// <summary>
-        /// Moves the specified item up
+        /// Moves the specified item down
         /// </summary>
-        /// <param name="item">Item to move up</param>
-        public void MoveUpWatchItem(WatchItemViewModel item)
+        /// <param name="item">Item to move down</param>
+        public void MoveDownWatchItem(WatchItemViewModel item)
         {
             var itemIndex = WatchItems.IndexOf(item);
             if (itemIndex < 0 || itemIndex > WatchItems.Count - 2) return;
@@ -92,10 +112,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         }
 
         /// <summary>
-        /// Moves the specified item down
+        /// Moves the specified item up
         /// </summary>
-        /// <param name="item">Item to move down</param>
-        public void MoveDownWatchItem(WatchItemViewModel item)
+        /// <param name="item">Item to move up</param>
+        public void MoveUpWatchItem(WatchItemViewModel item)
         {
             var itemIndex = WatchItems.IndexOf(item);
             if (itemIndex < 1 || itemIndex > WatchItems.Count - 1) return;
@@ -123,33 +143,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
 
                 case WatchCommandType.AddWatch:
                     // --- Parse the given expression
-                    var inputStream = new AntlrInputStream(parser.Arg1);
-                    var lexer = new Z80EvalLexer(inputStream);
-                    var tokenStream = new CommonTokenStream(lexer);
-                    var evalParser = new Z80EvalParser(tokenStream);
-                    var context = evalParser.compileUnit();
-                    var visitor = new Z80EvalVisitor();
-                    var z80Expr = (Z80ExpressionNode)visitor.Visit(context);
-                    if (evalParser.SyntaxErrors.Count > 0)
+                    if (!PrepareWatchItem(parser.Arg1, ref validationMessage, out var newItem))
                     {
-                        validationMessage = "Syntax error in the specified watch expression";
                         return false;
                     }
-
-                    // --- Create the watch item
-                    var formatStr = z80Expr.FormatSpecifier?.Format == null
-                        ? null
-                        : $"{z80Expr.FormatSpecifier.Format}";
-                    var newItem = new WatchItemViewModel
-                    {
-                        SeqNo = WatchItems.Count + 1,
-                        ExpressionNode = z80Expr.Expression,
-                        Format = formatStr,
-                        Expression = z80Expr.Expression.ToString(),
-                        Value = "(not evaluated yet)",
-                        Parent = this,
-                        HasError = false
-                    };
                     WatchItems.Add(newItem);
                     RefreshWatchItems();
                     if (MachineViewModel.MachineState == VmState.Paused
@@ -165,6 +162,26 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     {
                         WatchItems.RemoveAt(index);
                         RefreshWatchItems();
+                    }
+                    break;
+
+                case WatchCommandType.UpdateWatch:
+                    if (!PrepareWatchItem(parser.Arg1, ref validationMessage, out var updatedItem))
+                    {
+                        return false;
+                    }
+                    index = parser.Address - 1;
+                    if (index < 0 || index >= WatchItems.Count)
+                    {
+                        validationMessage = $"The index value must be between 1 and {WatchItems.Count}.";
+                        return false;
+                    }
+                    WatchItems[index] = updatedItem;
+                    RefreshWatchItems();
+                    if (MachineViewModel.MachineState == VmState.Paused
+                        || MachineViewModel.MachineState == VmState.Running)
+                    {
+                        EvaluateWatchItems();
                     }
                     break;
 
@@ -196,6 +213,47 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                 default:
                     return false;
             }
+            return true;
+        }
+
+        /// <summary>
+        /// Prepares the WatchItemViewModel instance from the command line
+        /// </summary>
+        /// <param name="expression">Expression to parse</param>
+        /// <param name="validationMessage">Validation message to pass</param>
+        /// <param name="newItem">The new item</param>
+        /// <returns></returns>
+        private bool PrepareWatchItem(string expression, ref string validationMessage,
+            out WatchItemViewModel newItem)
+        {
+            newItem = null;
+            var inputStream = new AntlrInputStream(expression);
+            var lexer = new Z80EvalLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var evalParser = new Z80EvalParser(tokenStream);
+            var context = evalParser.compileUnit();
+            var visitor = new Z80EvalVisitor();
+            var z80Expr = (Z80ExpressionNode) visitor.Visit(context);
+            if (evalParser.SyntaxErrors.Count > 0)
+            {
+                validationMessage = "Syntax error in the specified watch expression";
+                return false;
+            }
+
+            // --- Create the watch item
+            var formatStr = z80Expr.FormatSpecifier?.Format == null
+                ? null
+                : $"{z80Expr.FormatSpecifier.Format}";
+            newItem = new WatchItemViewModel
+            {
+                SeqNo = WatchItems.Count + 1,
+                ExpressionNode = z80Expr.Expression,
+                Format = formatStr,
+                Expression = z80Expr.Expression.ToString(),
+                Value = "(not evaluated yet)",
+                Parent = this,
+                HasError = false
+            };
             return true;
         }
 
@@ -247,6 +305,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
             base.OnScreenRefreshed();
             if (ScreenRefreshCount % 10 != 0) return;
             EvaluateWatchItems();
+        }
+
+        /// <summary>
+        /// Signs the changes of the WatchItems collection
+        /// </summary>
+        private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // ReSharper disable once ExplicitCallerInfoArgument
+            RaisePropertyChanged("ItemsVisible");
         }
 
         /// <summary>
@@ -334,12 +401,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     return $"#{sb:X2} ({sb})";
                 case "C":
                     var c = (char) (byte) v;
-                    return (byte)v >= 32 && (byte)v <= 127 ? $"'{c}'" : $"'\\0x{(byte)v:X2}'";
-                case "H2":
-                    var b0 = (byte) v;
-                    return $"#{b0:X2}";
+                    return (byte)v >= 32 && (byte)v <= 126 ? $"'{c}'" : $"'\\0x{(byte)v:X2}'";
                 case "H4":
-                    b0 = (byte)v;
+                    var b0 = (byte)v;
                     var b1 = (byte)(v >> 8);
                     return $"#{b0:X2} #{b1:X2}";
                 case "H8":
@@ -355,23 +419,23 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     var sw = (short)v;
                     return $"#{sw:X4} ({sw})";
                 case "DW":
-                    return $"{v:X8} ({v})";
+                    return $"#{v:X8} ({v})";
                 case "-DW":
                     var sdw = (int) v;
-                    return $"{sdw:X8} ({sdw})";
+                    return $"#{sdw:X8} ({sdw})";
                 case "%8":
                     var s0 = Convert.ToString((byte) v, 2).PadLeft(8, '0');
                     return $"{s0}";
                 case "%16":
                     s0 = Convert.ToString((byte)v, 2).PadLeft(8, '0');
                     var s1 = Convert.ToString((byte)(v >> 8), 2).PadLeft(8, '0');
-                    return $"{s0} {s1}";
+                    return $"{s1} {s0}";
                 case "%32":
                     s0 = Convert.ToString((byte)v, 2).PadLeft(8, '0');
                     s1 = Convert.ToString((byte)(v >> 8), 2).PadLeft(8, '0');
                     var s2 = Convert.ToString((byte)(v >> 16), 2).PadLeft(8, '0');
                     var s3 = Convert.ToString((byte)(v >> 24), 2).PadLeft(8, '0');
-                    return $"{s0} {s1} {s2} {s3}";
+                    return $"{s3} {s2} {s1} {s0}";
                 default:
                     return v.ToString();
             }

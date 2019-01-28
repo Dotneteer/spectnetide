@@ -11,6 +11,7 @@
         RemoveWatch,
         ChangeLabelWidth,
         MoveItem,
-        EraseAll
+        EraseAll,
+        UpdateWatch
     }
 }

@@ -44,8 +44,20 @@
                  Foreground="{StaticResource BDebugForeground}" 
                  ItemTemplate="{DynamicResource WatchItemTemplate}"
                  AlternationCount="2" 
-                 ItemContainerStyle="{DynamicResource MemoryLineItemStyle}">
+                 ItemContainerStyle="{DynamicResource MemoryLineItemStyle}" Visibility="{Binding ItemsVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
         </ListBox>
+        <Grid Grid.Row="1" Visibility="{Binding ItemsVisible, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Style="{StaticResource ExplainText}">
+                    No watch items. Use the "+ {expression} {format}" command to add new watch items to the list.
+                </TextBlock>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Style="{StaticResource ExplainText}">
+                    Click ">" to the left to the command line prompt for help on available commands.
+                </TextBlock>
+            </StackPanel>
+        </Grid>
     </Grid>
 </toolWindows:SpectrumToolWindowControlBase>
 

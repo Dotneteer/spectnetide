@@ -5,8 +5,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
 {
     public class WatchCommandParser: CommandParser<WatchCommandType>
     {
-        private static readonly Regex s_AddRegex= new Regex(@"^[+]\s*(.*)$");
+        private static readonly Regex s_AddRegex= new Regex(@"^[+]\s*(.+)$");
         private static readonly Regex s_RemoveRegex = new Regex(@"^[-]\s*([0-9]{1,3})\s*$");
+        private static readonly Regex s_UpdateRegex = new Regex(@"^[*]\s*([0-9]{1,3})\s*(.+)$");
         private static readonly Regex s_LabelWidthRegex = new Regex(@"^[lL]\s*([0-9]{1,3})\s*$");
         private static readonly Regex s_MoveItemRegex = new Regex(@"^[mM]\s*([0-9]{1,3})\s+([0-9]{1,3})\s*$");
         private static readonly Regex s_EraseAllRegex = new Regex(@"^[eE]\s*$");
@@ -49,6 +50,21 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                 if (num != null)
                 {
                     Address = num.Value;
+                    return;
+                }
+                Command = WatchCommandType.Invalid;
+                return;
+            }
+
+            match = s_UpdateRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = WatchCommandType.UpdateWatch;
+                var num = GetUshort(match);
+                if (num != null)
+                {
+                    Address = num.Value;
+                    Arg1 = match.Groups[2].Captures[0].Value;
                     return;
                 }
                 Command = WatchCommandType.Invalid;

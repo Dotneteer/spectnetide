@@ -2,8 +2,6 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
@@ -128,11 +126,8 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
             if (e.ChangedButton != MouseButton.Left) return;
 
-            if (!(Package.GetGlobalService(typeof(IVsWebBrowsingService)) is IVsWebBrowsingService service)) return;
             var url = $"{SpectNetPackage.COMMANDS_BASE_URL}/{HelpUrl}";
-#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
-            service.Navigate(url, (uint)__VSWBNAVIGATEFLAGS.VSNWB_AddToMRU, out var ppFrame);
-#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
+            System.Diagnostics.Process.Start(url);
         }
     }
 }

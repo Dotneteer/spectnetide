@@ -16,6 +16,7 @@
 
     <UserControl.ContextMenu>
         <ContextMenu>
+            <MenuItem Header="Modify" Command="{Binding UpdateCommand}"/>
             <MenuItem Header="Remove" Command="{Binding RemoveCommand}"/>
             <Separator />
             <MenuItem Header="Move up" Command="{Binding MoveUpCommand}" IsEnabled="{Binding CanMoveUp, Mode=OneWay}"/>
@@ -34,7 +35,7 @@
         <TextBlock Grid.Column="0" Text="{Binding SeqNo}" HorizontalAlignment="Right" 
                    Style="{DynamicResource Z80Text}" Margin="0,0,12,0"/>
         <TextBlock Grid.Column="1" Text="{Binding Format}" 
-            Style="{DynamicResource Z80Text}" />
+            Style="{DynamicResource Z80HilitedText}" />
         <TextBlock Grid.Column="2" Text="{Binding Expression}" Style="{DynamicResource Z80HilitedText}" />
         <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                 ForceCursor="True" Cursor="SizeWE" Background="Transparent" MouseDown="OnBorderMouseDown"></Border>

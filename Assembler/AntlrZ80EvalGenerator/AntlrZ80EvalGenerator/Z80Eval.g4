@@ -13,7 +13,6 @@ formatSpec
 	| BOOLF
 	| SBYTEF
 	| CHARF
-	| HEX2F
 	| HEX4F
 	| HEX8F
 	| WORDF
@@ -198,20 +197,19 @@ IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 // --- Format specifiers
-BOOLF	: '@f' | '@F' ;
-BYTEF	: '@b' | '@B' ;
-SBYTEF	: '@-b' | '@-B' ;
-CHARF	: '@c' | '@C' ;
-HEX2F	: '@h2' | '@H2' ;
-HEX4F	: '@h4' | '@H4' ;
-HEX8F	: '@h8' | '@H8' ;
-WORDF	: '@w' | '@W' ;
-SWORDF	: '@-w' | '@-W' ;
-DWORDF	: '@dw' | '@DW' ;
-SDWORDF	: '@-dw' | '@-DW' ;
-BITV8F	: '@%8' | '@%8' ;
-BITV16F	: '@%16' | '@%16' ;
-BITV32F	: '@%32' | '@%32' ;
+BOOLF	: ':f' | ':F' ;
+BYTEF	: ':b' | ':B' ;
+SBYTEF	: ':-b' | ':-B' ;
+CHARF	: ':c' | ':C' ;
+HEX4F	: ':h4' | ':H4' ;
+HEX8F	: ':h8' | ':H8' ;
+WORDF	: ':w' | ':W' ;
+SWORDF	: ':-w' | ':-W' ;
+DWORDF	: ':dw' | ':DW' ;
+SDWORDF	: ':-dw' | ':-DW' ;
+BITV8F	: ':%8' | ':%8' ;
+BITV16F	: ':%16' | ':%16' ;
+BITV32F	: ':%32' | ':%32' ;
 
 // --- Any invalid character should be converted into an ErrorCharacter token.
 ErrorCharacter
