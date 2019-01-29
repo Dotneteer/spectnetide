@@ -32,7 +32,7 @@
                 case "W":
                     SuggestType(ExpressionValueType.Word);
                     return new ExpressionValue(evalContext.GetMemoryIndirectValue(address).Value 
-                        + evalContext.GetMemoryIndirectValue(new ExpressionValue(address.Value + 1)).Value << 8);
+                        + (evalContext.GetMemoryIndirectValue(new ExpressionValue(address.Value + 1)).Value << 8));
                 case "DW":
                     SuggestType(ExpressionValueType.DWord);
                     return new ExpressionValue(evalContext.GetMemoryIndirectValue(address).Value

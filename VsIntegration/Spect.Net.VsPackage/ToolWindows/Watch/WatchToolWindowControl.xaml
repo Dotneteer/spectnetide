@@ -23,7 +23,7 @@
         <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top">
             <toolWindows:CommandPromptControl 
                 x:Name="Prompt" 
-                HelpUrl="MemoryCommands.md"
+                HelpUrl="WatchCommands.md"
                 Margin="2" 
                 MaxLength="128" 
                 IsValid="true"/>

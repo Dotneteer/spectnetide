@@ -9,7 +9,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         private static readonly Regex s_RemoveRegex = new Regex(@"^[-]\s*([0-9]{1,3})\s*$");
         private static readonly Regex s_UpdateRegex = new Regex(@"^[*]\s*([0-9]{1,3})\s*(.+)$");
         private static readonly Regex s_LabelWidthRegex = new Regex(@"^[lL]\s*([0-9]{1,3})\s*$");
-        private static readonly Regex s_MoveItemRegex = new Regex(@"^[mM]\s*([0-9]{1,3})\s+([0-9]{1,3})\s*$");
+        private static readonly Regex s_MoveItemRegex = new Regex(@"^[xX]\s*([0-9]{1,3})\s+([0-9]{1,3})\s*$");
         private static readonly Regex s_EraseAllRegex = new Regex(@"^[eE]\s*$");
 
         /// <summary>

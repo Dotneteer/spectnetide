@@ -29,7 +29,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
 
         public bool ItemsVisible => WatchItems.Count > 0;
 
+        /// <summary>
+        /// Evaluation context that uses the current ZX Spectrum VM
+        /// </summary>
         public SpectrumEvaluationContext EvalContext { get; }
+
         /// <summary>
         /// The width of the label
         /// </summary>

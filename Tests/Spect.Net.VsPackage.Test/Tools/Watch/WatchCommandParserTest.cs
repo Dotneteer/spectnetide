@@ -118,8 +118,8 @@ namespace Spect.Net.VsPackage.Test.Tools.Watch
         public void ParserRecognizesMoveCommand()
         {
             // --- Act
-            var p1 = new WatchCommandParser("m 12 23");
-            var p2 = new WatchCommandParser("M 123 4 ");
+            var p1 = new WatchCommandParser("x 12 23");
+            var p2 = new WatchCommandParser("X 123 4 ");
 
             // --- Assert
             p1.Command.ShouldBe(WatchCommandType.MoveItem);

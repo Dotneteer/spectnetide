@@ -325,6 +325,7 @@ namespace Spect.Net.VsPackage
                 GetToolWindow(typeof(AssemblerOutputToolWindow));
                 GetToolWindow(typeof(MemoryToolWindow));
                 GetToolWindow(typeof(DisassemblyToolWindow));
+                GetToolWindow(typeof(WatchToolWindow));
             }
             catch (Exception e)
             {
