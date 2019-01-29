@@ -48,7 +48,7 @@ run unit tests for your Z80 code.
 * __Requires no configuration__. You start the IDE, create a ZX Spectrum project, and everything is ready to work.
 * __The code is well commented and harnessed with unit tests__. I plan to add a lot of documentation that helps you
 understand how to design and develop such an emulator. I also plan articles about Visual Studio 2017 extensibility.
-* __Great development tools__. Although the project is only in alpha phase, it adds many useful features integrated into the VS 2017 IDE that 
+* __Great development tools__. The project adds many useful features integrated into the VS 2017 IDE that 
 you can develop for understanding ZX Spectrum applications and games, discover their code, and develop new ZX Spectrum apps.
 
 * __ZX Spectrum Emulator tool window__ in the IDE
@@ -61,7 +61,8 @@ the ULA.
     * __Tape Explorer__ to examine `.TZX` and `.TAP` files. You can peek into the BASIC programs they contain, or disassembly the code in
 the tape files.
     * __BASIC List view__ to display the BASIC program list loaded into the memory
-    * __Debugging the code__ with *breakpoints, Run/Pause/Step-Into/Step/Over* commands
+    * __Debugging the code__ with *breakpoints, Run/Pause/Step-Into/Step-Over/Step-Out* commands
+    * __Watch Memory view__ with powerful watch expressions to examine CPU and memory state while debugging.
     * __Stack view tool__. Besides the stack contents, you can see &mdash; with disassembly &mdash; the instructions that placed a particular value to the stack. 
     * __Spectrum VM state management__. You can save and load the current state of the Spectrum virtual machine to a file, or even add it
 to the project hierarchy. When you start a Z80 program, the IDE uses VM states for fast code load and execution.

@@ -1,3 +1,16 @@
+### Version 1.14.0
+__FEATURE__: Now, you can use the brand new Watch Memory tool window to display values
+while you run or debug your program.  
+__FIX__: When you click reference pages in Z80 Disassembly, ZX Spectrum Memory, or Watch 
+Memory tool windows, the help pages are displayed in the default browser.  
+__FEATURE__: The tool windows display the "(Debugging)" tag in the caption if the ZX Spectrum
+VM runs is debug mode.  
+__FEATURE__: The ZX Spectrum Memory window provides a tooltip when you move the mouse over a
+memory byte. It highlights memory addresses pointed by `BC`, `DE`, `HL`, `IX`, `IY`, `SP`, and `PC`.
+In the __Tools | Options__ dialog (*Spect.Net IDE* tab) you can define highlight colors.  
+__FEATURE__: The debug engine now supports step-out. While you are debugging, step-out completes 
+the current subroutine and steps back to the next instruction right after the subroutine call.
+
 ### Version 1.13.1
 __FIX__: ZX Spectrum Code Discovery project commands does not show up in Solution Explorer anymore
 if you work with a non-ZX-Spectrum project.  
