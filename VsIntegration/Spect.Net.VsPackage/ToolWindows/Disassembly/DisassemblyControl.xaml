@@ -54,7 +54,7 @@
                         <Grid>
                             <Ellipse Stroke="{StaticResource BDanger}" 
                                      Panel.ZIndex="10"
-                                     StrokeThickness="3"
+                                     StrokeThickness="2"
                                      Width="14" Height="14" 
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Top"
@@ -67,6 +67,13 @@
                                      Margin="0,2,0,0"
                                      StrokeThickness="0" Visibility="{Binding IsCurrentInstruction, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
                             />
+                            <Rectangle Fill="{StaticResource BDanger}" 
+                                     Panel.ZIndex="10"
+                                     Width="4" Height="8" 
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Top"
+                                     Margin="0,5,0,0"
+                                     Visibility="{Binding HasCondition, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
                         </Grid>
                     </Border>
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AddressFormatted}" Style="{DynamicResource Z80HilitedText}"/>

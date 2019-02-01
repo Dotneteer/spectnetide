@@ -32,7 +32,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         /// <summary>
         /// Evaluation context that uses the current ZX Spectrum VM
         /// </summary>
-        public SpectrumEvaluationContext EvalContext { get; }
+        public SymbolAwareSpectrumEvaluationContext EvalContext { get; }
 
         /// <summary>
         /// The width of the label
@@ -60,7 +60,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
             }
 
             LabelWidth = 100;
-            EvalContext = new SpectrumEvaluationContext(MachineViewModel.SpectrumVm);
+            EvalContext = Package.DebugEvaluationContext;
             WatchItems.CollectionChanged += ItemsCollectionChanged;
         }
 

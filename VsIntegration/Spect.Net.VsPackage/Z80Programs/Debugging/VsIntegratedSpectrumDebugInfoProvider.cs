@@ -9,6 +9,7 @@ using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
+using OutputWindow = Spect.Net.VsPackage.Vsx.Output.OutputWindow;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
@@ -93,7 +94,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         }
 
         /// <summary>
-        /// Prepeares the machine the first time the Spectrum virtual machine is set up
+        /// Prepares the machine the first time the Spectrum virtual machine is set up
         /// </summary>
         public void Prepare()
         {
@@ -117,9 +118,15 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
 
             // --- Merge breakpoints set in Visual Studio
             if (CompiledOutput == null) return;
+            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+
             foreach (Breakpoint breakpoint in Package.ApplicationObject.Debugger.Breakpoints)
             {
                 // --- Check for the file
+                pane.WriteLine($"Condition: {breakpoint.Condition}");
+                pane.WriteLine($"HitCountType: {breakpoint.HitCountType}");
+                pane.WriteLine($"HitCountTarget: {breakpoint.HitCountTarget}");
+
                 int fileIndex = -1;
                 for (var i = 0; i < CompiledOutput.SourceFileList.Count; i++)
                 {
@@ -140,11 +147,21 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                         Breakpoints.Add(addr, new BreakpointInfo
                         {
                             File = CompiledOutput.SourceFileList[fileIndex].Filename,
-                            FileLine = breakpoint.FileLine,
-                            Type = BreakpointType.NoCondition
+                            FileLine = breakpoint.FileLine
                         });
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Resets the current hit count of breakpoints
+        /// </summary>
+        public void ResetHitCounts()
+        {
+            foreach (var bp in Breakpoints.Values)
+            {
+                bp.CurrentHitCount = 0;
             }
         }
 

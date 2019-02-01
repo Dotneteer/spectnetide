@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
+using Spect.Net.EvalParser;
+using Spect.Net.EvalParser.Generated;
+using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Z80Programs.Debugging;
+
+// ReSharper disable IdentifierTypo
 
 // ReSharper disable AssignNullToNotNullAttribute
 
@@ -144,7 +151,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// Null, if the command is valid; otherwise the validation message to show
         /// </param>
         /// <param name="newPrompt">
-        /// New promt command prompt text, or null, if no text should be set
+        /// New prompt command prompt text, or null, if no text should be set
         /// </param>
         /// <returns>
         /// True, if the command has been handled; otherwise, false
@@ -176,6 +183,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         return false;
                     }
+
                     address = parser.Address;
                     break;
 
@@ -186,6 +194,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         curRomIndex = RomIndex;
                     }
+
                     var labelAddrs = AnnotationHandler.RomPageAnnotations[curRomIndex].Labels
                         .Where(kp =>
                             string.Compare(kp.Value, parser.Arg1, StringComparison.InvariantCultureIgnoreCase) == 0)
@@ -197,11 +206,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         address = labelAddrs[0];
                         break;
                     }
+
                     if (CompilerOutput == null || !CompilerOutput.Symbols.TryGetValue(parser.Arg1, out var symbolValue))
                     {
                         validationMessage = $"Cannot find symbol '{parser.Arg1}'";
                         return false;
                     }
+
                     address = symbolValue;
                     break;
 
@@ -210,12 +221,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         return false;
                     }
+
                     AnnotationHandler.SetLabel(parser.Address, parser.Arg1, out validationMessage);
                     if (validationMessage != null)
                     {
                         newPrompt = commandText;
                         return false;
                     }
+
                     break;
 
                 case DisassemblyCommandType.Comment:
@@ -223,6 +236,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         return false;
                     }
+
                     AnnotationHandler.SetComment(parser.Address, parser.Arg1);
                     break;
 
@@ -231,6 +245,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         return false;
                     }
+
                     AnnotationHandler.SetPrefixComment(parser.Address, parser.Arg1);
                     break;
 
@@ -239,6 +254,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         return false;
                     }
+
                     newPrompt = RetrieveAnnotation(parser.Address, parser.Arg1);
                     return false;
 
@@ -247,6 +263,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         return false;
                     }
+
                     var handled = ApplyLiteral(parser.Address, parser.Arg1,
                         out validationMessage, out newPrompt);
                     if (!handled) return false;
@@ -257,38 +274,87 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         return false;
                     }
+
                     if (!CheckCommandAddress(parser.Address2, out validationMessage))
                     {
                         return false;
                     }
+
                     AddSection(parser.Address2, parser.Address, parser.Arg1);
                     Disassemble();
                     break;
 
                 case DisassemblyCommandType.SetBreakPoint:
+                {
                     if (!CheckRamBankCommand(parser.Address, out validationMessage))
                     {
                         return false;
                     }
-                    if (!breakPoints.ContainsKey(parser.Address))
+
+
+                    if (!PrepareBreakpointCondition(parser.Arg2, ref validationMessage, out var breakPoint))
                     {
-                        breakPoints.Add(parser.Address, MinimumBreakpointInfo.EmptyBreakpointInfo);
+                        return false;
                     }
+
+                    breakPoint.HitConditionValue = parser.Address2;
+                    switch (parser.Arg1)
+                    {
+                        case "<":
+                            breakPoint.HitType = BreakpointHitType.Less;
+                            break;
+                        case "=":
+                            breakPoint.HitType = BreakpointHitType.Equal;
+                            break;
+                        case ">":
+                            breakPoint.HitType = BreakpointHitType.Greater;
+                            break;
+                        case "*":
+                            breakPoint.HitType = BreakpointHitType.Multiply;
+                            break;
+                    }
+
+                    breakPoints[parser.Address] = breakPoint;
                     break;
+                }
 
                 case DisassemblyCommandType.ToggleBreakPoint:
                     if (!CheckRamBankCommand(parser.Address, out validationMessage))
                     {
                         return false;
                     }
+
                     if (!breakPoints.ContainsKey(parser.Address))
                     {
-                        breakPoints.Add(parser.Address, MinimumBreakpointInfo.EmptyBreakpointInfo);
+                        if (!PrepareBreakpointCondition(parser.Arg2, ref validationMessage, out var breakPoint))
+                        {
+                            return false;
+                        }
+
+                        breakPoint.HitConditionValue = parser.Address2;
+                        switch (parser.Arg1)
+                        {
+                            case "<":
+                                breakPoint.HitType = BreakpointHitType.Less;
+                                break;
+                            case "=":
+                                breakPoint.HitType = BreakpointHitType.Equal;
+                                break;
+                            case ">":
+                                breakPoint.HitType = BreakpointHitType.Greater;
+                                break;
+                            case "*":
+                                breakPoint.HitType = BreakpointHitType.Multiply;
+                                break;
+                        }
+
+                        breakPoints.Add(parser.Address, breakPoint);
                     }
                     else
                     {
                         breakPoints.Remove(parser.Address);
                     }
+
                     break;
 
                 case DisassemblyCommandType.RemoveBreakPoint:
@@ -296,6 +362,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         return false;
                     }
+
                     breakPoints.Remove(parser.Address);
                     break;
 
@@ -305,6 +372,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         breakPoints.Remove(key);
                     }
+
                     break;
 
                 case DisassemblyCommandType.SetRomPage:
@@ -313,11 +381,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         validationMessage = INV_S48_COMMAND;
                         return false;
                     }
+
                     if (parser.Address > roms - 1)
                     {
                         validationMessage = $"This machine does not have a ROM bank #{parser.Address}";
                         return false;
                     }
+
                     SetRomViewMode(parser.Address);
                     address = 0;
                     break;
@@ -328,17 +398,20 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         validationMessage = INV_S48_COMMAND;
                         return false;
                     }
+
                     if (VmStopped)
                     {
                         validationMessage = INV_RUN_COMMAND;
                         return false;
                     }
+
                     if (parser.Address > banks - 1)
                     {
                         validationMessage = $"This machine does not have a RAM bank #{parser.Address}";
                         return false;
 
                     }
+
                     SetRamBankViewMode(parser.Address);
                     address = 0;
                     break;
@@ -349,11 +422,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         validationMessage = INV_S48_COMMAND;
                         return false;
                     }
+
                     if (VmStopped)
                     {
                         validationMessage = INV_RUN_COMMAND;
                         return false;
                     }
+
                     SetFullViewMode();
                     address = 0;
                     break;
@@ -364,6 +439,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         validationMessage = "This command can be used only in ROM or RAM bank view mode";
                         return false;
                     }
+
                     SetDisassemblyType(parser.Arg1);
                     break;
 
@@ -373,6 +449,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     {
                         address = TopAddress.Value;
                     }
+
                     break;
 
                 case DisassemblyCommandType.Jump:
@@ -381,12 +458,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         validationMessage = "The 'J' command can be used only when the virtual machine is paused.";
                         return false;
                     }
+
                     address = MachineViewModel.SpectrumVm.Cpu.Registers.PC = parser.Address;
                     break;
 
                 default:
                     return false;
             }
+
             DisassemblyViewRefreshed?.Invoke(this, new DisassemblyViewRefreshedEventArgs(address));
             return true;
         }
@@ -586,7 +665,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Creates a disassembler for the curent machine
+        /// Creates a disassembler for the current machine
         /// </summary>
         /// <returns></returns>
         private Z80Disassembler CreateDisassembler()
@@ -689,9 +768,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Retrieves lables, comments, or prefix comments for modification.
+        /// Retrieves labels, comments, or prefix comments for modification.
         /// </summary>
-        /// <param name="address">Address to retrive data from</param>
+        /// <param name="address">Address to retrieve data from</param>
         /// <param name="dataType">Type of data to retrieve</param>
         private string RetrieveAnnotation(ushort address, string dataType)
         {
@@ -716,15 +795,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Retrieves lables, comments, or prefix comments for modification.
+        /// Retrieves labels, comments, or prefix comments for modification.
         /// </summary>
-        /// <param name="address">Address to retrive data from</param>
+        /// <param name="address">Address to retrieve data from</param>
         /// <param name="literalName">Type of data to retrieve</param>
         /// <param name="validationMessage">
         /// Null, if the command is valid; otherwise the validation message to show
         /// </param>
         /// <param name="newPrompt">
-        /// New promt command prompt text, or null, if no text should be set
+        /// New prompt command prompt text, or null, if no text should be set
         /// </param>
         /// <returns>
         /// True, if the command has been handled; otherwise, false
@@ -835,7 +914,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Disassebles the current memory and fills up disassebly items and line indexes
+        /// Disassembles the current memory and fills up disassembly items and line indexes
         /// </summary>
         /// <param name="disItems">Disassembly items</param>
         /// <param name="lineIndexes">Line indexes</param>
@@ -881,6 +960,45 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             MachineViewModel.SpectrumVm.TapeDevice.LeftLoadMode -= TapeDeviceOnLeftLoadMode;
             _tapeDeviceAttached = false;
         }
+
+        /// <summary>
+        /// Prepares the WatchItemViewModel instance from the command line
+        /// </summary>
+        /// <param name="expression">Expression to parse</param>
+        /// <param name="validationMessage">Validation message to pass</param>
+        /// <param name="newItem">The new item</param>
+        /// <returns></returns>
+        private bool PrepareBreakpointCondition(string expression, ref string validationMessage,
+            out BreakpointInfo newItem)
+        {
+            newItem = new BreakpointInfo()
+            {
+                IsCpuBreakpoint = true,
+                FilterCondition = expression,
+                HitType = BreakpointHitType.None,
+            };
+            if (expression == null)
+            {
+                return true;
+            }
+
+            var inputStream = new AntlrInputStream(expression);
+            var lexer = new Z80EvalLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var evalParser = new Z80EvalParser(tokenStream);
+            var context = evalParser.compileUnit();
+            var visitor = new Z80EvalVisitor();
+            var z80Expr = (Z80ExpressionNode)visitor.Visit(context);
+            if (evalParser.SyntaxErrors.Count > 0)
+            {
+                validationMessage = "Syntax error in the specified watch expression";
+                return false;
+            }
+
+            newItem.FilterExpression = z80Expr.Expression;
+            return true;
+        }
+
 
         #endregion
 
@@ -977,6 +1095,33 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             return MachineViewModel != null 
                 && MachineViewModel.MachineState == VmState.Paused
                 && MachineViewModel.SpectrumVm?.Cpu.Registers.PC == address;
+        }
+
+        /// <summary>
+        /// Tests if the specified address has a breakpoint condition
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public bool HasCondition(ushort address)
+        {
+            if (RamBankViewMode)
+            {
+                // --- We need to convert the breakpoint address to RAM bank address
+                var memoryDevice = MachineViewModel.SpectrumVm.MemoryDevice;
+                if (!memoryDevice.IsRamBankPagedIn(RamBankIndex, out var baseAddr))
+                {
+                    return false;
+                }
+                address += baseAddr;
+            }
+            var breakpoints = MachineViewModel?.DebugInfoProvider?.Breakpoints;
+            if (breakpoints == null)
+            {
+                return false;
+            }
+            return breakpoints.TryGetValue(address, out var bpInfo) 
+                   && bpInfo.IsCpuBreakpoint 
+                   && (bpInfo.FilterCondition != null || bpInfo.HitType != BreakpointHitType.None);
         }
 
         #endregion

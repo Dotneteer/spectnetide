@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
@@ -18,6 +19,7 @@ using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Sound;
 using Spect.Net.SpectrumEmu.Devices.Tape;
+// ReSharper disable IdentifierTypo
 
 #pragma warning disable 67
 
@@ -81,13 +83,13 @@ namespace Spect.Net.SpectrumEmu.Machine
         public long LastExecutionStartTact { get; private set; }
 
         /// <summary>
-        /// Gets the value of the contention accummulated since the start of 
+        /// Gets the value of the contention accumulated since the start of 
         /// the machine
         /// </summary>
         public long ContentionAccumulated { get; set; }
 
         /// <summary>
-        /// Gets the value of the contention accummulated when the 
+        /// Gets the value of the contention accumulated when the 
         /// execution cycle started
         /// </summary>
         public long LastExecutionContentionValue { get; private set; }
@@ -221,6 +223,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Debug info provider object
         /// </summary>
         public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
+
+        /// <summary>
+        /// Expression evaluation context used while debugging
+        /// </summary>
+        public IExpressionEvaluationContext DebugExpressionContext { get; set; }
 
         /// <summary>
         /// #of frames rendered
@@ -443,19 +450,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the device with the provided type
         /// </summary>
-        /// <typeparam name="TDevice"></typeparam>
-        /// <returns></returns>
-        public TDevice GetDevice<TDevice>()
-            where TDevice: class, IDevice
-        {
-            return DeviceData.TryGetValue(typeof(TDevice), out var deviceInfo)
-                ? (TDevice) deviceInfo.Device
-                : null;
-        }
-
-        /// <summary>
-        /// Gets the device with the provided type
-        /// </summary>
         /// <typeparam name="TDevice">Device type</typeparam>
         /// <typeparam name="TConfig">Configuration type</typeparam>
         /// <returns></returns>
@@ -586,7 +580,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 }
 
                 // --- Loop #2: The physical frame cycle that goes on while CPU and ULA 
-                // --- processes everything whithin a physical frame (0.019968 second)
+                // --- processes everything within a physical frame (0.019968 second)
                 while (!_frameCompleted)
                 {
                     // --- Check for leaving maskable interrupt mode
@@ -600,7 +594,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                         }
                     }
 
-                    // --- Check debug mode when a CPU instruction has been entirelly executed
+                    // --- Check debug mode when a CPU instruction has been entirely executed
                     if (!Cpu.IsInOpExecution)
                     {
                         // --- Check for cancellation
@@ -652,7 +646,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                         // --- Check for a debugging stop point
                         if (options.EmulationMode == EmulationMode.Debugger)
                         {
-                            if (IsDebugStop(options, executedInstructionCount, entryStepOutDepth))
+                            if (IsDebugStop(options, executedInstructionCount, entryStepOutDepth)
+                                && DebugConditionSatisfied())
                             {
                                 // --- At this point, the cycle should be stopped because of debugging reasons
                                 // --- The screen should be refreshed
@@ -708,7 +703,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     return true;
                 }
 
-                // --- Wait while the frame time ellapses
+                // --- Wait while the frame time elapses
                 if (!ExecuteCycleOptions.FastVmMode)
                 {
                     var nextFrameCounter = cycleStartTime + cycleFrameCount * PhysicalFrameClockCount;
@@ -792,7 +787,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     var length = Cpu.GetCallInstructionLength();
                     if (length > 0)
                     {
-                        // --- Its a CALL-like instraction, create an imminent breakpoint
+                        // --- Its a CALL-like instruction, create an imminent breakpoint
                         DebugInfoProvider.ImminentBreakpoint = (ushort)(Cpu.Registers.PC + length);
                         imminentJustCreated = true;
                     }
@@ -822,6 +817,66 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- In any other case, we carry on
             return false;
+        }
+
+        /// <summary>
+        /// Checks if the debug condition for the address pointed by PC is satisfied
+        /// </summary>
+        /// <returns>
+        /// True, if condition has been satisfied; otherwise, false.
+        /// </returns>
+        private bool DebugConditionSatisfied()
+        {
+            if (ExecuteCycleOptions.DebugStepMode != DebugStepMode.StopAtBreakpoint)
+            {
+                // --- We always stop at imminent breakpoints
+                return true;
+            }
+            if (!DebugInfoProvider.Breakpoints.TryGetValue(Cpu.Registers.PC, out var breakpoint))
+            {
+                // --- No registered breakpoint, no stop
+                return false;
+            }
+            if (breakpoint.HitType != BreakpointHitType.None)
+            {
+                // --- Check if hit condition is satisfied
+                breakpoint.CurrentHitCount++;
+                switch (breakpoint.HitType)
+                {
+                    case BreakpointHitType.Less:
+                        if (breakpoint.CurrentHitCount >= breakpoint.HitConditionValue)
+                        {
+                            return false;
+                        }
+                        break;
+                    case BreakpointHitType.Equal:
+                        if (breakpoint.CurrentHitCount != breakpoint.HitConditionValue)
+                        {
+                            return false;
+                        }
+                        break;
+                    case BreakpointHitType.Greater:
+                        if (breakpoint.CurrentHitCount <= breakpoint.HitConditionValue)
+                        {
+                            return false;
+                        }
+                        break;
+                    case BreakpointHitType.Multiply:
+                        if (breakpoint.CurrentHitCount % breakpoint.HitConditionValue != 0)
+                        {
+                            return false;
+                        }
+                        break;
+                }
+            }
+
+            if (DebugExpressionContext != null && breakpoint.FilterExpression != null)
+            {
+                // --- Check if filter condition is satisfied
+                var value = breakpoint.FilterExpression.Evaluate(DebugExpressionContext);
+                return value == ExpressionValue.Error || value.Value != 0;
+            }
+            return true;
         }
 
         /// <summary>
@@ -1069,7 +1124,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             }
 
             /// <summary>
-            /// Restores the dvice state from this state object
+            /// Restores the advice state from this state object
             /// </summary>
             /// <param name="device">Device instance</param>
             public void RestoreDeviceState(IDevice device)

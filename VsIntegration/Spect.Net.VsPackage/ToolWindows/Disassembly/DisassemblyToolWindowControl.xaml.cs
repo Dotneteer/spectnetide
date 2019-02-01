@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Utility;
+// ReSharper disable IdentifierTypo
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -137,6 +137,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.HasPrefixComment));
                 disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.CommentFormatted));
                 disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.HasBreakpoint));
+                disassLine.RaisePropertyChanged(nameof(DisassemblyItemViewModel.HasCondition));
             }
         }
 

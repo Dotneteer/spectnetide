@@ -54,5 +54,12 @@
         /// True, if the address is the current instruction; otherwise, false
         /// </returns>
         bool IsCurrentInstruction(ushort address);
+
+        /// <summary>
+        /// Tests if the specified address has a breakpoint condition
+        /// </summary>
+        /// <param name="itemAddress"></param>
+        /// <returns></returns>
+        bool HasCondition(ushort itemAddress);
     }
 }

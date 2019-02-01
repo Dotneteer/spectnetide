@@ -13,7 +13,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_LabelRegex = new Regex(@"^[lL]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
         private static readonly Regex s_CommentRegex = new Regex(@"^[cC]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
         private static readonly Regex s_PrefixCommentRegex = new Regex(@"^[pP]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
-        private static readonly Regex s_SetBreakPointRegex = new Regex(@"^[sS][bB]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_SetBreakPointRegex = new Regex(@"^[sS][bB]\s*([a-fA-F0-9]{1,4})(\s+[hH]\s*([*><=])\s*([0-9]{1,4}))?(\s+[cC]\s+(.*))?$");
         private static readonly Regex s_ToggleBreakPointRegex = new Regex(@"^[tT][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");
@@ -167,6 +167,23 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 if (!GetLabel(match))
                 {
                     Command = DisassemblyCommandType.Invalid;
+                    return;
+                }
+                if (match.Groups[3].Value != "")
+                {
+                    // --- Hit condition presents
+                    Arg1 = match.Groups[3].Value;
+                    if (!ushort.TryParse(match.Groups[4].Value, out var address))
+                    {
+                        Command = DisassemblyCommandType.Invalid;
+                        return;
+                    }
+                    Address2 = address;
+                }
+                if (match.Groups[6].Value != "")
+                {
+                    // --- Filter condition presents
+                    Arg2 = match.Groups[6].Value;
                 }
                 return;
             }

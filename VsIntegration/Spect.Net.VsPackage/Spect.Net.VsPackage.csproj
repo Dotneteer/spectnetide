@@ -193,7 +193,7 @@
     <Compile Include="ToolWindows\TestExplorer\TestTreeViewItems.cs" />
     <Compile Include="Commands\InsertDriveACommand.cs" />
     <Compile Include="Commands\EjectFloppyCommand.cs" />
-    <Compile Include="ToolWindows\Watch\SpectrumEvaluationContext.cs" />
+    <Compile Include="ToolWindows\Watch\SymbolAwareSpectrumEvaluationContext.cs" />
     <Compile Include="ToolWindows\Watch\WatchCommandParser.cs" />
     <Compile Include="ToolWindows\Watch\WatchCommandType.cs" />
     <Compile Include="ToolWindows\Watch\WatchItemControl.xaml.cs">
@@ -837,6 +837,10 @@
       <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
       <Name>Spect.Net.Assembler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
+      <Project>{adec05f1-8d6c-4282-85c5-e12a22869f36}</Project>
+      <Name>Spect.Net.EvalParser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Assembler\Spect.Net.TestParser\Spect.Net.TestParser.csproj">
       <Project>{5ec1ee2c-47b0-45a2-8e76-ad5626c3cc05}</Project>
       <Name>Spect.Net.TestParser</Name>
@@ -859,10 +863,6 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3bVSIXContainerProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
-      <Project>{adec05f1-8d6c-4282-85c5-e12a22869f36}</Project>
-      <Name>Spect.Net.EvalParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
       <Project>{28B59AE6-C12F-4C54-ADC7-4CD89E24BABA}</Project>

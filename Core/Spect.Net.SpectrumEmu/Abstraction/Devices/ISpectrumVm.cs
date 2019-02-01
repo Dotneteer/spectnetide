@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
@@ -209,6 +210,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// The configuration of the floppy
         /// </summary>
         IFloppyConfiguration FloppyConfiguration { get; }
+
+        /// <summary>
+        /// Expression evaluation context used while debugging
+        /// </summary>
+        IExpressionEvaluationContext DebugExpressionContext { get; set; }
 
         /// <summary>
         /// The main execution cycle of the Spectrum VM

@@ -25,6 +25,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         void PrepareBreakpoints();
 
         /// <summary>
+        /// Resets the current hit count of breakpoints
+        /// </summary>
+        void ResetHitCounts();
+
+        /// <summary>
         /// Checks if the virtual machine should stop at the specified address
         /// </summary>
         /// <param name="address">Address to check</param>

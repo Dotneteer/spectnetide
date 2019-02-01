@@ -301,11 +301,13 @@
     <Compile Include="Disassembler\Z80Disassembler.cs" />
     <Compile Include="Disassembler\Z80DisassemblerSpectrum.cs" />
     <Compile Include="Disassembler\Z80DisassemblerTables.cs" />
+    <Compile Include="Machine\BreakpointHitType.cs" />
     <Compile Include="Machine\ExecutionCompletionReason.cs" />
     <Compile Include="Machine\IBreakpointInfo.cs" />
     <Compile Include="Machine\InvalidVmStateException.cs" />
     <Compile Include="Machine\MachineStartupConfiguration.cs" />
     <Compile Include="Machine\NotOnMainThreadException.cs" />
+    <Compile Include="Machine\SpectrumEvaluationContext.cs" />
     <Compile Include="Machine\SpectrumMachine.cs" />
     <Compile Include="Machine\MinimumBreakpointInfo.cs" />
     <Compile Include="Machine\VmScreenRefreshedEventArgs.cs" />
@@ -367,6 +369,10 @@
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
       <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
+      <Project>{adec05f1-8d6c-4282-85c5-e12a22869f36}</Project>
+      <Name>Spect.Net.EvalParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
       <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>

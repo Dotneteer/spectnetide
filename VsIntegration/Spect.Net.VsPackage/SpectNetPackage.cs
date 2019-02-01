@@ -186,6 +186,11 @@ namespace Spect.Net.VsPackage
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
 
         /// <summary>
+        /// Provides an expression evaluation context for debugging and watch
+        /// </summary>
+        public SymbolAwareSpectrumEvaluationContext DebugEvaluationContext { get; private set; }
+
+        /// <summary>
         /// The error list provider accessible from this package
         /// </summary>
         public ErrorListWindow ErrorList { get; private set; }
@@ -295,9 +300,9 @@ namespace Spect.Net.VsPackage
             File.WriteAllText(versionFile, CURRENT_CPS_VERSION);
         }
 
-                                 /// <summary>
-                                 /// Initializes the members used by a solution
-                                 /// </summary>
+        /// <summary>
+        /// Initializes the members used by a solution
+        /// </summary>
         private async void OnSolutionOpened()
         {
             try
@@ -310,9 +315,13 @@ namespace Spect.Net.VsPackage
                 CodeDiscoverySolution = new SolutionStructure();
                 CodeDiscoverySolution.CollectProjects();
 
+
                 // --- Every time a new solution has been opened, initialize the
                 // --- Spectrum virtual machine with all of its accessories
                 var vm = MachineViewModel = CreateProjectMachine();
+
+                // --- Create an expression evaluation context and bind the machine with it
+                DebugEvaluationContext = new SymbolAwareSpectrumEvaluationContext(vm.SpectrumVm);
 
                 // --- Set up the debug info provider
                 DebugInfoProvider.Prepare();

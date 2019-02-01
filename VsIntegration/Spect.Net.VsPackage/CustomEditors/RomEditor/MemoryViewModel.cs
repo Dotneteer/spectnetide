@@ -221,5 +221,15 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         {
             return false;
         }
+
+        /// <summary>
+        /// Tests if the specified address has a breakpoint condition
+        /// </summary>
+        /// <param name="itemAddress"></param>
+        /// <returns></returns>
+        public bool HasCondition(ushort itemAddress)
+        {
+            return false;
+        }
     }
 }

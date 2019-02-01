@@ -35,7 +35,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Default constructor for support desing time behavior
+        /// Default constructor for support design time behavior
         /// </summary>
         public DisassemblyItemViewModel()
         {
@@ -130,6 +130,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public bool HasBreakpoint => Parent.HasBreakpoint(Item.Address);
 
+        /// <summary>
+        /// Indicates that the item has a conditional breakpoint
+        /// </summary>
+        public bool HasCondition => Parent.HasCondition(Item.Address);
 
         /// <summary>
         /// Indicates if this item has prefix comments

@@ -262,12 +262,13 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Prepare the machine to run
             IsFirstStart = VmState == VmState.None || VmState == VmState.Stopped;
+            SpectrumVm.DebugInfoProvider?.PrepareBreakpoints();
             if (IsFirstStart)
             {
                 SpectrumVm.Reset();
                 SpectrumVm.Cpu.StackDebugSupport.ClearStepOutStack();
+                SpectrumVm.DebugInfoProvider?.ResetHitCounts();
             }
-            SpectrumVm.DebugInfoProvider?.PrepareBreakpoints();
 
             // --- Dispose the previous cancellation token, and create a new one
             CancellationTokenSource?.Dispose();

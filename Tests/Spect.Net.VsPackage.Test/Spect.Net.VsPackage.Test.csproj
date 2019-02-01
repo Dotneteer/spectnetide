@@ -87,6 +87,10 @@
       <Project>{BB7BD2CA-017A-43BE-993B-B8C4D58EE4B5}</Project>
       <Name>Spect.Net.Assembler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
+      <Project>{adec05f1-8d6c-4282-85c5-e12a22869f36}</Project>
+      <Name>Spect.Net.EvalParser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
       <Project>{9f90cf6b-ccef-4b30-aa35-9205beb6eb21}</Project>
       <Name>Spect.Net.RomResources</Name>
@@ -98,10 +102,6 @@
     <ProjectReference Include="..\..\Core\Spect.Net.Wpf\Spect.Net.Wpf.csproj">
       <Project>{f8684db0-bc0e-4391-b8c1-85040906d937}</Project>
       <Name>Spect.Net.Wpf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VsIntegration\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
-      <Project>{adec05f1-8d6c-4282-85c5-e12a22869f36}</Project>
-      <Name>Spect.Net.EvalParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\VsIntegration\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
       <Project>{28b59ae6-c12f-4c54-adc7-4cd89e24baba}</Project>

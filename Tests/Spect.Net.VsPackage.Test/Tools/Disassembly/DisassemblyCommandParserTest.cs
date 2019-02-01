@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
-using System.Runtime;
 
 namespace Spect.Net.VsPackage.Test.Tools.Disassembly
 {
@@ -546,7 +545,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesDisassmblyTypeCommand1()
+        public void ParserRecognizesDisassemblyTypeCommand1()
         {
             // --- Act
             var p = new DisassemblyCommandParser("T48");
@@ -557,7 +556,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesDisassmblyTypeCommand2()
+        public void ParserRecognizesDisassemblyTypeCommand2()
         {
             // --- Act
             var p = new DisassemblyCommandParser("T 128");
@@ -568,7 +567,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesDisassmblyTypeCommand3()
+        public void ParserRecognizesDisassemblyTypeCommand3()
         {
             // --- Act
             var p = new DisassemblyCommandParser("T p3");
@@ -579,7 +578,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesDisassmblyTypeCommand4()
+        public void ParserRecognizesDisassemblyTypeCommand4()
         {
             // --- Act
             var p = new DisassemblyCommandParser("tP3");
@@ -590,7 +589,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesDisassmblyTypeCommand5()
+        public void ParserRecognizesDisassemblyTypeCommand5()
         {
             // --- Act
             var p = new DisassemblyCommandParser("T next");
@@ -601,7 +600,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesDisassmblyTypeCommand6()
+        public void ParserRecognizesDisassemblyTypeCommand6()
         {
             // --- Act
             var p = new DisassemblyCommandParser("T NEXT");
@@ -612,7 +611,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesReDisasseblyCommand1()
+        public void ParserRecognizesReDisassemblyCommand1()
         {
             // --- Act
             var p = new DisassemblyCommandParser("rd");
@@ -622,7 +621,7 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
-        public void ParserRecognizesReDisasseblyCommand2()
+        public void ParserRecognizesReDisassemblyCommand2()
         {
             // --- Act
             var p = new DisassemblyCommandParser("RD");
@@ -662,6 +661,37 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
             // --- Assert
             p.Command.ShouldBe(DisassemblyCommandType.Jump);
             p.Address.ShouldBe((ushort)0x45BF);
+        }
+
+        [TestMethod]
+        [DataRow("sb 1000 h=12", "=", 12)]
+        [DataRow("sb 1000 H * 23", "*", 23)]
+        [DataRow("sb 1000 h>12", ">", 12)]
+        [DataRow("sb 1000 H < 23", "<", 23)]
+        public void ParserRecognizesHitCountCondition(string source, string hitCondition, int value)
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser(source);
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.SetBreakPoint);
+            p.Address.ShouldBe((ushort)0x1000);
+            p.Address2.ShouldBe((ushort)value);
+            p.Arg1.ShouldBe(hitCondition);
+        }
+
+        [TestMethod]
+        [DataRow("sb 1000 c HL==23", "HL==23")]
+        [DataRow("sb 1000 c [#4000:B]", "[#4000:B]")]
+        public void ParserRecognizesFilterCondition(string source, string condition)
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser(source);
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.SetBreakPoint);
+            p.Address.ShouldBe((ushort)0x1000);
+            p.Arg2.ShouldBe(condition);
         }
 
 

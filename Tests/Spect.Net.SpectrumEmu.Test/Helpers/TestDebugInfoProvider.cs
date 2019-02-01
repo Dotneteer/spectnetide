@@ -33,6 +33,17 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
         }
 
         /// <summary>
+        /// Resets the current hit count of breakpoints
+        /// </summary>
+        public void ResetHitCounts()
+        {
+            foreach (var bp in Breakpoints.Values)
+            {
+                bp.CurrentHitCount = 0;
+            }
+        }
+
+        /// <summary>
         /// Checks if the virtual machine should stop at the specified address
         /// </summary>
         /// <param name="address">Address to check</param>

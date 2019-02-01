@@ -1,47 +1,22 @@
-﻿using System;
-using Spect.Net.Assembler.Assembler;
-using Spect.Net.EvalParser.SyntaxTree;
+﻿using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.VsPackage.Z80Programs;
 
-namespace Spect.Net.VsPackage.ToolWindows.Watch
+namespace Spect.Net.SpectrumEmu.Machine
 {
     /// <summary>
-    /// Evaluation context that uses the Spectrum VM's current state
+    /// This class defines an evaluation context that uses a ZX Spectrum virtual machine instance
     /// </summary>
-    public class SpectrumEvaluationContext: IExpressionEvaluationContext, IDisposable
+    public class SpectrumEvaluationContext: IExpressionEvaluationContext
     {
         /// <summary>
         /// The ZX Spectrum virtual machine
         /// </summary>
-        public ISpectrumVm SpectrumVm { get;  }
+        public ISpectrumVm SpectrumVm { get; }
 
-        /// <summary>
-        /// Compiler output
-        /// </summary>
-        public AssemblerOutput CompilerOutput { get; private set; }
-        
         public SpectrumEvaluationContext(ISpectrumVm spectrumVm)
         {
             SpectrumVm = spectrumVm;
-            SpectNetPackage.Default.CodeManager.CompilationCompleted += OnCompilationCompleted;
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, 
-        /// or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            SpectNetPackage.Default.CodeManager.CompilationCompleted -= OnCompilationCompleted;
-        }
-
-        /// <summary>
-        /// Catch the event of compilation
-        /// </summary>
-        private void OnCompilationCompleted(object sender, CompilationCompletedEventArgs e)
-        {
-            CompilerOutput = e.Output;
+            spectrumVm.DebugExpressionContext = this;
         }
 
         /// <summary>
@@ -51,11 +26,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        public ExpressionValue GetSymbolValue(string symbol)
+        public virtual ExpressionValue GetSymbolValue(string symbol)
         {
-            return CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue)
-                ? new ExpressionValue(symbolValue.Value)
-                : ExpressionValue.Error;
+            return ExpressionValue.Error;
         }
 
         /// <summary>
