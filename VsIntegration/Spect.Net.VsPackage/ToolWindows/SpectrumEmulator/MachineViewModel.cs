@@ -69,7 +69,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
-        /// Sign that the screen of the virtual machnine has been refresehd
+        /// Sign that the screen of the virtual machine has been refreshed
         /// </summary>
         public event EventHandler<VmScreenRefreshedEventArgs> VmScreenRefreshed
         {
@@ -160,7 +160,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
-        /// Sign that the screen of the virtual machnine has been refresehd
+        /// Sign that the screen of the virtual machine has been refreshed
         /// </summary>
         public event EventHandler MemViewPointChanged;
 
@@ -225,23 +225,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
-        /// Starts the Spectrum virtual machine and prepares
-        /// it to run injected code
-        /// </summary>
-        public void RunVmToTerminationPoint(int terminationRom, ushort terminationPoint)
-        {
-            RunsInDebugMode = false;
-            Machine.Start(new ExecuteCycleOptions(EmulationMode.UntilExecutionPoint,
-                terminationRom: terminationRom,
-                terminationPoint: terminationPoint,
-                fastTapeMode: FastTapeMode,
-                fastVmMode: true));
-        }
-
-        /// <summary>
         /// Sets the debug mode
         /// </summary>
-        /// <param name="mode">Treu, if the machine should run in debug mode</param>
+        /// <param name="mode">True, if the machine should run in debug mode</param>
         void ISpectrumVmController.SetDebugMode(bool mode)
         {
             RunsInDebugMode = mode;

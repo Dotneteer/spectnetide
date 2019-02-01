@@ -873,8 +873,16 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (DebugExpressionContext != null && breakpoint.FilterExpression != null)
             {
                 // --- Check if filter condition is satisfied
-                var value = breakpoint.FilterExpression.Evaluate(DebugExpressionContext);
-                return value == ExpressionValue.Error || value.Value != 0;
+                try
+                {
+                    var value = breakpoint.FilterExpression.Evaluate(DebugExpressionContext);
+                    return value == ExpressionValue.Error || value.Value != 0;
+                }
+                catch
+                {
+                    // --- In case of evaluation error, we stop at the breakpoint
+                    return true;
+                }
             }
             return true;
         }

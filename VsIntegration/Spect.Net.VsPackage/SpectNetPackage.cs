@@ -116,7 +116,7 @@ namespace Spect.Net.VsPackage
         public const string DOCUMENTATION_BASE_URL = "https://github.com/Dotneteer/spectnetide/tree/master/Documentation";
 
         /// <summary>
-        /// CPS deplyment strings
+        /// CPS deployment strings
         /// </summary>
         public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
         public const string CPS_VERSION_FILE = "cps.version";

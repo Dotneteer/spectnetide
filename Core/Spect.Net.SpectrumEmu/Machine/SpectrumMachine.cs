@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.DivIde;
@@ -74,11 +73,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The ZX Spectrum virtual machine object
         /// </summary>
         public ISpectrumVm SpectrumVm { get; private set; }
-
-        /// <summary>
-        /// Object that provides stack debug support
-        /// </summary>
-        public IStackDebugSupport StackDebugSupport { get; private set; }
 
         /// <summary>
         /// The current state of the virtual machine
@@ -161,7 +155,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="modelKey">Spectrum model key</param>
         /// <param name="editionKey">Edition key (within the model)</param>
         /// <returns>
-        /// The newly created machine isntance
+        /// The newly created machine instance
         /// </returns>
         public static SpectrumMachine CreateMachine(string modelKey, string editionKey)
         {
@@ -228,19 +222,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 await Stop();
             }
-        }
-
-        #endregion
-
-        #region Setup methods
-
-        /// <summary>
-        /// Sets the object that provides stack debug support
-        /// </summary>
-        /// <param name="stackDebugSupport"></param>
-        public void SetStackDebugSupport(IStackDebugSupport stackDebugSupport)
-        {
-            StackDebugSupport = stackDebugSupport;
         }
 
         #endregion
@@ -336,7 +317,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Stops the virtual machine
         /// </summary>
         /// <remarks>
-        /// Reports completion when the machine reaches a complet stop.
+        /// Reports completion when the machine reaches a complete stop.
         /// </remarks>
         public async Task Stop()
         {
@@ -347,7 +328,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     break;
 
                 case VmState.Paused:
-                    // --- The machine is paused, it can be quicky stopped
+                    // --- The machine is paused, it can be quickly stopped
                     MoveToState(VmState.Stopping);
                     MoveToState(VmState.Stopped);
                     break;
@@ -368,6 +349,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     break;
             }
             SpectrumVm.Cpu.TurnOffCpu();
+            SpectrumVm.DebugInfoProvider?.ResetHitCounts();
         }
 
         /// <summary>

@@ -9,7 +9,6 @@ using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
-using OutputWindow = Spect.Net.VsPackage.Vsx.Output.OutputWindow;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
@@ -22,6 +21,10 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         ISpectrumDebugInfoProvider,
         IDisposable
     {
+        // --- Store previous breakpoints for comparison
+        private readonly Dictionary<Breakpoint, Dictionary<ushort, IBreakpointInfo>> _previousVsBreakpoints = 
+            new Dictionary<Breakpoint, Dictionary<ushort, IBreakpointInfo>>();
+
         /// <summary>
         /// The owner package
         /// </summary>
@@ -79,7 +82,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// <summary>
         /// The currently defined breakpoints
         /// </summary>
-        public BreakpointCollection Breakpoints { get; }
+        public BreakpointCollection Breakpoints { get; set; }
 
         /// <summary>
         /// Gets or sets an imminent breakpoint
@@ -108,29 +111,75 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         /// </summary>
         public void PrepareBreakpoints()
         {
-            // --- Keep CPU breakpoints set through the Disassembler tool
-            var cpuBreakPoints = Breakpoints.Where(bp => bp.Value.IsCpuBreakpoint).ToList();
-            Breakpoints.Clear();
-            foreach (var bpItem in cpuBreakPoints)
+            // --- No compiled code, no VS breakpoints to merge
+            if (CompiledOutput == null)
             {
-                Breakpoints.Add(bpItem.Key, bpItem.Value);
+                return;
             }
 
-            // --- Merge breakpoints set in Visual Studio
-            if (CompiledOutput == null) return;
-            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+            var currentVsBreakpoints = new HashSet<Breakpoint>();
+            var newVsBreakpoints = new HashSet<Breakpoint>();
 
-            foreach (Breakpoint breakpoint in Package.ApplicationObject.Debugger.Breakpoints)
+            // --- Identify new breakpoints
+            foreach (Breakpoint bp in Package.ApplicationObject.Debugger.Breakpoints)
+            {
+                if (!_previousVsBreakpoints.ContainsKey(bp))
+                {
+                    newVsBreakpoints.Add(bp);
+                }
+                currentVsBreakpoints.Add(bp);
+            }
+
+            var oldBreakpoints = new HashSet<Breakpoint>();
+
+            // --- Identify breakpoints to remove
+            foreach (var bp in _previousVsBreakpoints.Keys)
+            {
+                if (!currentVsBreakpoints.Contains(bp))
+                {
+                    oldBreakpoints.Add(bp);
+                }
+            }
+
+            // --- In there any change?
+            if (newVsBreakpoints.Count == 0 && oldBreakpoints.Count == 0)
+            {
+                // --- No change, use existing breakpoints
+                return;
+            }
+
+            // --- Remove old breakpoints
+            foreach (var oldBp in oldBreakpoints)
+            {
+                _previousVsBreakpoints.Remove(oldBp);
+            }
+
+            // --- Start assembling the new breakpoint collection
+            var newBreakpointCollection = new BreakpointCollection();
+
+            // --- Keep CPU breakpoints set through the Disassembler tool
+            foreach (var pair in Breakpoints.Where(bp => bp.Value.IsCpuBreakpoint))
+            {
+                newBreakpointCollection.Add(pair.Key, pair.Value);
+            }
+
+            // --- Add existing VS breakpoints
+            foreach (var existingBp in _previousVsBreakpoints.Values)
+            {
+                foreach (var bp in existingBp)
+                {
+                    newBreakpointCollection.Add(bp.Key, bp.Value);
+                }
+            }
+            
+            // --- Create new breakpoints
+            foreach (var newBp in newVsBreakpoints)
             {
                 // --- Check for the file
-                pane.WriteLine($"Condition: {breakpoint.Condition}");
-                pane.WriteLine($"HitCountType: {breakpoint.HitCountType}");
-                pane.WriteLine($"HitCountTarget: {breakpoint.HitCountTarget}");
-
-                int fileIndex = -1;
+                var fileIndex = -1;
                 for (var i = 0; i < CompiledOutput.SourceFileList.Count; i++)
                 {
-                    if (string.Compare(breakpoint.File, CompiledOutput.SourceFileList[i].Filename,
+                    if (string.Compare(newBp.File, CompiledOutput.SourceFileList[i].Filename,
                             StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         fileIndex = i;
@@ -139,19 +188,28 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                 }
                 if (fileIndex < 0) continue;
 
+                var newVsBreakpoint = new BreakpointInfo
+                {
+                    File = CompiledOutput.SourceFileList[fileIndex].Filename,
+                    FileLine = newBp.FileLine,
+                    HitType = BreakpointHitType.None
+                };
+
                 // --- Check the breakpoint address
-                if (CompiledOutput.AddressMap.TryGetValue((fileIndex, breakpoint.FileLine), out var addresses))
+                if (CompiledOutput.AddressMap.TryGetValue((fileIndex, newBp.FileLine), out var addresses))
                 {
                     foreach (var addr in addresses)
                     {
-                        Breakpoints.Add(addr, new BreakpointInfo
-                        {
-                            File = CompiledOutput.SourceFileList[fileIndex].Filename,
-                            FileLine = breakpoint.FileLine
-                        });
+                        // --- Set up breakpoints
+
+                        newBreakpointCollection.Add(addr, newVsBreakpoint);
                     }
                 }
+
             }
+
+            // --- Set the new collection of breakpoints
+            Breakpoints = newBreakpointCollection;
         }
 
         /// <summary>
@@ -175,18 +233,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         public bool ShouldBreakAtAddress(ushort address)
         {
             return Breakpoints.ContainsKey(address);
-        }
-
-        /// <summary>
-        /// Updates the layout of the specified document file
-        /// </summary>
-        /// <param name="filename">Document file to update</param>
-        public void UpdateLayoutWithDebugInfo(string filename)
-        {
-            if (Z80AsmTaggers.TryGetValue(filename, out var tagger))
-            {
-                tagger.UpdateLayout();
-            }
         }
 
         /// <summary>
