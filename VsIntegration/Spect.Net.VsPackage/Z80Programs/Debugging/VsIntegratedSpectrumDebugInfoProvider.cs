@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
 using EnvDTE;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.EvalParser;
+using Spect.Net.EvalParser.Generated;
+using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
@@ -22,6 +26,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
         IDisposable
     {
         // --- Store previous breakpoints for comparison
+        // ReSharper disable once CollectionNeverUpdated.Local
         private readonly Dictionary<Breakpoint, Dictionary<ushort, IBreakpointInfo>> _previousVsBreakpoints = 
             new Dictionary<Breakpoint, Dictionary<ushort, IBreakpointInfo>>();
 
@@ -194,6 +199,40 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
                     FileLine = newBp.FileLine,
                     HitType = BreakpointHitType.None
                 };
+
+                // --- Set hit condition
+                if (newBp.HitCountType != dbgHitCountType.dbgHitCountTypeNone)
+                {
+                    if (newBp.HitCountType == dbgHitCountType.dbgHitCountTypeEqual)
+                    {
+                        newVsBreakpoint.HitType = BreakpointHitType.Equal;
+                    }
+                    else if (newBp.HitCountType == dbgHitCountType.dbgHitCountTypeGreaterOrEqual)
+                    {
+                        newVsBreakpoint.HitType = BreakpointHitType.GreaterOrEqual;
+                    }
+                    else if (newBp.HitCountType == dbgHitCountType.dbgHitCountTypeMultiple)
+                    {
+                        newVsBreakpoint.HitType = BreakpointHitType.Multiple;
+                    }
+                    newVsBreakpoint.HitConditionValue = (ushort)(newBp.HitCountTarget >= 0 ? newBp.HitCountTarget : 0);
+                }
+
+                // --- Set filter condition
+                if (!string.IsNullOrWhiteSpace(newBp.Condition))
+                {
+                    var inputStream = new AntlrInputStream(newBp.Condition);
+                    var lexer = new Z80EvalLexer(inputStream);
+                    var tokenStream = new CommonTokenStream(lexer);
+                    var evalParser = new Z80EvalParser(tokenStream);
+                    var context = evalParser.compileUnit();
+                    var visitor = new Z80EvalVisitor();
+                    var z80Expr = (Z80ExpressionNode)visitor.Visit(context);
+                    if (evalParser.SyntaxErrors.Count == 0)
+                    {
+                        newVsBreakpoint.FilterExpression = z80Expr.Expression;
+                    }
+                }
 
                 // --- Check the breakpoint address
                 if (CompiledOutput.AddressMap.TryGetValue((fileIndex, newBp.FileLine), out var addresses))

@@ -49,12 +49,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public ushort? TopAddress { get; set; }
 
         /// <summary>
-        /// Selected disassembly items
-        /// </summary>
-        public IList<DisassemblyItemViewModel> SelectedItems 
-            => DisassemblyItems.Where(item => item.IsSelected).ToList();
-
-        /// <summary>
         /// This event is raised when the disassembly view is refreshed.
         /// </summary>
         public event EventHandler<DisassemblyViewRefreshedEventArgs> DisassemblyViewRefreshed;
@@ -120,27 +114,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public void Clear()
         {
             DisassemblyItems.Clear();
-        }
-
-        /// <summary>
-        /// Refreshes the disassembly line with the given address
-        /// </summary>
-        /// <param name="addr"></param>
-        public void RefreshDisassembly(ushort addr)
-        {
-            // --- Get the item, provided it exists
-            if (!LineIndexes.TryGetValue(addr, out var index))
-            {
-                return;
-            }
-
-            var startAddr = DisassemblyItems[index].Item.Address;
-            var disassembler = CreateDisassembler();
-            var output = disassembler.Disassemble(startAddr, (ushort)(startAddr + 1));
-            if (output.OutputItems.Count > 0)
-            {
-                DisassemblyItems[index].Item = output.OutputItems[0];
-            }
         }
 
         /// <summary>
@@ -286,12 +259,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
                 case DisassemblyCommandType.SetBreakPoint:
                 {
-                    if (!CheckRamBankCommand(parser.Address, out validationMessage))
-                    {
-                        return false;
-                    }
-
-
                     if (!PrepareBreakpointCondition(parser.Arg2, ref validationMessage, out var breakPoint))
                     {
                         return false;
@@ -303,14 +270,20 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         case "<":
                             breakPoint.HitType = BreakpointHitType.Less;
                             break;
+                        case "<=":
+                            breakPoint.HitType = BreakpointHitType.LessOrEqual;
+                            break;
                         case "=":
                             breakPoint.HitType = BreakpointHitType.Equal;
                             break;
                         case ">":
                             breakPoint.HitType = BreakpointHitType.Greater;
                             break;
+                        case ">=":
+                            breakPoint.HitType = BreakpointHitType.GreaterOrEqual;
+                            break;
                         case "*":
-                            breakPoint.HitType = BreakpointHitType.Multiply;
+                            breakPoint.HitType = BreakpointHitType.Multiple;
                             break;
                     }
 
@@ -319,11 +292,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 }
 
                 case DisassemblyCommandType.ToggleBreakPoint:
-                    if (!CheckRamBankCommand(parser.Address, out validationMessage))
-                    {
-                        return false;
-                    }
-
                     if (!breakPoints.ContainsKey(parser.Address))
                     {
                         if (!PrepareBreakpointCondition(parser.Arg2, ref validationMessage, out var breakPoint))
@@ -344,7 +312,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                                 breakPoint.HitType = BreakpointHitType.Greater;
                                 break;
                             case "*":
-                                breakPoint.HitType = BreakpointHitType.Multiply;
+                                breakPoint.HitType = BreakpointHitType.Multiple;
                                 break;
                         }
 
@@ -358,11 +326,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.RemoveBreakPoint:
-                    if (!CheckRamBankCommand(parser.Address, out validationMessage))
-                    {
-                        return false;
-                    }
-
                     breakPoints.Remove(parser.Address);
                     break;
 
@@ -874,23 +837,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Checks if the specified RAM bank command is valid
-        /// </summary>
-        /// <param name="addr">Address to check</param>
-        /// <param name="validationMessage">Validation message</param>
-        /// <returns></returns>
-        private bool CheckRamBankCommand(ushort addr, out string validationMessage)
-        {
-            validationMessage = null;
-            if (RamBankViewMode)
-            {
-                validationMessage = "This command is not available in RAM Bank view mode.";
-                return false;
-            }
-            return CheckCommandAddress(addr, out validationMessage);
-        }
-
-        /// <summary>
         /// Whenever the tape device leaves the load mode, re-disassembly the output
         /// </summary>
         private void TapeDeviceOnLeftLoadMode(object sender, EventArgs eventArgs)
@@ -968,7 +914,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="validationMessage">Validation message to pass</param>
         /// <param name="newItem">The new item</param>
         /// <returns></returns>
-        private bool PrepareBreakpointCondition(string expression, ref string validationMessage,
+        private static bool PrepareBreakpointCondition(string expression, ref string validationMessage,
             out BreakpointInfo newItem)
         {
             newItem = new BreakpointInfo()

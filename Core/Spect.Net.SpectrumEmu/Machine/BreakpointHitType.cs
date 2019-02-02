@@ -7,8 +7,10 @@
     {
         None = 0,
         Less,
+        LessOrEqual,
         Equal,
         Greater,
-        Multiply
+        GreaterOrEqual,
+        Multiple
     }
 }

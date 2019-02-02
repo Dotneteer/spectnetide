@@ -849,6 +849,12 @@ namespace Spect.Net.SpectrumEmu.Machine
                             return false;
                         }
                         break;
+                    case BreakpointHitType.LessOrEqual:
+                        if (breakpoint.CurrentHitCount > breakpoint.HitConditionValue)
+                        {
+                            return false;
+                        }
+                        break;
                     case BreakpointHitType.Equal:
                         if (breakpoint.CurrentHitCount != breakpoint.HitConditionValue)
                         {
@@ -861,7 +867,13 @@ namespace Spect.Net.SpectrumEmu.Machine
                             return false;
                         }
                         break;
-                    case BreakpointHitType.Multiply:
+                    case BreakpointHitType.GreaterOrEqual:
+                        if (breakpoint.CurrentHitCount < breakpoint.HitConditionValue)
+                        {
+                            return false;
+                        }
+                        break;
+                    case BreakpointHitType.Multiple:
                         if (breakpoint.CurrentHitCount % breakpoint.HitConditionValue != 0)
                         {
                             return false;

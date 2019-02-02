@@ -19,24 +19,34 @@ namespace Spect.Net.SpectrumEmu.Test.Machine
             };
             if (hitCondition != null)
             {
-                var type = hitCondition.Substring(0, 1);
-                breakpoint.HitConditionValue = ushort.Parse(hitCondition.Substring(1));
-                switch (type)
+                var condStart = 1;
+                if (hitCondition.StartsWith("<="))
                 {
-                    case "<":
-                        breakpoint.HitType = BreakpointHitType.Less;
-                        break;
-                    case "=":
-                        breakpoint.HitType = BreakpointHitType.Equal;
-                        break;
-                    case ">":
-                        breakpoint.HitType = BreakpointHitType.Greater;
-                        break;
-                    case "*":
-                        breakpoint.HitType = BreakpointHitType.Multiply;
-                        break;
+                    breakpoint.HitType = BreakpointHitType.LessOrEqual;
+                    condStart = 2;
                 }
-
+                else if (hitCondition.StartsWith(">="))
+                {
+                    breakpoint.HitType = BreakpointHitType.GreaterOrEqual;
+                    condStart = 2;
+                }
+                else if (hitCondition.StartsWith("<"))
+                {
+                    breakpoint.HitType = BreakpointHitType.Less;
+                }
+                else if (hitCondition.StartsWith(">"))
+                {
+                    breakpoint.HitType = BreakpointHitType.Greater;
+                }
+                else if (hitCondition.StartsWith("="))
+                {
+                    breakpoint.HitType = BreakpointHitType.Equal;
+                }
+                else if (hitCondition.StartsWith("*"))
+                {
+                    breakpoint.HitType = BreakpointHitType.Multiple;
+                }
+                breakpoint.HitConditionValue = ushort.Parse(hitCondition.Substring(condStart));
             }
 
             if (filterCondition != null)

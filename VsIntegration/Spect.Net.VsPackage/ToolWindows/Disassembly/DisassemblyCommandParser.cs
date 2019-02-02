@@ -13,7 +13,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_LabelRegex = new Regex(@"^[lL]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
         private static readonly Regex s_CommentRegex = new Regex(@"^[cC]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
         private static readonly Regex s_PrefixCommentRegex = new Regex(@"^[pP]\s*([a-fA-F0-9]{1,4})(\s+(.*))?$");
-        private static readonly Regex s_SetBreakPointRegex = new Regex(@"^[sS][bB]\s*([a-fA-F0-9]{1,4})(\s+[hH]\s*([*><=])\s*([0-9]{1,4}))?(\s+[cC]\s+(.*))?$");
+        private static readonly Regex s_SetBreakPointRegex = new Regex(@"^[sS][bB]\s*([a-fA-F0-9]{1,4})(\s+[hH]\s*(\*|>|<|=|>=|<=)\s*([0-9]{1,4}))?(\s+[cC]\s+(.*))?$");
         private static readonly Regex s_ToggleBreakPointRegex = new Regex(@"^[tT][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");

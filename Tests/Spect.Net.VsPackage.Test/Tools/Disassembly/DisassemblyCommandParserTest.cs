@@ -668,6 +668,8 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         [DataRow("sb 1000 H * 23", "*", 23)]
         [DataRow("sb 1000 h>12", ">", 12)]
         [DataRow("sb 1000 H < 23", "<", 23)]
+        [DataRow("sb 1000 h>=12", ">=", 12)]
+        [DataRow("sb 1000 H <= 23", "<=", 23)]
         public void ParserRecognizesHitCountCondition(string source, string hitCondition, int value)
         {
             // --- Act
