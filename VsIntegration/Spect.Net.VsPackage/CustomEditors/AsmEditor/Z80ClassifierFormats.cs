@@ -185,13 +185,14 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     [ClassificationType(ClassificationTypeNames = "Z80Breakpoint")]
     [Name("Z80Breakpoint")]
     [UserVisible(true)]
-    [Order(After = Priority.Default)]
+    [Order(Before = "Z80CurrentBreakpoint")]
     internal sealed class Z80BreakpointClassifierFormat : ClassificationFormatDefinition
     {
         public Z80BreakpointClassifierFormat()
         {
             DisplayName = "Z80 Asm - Breakpoint";
-            BackgroundColor = Colors.DarkRed;
+            BackgroundColor = Colors.Red;
+            BackgroundOpacity = 0.4;
         }
     }
 
@@ -202,13 +203,14 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     [ClassificationType(ClassificationTypeNames = "Z80CurrentBreakpoint")]
     [Name("Z80CurrentBreakpoint")]
     [UserVisible(true)]
-    [Order(Before = Priority.High)]
+    [Order(After = "Z80Breakpoint")]
     internal sealed class Z80CurrentBreakpointClassifierFormat : ClassificationFormatDefinition
     {
         public Z80CurrentBreakpointClassifierFormat()
         {
             DisplayName = "Z80 Asm - Current breakpoint";
-            BackgroundColor = Colors.OrangeRed;
+            BackgroundColor = Colors.Orange;
+            
         }
     }
 
