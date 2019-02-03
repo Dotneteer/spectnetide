@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,700,700i|Roboto:400,400i,700,700i&amp;subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700&amp;subset=greek,greek-ext" rel="stylesheet">
+
+    <!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>ZX Spectrum IDE — Part #5: Implementing Z80 instructions (1) | SpectNet IDE</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="ZX Spectrum IDE — Part #5: Implementing Z80 instructions (1)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In the previous article, you learned the internal architecture of the Z80Cpu class that implements the CPU emulation in SpectNetIde. The CPU has more than 1300 instructions, and thus Z80Cpu should take care each of them. In this post, you will learn the implementation details behind a few Z80 instructions." />
+<meta property="og:description" content="In the previous article, you learned the internal architecture of the Z80Cpu class that implements the CPU emulation in SpectNetIde. The CPU has more than 1300 instructions, and thus Z80Cpu should take care each of them. In this post, you will learn the implementation details behind a few Z80 instructions." />
+<link rel="canonical" href="http://localhost:4000/zx-spectrum/2018/02/01/zxspectrum-part-5.html" />
+<meta property="og:url" content="http://localhost:4000/zx-spectrum/2018/02/01/zxspectrum-part-5.html" />
+<meta property="og:site_name" content="SpectNet IDE" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-02-01T00:00:00+01:00" />
+<script type="application/ld+json">
+{"headline":"ZX Spectrum IDE — Part #5: Implementing Z80 instructions (1)","dateModified":"2018-02-01T00:00:00+01:00","datePublished":"2018-02-01T00:00:00+01:00","url":"http://localhost:4000/zx-spectrum/2018/02/01/zxspectrum-part-5.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/zx-spectrum/2018/02/01/zxspectrum-part-5.html"},"description":"In the previous article, you learned the internal architecture of the Z80Cpu class that implements the CPU emulation in SpectNetIde. The CPU has more than 1300 instructions, and thus Z80Cpu should take care each of them. In this post, you will learn the implementation details behind a few Z80 instructions.","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div class="outer">
+        <header class="inner">
+          <h1 class="post-title">ZX Spectrum IDE — Part #5: Implementing Z80 instructions (1)</h1>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+
+    <div id="main_content_wrap" class="outer">
+        <section id="main_content" class="main-columns">
+            <section class="main-area">
+              <div class="post-attrs">
+                <span class="post-label">Published</span>
+                <span class="post-value">01 Feb 2018</span>
+                <span class="post-label">Category</span>
+                <span class="post-value">ZX-Spectrum</span>
+              </div>
+              <!-- LINKS TO PREVIOUS/NEXT -->
+              <div class="links-top">
+                <div class="link">
+                  
+                    <a class="prev" href="/zx-spectrum/2018/01/26/zxspectrum-part-4.html">&laquo; ZX Spectrum IDE — Part #4: Emulating the Z80 CPU</a>
+                  
+                </div>
+                <div class="link-right">
+                  
+                </div>
+              </div>
+              <div class="content-separator"></div>
+
+              <p>In the <a href="/zx-spectrum/2018/01/26/zxspectrum-part-4.html">previous article</a>, you learned the internal architecture of the <code class="highlighter-rouge">Z80Cpu</code> class that implements the CPU emulation in SpectNetIde. The CPU has more than 1300 instructions, and thus <code class="highlighter-rouge">Z80Cpu</code> should take care each of them. In this post, you will learn the implementation details behind a few Z80 instructions.</p>
+
+<h3 id="documentation-and-tests">Documentation and Tests</h3>
+
+<p>When designing the emulation architecture, I took care building it to be easily testable. The current <a href="https://github.com/Dotneteer/spectnetide">SpectNetIde</a> project tests each instruction separately; most instructions have more than one unit test cases. In the next article, I will show you how I implemented those tests.</p>
+
+<p>Besides testing, I intended to create the source code so that you can immediately understand the specification of a particular instruction—without jumping to the Z80 reference documentation.</p>
+
+<p>I added the reference documentation to the XML comments of each instruction methods, as this sample (<strong>ADD A,B</strong>) shows:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     add a,b</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of B are added to the contents of A, and the result is</span>
+<span class="c1">///     stored in A.</span>
+<span class="c1">///     S is set if result is negative; otherwise, it is reset.</span>
+<span class="c1">///     Z is set if result is 0; otherwise, it is reset.</span>
+<span class="c1">///     H is set if carry from bit 3; otherwise, it is reset.</span>
+<span class="c1">///     P/V is set if overflow; otherwise, it is reset.</span>
+<span class="c1">///     N is reset.</span>
+<span class="c1">///     C is set if carry from bit 7; otherwise, it is reset.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x80</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4 (4)</span>
+<span class="c1">///     Contention breakdown: pc:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">AddA_B</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">src</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">B</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="n">s_AdcFlags</span><span class="p">[</span><span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">*</span> <span class="m">0x100</span> <span class="p">+</span> <span class="n">src</span><span class="p">];</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">+=</span> <span class="n">src</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The documentation starts with a short description of the operation. A part of Z80 instructions does not modify the flags at all, while others do. After the explanation, I treat how a specific instruction handles the flags.
+The <strong>T-States</strong> value indicates the number of clock cycles the instruction takes to carry out. The contention breakdown entry describes how a particular instruction behaves on ZX Spectrum in a contended situation. Later, in the article that treats memory and I/O contention, I will tell you how to decode the content of that field. Right now, just ignore it.
+Just for a short recap, here is the list of Z80 flags:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Flag</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>C</strong> (Bit 0)</td>
+      <td><strong>Carry flag</strong>. It is set or cleared depending on the operation is performed. For ALU operations, it signs carry (e.g., <strong>ADD</strong>) or borrow (e.g., <strong>SUB</strong>). For bit shift and rotate operations, it stores the least/most significant bit after an operation. For the logical instructions <strong>AND</strong>, <strong>OR</strong>, and <strong>XOR</strong>, the Carry flag is reset.</td>
+    </tr>
+    <tr>
+      <td><strong>N</strong> (Bit 1)</td>
+      <td><strong>Add/Subtract flag</strong>. This flag is used by the <em>Decimal Adjust Accumulator</em> instruction (<strong>DAA</strong>) to distinguish between the <strong>ADD</strong> and <strong>SUB</strong> instructions. For <strong>ADD</strong> instructions, <strong>N</strong> is cleared to 0. For <strong>SUB</strong> instructions, <strong>N</strong> is set to 1.</td>
+    </tr>
+    <tr>
+      <td><strong>P/V</strong> (Bit 2)</td>
+      <td><strong>Parity/Overflow flag</strong>. This flag is set to a specific state depending on the operation being performed. For arithmetic operations, this flag indicates an overflow condition when the result in the <strong>Accumulator</strong> is greater than the maximum possible number (+127) or is less than the minimum possible number (–128). This overflow condition is determined by examining the sign bits of the operands.</td>
+    </tr>
+    <tr>
+      <td><strong>H</strong> (Bit 4)</td>
+      <td><strong>Half Carry flag</strong>. This flag is set or cleared depending on the carry and borrow status between bits 3 and 4 of an 8-bit arithmetic operation. This flag is used by the <em>Decimal Adjust Accumulator</em> (<strong>DAA</strong>) instruction to correct the result of a packed BCD add or subtract operation.</td>
+    </tr>
+    <tr>
+      <td><strong>Z</strong> (Bit 6)</td>
+      <td><strong>Zero flag</strong>. It is set if the result generated by the execution of certain instructions is 0; otherwise, it is reset.</td>
+    </tr>
+    <tr>
+      <td><strong>S</strong> (Bit 7)</td>
+      <td><strong>Sign flag</strong>. It stores the state of the most-significant bit of the Accumulator (bit 7).</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="note"><strong>Note</strong>: There are two undocumented flags, Bit 3 and Bit 5 of the <strong>F</strong> register. These flags cannot be read directly. They store the 3rd and 5th bit of the result for every operation that changes any flag. In the emulator, I use the names <strong>R3</strong> and <strong>R5</strong> for these flags.</p>
+
+<p>You probably remember that the <code class="highlighter-rouge">Z80Cpu</code> class uses jump tables to invoke actions associated with operation codes. In this post, I will show end explain the methods behind these actions.</p>
+
+<h3 id="simple-instructions">Simple Instructions</h3>
+
+<p>Many Z80 instructions are simple. They work with registers, load them from the memory, or store them. Here, I show a few of them.</p>
+
+<h4 id="nop">NOP</h4>
+
+<p>The simplest is the <strong>NOP</strong> (<em>No Operation</em>) instruction. The CPU executes its <strong>M1</strong> cycle without any further processing. Thus, the <strong>NOP</strong> instruction even does not have a dedicated action method. The <code class="highlighter-rouge">ExecuteCpuCycle()</code> method does this job with these lines:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="kt">var</span> <span class="n">opCode</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">);</span>
+<span class="nf">ClockP3</span><span class="p">();</span>
+<span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+<span class="nf">RefreshMemory</span><span class="p">();</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<h4 id="8-bit-register-to-register-load">8-Bit Register-To-Register Load</h4>
+
+<p>The Z80 CPU has 49 operations to move data from one of the seven 8-bit registers to another one. This example shows the <strong>LD B,C</strong> operation, which could not be implemented simpler:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "ld b,c" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of C are loaded to B.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0x41</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4 (4)</span>
+<span class="c1">///     Contention breakdown: pc:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">LdB_C</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">B</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">C</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>All remaining 8-bit-register-to-8-bit-register operations use the same approach with a single line transfer code.</p>
+
+<h4 id="loading-value-to-an-8-bit-register">Loading Value to an 8-Bit Register</h4>
+
+<p>The CPU has instructions to move 8-bit literal values from the code to an 8-bit register, such as the code of the <strong>LD E,N</strong> operation shows:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "ld e,N" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The 8-bit integer N is loaded to E.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x1E</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |            8-bit              |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4, 3 (7)</span>
+<span class="c1">///     Contention breakdown: pc:4,pc+1:3</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">LdEN</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">E</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Here, <strong>N</strong> is an 8-bit value that follows the opcode in the memory. By the time the code invokes the <code class="highlighter-rouge">LdEN()</code> method, <strong>PC</strong> points to <strong>N</strong> in the memory.</p>
+
+<p>Because a memory read operation takes 3 T-states, the <code class="highlighter-rouge">ClockP3()</code> method adjusts the <code class="highlighter-rouge">Tacts</code> counter.</p>
+
+<p class="note"><strong>Note</strong>: At first sight, it does not matter where we put <code class="highlighter-rouge">ClockP3()</code> in the code because anywhere we put it, it always increases <code class="highlighter-rouge">Tacts</code> with 3. Well, it is not so. Because of memory contention, we need to add it after the memory read operation. The reason behind this approach is that the <code class="highlighter-rouge">ReadMemory()</code> operation may adjust the counter. The amount of this adjustment is a function of two inputs: the current <code class="highlighter-rouge">Tacts</code> value, and the memory address, respectively. Moving <code class="highlighter-rouge">ClockP3()</code> before the <code class="highlighter-rouge">ReadMemory()</code> call might result a different clock adjustment.  You will read more details later in the article about memory and I/O contention.</p>
+
+<h4 id="loading-value-to-a-16-bit-register">Loading Value to a 16-Bit Register</h4>
+
+<p>The 16-bit value loading operation follows the same logic as its 8-bit version pair. This code shows the internals of the <strong>LD DE,NN</strong> instruction, where <strong>NN</strong> is a 16-bit value stored in LSB/MSB order right after the opcode.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "ld de,NN" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The 16-bit integer value is loaded to the DE register pair.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0x11</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |             N Low             |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |             N High            |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4, 3, 3 (10)</span>
+<span class="c1">///     Contention breakdown: pc:4,pc+1:3,pc+2:3</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">LdDENN</span><span class="p">()</span>
+<span class="p">{</span>
+     <span class="n">_registers</span><span class="p">.</span><span class="n">E</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">D</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can see that the code carries out two read operations after each other. The method stores the result of the first read in the E register (LSB), the second in D. Similarly to the previous operation the two <code class="highlighter-rouge">ClockP3()</code> calls cannot be changed to a single <code class="highlighter-rouge">ClockP6()</code>, as it would not correctly handle memory contention.</p>
+
+<h4 id="loading-an-8-bit-register-from-memory">Loading an 8-Bit Register from Memory</h4>
+
+<p>The following code executes the <strong>LD A,(BC)</strong> operation. It works exactly as you imagine. Nonetheless, the code sets up the value of the internal <strong>WZ</strong> register:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "ld a,(bc)" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of the memory location specified by BC are loaded to A.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0x0A</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4, 3 (7)</span>
+<span class="c1">///     Contention breakdown: pc:4,bc:3</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">LdABCi</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">WZ</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">BC</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">BC</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You may ask, why we set the value of an internal register if it’s not available from program code. Well, the Z80 CPU has some officially undocumented behavior (e.g., BIT instruction), where the value of <strong>WZ</strong> influences how the undocumented <strong>R3</strong> and <strong>R5</strong> flags are calculated. Nonetheless, the interesting thing is that though we read from the address pointed by <strong>BC</strong>, <strong>WZ</strong> is set to <strong>BC+1</strong>. I won’t explain why, it would take long. It is the internal behavior of the Z80 CPU.</p>
+
+<h4 id="loading-a-16-bit-register-from-memory">Loading a 16-Bit Register from Memory</h4>
+
+<p>As the code of the <strong>LD HL,(NN)</strong> instruction shows, we need four read operations to get the value of a 16-bit register from an actual memory address:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "ld hl,(NN)" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of memory address (NN) are loaded to the</span>
+<span class="c1">///     low-order portion of HL (L), and the contents of the next</span>
+<span class="c1">///     highest memory address (NN + 1) are loaded to the high-order</span>
+<span class="c1">///     portion of HL (H).</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0x2A</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |           8-bit L             |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |           8-bit H             |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4, 3, 3, 3, 3 (16)</span>
+<span class="c1">///     Contention breakdown: pc:4,pc+1:3,pc+2:3,nn:3,nn+1:3</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">LdHLNNi</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">ushort</span> <span class="n">adr</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+    <span class="n">adr</span> <span class="p">+=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">(</span><span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">)</span> <span class="p">&lt;&lt;</span> <span class="m">8</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">WZ</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">(</span><span class="n">adr</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
+    <span class="kt">ushort</span> <span class="n">val</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">adr</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">val</span> <span class="p">+=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">(</span><span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">WZ</span><span class="p">)</span> <span class="p">&lt;&lt;</span> <span class="m">8</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">HL</span> <span class="p">=</span> <span class="n">val</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The first two reads collect the address of the memory; the subsequent two reads obtain the LSB and MSB of the register’s new value from the memory.</p>
+
+<h4 id="storing-an-8-bit-registers-value-into-memory">Storing an 8-Bit Register’s Value into Memory</h4>
+
+<p>The Z80 has instruction that writes into a 16-bit memory address, such as <strong>LD (NN),A</strong>. This instruction first obtains the memory address, and then stores the value of <strong>A</strong> to that address:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "ld a,(NN)" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of A are loaded to the memory address specified by</span>
+<span class="c1">///     the operand NN</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x32</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |           8-bit L             |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |           8-bit H             |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4, 3, 3, 3 (13)</span>
+<span class="c1">///     Contention breakdown: pc:4,pc+1:3,pc+2:3,nn:3</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">LdNNA</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">l</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+    <span class="kt">var</span> <span class="n">addr</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">((</span><span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">)</span> <span class="p">&lt;&lt;</span> <span class="m">8</span><span class="p">)</span> <span class="p">|</span> <span class="n">l</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">WZ</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">(((</span><span class="n">addr</span> <span class="p">+</span> <span class="m">1</span><span class="p">)</span> <span class="p">&amp;</span> <span class="m">0xFF</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">&lt;&lt;</span> <span class="m">8</span><span class="p">));</span>
+    <span class="nf">WriteMemory</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">_registers</span><span class="p">.</span><span class="n">A</span><span class="p">);</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">WZh</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">A</span><span class="p">;</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The code is straightforward, except the snippet that sets the value of <strong>WZ</strong>. As you can see, it happens in two steps (the data bus can handle eight bits in a single transfer). <strong>WZh</strong> signifies the upper eight bits of <strong>WZ</strong>.</p>
+
+<p class="note"><strong>Note</strong>: From now on, I will explain the reason for using <strong>WZ</strong> only when I intend to point out to something significant. Otherwise, I just ignore the explanation.</p>
+
+<h4 id="storing-an-16-bit-registers-value-into-memory">Storing an 16-Bit Register’s Value into Memory</h4>
+
+<p>I guess the implementation of the <strong>LD (NN),HL</strong> instruction is straightforward:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "ld (NN),hl" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of the low-order portion of HL (L) are loaded to memory</span>
+<span class="c1">///     address (NN), and the contents of the high-order portion of HL (H)</span>
+<span class="c1">///     are loaded to the next highest memory address(NN + 1).</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0x22</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |           8-bit L             |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     |           8-bit H             |</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4, 3, 3, 3, 3 (16)</span>
+<span class="c1">///     Contention breakdown: pc:4,pc+1:3,pc+2:3,nn:3,nn+1:3</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">LdNNiHL</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">l</span> <span class="p">=</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+    <span class="kt">var</span> <span class="n">addr</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">((</span><span class="nf">ReadMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">)</span> <span class="p">&lt;&lt;</span> <span class="m">8</span><span class="p">)</span> <span class="p">|</span> <span class="n">l</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">PC</span><span class="p">++;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">WZ</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">(</span><span class="n">addr</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
+    <span class="nf">WriteMemory</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">_registers</span><span class="p">.</span><span class="n">L</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+    <span class="nf">WriteMemory</span><span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">WZ</span><span class="p">,</span> <span class="n">_registers</span><span class="p">.</span><span class="n">H</span><span class="p">);</span>
+    <span class="nf">ClockP3</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="more-about-reading-and-writing-memory">More about Reading and Writing Memory</h3>
+
+<p>The <code class="highlighter-rouge">Z80Cpu</code> class outsources memory handling functionality to an abstract <code class="highlighter-rouge">IMemoryDevice</code>:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span>  <span class="k">partial</span> <span class="k">class</span> <span class="nc">Z80Cpu</span><span class="p">:</span> <span class="n">IZ80Cpu</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IMemoryDevice</span> <span class="n">_memoryDevice</span><span class="p">;</span>
+    <span class="c1">// ...</span>
+    <span class="p">[</span><span class="nf">MethodImpl</span><span class="p">(</span><span class="n">MethodImplOptions</span><span class="p">.</span><span class="n">AggressiveInlining</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="kt">byte</span> <span class="nf">ReadMemory</span><span class="p">(</span><span class="kt">ushort</span> <span class="n">addr</span><span class="p">)</span> <span class="p">=&gt;</span> 
+        <span class="n">_memoryDevice</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
+
+    <span class="p">[</span><span class="nf">MethodImpl</span><span class="p">(</span><span class="n">MethodImplOptions</span><span class="p">.</span><span class="n">AggressiveInlining</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">WriteMemory</span><span class="p">(</span><span class="kt">ushort</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">byte</span> <span class="k">value</span><span class="p">)</span> <span class="p">=&gt;</span> 
+        <span class="n">_memoryDevice</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This is an essential implementation detail. Doing so, the emulator can easily handle features such as paging, banking, handling ROM, and so on. This indirection makes testing easier, too.</p>
+
+<h3 id="alu-operations">ALU Operations</h3>
+
+<p>Implementing ALU operations seems to be evident at first sight. How could be adding or subtracting two 8-bit or 16-bit value difficult? When emulating these operations, the challenge is to manage flag changes efficiently, for these instructions change flags profoundly.</p>
+
+<h4 id="incrementing-a-16-bit-registers-value">Incrementing a 16-Bit Register’s Value</h4>
+
+<p>Incrementing a 16-bit register keeps all flags unaffected. Thus, as the code of <strong>INC HL</strong> shows, the implementation is as simple as you expect:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "inc hl" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of register pair HL are incremented.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0x23</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4, 2 (6)</span>
+<span class="c1">///     Contention breakdown: pc:6</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">IncHL</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">HL</span><span class="p">++;</span>
+    <span class="nf">ClockP2</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="incrementing-an-8-bit-registers-value">Incrementing an 8-Bit Register’s value</h4>
+
+<p>Unlike a 16-bit increment instruction, an 8-bit operation changes flag values. The code of <strong>INC D</strong> shows how it goes:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "inc d" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     Register D is incremented.</span>
+<span class="c1">///     S is set if result is negative; otherwise, it is reset.</span>
+<span class="c1">///     Z is set if result is 0; otherwise, it is reset.</span>
+<span class="c1">///     H is set if carry from bit 3; otherwise, it is reset.</span>
+<span class="c1">///     P/V is set if r was 7Fh before operation; otherwise, it is reset.</span>
+<span class="c1">///     N is reset.</span>
+<span class="c1">///     C is not affected.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0x14</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4 (4)</span>
+<span class="c1">///     Contention breakdown: pc:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">IncD</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">s_IncOpFlags</span><span class="p">[</span><span class="n">_registers</span><span class="p">.</span><span class="n">D</span><span class="p">++]</span> 
+        <span class="p">|</span> <span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">&amp;</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">C</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>According to the comment, this instruction may change seven flags out of eight (let’s not forget about the two undocumented flags, <strong>R3</strong> and <strong>R5</strong>). It keeps unaffected only <strong>C</strong>. For performance reason, I do not set these flags individually, but use a predefined table, <code class="highlighter-rouge">s_IncOpFlags</code>, to obtain the value of flags after the increment operation. Observe how the implementation keeps the Carry flag untouched.</p>
+
+<p>Because we work with eight bits of data, we can easily pre-calculate the flag values. The implementation contains ALU helper tables within the <code class="highlighter-rouge">Z80Cpu</code> class. When the CPU instance is constructed, the <code class="highlighter-rouge">InitializeAluTables()</code> method prepares these tables. This is the code snippet that calculates the contents of <code class="highlighter-rouge">s_IncOpFlags</code>:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="n">s_IncOpFlags</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="p">[</span><span class="m">0x100</span><span class="p">];</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">var</span> <span class="n">b</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">b</span> <span class="p">&lt;</span> <span class="m">0x100</span><span class="p">;</span> <span class="n">b</span><span class="p">++)</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">oldVal</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span> <span class="n">b</span><span class="p">;</span>
+    <span class="kt">var</span> <span class="n">newVal</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">oldVal</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">flags</span> <span class="p">=</span>
+    <span class="c1">// C is unaffected, we keep it false</span>
+    <span class="p">(</span><span class="n">newVal</span> <span class="p">&amp;</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">R3</span><span class="p">)</span> <span class="p">|</span>
+    <span class="p">(</span><span class="n">newVal</span> <span class="p">&amp;</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">R5</span><span class="p">)</span> <span class="p">|</span>
+    <span class="p">((</span><span class="n">newVal</span> <span class="p">&amp;</span> <span class="m">0x80</span><span class="p">)</span> <span class="p">!=</span> <span class="m">0</span> <span class="p">?</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">S</span> <span class="p">:</span> <span class="m">0</span><span class="p">)</span> <span class="p">|</span>
+        <span class="p">(</span><span class="n">newVal</span> <span class="p">==</span> <span class="m">0</span> <span class="p">?</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">Z</span> <span class="p">:</span> <span class="m">0</span><span class="p">)</span> <span class="p">|</span>
+        <span class="p">((</span><span class="n">oldVal</span> <span class="p">&amp;</span> <span class="m">0x0F</span><span class="p">)</span> <span class="p">==</span> <span class="m">0x0F</span> <span class="p">?</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">H</span> <span class="p">:</span> <span class="m">0</span><span class="p">)</span> <span class="p">|</span>
+        <span class="p">(</span><span class="n">oldVal</span> <span class="p">==</span> <span class="m">0x7F</span> <span class="p">?</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">PV</span> <span class="p">:</span> <span class="m">0</span><span class="p">);</span>
+    <span class="c1">// N is false</span>
+    <span class="n">s_IncOpFlags</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span> <span class="n">flags</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p class="note"><strong>Note</strong>: The <code class="highlighter-rouge">FlagSetMask</code> class contains constant values to mask out a particular flag from the <strong>F</strong> register. There’s another class, <code class="highlighter-rouge">FlagResetMask</code> with constant values to reset the specific flag while keeping others from <strong>F</strong>.</p>
+
+<h4 id="adding-two-8-bit-registers">Adding Two 8-Bit Registers</h4>
+
+<p>Using ALU helper tables is a good technique, but as you can see from the implementation details of the <strong>ADD A,H</strong> instruction, the price of the performance is increased usage of memory:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     add a,h</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of H are added to the contents of A, and the result is</span>
+<span class="c1">///     stored in A.</span>
+<span class="c1">///     S is set if result is negative; otherwise, it is reset.</span>
+<span class="c1">///     Z is set if result is 0; otherwise, it is reset.</span>
+<span class="c1">///     H is set if carry from bit 3; otherwise, it is reset.</span>
+<span class="c1">///     P/V is set if overflow; otherwise, it is reset.</span>
+<span class="c1">///     N is reset.</span>
+<span class="c1">///     C is set if carry from bit 7; otherwise, it is reset.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0x84</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4 (4)</span>
+<span class="c1">///     Contention breakdown: pc:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">AddA_H</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">src</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">H</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="n">s_AdcFlags</span><span class="p">[</span><span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">*</span> <span class="m">0x100</span> <span class="p">+</span> <span class="n">src</span><span class="p">];</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">+=</span> <span class="n">src</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Here, the <code class="highlighter-rouge">s_AdcFlags</code> table contains 2 * 256 *256 entries: we need to combine 256 different value of <strong>A</strong> with 256 potential values of <strong>H</strong>. Besides, we have two additions, <strong>ADD</strong>, which ignores the carry flag, and <strong>ADC</strong>, which utilizes carry. This is how I calculate <code class="highlighter-rouge">s_AdcFlags</code> entries:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="n">s_AdcFlags</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="p">[</span><span class="m">0x20000</span><span class="p">];</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">var</span> <span class="n">C</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">C</span> <span class="p">&lt;</span> <span class="m">2</span><span class="p">;</span> <span class="n">C</span><span class="p">++)</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">var</span> <span class="n">X</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">X</span> <span class="p">&lt;</span> <span class="m">0x100</span><span class="p">;</span> <span class="n">X</span><span class="p">++)</span>
+    <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">var</span> <span class="n">Y</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">Y</span> <span class="p">&lt;</span> <span class="m">0x100</span><span class="p">;</span> <span class="n">Y</span><span class="p">++)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">res</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span> <span class="p">(</span><span class="n">X</span> <span class="p">+</span> <span class="n">Y</span> <span class="p">+</span> <span class="n">C</span><span class="p">);</span>
+            <span class="kt">var</span> <span class="n">flags</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">res</span> <span class="p">&amp;</span> <span class="m">0xFF</span><span class="p">)</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span> <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">Z</span><span class="p">;</span>
+            <span class="n">flags</span> <span class="p">|=</span> <span class="n">res</span> <span class="p">&amp;</span> <span class="p">(</span><span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">R3</span> <span class="p">|</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">R5</span> <span class="p">|</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">S</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="p">&gt;=</span> <span class="m">0x100</span><span class="p">)</span> <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">C</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">((((</span><span class="n">X</span> <span class="p">&amp;</span> <span class="m">0x0F</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="n">Y</span> <span class="p">&amp;</span> <span class="m">0x0F</span><span class="p">)</span> <span class="p">+</span> <span class="n">C</span><span class="p">)</span> <span class="p">&amp;</span> <span class="m">0x10</span><span class="p">)</span> <span class="p">!=</span> <span class="m">0</span><span class="p">)</span> <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">H</span><span class="p">;</span>
+            <span class="kt">var</span> <span class="n">ri</span> <span class="p">=</span> <span class="p">(</span><span class="kt">sbyte</span><span class="p">)</span> <span class="n">X</span> <span class="p">+</span> <span class="p">(</span><span class="kt">sbyte</span><span class="p">)</span> <span class="n">Y</span> <span class="p">+</span> <span class="n">C</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ri</span> <span class="p">&gt;=</span> <span class="m">0x80</span> <span class="p">||</span> <span class="n">ri</span> <span class="p">&lt;=</span> <span class="p">-</span><span class="m">0x81</span><span class="p">)</span> <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">PV</span><span class="p">;</span>
+            <span class="n">s_AdcFlags</span><span class="p">[</span><span class="n">C</span> <span class="p">*</span> <span class="m">0x10000</span> <span class="p">+</span> <span class="n">X</span> <span class="p">*</span> <span class="m">0x100</span> <span class="p">+</span> <span class="n">Y</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span> <span class="n">flags</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p>For the sake of completeness, here is the code of <strong>ADC A,E</strong>. You can observe how the carry flag is weaved into the operation:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     adc a,e</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     The contents of E and the C flag are added to the contents of A,</span>
+<span class="c1">///     and the result is stored in A.</span>
+<span class="c1">///     S is set if result is negative; otherwise, it is reset.</span>
+<span class="c1">///     Z is set if result is 0; otherwise, it is reset.</span>
+<span class="c1">///     H is set if carry from bit 3; otherwise, it is reset.</span>
+<span class="c1">///     P/V is set if overflow; otherwise, it is reset.</span>
+<span class="c1">///     N is reset.</span>
+<span class="c1">///     C is set if carry from bit 7; otherwise, it is reset.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0x8B</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4 (4)</span>
+<span class="c1">///     Contention breakdown: pc:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">AdcA_E</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">src</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">E</span><span class="p">;</span>
+    <span class="kt">var</span> <span class="n">carry</span> <span class="p">=</span> <span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">&amp;</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">C</span><span class="p">)</span> <span class="p">==</span> <span class="m">0</span> <span class="p">?</span> <span class="m">0</span> <span class="p">:</span> <span class="m">1</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="n">s_AdcFlags</span><span class="p">[</span><span class="n">carry</span> <span class="p">*</span> <span class="m">0x10000</span> <span class="p">+</span> <span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">*</span> <span class="m">0x100</span> <span class="p">+</span> <span class="n">src</span><span class="p">];</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">+=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">src</span> <span class="p">+</span> <span class="n">carry</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="adding-two-16-bit-registers">Adding Two 16-Bit Registers</h4>
+
+<p>Today, when we have gigabytes of memory in our computers (and even in mobile devices), storing 128 Kbytes of pre-calculated data seems to be a good tradeoff for the performance gain. However, when we execute ALU operations with two 16-bit numbers, we had to store 8 Gbytes of data for such a helper table. Apparently, it would not be a viable tradeoff. We need to calculate the flag values during run time. To demonstrate this, here is the code behind the <strong>ADC HL,DE</strong> operation:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">/// "ADC HL,QQ" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">/// </span>
+<span class="c1">/// The contents of register pair QQ are added with the Carry flag</span>
+<span class="c1">/// to the contents of HL, and the result is stored in HL.</span>
+<span class="c1">/// </span>
+<span class="c1">/// S is set if result is negative; otherwise, it is reset.</span>
+<span class="c1">/// Z is set if result is 0; otherwise, it is reset.</span>
+<span class="c1">/// H is set if carry from bit 11; otherwise, it is reset.</span>
+<span class="c1">/// P/V is set if overflow; otherwise, it is reset.</span>
+<span class="c1">/// N is reset.</span>
+<span class="c1">/// C is set if carry from bit 15; otherwise, it is reset.</span>
+<span class="c1">///</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// | 0 | 1 | Q | Q | 1 | 0 | 1 | 0 |</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// QQ: 00=BC, 01=DE, 10=HL, 11=SP</span>
+<span class="c1">/// T-States: 4, 4, 4, 3 (15)</span>
+<span class="c1">/// Contention breakdown: pc:4,pc+1:11</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">ADCHL_QQ</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">WZ</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)(</span><span class="n">_registers</span><span class="p">.</span><span class="n">HL</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">cfVal</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">CFlag</span> <span class="p">?</span> <span class="m">1</span> <span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+    <span class="kt">var</span> <span class="n">qq</span> <span class="p">=</span> <span class="p">(</span><span class="n">Reg16Index</span><span class="p">)((</span><span class="n">_opCode</span> <span class="p">&amp;</span> <span class="m">0x30</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">4</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">flags</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((((</span><span class="n">_registers</span><span class="p">.</span><span class="n">HL</span> <span class="p">&amp;</span> <span class="m">0x0FFF</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="n">_registers</span><span class="p">[</span><span class="n">qq</span><span class="p">]</span> <span class="p">&amp;</span> <span class="m">0x0FFF</span><span class="p">)</span>
+        <span class="p">+</span> <span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">&amp;</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">C</span><span class="p">))</span> <span class="p">&gt;&gt;</span> <span class="m">8</span><span class="p">)</span> <span class="p">&amp;</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">H</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">adcVal</span> <span class="p">=</span> <span class="p">(</span><span class="kt">uint</span><span class="p">)((</span><span class="n">_registers</span><span class="p">.</span><span class="n">HL</span> <span class="p">&amp;</span> <span class="m">0xFFFF</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="n">_registers</span><span class="p">[</span><span class="n">qq</span><span class="p">]</span> <span class="p">&amp;</span> <span class="m">0xFFFF</span><span class="p">)</span> 
+        <span class="p">+</span> <span class="n">cfVal</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">adcVal</span> <span class="p">&amp;</span> <span class="m">0x10000</span><span class="p">)</span> <span class="p">!=</span> <span class="m">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">C</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">adcVal</span> <span class="p">&amp;</span> <span class="m">0xFFFF</span><span class="p">)</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">Z</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">var</span> <span class="n">signedAdc</span> <span class="p">=</span> <span class="p">(</span><span class="kt">short</span><span class="p">)</span><span class="n">_registers</span><span class="p">.</span><span class="n">HL</span> <span class="p">+</span> <span class="p">(</span><span class="kt">short</span><span class="p">)</span><span class="n">_registers</span><span class="p">[</span><span class="n">qq</span><span class="p">]</span> <span class="p">+</span> <span class="n">cfVal</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">signedAdc</span> <span class="p">&lt;</span> <span class="p">-</span><span class="m">0x8000</span> <span class="p">||</span> <span class="n">signedAdc</span> <span class="p">&gt;=</span> <span class="m">0x8000</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">PV</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">HL</span> <span class="p">=</span> <span class="p">(</span><span class="kt">ushort</span><span class="p">)</span><span class="n">adcVal</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)(</span><span class="n">flags</span> <span class="p">|</span> <span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">H</span> <span class="p">&amp;</span> <span class="p">(</span><span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">S</span> <span class="p">|</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">R3</span> 
+        <span class="p">|</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">R5</span><span class="p">)));</span>
+    <span class="nf">ClockP7</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The first thing you observe is that the method’s name is not <code class="highlighter-rouge">ADCHL_DE</code>, but <code class="highlighter-rouge">ADCHL_QQ</code>. It is not misnaming. <strong>QQ</strong> represent that this operation works with any of the <strong>BC</strong>, <strong>DE</strong>, <strong>HL</strong>, and <strong>SP</strong> registers; this method implements all the <strong>ADC HL,BC</strong>, <strong>ADC HL,DE</strong>, <strong>ADC HL,HL</strong>, and <strong>ADC HL,SP</strong> instructions.</p>
+
+<p>These are extended operations with the <strong>$ED</strong> opcode prefix. Bit 4 and 5 of the second opcode byte names the second operand register, the value of which is queried with this code line:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">qq</span> <span class="p">=</span> <span class="p">(</span><span class="n">Reg16Index</span><span class="p">)((</span><span class="n">_opCode</span> <span class="p">&amp;</span> <span class="m">0x30</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">4</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">Registers</code> class provides an indexer property to access to 16-bit registers (and another indexer to get or set 8-bit registers). The <code class="highlighter-rouge">_registers[qq]</code> expression gets the value of the register specified by the second opcode byte.</p>
+
+<h4 id="bit-test-instructions">Bit Test Instructions</h4>
+
+<p>The <strong>BIT N,Q</strong> instruction, which tests if the <em>Nth</em> bit of the <strong>Q</strong> 8-bit register is set, used opcode indirection for both <strong>N</strong> and <strong>Q</strong>:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">/// "BIT N,Q" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">/// </span>
+<span class="c1">/// This instruction tests bit N in register Q and sets the Z </span>
+<span class="c1">/// flag accordingly.</span>
+<span class="c1">/// </span>
+<span class="c1">/// S Set if N = 7 and tested bit is set.</span>
+<span class="c1">/// Z is set if specified bit is 0; otherwise, it is reset.</span>
+<span class="c1">/// H is set.</span>
+<span class="c1">/// P/V is Set just like ZF flag.</span>
+<span class="c1">/// N is reset.</span>
+<span class="c1">/// C is not affected.</span>
+<span class="c1">/// </span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// | 0 | 1 | N | N | N | Q | Q | Q |</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// Q: 000=B, 001=C, 010=D, 011=E</span>
+<span class="c1">///    100=H, 101=L, 110=N/A, 111=A</span>
+<span class="c1">/// T-States: 4, 4 (8)</span>
+<span class="c1">/// Contention breakdown: pc:4,pc+1:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">BITN_Q</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">q</span> <span class="p">=</span> <span class="p">(</span><span class="n">Reg8Index</span><span class="p">)</span> <span class="p">(</span><span class="n">_opCode</span> <span class="p">&amp;</span> <span class="m">0x07</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">n</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span> <span class="p">((</span><span class="n">_opCode</span> <span class="p">&amp;</span> <span class="m">0x38</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">3</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">srcVal</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">[</span><span class="n">q</span><span class="p">];</span>
+    <span class="kt">var</span> <span class="n">testVal</span> <span class="p">=</span> <span class="n">srcVal</span> <span class="p">&amp;</span> <span class="p">(</span><span class="m">1</span> <span class="p">&lt;&lt;</span> <span class="n">n</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">flags</span> <span class="p">=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">H</span>
+        <span class="p">|</span> <span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">&amp;</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">C</span><span class="p">)</span>
+        <span class="p">|</span> <span class="p">(</span><span class="n">srcVal</span> <span class="p">&amp;</span> <span class="p">(</span><span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">R3</span> <span class="p">|</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">R5</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">testVal</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">Z</span> <span class="p">|</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">PV</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="p">==</span> <span class="m">7</span> <span class="p">&amp;&amp;</span> <span class="n">testVal</span> <span class="p">!=</span> <span class="m">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">flags</span> <span class="p">|=</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">S</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span><span class="n">flags</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>As the code (and its comment) shows, Bit 0, 1, and 2 name <strong>Q</strong>, Bit 3, 4, and 5 specify <strong>N</strong>.</p>
+
+<p>The <code class="highlighter-rouge">BITN_Q</code> method itself carries out all the 64 bit-test operations that you can execute with the <strong>$CB</strong> prefix. Instead of calculating flag values run time, I could also create a helper table with 8 * 256 entries (8 entries for <strong>N</strong>, 256 entries for each 8-bit values) to accelerate the calculation. Well, this method is a good candidate for such performance refactoring.</p>
+
+<p>I could use a single method body to implement the 8-bit-register-to-8-bit register load operations. However, I created 64 separate methods. I did it because I opted to avoid two indirections (getting the value of the source register and setting the value of the destination register) for the sake of performance. So, such a transfer operation (e.g. <strong>LD D,B</strong>) is so simple:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_registers</span><span class="p">.</span><span class="n">D</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">B</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h4 id="shift-and-rotate-instructions">Shift and Rotate Instructions</h4>
+
+<p>I used helper tables for shift and rotate instructions with pre-calculated flag values. Here is the implementation of the <strong>SLA D</strong> operation:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">/// "sla d" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">/// </span>
+<span class="c1">/// An arithmetic shift left 1 bit position is performed on the </span>
+<span class="c1">/// contents of register D. The contents of bit 7 are copied to </span>
+<span class="c1">/// the Carry flag.</span>
+<span class="c1">/// </span>
+<span class="c1">/// S, Z, P/V are not affected.</span>
+<span class="c1">/// H, N are reset.</span>
+<span class="c1">/// C is data from bit 7 of the original register value.</span>
+<span class="c1">/// </span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0x22</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// T-States: 4, 4 (8)</span>
+<span class="c1">/// Contention breakdown: pc:4,pc+1:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">SLA_D</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">slaVal</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">D</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="n">s_RlCarry0Flags</span><span class="p">[(</span><span class="kt">byte</span><span class="p">)</span><span class="n">slaVal</span><span class="p">];</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">D</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)(</span><span class="n">slaVal</span> <span class="p">&lt;&lt;</span> <span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <strong>RR L</strong> operation copies the previous carry flag into bit 7. In this implementation, I use two helper tables, according to the value of the carry:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">/// "rr l" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">/// </span>
+<span class="c1">/// The contents of register L are rotated right 1 bit position </span>
+<span class="c1">/// through the Carry flag. The contents of bit 0 are copied to the </span>
+<span class="c1">/// Carry flag and the previous contents of the Carry flag are </span>
+<span class="c1">/// copied to bit 7.</span>
+<span class="c1">/// </span>
+<span class="c1">/// S, Z, P/V are not affected.</span>
+<span class="c1">/// H, N are reset.</span>
+<span class="c1">/// C is data from bit 0 of the original register value.</span>
+<span class="c1">/// </span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0x1D</span>
+<span class="c1">/// =================================</span>
+<span class="c1">/// T-States: 4, 4 (8)</span>
+<span class="c1">/// Contention breakdown: pc:4,pc+1:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">RR_L</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rrVal</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">L</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">_registers</span><span class="p">.</span><span class="n">CFlag</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="n">s_RrCarry1Flags</span><span class="p">[</span><span class="n">rrVal</span><span class="p">];</span>
+        <span class="n">_registers</span><span class="p">.</span><span class="n">L</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">rrVal</span> <span class="p">&gt;&gt;</span> <span class="m">1</span><span class="p">)</span> <span class="p">+</span> <span class="m">0x80</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="n">s_RrCarry0Flags</span><span class="p">[</span><span class="n">rrVal</span><span class="p">];</span>
+        <span class="n">_registers</span><span class="p">.</span><span class="n">L</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)(</span><span class="n">rrVal</span> <span class="p">&gt;&gt;</span> <span class="m">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="logical-operations">Logical operations</h4>
+
+<p>The Z80 CPU provides logical operations between <strong>A</strong> and the other 8-bit registers, such as <strong>OR</strong>, <strong>AND</strong>, <strong>XOR</strong>. Their implementation uses the same helper table, <code class="highlighter-rouge">s_AluOpFlags</code>, as the implementation of <strong>OR C</strong> and <strong>AND C</strong> shows:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     or c</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     A logical OR operation is performed between C and the byte contained in A;</span>
+<span class="c1">///     the result is stored in the Accumulator.</span>
+<span class="c1">///     S is set if result is negative; otherwise, it is reset.</span>
+<span class="c1">///     Z is set if result is 0; otherwise, it is reset.</span>
+<span class="c1">///     H is reset.</span>
+<span class="c1">///     P/V is reset if overflow; otherwise, it is reset.</span>
+<span class="c1">///     N is reset.</span>
+<span class="c1">///     C is reset.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0xB1</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4 (4)</span>
+<span class="c1">///     Contention breakdown: pc:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">OrC</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">src</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">C</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">|=</span> <span class="n">src</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="n">s_AluLogOpFlags</span><span class="p">[</span><span class="n">_registers</span><span class="p">.</span><span class="n">A</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     and c</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     A logical AND operation is performed between C and the byte contained in A;</span>
+<span class="c1">///     the result is stored in the Accumulator.</span>
+<span class="c1">///     S is set if result is negative; otherwise, it is reset.</span>
+<span class="c1">///     Z is set if result is 0; otherwise, it is reset.</span>
+<span class="c1">///     H is set.</span>
+<span class="c1">///     P/V is reset if overflow; otherwise, it is reset.</span>
+<span class="c1">///     N is reset.</span>
+<span class="c1">///     C is reset.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0xA1</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4 (4)</span>
+<span class="c1">///     Contention breakdown: pc:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">AndC</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">src</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">C</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">&amp;=</span> <span class="n">src</span><span class="p">;</span>
+    <span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">s_AluLogOpFlags</span><span class="p">[</span><span class="n">_registers</span><span class="p">.</span><span class="n">A</span><span class="p">]</span> <span class="p">|</span> <span class="n">FlagsSetMask</span><span class="p">.</span><span class="n">H</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="the-daa-instruction">The DAA Instruction</h4>
+
+<p>Believe it or not, the DAA instruction is probably the most complicated Z80 instruction, though its implementation does not reflect this fact:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">///     "daa" operation</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="c1">/// &lt;remarks&gt;</span>
+<span class="c1">///     This instruction conditionally adjusts A for BCD addition</span>
+<span class="c1">///     and subtraction operations. For addition(ADD, ADC, INC) or</span>
+<span class="c1">///     subtraction(SUB, SBC, DEC, NEG), the following table indicates</span>
+<span class="c1">///     the operation being performed:</span>
+<span class="c1">///     ====================================================</span>
+<span class="c1">///     |Oper.|C before|Upper|H before|Lower|Number|C after|</span>
+<span class="c1">///     |     |DAA     |Digit|Daa     |Digit|Added |Daa    |</span>
+<span class="c1">///     ====================================================</span>
+<span class="c1">///     | ADD |   0    | 9-0 |   0    | 0-9 |  00  |   0   |</span>
+<span class="c1">///     |     |   0    | 0-8 |   0    | A-F |  06  |   0   |</span>
+<span class="c1">///     |     |   0    | 0-9 |   1    | 0-3 |  06  |   0   |</span>
+<span class="c1">///     |     |   0    | A-F |   0    | 0-9 |  60  |   1   |</span>
+<span class="c1">///     ----------------------------------------------------</span>
+<span class="c1">///     | ADC |   0    | 9-F |   0    | A-F |  66  |   1   |</span>
+<span class="c1">///     ----------------------------------------------------</span>
+<span class="c1">///     | INC |   0    | A-F |   1    | 0-3 |  66  |   1   |</span>
+<span class="c1">///     |     |   1    | 0-2 |   0    | 0-9 |  60  |   1   |</span>
+<span class="c1">///     |     |   1    | 0-2 |   0    | A-F |  66  |   1   |</span>
+<span class="c1">///     |     |   1    | 0-3 |   1    | 0-3 |  66  |   1   |</span>
+<span class="c1">///     ----------------------------------------------------</span>
+<span class="c1">///     | SUB |   0    | 0-9 |   0    | 0-9 |  00  |   0   |</span>
+<span class="c1">///     ----------------------------------------------------</span>
+<span class="c1">///     | SBC |   0    | 0-8 |   1    | 6-F |  FA  |   0   |</span>
+<span class="c1">///     ----------------------------------------------------</span>
+<span class="c1">///     | DEC |   1    | 7-F |   0    | 0-9 |  A0  |   1   |</span>
+<span class="c1">///     ----------------------------------------------------</span>
+<span class="c1">///     | NEG |   1    | 6-7 |   1    | 6-F |  9A  |   1   |</span>
+<span class="c1">///     ====================================================</span>
+<span class="c1">///     S is set if most-significant bit of the A is 1 after an</span>
+<span class="c1">///     operation; otherwise, it is reset.</span>
+<span class="c1">///     Z is set if A is 0 after an operation; otherwise, it is reset.</span>
+<span class="c1">///     H: see the DAA instruction table.</span>
+<span class="c1">///     P/V is set if A is at even parity after an operation;</span>
+<span class="c1">///     otherwise, it is reset.</span>
+<span class="c1">///     N is not affected.</span>
+<span class="c1">///     C: see the DAA instruction table.</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0x27</span>
+<span class="c1">///     =================================</span>
+<span class="c1">///     T-States: 4 (4)</span>
+<span class="c1">///     Contention breakdown: pc:4</span>
+<span class="c1">/// &lt;/remarks&gt;</span>
+<span class="k">private</span> <span class="k">void</span> <span class="nf">Daa</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">daaIndex</span> <span class="p">=</span> <span class="n">_registers</span><span class="p">.</span><span class="n">A</span> <span class="p">+</span> <span class="p">(((</span><span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">&amp;</span> <span class="m">3</span><span class="p">)</span>
+        <span class="p">+</span> <span class="p">((</span><span class="n">_registers</span><span class="p">.</span><span class="n">F</span> <span class="p">&gt;&gt;</span> <span class="m">2</span><span class="p">)</span> <span class="p">&amp;</span> <span class="m">4</span><span class="p">))</span> <span class="p">&lt;&lt;</span> <span class="m">8</span><span class="p">);</span>
+            <span class="n">_registers</span><span class="p">.</span><span class="n">AF</span> <span class="p">=</span> <span class="n">s_DaaResults</span><span class="p">[</span><span class="n">daaIndex</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>As the table embedded into the comment suggests, the tough job is to create the <code class="highlighter-rouge">s_DaaResults</code> helper table. The current implementation of the calculation method is about hundred lines of code.</p>
+
+<p>Many other instructions are worth to mention. In the next post, you will learn implementation details about interrupt handling, I/O, and block transfer instructions.</p>
+
+
+              <!-- LINKS TO PREVIOUS/NEXT -->
+              <div class="links-bottom">
+                  <div class="link">
+                    
+                      <a class="prev" href="/zx-spectrum/2018/01/26/zxspectrum-part-4.html">&laquo; ZX Spectrum IDE — Part #4: Emulating the Z80 CPU</a>
+                    
+                  </div>
+                  <div class="link-right">
+                    
+                  </div>
+              </div>
+              <div id="disqus_thread"></div>
+            </section>
+            <aside class="sidebar">
+              <div class="sidebar-title"><a href="/">Dotneteer's BLOG</a></div>
+              <div class="sidebar-title">More in this category:</div>
+              <ul class="sidebar-list">
+                   
+                  
+                   <li class="post-list-item"><a href="/zx-spectrum/2018/02/01/zxspectrum-part-5.html">ZX Spectrum IDE — Part #5: Implementing Z80 instructions (1)</a></li> 
+                  
+                   
+                  
+                   <li class="post-list-item"><a href="/zx-spectrum/2018/01/26/zxspectrum-part-4.html">ZX Spectrum IDE — Part #4: Emulating the Z80 CPU</a></li> 
+                  
+                   
+                  
+                   <li class="post-list-item"><a href="/zx-spectrum/2018/01/23/zxspectrum-part-3.html">ZX Spectrum IDE — Part #3: A Brief Overview of the Z80 CPU</a></li> 
+                  
+                   
+                  
+                   <li class="post-list-item"><a href="/zx-spectrum/2018/01/23/zxspectrum-part-2.html">ZX Spectrum IDE — Part #2: The ZX Specrum Emulator Challenge</a></li> 
+                  
+                   
+                  
+                   <li class="post-list-item"><a href="/zx-spectrum/2018/01/03/zxspectrum-part-1.html">ZX Spectrum IDE — Part #1: How I Started SpectNetIde</a></li> 
+                  
+                  
+              </ul>
+              <div class="sidebar-title">Other categories:</div>
+              <ul class="sidebar-list">
+                   
+                   <li class="post-list-item"><a href="/category/zx-spectrum.html">ZX-Spectrum</a></li> 
+                  
+              </ul>
+            </aside>
+          </section>
+        </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>&copy; Istvan Novak, 2016-2019</p>
+      </footer>
+    </div>
+
+
+    
+
+    <!-- DISQUS -->
+<script>
+
+  /**
+   *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+   *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+  
+  var disqus_config = function () {
+  this.page.url = "http://localhost:4000/zx-spectrum/2018/02/01/zxspectrum-part-5.html";  // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = "/zx-spectrum/2018/02/01/zxspectrum-part-5.html"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+  };
+
+  (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://dotneteer.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </body>
+</html>
