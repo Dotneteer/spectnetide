@@ -9,7 +9,7 @@ github_username:  dotneteer
 
 # Build settings
 markdown: kramdown
-theme: jekyll-theme-architect
+theme: jekyll-theme-slate
 plugins:
   - jekyll-feed
 
