@@ -333,6 +333,38 @@ namespace Spect.Net.VsPackage.Test.Tools.Disassembly
         }
 
         [TestMethod]
+        public void ParserRecognizesUpdateBreakpointCommand1()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("ub45BF");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.UpdateBreakPoint);
+            p.Address.ShouldBe((ushort)0x45BF);
+        }
+
+        [TestMethod]
+        public void ParserRecognizesUpdateBreakpointCommand2()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("UB 45BF");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.UpdateBreakPoint);
+            p.Address.ShouldBe((ushort)0x45BF);
+        }
+
+        [TestMethod]
+        public void ParserRefusesInvalidUpdateBreakpointCommand()
+        {
+            // --- Act
+            var p = new DisassemblyCommandParser("ub45BFE345");
+
+            // --- Assert
+            p.Command.ShouldBe(DisassemblyCommandType.Invalid);
+        }
+
+        [TestMethod]
         public void ParserRecognizesEraseAllBreakpointCommand1()
         {
             // --- Act

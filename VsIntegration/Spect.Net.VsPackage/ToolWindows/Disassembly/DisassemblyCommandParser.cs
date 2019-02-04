@@ -16,6 +16,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_SetBreakPointRegex = new Regex(@"^[sS][bB]\s*([a-fA-F0-9]{1,4})(\s+[hH]\s*(\*|>|<|=|>=|<=)\s*([0-9]{1,4}))?(\s+[cC]\s+(.*))?$");
         private static readonly Regex s_ToggleBreakPointRegex = new Regex(@"^[tT][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_RemoveBreakPointRegex = new Regex(@"^[rR][bB]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_UpdateBreakPointRegex = new Regex(@"^[uU][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");
         private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS]|[cC])\s*([a-fA-F0-9]{1,4})\s+([a-fA-F0-9]{1,4})$");
@@ -205,6 +206,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             if (match.Success)
             {
                 Command = DisassemblyCommandType.RemoveBreakPoint;
+                if (!GetLabel(match))
+                {
+                    Command = DisassemblyCommandType.Invalid;
+                }
+                return;
+            }
+
+            // --- Check for UPDATE BREAKPOINT command
+            match = s_UpdateBreakPointRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = DisassemblyCommandType.UpdateBreakPoint;
                 if (!GetLabel(match))
                 {
                     Command = DisassemblyCommandType.Invalid;

@@ -15,6 +15,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         SetBreakPoint,
         ToggleBreakPoint,
         RemoveBreakPoint,
+        UpdateBreakPoint,
         EraseAllBreakPoint,
         Retrieve,
         AddSection,

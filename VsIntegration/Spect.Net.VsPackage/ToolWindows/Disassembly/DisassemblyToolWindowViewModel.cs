@@ -329,6 +329,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     breakPoints.Remove(parser.Address);
                     break;
 
+                case DisassemblyCommandType.UpdateBreakPoint:
+                    newPrompt = RetrieveBreakpoint(parser.Address);
+                    return false;
+
                 case DisassemblyCommandType.EraseAllBreakPoint:
                     var keysToRemove = breakPoints.Keys.Where(k => breakPoints[k].IsCpuBreakpoint).ToArray();
                     foreach (var key in keysToRemove)
@@ -755,6 +759,50 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
             }
             return found ? commandtext + text : string.Empty;
+        }
+
+        /// <summary>
+        /// Obtains the command line to set the breakpoint at the specified address
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        private string RetrieveBreakpoint(ushort address)
+        {
+            var breakPoints = MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints;
+            if (!breakPoints.TryGetValue(address, out var bp))
+            {
+                return string.Empty;
+            }
+
+            // --- Get hit condition
+            string hitCondition = "";
+            switch (bp.HitType)
+            {
+                case BreakpointHitType.Less:
+                    hitCondition = $" H<{bp.HitConditionValue}";
+                    break;
+                case BreakpointHitType.LessOrEqual:
+                    hitCondition = $" H<={bp.HitConditionValue}";
+                    break;
+                case BreakpointHitType.Equal:
+                    hitCondition = $" H={bp.HitConditionValue}";
+                    break;
+                case BreakpointHitType.Greater:
+                    hitCondition = $" H>{bp.HitConditionValue}";
+                    break;
+                case BreakpointHitType.GreaterOrEqual:
+                    hitCondition = $" H>={bp.HitConditionValue}";
+                    break;
+                case BreakpointHitType.Multiple:
+                    hitCondition = $" H*{bp.HitConditionValue}";
+                    break;
+            }
+
+            // --- Get filter condition
+            var filterCondition = bp.FilterExpression == null
+                ? ""
+                : $" C {bp.FilterExpression}";
+            return $"SB {address:X4}{hitCondition}{filterCondition}";
         }
 
         /// <summary>

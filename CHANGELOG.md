@@ -1,3 +1,7 @@
+### Version 1.15.0
+__FEATURE__: You can add conditional breakpoints in the Disassembly tool window and in the source code.  
+__FIX__: New colors of the set and current breakpoint highlights provide better visibility and distinction.
+
 ### Version 1.14.0
 __FEATURE__: Now, you can use the brand new Watch Memory tool window to display values
 while you run or debug your program.  
