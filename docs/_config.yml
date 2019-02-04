@@ -2,7 +2,7 @@ title: SpectNet IDE
 email: dotneteer@hotmail.com
 description: >- 
   Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/spectnetide" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: istvannovak
 github_username:  dotneteer
