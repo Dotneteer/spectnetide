@@ -9,13 +9,16 @@ github_username:  dotneteer
 
 # Build settings
 markdown: kramdown
-theme: jekyll-theme-minimal
+theme: jekyll-theme-slate
 plugins:
   - jekyll-feed
 
 collections:  
   category:
     output: true
+
+sass:
+    sass_dir: _sass
 
 defaults:
   -

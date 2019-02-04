@@ -590,6 +590,9 @@ Small Device Styles
     min-width: 240px;
     max-width: 320px;
     font-size: 11px; } }
+.mystyle {
+  background: white; }
+
 body {
   font-family: 'Lato', sans-serif;
   font-size: 18px;
