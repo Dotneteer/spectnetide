@@ -590,11 +590,15 @@ Small Device Styles
     min-width: 240px;
     max-width: 320px;
     font-size: 11px; } }
+html {
+  margin: 0; }
+
 body {
   font-family: 'Lato', sans-serif;
   font-size: 18px;
   font-weight: 400;
-  color: #202020; }
+  color: #202020;
+  margin: 0; }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Roboto', sans-serif;
@@ -652,8 +656,42 @@ li {
     letter-spacing: 1px;
     word-spacing: 4px; }
 
+.menu-header-wrap {
+  width: 100%;
+  background: #00A0B0; }
+
+.menu-bar {
+  display: flex;
+  max-width: 1024px;
+  margin: 0 auto; }
+
+.menu-item {
+  padding: 4px 12px;
+  cursor: pointer;
+  color: #E9F2F9; }
+  .menu-item a {
+    text-decoration: none;
+    color: #E9F2F9;
+    font-weight: bold; }
+  .menu-item:hover {
+    background: #3B8183; }
+
+.page-footer-wrap {
+  width: 100%;
+  background: #1B325F; }
+
+.footer-inner {
+  max-width: 1024px;
+  padding: 8px 10px;
+  margin: 0 auto; }
+
+footer p {
+  margin: 0; }
+
 .main-content-wrap {
   background: #eeeeee; }
+  .main-content-wrap.first {
+    padding-top: 12px; }
   .main-content-wrap.even {
     background: #dddddd; }
 

@@ -16,14 +16,26 @@
 
     <!-- HEADER -->
     <div class="page-header-wrap">
-        <header class="header-inner">
-          <h1>{{ site.title | default: site.github.repository_name }}</h1>
-          <h4>{{ site.description | default: site.github.project_tagline }}</h2>
-        </header>
+      <header class="header-inner">
+        <h1>{{ site.title | default: site.github.repository_name }}</h1>
+        <h4>{{ site.description | default: site.github.project_tagline }}</h2>
+      </header>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-header-wrap">
+      <div class="menu-bar">
+        <span class="menu-item"><a>Getting Started</a></span>
+        <span class="menu-item"><a>Documents</a></span>
+        <span class="menu-item"><a>ZX Spectrum</a></span>
+        <span class="menu-item">
+          <a target="_blank" href="https://github.com/Dotneteer/spectnetide">GitHub</a>
+        </span>
+      </div>
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="main-content-wrap">
+    <div class="main-content-wrap first">
       <section class="main-columns">
         <section class="feature-part">
           <div class="left">
@@ -241,8 +253,8 @@
     </div>
 
     <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
+    <div class="page-footer-wrap">
+      <footer class="footer-inner">
         <p>&copy; Istvan Novak, 2016-2019</p>
       </footer>
     </div>
