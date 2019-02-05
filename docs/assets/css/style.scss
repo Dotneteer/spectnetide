@@ -45,6 +45,11 @@ $pastel-grey-color: #eeeeee;
 $darker-grey-color: #dddddd;
 $font-grey-color: #202020;
 
+// --- Width
+$full-width: 1184px;
+$aside-width: 256px;
+$main-width: 928px;
+
 // ============================================================================
 // General HTML tags
 
@@ -106,7 +111,7 @@ ul {
     padding-inline-start: 40px;
 }
 
-li {
+ul > li {
   list-style-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjEycHgiIGhlaWdodD0iMTJweCIgdmlld0JveD0iMCAwIDEyIDEyIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjYuMSAoMjYzMTMpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPjE0NjI5OTgwOTVfaWNfYXJyb3dfYmFja180OHB4PC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IjE0NjI5OTgwOTVfaWNfYXJyb3dfYmFja180OHB4IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2LjAwMDAwMCwgNi4wMDAwMDApIHJvdGF0ZSgxODAuMDAwMDAwKSB0cmFuc2xhdGUoLTYuMDAwMDAwLCAtNi4wMDAwMDApIHRyYW5zbGF0ZSgtMy4wMDAwMDAsIC0zLjAwMDAwMCkiPgogICAgICAgICAgICA8cGF0aCBkPSJNLTUuMzI5MDcwNTJlLTE1LDAgTDE4LDAgTDE4LDE4IEwtNS4zMjkwNzA1MmUtMTUsMTggTC01LjMyOTA3MDUyZS0xNSwwIFoiIGlkPSJTaGFwZSI+PC9wYXRoPgogICAgICAgICAgICA8cGF0aCBkPSJNMTUsOC4yNSBMNS44NzI1LDguMjUgTDEwLjA2MTI1LDQuMDYxMjUgTDksMyBMMyw5IEw5LDE1IEwxMC4wNjEyNSwxMy45Mzg3NSBMNS44NzI1LDkuNzUgTDE1LDkuNzUgTDE1LDguMjUgTDE1LDguMjUgWiIgaWQ9IlNoYXBlIiBmaWxsPSIjNDY0NjQ2Ij48L3BhdGg+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=);
 }
 
@@ -119,7 +124,7 @@ li {
 }
 
 .header-inner {
-    max-width: 1024px;
+    max-width: $full-width;
     padding: 40px 10px;
     margin: 0 auto;
 
@@ -140,7 +145,7 @@ li {
 
 .menu-bar {
   display: flex;
-  max-width: 1024px;
+  max-width: $full-width;
   margin: 0 auto;
 }
 
@@ -148,6 +153,10 @@ li {
   padding: 4px 12px;
   cursor: pointer;
   color: $threadless-box-color;
+
+  &.active {
+    background: $unreal-food-color;
+  }
 
   & a {
     text-decoration: none;
@@ -166,14 +175,17 @@ li {
 }
 
 .footer-inner {
-  max-width: 1024px;
+  max-width: $full-width;
   padding: 8px 10px;
   margin: 0 auto;
 }
 
 footer p {
   margin: 0;
+  letter-spacing: 1px;
+  word-spacing: 4px;
 }
+
 .main-content-wrap {
   background: $pastel-grey-color;
 
@@ -184,10 +196,6 @@ footer p {
   &.even {
     background: $darker-grey-color;
   }
-
-  &.odd {
-
-  }
 }
 
 .main-columns {
@@ -195,8 +203,8 @@ footer p {
   flex-direction: column;
   flex-grow: 0;
   position: relative;
-  width: 1024px;
-  padding: 20px 10px;
+  width: $full-width;
+  padding: 20px 0px;
   margin: 0 auto;
 }
 
@@ -239,141 +247,123 @@ footer p {
 }
 
 // ============================================================================
-// Generic section on pages
-#header_wrap, #footer_wrap {
-  background: #1B325F;
+// Document list area
+
+.page-title-area {
+  margin-bottom: 12px;
+
+  & h2 {
+    color: $threadless-yay-color;
+  }
+
+  & p {
+    font-weight: normal;
+    font-size: 20px;
+    font-weight: bold;
+  }
 }
 
-#header_wrap img {
-  padding: 0;
-  border: none;
-  box-shadow: none;
-  margin-right: 18px;
-  height: 98px;
-  width: 98px;
-}
-
-#main_content_wrap {
-  background: #F8F4E4;
-}
-
-.outer {
-  background: #1B325F;
-}
-
-.inner {
+.page-content-area {
   display: flex;
   flex-direction: row;
-  flex-grow: 0;
-  position: relative;
-  max-width: 1024px;
-  padding: 20px 10px;
-  margin: 0 auto;
-}
-
-#header_wrap .inner {
-  padding: 10px;
-}
-
-.header_parts {
-  display: flex;
-  flex-direction: row;
-  margin-top: 12px;
-}
-
-.main-area {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 0;
-  width: 768px;
 }
 
 .content-separator {
-  border-top: 2px dotted #FAD3B2;
-  margin: 0px 192px 12px 192px;
+  border-top: 2px dotted $threadless-yay-color;
+}
+
+.document-list {
+  display: flex;
+  flex-direction: column;
+  width: $aside-width;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-top: 12px;
+
+  & a {
+    text-decoration: none;
+    padding: 6px 0;
+    color: $threadless-color;
+    line-height: 20px;
+  }
+
+  & a.active {
+    color: $what-i-believe-color;
+  }
+
+  & a.last {
+    border: none;
+  }
+
+  & a:hover {
+    color: $threadless-yay-color;
+  }
+
 }
 
 // ============================================================================
-// Sidebar area
+// Document area
 
-.sidebar {
-  width: 256px;
-  padding-left: 24px;
-  flex-shrink: 0;
+.main-area {
+  flex-grow: 0;
+  width: $main-width;
+  background: $threadless-box-color;
+
+  & h1 {
+      text-transform: uppercase;
+    font-size: 24px;
+  }
 }
 
-.post-area {
-  display: block;
+.main-title-area {
+  background: $walls-color;
+
+  & h1 {
+    padding: 8px 18px;
+    margin-top: 0;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    font-size: 24px;
+  }
 }
 
-.post-title {
-  color: #20a0ff;
-}
+.main-content-area {
+  padding-left: 18px;
+  padding-right: 18px;
 
-.links-top {
-  margin-bottom: 24px;
-}
+  & h2 {
+    margin-top: 0;
+    font-size: 20px;
+  }
 
-.links-bottom {
-  margin-top: 24px;
-  margin-bottom: 24px;
-}
+  & img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    margin-top: 18px;
+    margin-bottom: 18px;
 
-.link-right {
-  text-align: right;
-}
+    .small {
+      width: 100%;
+    }
+  }
 
-.read-more {
-  margin-bottom: 18px;
-}
+  & button.scroll {
+    padding: 0;
+    outline: none;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 20px;
+    color: $threadless-yay-color;
+    cursor: pointer;
+  }
 
-.note {
-  background-color: #FAD3B2;
-  padding: 8px 12px;
-}
+  & .scroll-top {
+    margin-bottom: 16px;
 
-.post-attrs {
-  display: flex;
-  background: #FAD3B2;
-  padding: 4px 8px;
-  margin-bottom: 24px;
-}
-
-.post-label {
-  font-weight: bold;
-  margin-right: 12px;
-  text-transform: uppercase;
-}
-
-.post-value {
-  margin-right: 18px;
-  text-transform: uppercase;
-}
-
-.sidebar {
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-title {
-  color: #2B4E72;
-  margin-top: 6px;
-  margin-bottom: 6px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.sidebar-list {
-  list-style: none;
-  padding-left: 0px;
-  margin-left: 0px;
-}
-.post-list-item {
-  padding-left: 0px;
-  margin-left: 0px;
-  font-size: 0.9em;
-  line-height: 1.2em;
-  margin-bottom: 8px;
+  }
 }
 
 // ============================================================================

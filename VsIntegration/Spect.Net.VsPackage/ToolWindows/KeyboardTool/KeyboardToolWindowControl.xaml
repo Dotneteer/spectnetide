@@ -66,7 +66,7 @@
             <keyboardTool1:SingleKeyControl 
                 Code="N5"
                 Margin="0,0,18,0"
-                MainKey="5" SShiftKey="%" ExtKey="&#x25C4;" ExtShiftKey="DEF FN" 
+                MainKey="5" SShiftKey="%" ExtKey="&#x25C4;" ExtShiftKey="CLOSE #" 
                 NumericMode="True"
                 ColorKey="CYAN"
                 HasGraphics="true"
@@ -89,7 +89,9 @@
                 ExtShiftKey="ERASE" 
                 HasGraphics="true"
                 GraphicsCode="7"
-                NumericMode="True"/>
+                NumericMode="True"
+                ColorKey="WHITE"
+                NumForeground="#E0E0E0"/>
             <keyboardTool1:SingleKeyControl 
                 Code="N8"
                 Margin="0,0,18,0"

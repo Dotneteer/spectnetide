@@ -50,7 +50,7 @@
                 HasGraphics="true" GraphicsCode="4"/>
                 <local:Single128KeyControl 
                 Code="N5"
-                MainKey="5" NumericMode="True" SShiftKey="%" ExtKey="CYAN" ExtShiftKey="CLOSE" 
+                MainKey="5" NumericMode="True" SShiftKey="%" ExtKey="CYAN" ExtShiftKey="CLOSE #" 
                 HasGraphics="true" GraphicsCode="5"/>
                 <local:Single128KeyControl 
                 Code="N6"
