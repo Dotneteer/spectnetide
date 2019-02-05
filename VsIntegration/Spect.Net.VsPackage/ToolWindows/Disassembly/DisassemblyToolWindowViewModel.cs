@@ -161,6 +161,19 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
 
                 case DisassemblyCommandType.GotoSymbol:
+                    // --- Check the current RAM
+                    var labelAddrs = AnnotationHandler.RamBankAnnotations[0].Labels
+                        .Where(kp =>
+                            string.Compare(kp.Value, parser.Arg1, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        .Select(kp => kp.Key)
+                        .ToList();
+                    if (labelAddrs.Count > 0)
+                    {
+                        // --- Address found in the current ROM
+                        address = (ushort)(labelAddrs[0] + 0x4000);
+                        break;
+                    }
+
                     // --- Check current ROM
                     var curRomIndex = MachineViewModel.SpectrumVm.MemoryDevice.GetSelectedRomIndex();
                     if (RomViewMode)
@@ -168,7 +181,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                         curRomIndex = RomIndex;
                     }
 
-                    var labelAddrs = AnnotationHandler.RomPageAnnotations[curRomIndex].Labels
+                    labelAddrs = AnnotationHandler.RomPageAnnotations[curRomIndex].Labels
                         .Where(kp =>
                             string.Compare(kp.Value, parser.Arg1, StringComparison.InvariantCultureIgnoreCase) == 0)
                         .Select(kp => kp.Key)

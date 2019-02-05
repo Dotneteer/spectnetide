@@ -3,10 +3,10 @@ layout: default
 selector: home
 ---
 
-<div class="main-content-wrap">
-  <section class="main-columns first">
-    <section class="feature-part">
-      <div class="left">
+<div class="ui vertical stripe segment with-content-back as-first">
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="six wide computer column five wide tablet sixteen wide mobile column">
         <h2>Essential Tools</h2>
         <p>
           SpectNet IDE encapsulates the tools you need to develop Z80 Programs
@@ -15,22 +15,19 @@ selector: home
         </p>
         <br />
         <p><a target="_blank" href='https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde'>Download SpectNet IDE</a></p>
-        <p><a target="_blank" href='https://visualstudio.microsoft.com/free-developer-offers/'>Download VS 2017 Community</a></p>
+        <p><a target="_blank" href='https://visualstudio.microsoft.com/free-developer-offers/'>Get VS 2017 Community</a></p>
       </div>
-      <div>
+      <div class="ten wide computer column eleven wide tablet sixteen wide mobile column">
         <img src='./assets/images/features/feature1.png'/>
       </div>
-    </section>
-  </section>
-<div>
+    </div>
+  </div>
+</div>
 
-<div class="main-content-wrap even">
-  <section class="main-columns">
-    <section class="feature-part">
-      <div>
-        <img src='./assets/images/features/feature5.png'/>
-      </div>
-      <div class="right">
+<div class="ui vertical stripe segment with-content-back even">
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="six wide computer column five wide tablet sixteen wide mobile column">
         <h2>ZX Spectrum Project Types</h2>
         <p>
           In Visual Studio, you can create ZX Spectrum projects. SpectNetIde provides two
@@ -41,13 +38,6 @@ selector: home
           the Z80 code of the ROM, games, and other applications. Also, you can create your
           own Z80 assembly programs with the built-in assembler.
         </p>
-      </div>
-    </section>
-    <section class="feature-part">
-      <div>
-        <img src='./assets/images/features/feature5a.png'/>
-      </div>
-      <div class="right">
         <p>
           The ZX Scripting Console App allows you to write C# applications to create scripts
           that control the ZX Spectrum virtual machine. This project type can be used to
@@ -55,14 +45,18 @@ selector: home
           that help you peep into the code that could not be solved otherwise.
         </p>
       </div>
-    </section>
-  </section>
+      <div class="ten wide computer column eleven wide tablet sixteen wide mobile column">
+        <img src='./assets/images/features/feature5.png'/>
+        <img src='./assets/images/features/feature5a.png'/>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="main-content-wrap">
-  <section class="main-columns">
-    <section class="feature-part">
-      <div class="left">
+<div class="ui vertical stripe segment with-content-back">
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="six wide computer column five wide tablet sixteen wide mobile column">
         <h2>ZX Spectrum Emulator</h2>
         <p>
           The built-in ZX Spectrum Emulator allows you to run a virtual machine
@@ -75,22 +69,17 @@ selector: home
           virtual machine, moreover, you can store these files as a part of your project.
         </p>
       </div>
-      <div>
+      <div class="ten wide computer column eleven wide tablet sixteen wide mobile column">
         <img src='./assets/images/features/feature2.png'/>
       </div>
-    </section>
-  </section>
+    </div>
+  </div>
 </div>
 
-<div class="main-content-wrap even">
-  <section class="main-columns">
-    <section class="feature-part">
-      <div>
-        <img src='./assets/images/features/feature3.png'/>
-        <br/>
-        <img src='./assets/images/features/feature4.png'/>
-      </div>
-      <div class="right">
+<div class="ui vertical stripe segment with-content-back even">
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="six wide computer column five wide tablet sixteen wide mobile column">
         <h2>Z80 Disassembly</h2>
         <p>
           The built-in Z80 Disassembler has many unique features that only SpectNetIDE provides.
@@ -110,14 +99,18 @@ selector: home
           model, including ZX Spectrum 48K, +128, and +3E.
         </p>
       </div>
-    </section>
-  </section>
+      <div class="ten wide computer column eleven wide tablet sixteen wide mobile column">
+        <img src='./assets/images/features/feature3.png'/>
+        <img src='./assets/images/features/feature4.png'/>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="main-content-wrap">
-  <section class="main-columns">
-    <section class="feature-part">
-      <div class="left">
+<div class="ui vertical stripe segment with-content-back">
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="six wide computer column five wide tablet sixteen wide mobile column">
         <h2>Debugging tools</h2>
         <p>
           Creating and analyzing code is in the heart of SpectNetIDE. The environment provides many
@@ -127,22 +120,6 @@ selector: home
           When stepping through code, you can immediately get information about the number of T-cycles
           spent between to stops, as well as the clock cycles wasted for contended memory access.
         </p>
-        <p>
-          As your code runs, you can check what the ULA does: you know which pixel of the screen
-          is being rendered, as well the number of raster line and operation the ULA is working on.
-        </p>
-      </div>
-      <div>
-        <img src='./assets/images/features/feature8.png'/>
-      </div>
-    </section>
-    <section class="feature-part">
-      <div>
-        <img src='./assets/images/features/feature6.png'/>
-        <br/>
-        <img src='./assets/images/features/feature7.png'/>
-      </div>
-      <div class="right">
         <p>
           With the help of the Disassembly tool window, you can set up simple breakpoints, and
           even define conditions to pause the execution flow.
@@ -157,14 +134,19 @@ selector: home
           the program does.
         </p>
       </div>
-    </section>
-  </section>
+      <div class="ten wide computer column eleven wide tablet sixteen wide mobile column">
+        <img src='./assets/images/features/feature8.png'/>
+        <img src='./assets/images/features/feature6.png'/>
+        <img src='./assets/images/features/feature7.png'/>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="main-content-wrap even">
-  <section class="main-columns">
-    <section class="feature-part">
-      <div class="left">
+<div class="ui vertical stripe segment with-content-back even">
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="six wide computer column five wide tablet sixteen wide mobile column">
         <h2>Full-blown Z80 assembly programming</h2>
         <p>
           SpectNetIde provides you a robust Z80 assembler with many useful features.
@@ -176,13 +158,6 @@ selector: home
           <li>Loops and conditional statements</li>
           <li>Powerful dynamic macros</li>
         </ul>
-      </div>
-      <div>
-        <img src='./assets/images/features/feature10.png'/>
-      </div>
-    </section>
-    <section class="feature-part">
-      <div>
         <p>
             You can set up breakpoint in the source code. When the execution flow
             reaches one of them, the corresponding source code is displayed. The Debug,
@@ -194,14 +169,18 @@ selector: home
             be immediately LOADed into ZX Spectrum — with optional auto start support.
         </p>
       </div>
-    </section>
-  </section>
+      <div class="ten wide computer column eleven wide tablet sixteen wide mobile column">
+        <img src='./assets/images/features/feature10.png'/>
+        <img src='./assets/images/features/feature10a.png'/>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="main-content-wrap">
-  <section class="main-columns">
-    <section class="feature-part">
-      <div>
+<div class="ui vertical stripe segment with-content-back">
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="sixteen wide column">
         <h2>... And many others</h2>
         <ul>
           <li>Two types of ZX Spectrum keyboards</li>
@@ -212,6 +191,6 @@ selector: home
           <li>Virtual floppy devices and disks for ZX Spectrum +3E</li>
         </ul>
       </div>
-    </section>
-  </section>
+    </div>
+  </div>
 </div>
