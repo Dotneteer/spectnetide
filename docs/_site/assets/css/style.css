@@ -26,16 +26,33 @@ pre, code {
   font-family: "Roboto Mono", monospace;
   font-size: 16px; }
 
+table {
+  border-collapse: collapse;
+  border: 1px solid #1B325F;
+  margin: 18px 0; }
+
+th, td {
+  text-align: left;
+  font-size: 18px; }
+
 th {
-  background: #1B325F; }
+  padding: 8px 8px;
+  background: #1B325F;
+  color: #E9F2F9; }
 
 td {
+  padding: 4px 4px;
   border: 1px dotted #1B325F;
   background: #F2E9E1; }
 
 img {
   border: none;
   padding: 0; }
+
+blockquote {
+  background: #FAD089;
+  margin: 0;
+  padding: 8px 12px; }
 
 .ui.vertical.segment.with-header-back {
   background: #1B325F; }
@@ -98,7 +115,7 @@ h3.ui.header {
     background: #dddddd; }
   .ui.vertical.segment.with-content-back .ui.container {
     margin-bottom: 24px; }
-  .ui.vertical.segment.with-content-back h2 {
+  .ui.vertical.segment.with-content-back h2.feature {
     text-transform: uppercase;
     font-size: 24px;
     color: #FA6900; }
@@ -133,20 +150,6 @@ h3.ui.header {
       font-size: 20px;
       font-weight: 300;
       line-height: 28px; }
-
-button.scroll {
-  padding: 0;
-  outline: none;
-  border: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 18px;
-  font-weight: bold;
-  color: #3A89C9;
-  cursor: pointer; }
-
-.scroll-top {
-  margin-bottom: 16px; }
 
 footer p {
   margin: 0;
@@ -195,13 +198,16 @@ footer p {
 
 .ui.vertical.segment.with-content-back .page-title-area {
   margin-bottom: 12px; }
-  .ui.vertical.segment.with-content-back .page-title-area h2 {
+  .ui.vertical.segment.with-content-back .page-title-area h2, .ui.vertical.segment.with-content-back .page-title-area h3, .ui.vertical.segment.with-content-back .page-title-area h4, .ui.vertical.segment.with-content-back .page-title-area h5, .ui.vertical.segment.with-content-back .page-title-area h6 {
     color: #3A89C9;
     text-transform: none; }
   .ui.vertical.segment.with-content-back .page-title-area p {
     font-weight: normal;
     font-size: 18px;
     font-weight: bold; }
+.ui.vertical.segment.with-content-back h2, .ui.vertical.segment.with-content-back h3, .ui.vertical.segment.with-content-back h4 {
+  color: #3A89C9;
+  text-transform: none; }
 .ui.vertical.segment.with-content-back .ui.grid .document-list {
   display: flex;
   flex-direction: column;
@@ -236,10 +242,14 @@ footer p {
 .ui.vertical.segment.with-content-back .main-content-area {
   padding-left: 4px;
   padding-right: 4px; }
+  .ui.vertical.segment.with-content-back .main-content-area ol {
+    padding-left: 1em;
+    margin-left: 6px; }
   .ui.vertical.segment.with-content-back .main-content-area ol > li {
     font-size: 18px;
     font-weight: 400;
-    margin-bottom: 8px; }
+    margin-bottom: 8px;
+    padding-left: 1em; }
   .ui.vertical.segment.with-content-back .main-content-area p {
     font-size: 18px;
     font-weight: 400; }
@@ -255,8 +265,6 @@ footer p {
     text-decoration: underline; }
 .ui.vertical.segment.with-content-back img {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
   max-width: 100%;
   margin-top: 24px;
   margin-bottom: 24px; }
@@ -266,7 +274,8 @@ footer p {
 code {
   background-color: #F2E9E1;
   box-shadow: none;
-  font-size: 18px; }
+  font-size: 18px;
+  padding: 0 4px; }
 
 pre {
   background-color: #F2E9E1; }

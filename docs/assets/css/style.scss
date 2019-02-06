@@ -85,18 +85,38 @@ pre, code {
   font-size: 16px;
 }
 
+table {
+  border-collapse: collapse;
+  border: 1px solid $threadless-color;
+  margin: 18px 0;
+}
+
+th, td {
+  text-align: left;
+  font-size: 18px;
+}
+
 th {
-  background: #1B325F;
+  padding: 8px 8px;
+  background: $threadless-color;
+  color: $threadless-box-color;
 }
 
 td {
-  border: 1px dotted #1B325F;
+  padding: 4px 4px;
+  border: 1px dotted $threadless-color;
   background: #F2E9E1;
 }
 
 img {
   border: none;
   padding: 0;
+}
+
+blockquote {
+  background: $walls-color;
+  margin: 0;
+  padding: 8px 12px;
 }
 
 // ============================================================================
@@ -190,7 +210,7 @@ h3.ui.header {
     margin-bottom: 24px;
   }
 
-  & h2 {
+  & h2.feature {
     text-transform: uppercase;
     font-size: 24px;
     color: $unreal-food-color;
@@ -234,23 +254,6 @@ h3.ui.header {
       line-height: 28px;
     }
   }
-
-}
-
-button.scroll {
-  padding: 0;
-  outline: none;
-  border: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 18px;
-  font-weight: bold;
-  color: $threadless-yay-color;
-  cursor: pointer;
-}
-
-.scroll-top {
-  margin-bottom: 16px;
 
 }
 
@@ -312,7 +315,7 @@ footer p {
   .page-title-area {
     margin-bottom: 12px;
 
-    & h2 {
+    & h2, h3, h4, h5, h6 {
       color: $threadless-yay-color;
       text-transform: none;
     }
@@ -322,6 +325,11 @@ footer p {
       font-size: 18px;
       font-weight: bold;
     }
+  }
+
+  & h2, h3, h4 {
+    color: $threadless-yay-color;
+    text-transform: none;
   }
 
   .ui.grid {
@@ -378,10 +386,17 @@ footer p {
     padding-left: 4px;
     padding-right: 4px;
 
+    & ol {
+      //padding-inline-start: 18px;
+      padding-left: 1em;
+      margin-left: 6px;
+    }
+    
     & ol > li {
       font-size: 18px;
       font-weight: 400;
       margin-bottom: 8px; 
+      padding-left: 1em;
     }
   
     & p {
@@ -406,8 +421,6 @@ footer p {
 
   & img {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
     max-width: 100%;
     margin-top: 24px;
     margin-bottom: 24px;
@@ -425,6 +438,7 @@ code {
   background-color: #F2E9E1;
   box-shadow: none;
   font-size: 18px;
+  padding: 0 4px;
 }
 
 pre {

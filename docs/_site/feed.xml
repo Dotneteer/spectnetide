@@ -1,4 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-06T08:35:05+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Create a BASIC Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-basic-program" rel="alternate" type="text/html" title="Create a BASIC Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-basic-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-basic-program">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Create a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-z80-program" rel="alternate" type="text/html" title="Create a Z80 Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-z80-program">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Create a ZX Spectrum 48K Project</title><link href="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project" rel="alternate" type="text/html" title="Create a ZX Spectrum 48K Project" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-zx-spectrum-project</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Create Watch Expressions</title><link href="http://localhost:4000/spectnetide/getting-started/create-watch-expressions" rel="alternate" type="text/html" title="Create Watch Expressions" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-watch-expressions</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-watch-expressions">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Debug Machine Code</title><link href="http://localhost:4000/spectnetide/getting-started/debug-machine-code" rel="alternate" type="text/html" title="Debug Machine Code" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/debug-machine-code</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/debug-machine-code">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Display Memory Contents</title><link href="http://localhost:4000/spectnetide/getting-started/display-memory-contents" rel="alternate" type="text/html" title="Display Memory Contents" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/display-memory-contents</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/display-memory-contents">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Export a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/export-a-z80-program" rel="alternate" type="text/html" title="Export a Z80 Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/export-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/export-a-z80-program">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Install SpectNetIDE</title><link href="http://localhost:4000/spectnetide/getting-started/install-spectnetide" rel="alternate" type="text/html" title="Install SpectNetIDE" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/install-spectnetide</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/install-spectnetide">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-06T11:07:52+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Create a BASIC Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-basic-program" rel="alternate" type="text/html" title="Create a BASIC Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-basic-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-basic-program">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Create a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-z80-program" rel="alternate" type="text/html" title="Create a Z80 Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-z80-program">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Create a ZX Spectrum 48K Project</title><link href="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project" rel="alternate" type="text/html" title="Create a ZX Spectrum 48K Project" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-zx-spectrum-project</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project">&lt;ol&gt;
+  &lt;li&gt;Run the &lt;strong&gt;File|New|Project&lt;/strong&gt; command (Ctrl+Shift+N), select the &lt;strong&gt;ZX Spectrum&lt;/strong&gt; tab and choose
+the &lt;strong&gt;ZX Spectrum Code Discovery&lt;/strong&gt; project type. Specify a project name (use &lt;strong&gt;MyFirstDiscovery&lt;/strong&gt;).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/new-zx-spectrum-project.png&quot; alt=&quot;New Zx Spectrum Project&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;The IDE displays a list of available Spectrum models. Select the first Spectrum 48K model
+(PAL - Normal Speed) from the list, and click &lt;strong&gt;Create&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/select-machine-type.png&quot; alt=&quot;Select Spectrum model&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;The IDE creates a new project with a few files and folders:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/solution-structure.png&quot; alt=&quot;Solution Explorer with the new project&quot; /&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;File/Folder&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rom&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;The folder that holds Spectrum ROMs&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rom/ZxSpectrum.spconfig&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;This file stores the configuration information about the selected ZX Spectrum model&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rom/ZxSpectrum48.rom&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;The binary ROM file for the Spectrum 48K model&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rom/ZxSpectrum48.disann&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Disassembly annotations for the Spectrum 48K ROM&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;TapeFiles&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Stores &lt;em&gt;.tzx&lt;/em&gt;, &lt;em&gt;.tap&lt;/em&gt; (and, in the future, other) tape files&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Z80CodeFiles&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;The folder to put your Z80 Assembly code files in&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Z80CodeFiles/Code.z80asm&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;A simple Z80 Assembly code file&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Annotations.disann&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Your custom disassembly annotations are saved into this file&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;As soon as the IDE created the project, you can discover a new top-level menu, 
+&lt;strong&gt;ZX Spectrum IDE&lt;/strong&gt;:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zx-spectrum-menu.png&quot; alt=&quot;ZX Spectrum IDE menu&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;run-the-zx-spectrum-virtual-machine&quot;&gt;Run the ZX Spectrum Virtual Machine&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Run the &lt;strong&gt;ZX Spectrum IDE|ZX Spectrum Emulator&lt;/strong&gt; command. The IDE shows up the emulator tool window.
+As the title of the tool window indicates, the virtual machine is momentarily stopped.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/machine-not-started.png&quot; alt=&quot;The Emulator Tool Window&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;Click the little &lt;em&gt;Play&lt;/em&gt; icon in the toolbar of the emulator to start the virtual machine.
+The ZX Spectrum comes to life. As you resize the tool window, the emulator changes its screen size, 
+accordingly.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/machine-started.png&quot; alt=&quot;Spectrum VM started&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Type the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt;&lt;/strong&gt; command into the emulator. Take care that the emulator window is the active one, receiving the
+keyboard focus, and press the &lt;strong&gt;J&lt;/strong&gt;, and then twice the &lt;strong&gt;Shift+P&lt;/strong&gt; keys again. With pressing &lt;strong&gt;Enter&lt;/strong&gt;, you can execute &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt;&lt;/strong&gt;.
+Th virtual machine starts loading the &lt;code class=&quot;highlighter-rouge&quot;&gt;Welcome.tzx&lt;/code&gt; file.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/machine-loading.png&quot; alt=&quot;Loading a Game&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;When the game has been loaded, type the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RUN&lt;/code&gt;&lt;/strong&gt; command into the emulator (while the emulator window is the active one, press the &lt;strong&gt;R&lt;/strong&gt; key),
+and then, press &lt;strong&gt;Enter&lt;/strong&gt;. The program starts, and displays its message:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-completed.png&quot; alt=&quot;Welcome in action&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You have just scratched the surface! There are many other features you can use in the
+IDE to discover the structure and internals of ZX Spectrum applications.&lt;/p&gt;</content><author><name></name></author><summary type="html">Run the File|New|Project command (Ctrl+Shift+N), select the ZX Spectrum tab and choose the ZX Spectrum Code Discovery project type. Specify a project name (use MyFirstDiscovery).</summary></entry><entry><title type="html">Create Watch Expressions</title><link href="http://localhost:4000/spectnetide/getting-started/create-watch-expressions" rel="alternate" type="text/html" title="Create Watch Expressions" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-watch-expressions</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-watch-expressions">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Debug Machine Code</title><link href="http://localhost:4000/spectnetide/getting-started/debug-machine-code" rel="alternate" type="text/html" title="Debug Machine Code" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/debug-machine-code</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/debug-machine-code">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Display Memory Contents</title><link href="http://localhost:4000/spectnetide/getting-started/display-memory-contents" rel="alternate" type="text/html" title="Display Memory Contents" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/display-memory-contents</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/display-memory-contents">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Export a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/export-a-z80-program" rel="alternate" type="text/html" title="Export a Z80 Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/export-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/export-a-z80-program">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Install SpectNetIDE</title><link href="http://localhost:4000/spectnetide/getting-started/install-spectnetide" rel="alternate" type="text/html" title="Install SpectNetIDE" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/install-spectnetide</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/install-spectnetide">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -36,4 +139,69 @@
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectnetide-in-about.png&quot; alt=&quot;SpectNetIde in About&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;To get familiar with using the ZX Spectrum IDE, take a look at the other tutorials!&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:</summary></entry><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry></feed>
+&lt;p&gt;To get familiar with using the ZX Spectrum IDE, take a look at the other tutorials!&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:</summary></entry><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
+The IDE allows you using two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectrum-48-keyboard.png&quot; alt=&quot;ZX Spectrum 48K keyboard&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectrum-128-keyboard.png&quot; alt=&quot;ZX Spectrum 128K keyboard&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;selecting-the-keyboard-layout&quot;&gt;Selecting the Keyboard Layout&lt;/h2&gt;
+
+&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
+The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.&lt;/p&gt;
+
+&lt;p&gt;By default, SpectNetIDE uses the layout according to your project’s machine type. Nonetheless, you can change these settings in the Tools|Options dialog within the Spect.Net IDE tab. The Keyboard Tool section contains two configuration properties.
+The Keyboard layout allows you to select from the Default, Spectrum48, and Spectrum128 values. Depending on your monitor type, the original layout size may not display very well on the screen. With the Keyboard display mode property, you can change the OriginalSize value to Fit. This setting automatically resizes the keyboard as you change the size of the Keyboard tool window.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/keyboard-options.png&quot; alt=&quot;ZX Spectrum keyboard options&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;keystrokes&quot;&gt;Keystrokes&lt;/h2&gt;
+
+&lt;p&gt;To press a key in the tool window, move the mouse over the part of a particular key you want to enter and click the mouse. The tool window senses which part of the key you clicked and emulates that keystroke, applying &lt;code class=&quot;highlighter-rouge&quot;&gt;CAPS SHIFT&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SYMBOL SHIFT&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;EXTENDED MODE&lt;/code&gt;, as required.&lt;/p&gt;
+
+&lt;h3 id=&quot;normal-keystroke&quot;&gt;Normal keystroke&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/normal-keystroke-48.png&quot; alt=&quot;Normal keystroke 48K&quot; /&gt;
+&lt;img src=&quot;/spectnetide/assets/images/tutorials/normal-keystroke-128.png&quot; alt=&quot;Normal keystroke 128K&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The left and right mouse buttons emulate different keystroke. The left button enters the key normally, the right button imitates entering the key with &lt;code class=&quot;highlighter-rouge&quot;&gt;CAPS SHIFT&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;sym-shift-keystroke&quot;&gt;SYM SHIFT keystroke&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/sym-shift-keystroke-48.png&quot; alt=&quot;SYM SHIFT keystroke 48K&quot; /&gt;
+&lt;img src=&quot;/spectnetide/assets/images/tutorials/sym-shift-keystroke-128.png&quot; alt=&quot;SYM SHIFT keystroke 128K&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;extended-mode-keystroke&quot;&gt;EXTENDED MODE keystroke&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/ext-mode-keystroke-48.png&quot; alt=&quot;EXTENDED MODE keystroke 48K&quot; /&gt;
+&lt;img src=&quot;/spectnetide/assets/images/tutorials/ext-mode-keystroke-128.png&quot; alt=&quot;EXTENDED MODE keystroke 128K&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;extended-mode--shift-keystroke&quot;&gt;EXTENDED MODE + SHIFT keystroke&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/ext-shift-keystroke-48.png&quot; alt=&quot;EXTENDED MODE shift keystroke 48K&quot; /&gt;
+&lt;img src=&quot;/spectnetide/assets/images/tutorials/ext-shift-keystroke-128.png&quot; alt=&quot;EXTENDED MODE shift keystroke 128K&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;colors&quot;&gt;Colors&lt;/h3&gt;
+
+&lt;p&gt;The 0…7 keys have a function to change the color of ink and/or paper. For example, key 5 sets the color to &lt;code class=&quot;highlighter-rouge&quot;&gt;CYAN&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/color-keystroke-48.png&quot; alt=&quot;Color keystroke 48K&quot; /&gt;
+&lt;img src=&quot;/spectnetide/assets/images/tutorials/color-keystroke-128.png&quot; alt=&quot;Color keystroke 128K&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The left mouse button sets the paper color, while the right mouse button modifies the ink color.&lt;/p&gt;
+
+&lt;h3 id=&quot;graphic-symbols&quot;&gt;Graphic symbols&lt;/h3&gt;
+
+&lt;p&gt;The 1…8 keys allow you to enter graphic symbols. Click the particular symbol to emulate the keystroke – left and right buttons work the same way.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/graphic-keystroke-48.png&quot; alt=&quot;Graphic keystroke 48K&quot; /&gt;
+&lt;img src=&quot;/spectnetide/assets/images/tutorials/graphic-keystroke-128.png&quot; alt=&quot;Graphic keystroke 128K&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: On specific computers – depending on the amount of free RAM and CPU load – you may experience that entering graphic symbols sometimes fails, or the keyboard does not return the letter mode. In such a situation, click the GRAPHICS function (above key 9) and then to the digit beside the appropriate graphic symbol.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;using-the-physical-and-virtual-keyboards-together&quot;&gt;Using the Physical and Virtual Keyboards Together&lt;/h2&gt;
+
+&lt;p&gt;You can use the physical keyboard to type into the ZX Spectrum emulator only when the emulator tool window has the keyboard focus. When you apply keystrokes in the Keyboard tool, that window receives the focus. So to be able to use the physical keyboard again, click the ZX Spectrum emulator to shift the focus.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier. The IDE allows you using two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.</summary></entry></feed>

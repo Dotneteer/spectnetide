@@ -182,7 +182,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             if (!GetModeValue(out var modeVal)) return false;
             if ((modeVal & 0x02) != 0) return false;
 
-            QueueKeyStroke(1, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
+            QueueKeyStroke(2, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
             await Task.Delay(RefreshPeriod*2);
             return true;
         }
@@ -196,13 +196,13 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             if (!GetModeValue(out var modeVal)) return false;
             if ((modeVal & 0x02) == 0) return false;
 
-            QueueKeyStroke(1, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
+            QueueKeyStroke(2, SpectrumKeyCode.N9, SpectrumKeyCode.CShift);
             await Task.Delay(RefreshPeriod*2);
             return true;
         }
 
         /// <summary>
-        /// Sets the keyboard in Exteded mode
+        /// Sets the keyboard in Extended mode
         /// </summary>
         private async Task SetExtendedModeAsync()
         {
