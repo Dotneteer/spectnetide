@@ -8,6 +8,7 @@ twitter_username: istvannovak
 github_username:  dotneteer
 
 # Build settings
+
 markdown: kramdown
 theme: jekyll-theme-slate
 plugins:

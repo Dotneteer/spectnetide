@@ -14,8 +14,8 @@ selector: home
           Studio 2017 and 2019 <em>(soon)</em> IDE, including the free Community editions.
         </p>
         <br />
-        <p><a target="_blank" href='https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde'>Download SpectNet IDE</a></p>
-        <p><a target="_blank" href='https://visualstudio.microsoft.com/free-developer-offers/'>Get VS 2017 Community</a></p>
+        <p><a class="button-like" target="_blank" href='https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde'>Download SpectNet IDE</a></p>
+        <p><a class="button-like" target="_blank" href='https://visualstudio.microsoft.com/free-developer-offers/'>Get VS 2017 Community</a></p>
       </div>
       <div class="ten wide computer column eleven wide tablet sixteen wide mobile column">
         <img src='./assets/images/features/feature1.png'/>
