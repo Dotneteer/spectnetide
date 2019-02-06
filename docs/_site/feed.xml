@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-06T14:51:45+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Create a BASIC Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-basic-program" rel="alternate" type="text/html" title="Create a BASIC Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-basic-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-basic-program">&lt;p&gt;In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-06T18:04:46+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Create a BASIC Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-basic-program" rel="alternate" type="text/html" title="Create a BASIC Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-basic-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-basic-program">&lt;p&gt;In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.&lt;/p&gt;
 
 &lt;p&gt;Here, you will create and run a simple BASIC program. Although you can use the keyboard of the PC to enter a program — provided, the ZX Spectrum Emulator window has the focus — if you’re not familiar with the Spectrum keys and BASIC editor, it may frustrate you while entering the code. To avoid such chaffing, use the ZX Spectrum Keyboard tool window to enter the program.&lt;/p&gt;
 
@@ -375,7 +375,29 @@ injects the binary code, and runs it:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/exported-code-in-project.png&quot; alt=&quot;Exported Z80 code in project&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;You have many other options to export your code, I will explain them in another tutorial.&lt;/p&gt;</content><author><name></name></author><summary type="html">After you created your Z80 Assembler program, you can easily export it into a .TAP or .TZX file so that you could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum (with the help of TZXDuino or CASDuino hardware).</summary></entry><entry><title type="html">Install SpectNetIDE</title><link href="http://localhost:4000/spectnetide/getting-started/install-spectnetide" rel="alternate" type="text/html" title="Install SpectNetIDE" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/install-spectnetide</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/install-spectnetide">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:&lt;/p&gt;
+&lt;p&gt;You have many other options to export your code, I will explain them in another tutorial.&lt;/p&gt;</content><author><name></name></author><summary type="html">After you created your Z80 Assembler program, you can easily export it into a .TAP or .TZX file so that you could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum (with the help of TZXDuino or CASDuino hardware).</summary></entry><entry><title type="html">Fast (Instant) LOAD</title><link href="http://localhost:4000/spectnetide/getting-started/fast-load" rel="alternate" type="text/html" title="Fast (Instant) LOAD" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/fast-load</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/fast-load">&lt;p&gt;I like the retro feeling of the ZX Spectrum border stripes when a program is being loaded. Today’s kind cannot imagine being patient for three to five minutes while a bigger game gets into the memory from the tape.&lt;/p&gt;
+
+&lt;p&gt;Well, while you develop code, you probably do not the same time as you had in your childhood.&lt;/p&gt;
+
+&lt;p&gt;SpectNetIDE provides an option to load programs instantly. Open the &lt;strong&gt;Tools|Options&lt;/strong&gt; dialog in the Visual Studio IDE, and navigate to the &lt;strong&gt;Spect.Net IDE&lt;/strong&gt; tab. Under the &lt;strong&gt;Virtual machine&lt;/strong&gt; section, you find the &lt;strong&gt;Use Fast Load&lt;/strong&gt; configuration option. Set it to &lt;strong&gt;True&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/use-fast-load.png&quot; alt=&quot;Use fast load&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Setting this option requires that you restart the ZX Spectrum virtual machine – fortunately not your computer :-).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The next time you load a program, it happens instantly.&lt;/p&gt;
+
+&lt;h2 id=&quot;under-the-hood&quot;&gt;Under the Hood&lt;/h2&gt;
+
+&lt;p&gt;SpectNetIDE uses a technique called ROM hooking.&lt;/p&gt;
+
+&lt;p&gt;The virtual machine senses that the execution flow enters into the LOAD routine within the ZX Spectrum ROM (at address &lt;strong&gt;$056C&lt;/strong&gt;), and temporarily suspends the CPU. The virtual machine executes its custom loader subroutine to get the contents of the tape file and injects the code into the memory. Then, it sets the contents of the Z80 CPU’s registers as if the original ROM routine had run successfully, and resumes the CPU as if it just returned from the ROM routine (at address &lt;strong&gt;$05E2&lt;/strong&gt;).&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Fast load does not work with programs that dodge the LOAD routine in the ROM, e.g., the ones which use custom loaders. In such cases, turn off fast loading.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">I like the retro feeling of the ZX Spectrum border stripes when a program is being loaded. Today’s kind cannot imagine being patient for three to five minutes while a bigger game gets into the memory from the tape.</summary></entry><entry><title type="html">Install SpectNetIDE</title><link href="http://localhost:4000/spectnetide/getting-started/install-spectnetide" rel="alternate" type="text/html" title="Install SpectNetIDE" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/install-spectnetide</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/install-spectnetide">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -413,69 +435,31 @@ injects the binary code, and runs it:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectnetide-in-about.png&quot; alt=&quot;SpectNetIde in About&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;To get familiar with using the ZX Spectrum IDE, take a look at the other tutorials!&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:</summary></entry><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
-The IDE allows you using two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.&lt;/p&gt;
+&lt;p&gt;To get familiar with using the ZX Spectrum IDE, take a look at the other tutorials!&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:</summary></entry><entry><title type="html">LOAD a Program</title><link href="http://localhost:4000/spectnetide/getting-started/load-a-program" rel="alternate" type="text/html" title="LOAD a Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/load-a-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/load-a-program">&lt;p&gt;You can load a program from the tape into the memory with the &lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectrum-48-keyboard.png&quot; alt=&quot;ZX Spectrum 48K keyboard&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;As a part of your project, you can add tape files with standard &lt;code class=&quot;highlighter-rouge&quot;&gt;.TAP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.TZX&lt;/code&gt; format. When the IDE creates a new ZX Spectrum project, it adds a sample tape file, &lt;code class=&quot;highlighter-rouge&quot;&gt;Welcome.tzx&lt;/code&gt;; it puts it into the &lt;code class=&quot;highlighter-rouge&quot;&gt;TapeFiles&lt;/code&gt; folder. With the Add Existing Item command of Visual Studio, you can attach more tape files to the project. The virtual machine – that runs the ZX Spectrum Emulator – can work only with a single tape file at a time. To load that one – called the default tape –, follow these steps:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectrum-128-keyboard.png&quot; alt=&quot;ZX Spectrum 128K keyboard&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;In Solution Explorer, select the tape file you want to attach to the virtual machine.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Right-click the &lt;strong&gt;Set as default tape file&lt;/strong&gt; command:&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;h2 id=&quot;selecting-the-keyboard-layout&quot;&gt;Selecting the Keyboard Layout&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/set-default-tape-file.png&quot; alt=&quot;Set default tape&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
-The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.&lt;/p&gt;
+&lt;p&gt;The IDE marks the default tape file with bold typeface.&lt;/p&gt;
 
-&lt;p&gt;By default, SpectNetIDE uses the layout according to your project’s machine type. Nonetheless, you can change these settings in the Tools|Options dialog within the Spect.Net IDE tab. The Keyboard Tool section contains two configuration properties.
-The Keyboard layout allows you to select from the Default, Spectrum48, and Spectrum128 values. Depending on your monitor type, the original layout size may not display very well on the screen. With the Keyboard display mode property, you can change the OriginalSize value to Fit. This setting automatically resizes the keyboard as you change the size of the Keyboard tool window.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/default-tape-file-set.png&quot; alt=&quot;Default tape file set&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/keyboard-options.png&quot; alt=&quot;ZX Spectrum keyboard options&quot; /&gt;&lt;/p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Next time you enter the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt;&lt;/strong&gt; statement, the virtual machine will play the newly selected tape file.&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;h2 id=&quot;keystrokes&quot;&gt;Keystrokes&lt;/h2&gt;
-
-&lt;p&gt;To press a key in the tool window, move the mouse over the part of a particular key you want to enter and click the mouse. The tool window senses which part of the key you clicked and emulates that keystroke, applying &lt;code class=&quot;highlighter-rouge&quot;&gt;CAPS SHIFT&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SYMBOL SHIFT&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;EXTENDED MODE&lt;/code&gt;, as required.&lt;/p&gt;
-
-&lt;h3 id=&quot;normal-keystroke&quot;&gt;Normal keystroke&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/normal-keystroke-48.png&quot; alt=&quot;Normal keystroke 48K&quot; /&gt;
-&lt;img src=&quot;/spectnetide/assets/images/tutorials/normal-keystroke-128.png&quot; alt=&quot;Normal keystroke 128K&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The left and right mouse buttons emulate different keystroke. The left button enters the key normally, the right button imitates entering the key with &lt;code class=&quot;highlighter-rouge&quot;&gt;CAPS SHIFT&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;sym-shift-keystroke&quot;&gt;SYM SHIFT keystroke&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/sym-shift-keystroke-48.png&quot; alt=&quot;SYM SHIFT keystroke 48K&quot; /&gt;
-&lt;img src=&quot;/spectnetide/assets/images/tutorials/sym-shift-keystroke-128.png&quot; alt=&quot;SYM SHIFT keystroke 128K&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;extended-mode-keystroke&quot;&gt;EXTENDED MODE keystroke&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/ext-mode-keystroke-48.png&quot; alt=&quot;EXTENDED MODE keystroke 48K&quot; /&gt;
-&lt;img src=&quot;/spectnetide/assets/images/tutorials/ext-mode-keystroke-128.png&quot; alt=&quot;EXTENDED MODE keystroke 128K&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;extended-mode--shift-keystroke&quot;&gt;EXTENDED MODE + SHIFT keystroke&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/ext-shift-keystroke-48.png&quot; alt=&quot;EXTENDED MODE shift keystroke 48K&quot; /&gt;
-&lt;img src=&quot;/spectnetide/assets/images/tutorials/ext-shift-keystroke-128.png&quot; alt=&quot;EXTENDED MODE shift keystroke 128K&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;colors&quot;&gt;Colors&lt;/h3&gt;
-
-&lt;p&gt;The 0…7 keys have a function to change the color of ink and/or paper. For example, key 5 sets the color to &lt;code class=&quot;highlighter-rouge&quot;&gt;CYAN&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/color-keystroke-48.png&quot; alt=&quot;Color keystroke 48K&quot; /&gt;
-&lt;img src=&quot;/spectnetide/assets/images/tutorials/color-keystroke-128.png&quot; alt=&quot;Color keystroke 128K&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The left mouse button sets the paper color, while the right mouse button modifies the ink color.&lt;/p&gt;
-
-&lt;h3 id=&quot;graphic-symbols&quot;&gt;Graphic symbols&lt;/h3&gt;
-
-&lt;p&gt;The 1…8 keys allow you to enter graphic symbols. Click the particular symbol to emulate the keystroke – left and right buttons work the same way.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/graphic-keystroke-48.png&quot; alt=&quot;Graphic keystroke 48K&quot; /&gt;
-&lt;img src=&quot;/spectnetide/assets/images/tutorials/graphic-keystroke-128.png&quot; alt=&quot;Graphic keystroke 128K&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/pacman-loads.png&quot; alt=&quot;Pacman loads&quot; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: On specific computers – depending on the amount of free RAM and CPU load – you may experience that entering graphic symbols sometimes fails, or the keyboard does not return the letter mode. In such a situation, click the GRAPHICS function (above key 9) and then to the digit beside the appropriate graphic symbol.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;using-the-physical-and-virtual-keyboards-together&quot;&gt;Using the Physical and Virtual Keyboards Together&lt;/h2&gt;
-
-&lt;p&gt;You can use the physical keyboard to type into the ZX Spectrum emulator only when the emulator tool window has the keyboard focus. When you apply keystrokes in the Keyboard tool, that window receives the focus. So to be able to use the physical keyboard again, click the ZX Spectrum emulator to shift the focus.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier. The IDE allows you using two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.</summary></entry></feed>
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: You can change the default tape file between loads while the machine runs – without stopping and restarting it.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">You can load a program from the tape into the memory with the LOAD &quot;&quot; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?</summary></entry></feed>
