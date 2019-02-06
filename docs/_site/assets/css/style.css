@@ -51,7 +51,7 @@ img {
 
 blockquote {
   background: #FAD089;
-  margin: 0;
+  margin: 18px 0;
   padding: 8px 12px; }
 
 .ui.vertical.segment.with-header-back {
@@ -282,10 +282,11 @@ pre {
 
 pre code {
   background-color: #F2E9E1;
-  font-size: 16px; }
+  font-size: 16px;
+  padding: 0; }
 
 pre.highlight {
-  padding: 4px;
+  padding: 8px 12px;
   background-color: #F2E9E1;
   margin: 12px 0px; }
 

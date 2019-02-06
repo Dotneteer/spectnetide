@@ -32,6 +32,8 @@ __`Rom/ZxSpectrum48.disann`__ | Disassembly annotations for the Spectrum 48K ROM
 __`TapeFiles`__ | Stores *.tzx*, *.tap* (and, in the future, other) tape files
 __`Z80CodeFiles`__ | The folder to put your Z80 Assembly code files in
 __`Z80CodeFiles/Code.z80asm`__ | A simple Z80 Assembly code file
+__`Z80UnitTests`__ | The folder to put your Z80 unit tests files in
+__`Z80UnitTests/UnitTest.z80test`__ | A simple Z80 unit test file
 __`Annotations.disann`__ | Your custom disassembly annotations are saved into this file
 
 {:start="4"}
