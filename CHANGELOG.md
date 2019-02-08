@@ -1,3 +1,9 @@
+### Version 1.15.1
+__FIX__: Wrong ZX Spectrum keyboard labels fixed.  
+__CHANGE__: The default `Code.z80asm` template now displays "ZX Spectrum IDE" text.  
+__FIX__: The __`G`__ disassembly view command finds symbols pointing to the RAM.
+
+
 ### Version 1.15.0
 __FEATURE__: You can add conditional breakpoints in the Disassembly tool window and in the source code.  
 __FIX__: New colors of the set and current breakpoint highlights provide better visibility and distinction.

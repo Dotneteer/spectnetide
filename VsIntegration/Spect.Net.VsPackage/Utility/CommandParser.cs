@@ -33,6 +33,11 @@ namespace Spect.Net.VsPackage.Utility
         /// </summary>
         public string Arg2 { get; protected set; }
 
+        /// <summary>
+        /// Command argument #3
+        /// </summary>
+        public string Arg3 { get; protected set; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         protected CommandParser(string commandText)
         {

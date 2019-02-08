@@ -144,6 +144,7 @@ L	: 'l'|'L' ;
 F	: 'f'|'F' ;
 I	: 'i'|'I' ;
 R	: 'r'|'R' ;
+M	: 'm'|'M' ;
 XL	: 'xl'|'XL'|'ixl'|'IXL'|'IXl' ;
 XH	: 'xh'|'XH'|'ixh'|'IXH'|'IXh' ;
 YL	: 'yl'|'YL'|'iyl'|'IYL'|'IYl' ;
@@ -188,8 +189,6 @@ BINNUM	: ('%' '_'? | ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
 		;
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
 CHAR	: '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' ;
-
-// --- Boolean literals;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;

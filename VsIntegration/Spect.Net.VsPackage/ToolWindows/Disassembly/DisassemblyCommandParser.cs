@@ -19,14 +19,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private static readonly Regex s_UpdateBreakPointRegex = new Regex(@"^[uU][bB]\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_EraseAllBreakPointRegex = new Regex(@"^[eE][bB]$");
         private static readonly Regex s_RetrieveRegex = new Regex(@"^[rR]([lL]|[cC]|[pP])\s*([a-fA-F0-9]{1,4})$");
-        private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS]|[cC])\s*([a-fA-F0-9]{1,4})\s+([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_SectionRegex = new Regex(@"^[mM]([dD]|[bB]|[wW]|[sS]|[cC])\s*([a-fA-F0-9]{1,4}|[_a-zA-Z0-9]+)\s+([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_LiteralRegex = new Regex(@"^[dD]\s*([a-fA-F0-9]{1,4})(\s+(#|[_a-zA-Z][_a-zA-Z0-9]*)?)?$");
         private static readonly Regex s_RomPageRegex = new Regex(@"^[rR]\s*([0-7])$");
         private static readonly Regex s_RamBankRegex = new Regex(@"^[bB]\s*([0-7])$");
         private static readonly Regex s_MemModeRegex = new Regex(@"^[mM]$");
         private static readonly Regex s_DisTypeRegex = new Regex(@"^[tT](\s*(48|128|P3|p3|next|NEXT))$");
         private static readonly Regex s_ReDisassemblyRegex = new Regex(@"^[rR][dD]$");
-        private static readonly Regex s_JumpRegex = new Regex(@"^[jJ]\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_JumpRegex = new Regex(@"^[jJ]\s*([a-fA-F0-9]{1,4}|[_a-zA-Z0-9]+)$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.

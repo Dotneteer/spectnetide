@@ -29,6 +29,8 @@ namespace Spect.Net.EvalParser
                     : default(FormatSpecifierNode));
         }
 
+        #region Expressions
+
         /// <summary>
         /// Visit a parse tree produced by <see cref="Z80EvalParser.expr"/>.
         /// <para>
@@ -447,6 +449,8 @@ namespace Spect.Net.EvalParser
                         SymbolName = context.GetText()
                     };
         }
+
+        #endregion
 
         #region Helper methods
 
