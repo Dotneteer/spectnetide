@@ -65,17 +65,6 @@ public interface ICommandToolListener : IParseTreeListener {
 	void ExitGotoCommand([NotNull] CommandToolParser.GotoCommandContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandToolParser.gotoSymbolCommand"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterGotoSymbolCommand([NotNull] CommandToolParser.GotoSymbolCommandContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandToolParser.gotoSymbolCommand"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitGotoSymbolCommand([NotNull] CommandToolParser.GotoSymbolCommandContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="CommandToolParser.romPageCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -250,5 +239,93 @@ public interface ICommandToolListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitJumpCommand([NotNull] CommandToolParser.JumpCommandContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.sectionCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSectionCommand([NotNull] CommandToolParser.SectionCommandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.sectionCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSectionCommand([NotNull] CommandToolParser.SectionCommandContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.addWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddWatchCommand([NotNull] CommandToolParser.AddWatchCommandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.addWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddWatchCommand([NotNull] CommandToolParser.AddWatchCommandContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.removeWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRemoveWatchCommand([NotNull] CommandToolParser.RemoveWatchCommandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.removeWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRemoveWatchCommand([NotNull] CommandToolParser.RemoveWatchCommandContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.updateWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUpdateWatchCommand([NotNull] CommandToolParser.UpdateWatchCommandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.updateWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUpdateWatchCommand([NotNull] CommandToolParser.UpdateWatchCommandContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.labelWidthCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLabelWidthCommand([NotNull] CommandToolParser.LabelWidthCommandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.labelWidthCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLabelWidthCommand([NotNull] CommandToolParser.LabelWidthCommandContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.exchangeWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExchangeWatchCommand([NotNull] CommandToolParser.ExchangeWatchCommandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.exchangeWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExchangeWatchCommand([NotNull] CommandToolParser.ExchangeWatchCommandContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.eraseAllWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEraseAllWatchCommand([NotNull] CommandToolParser.EraseAllWatchCommandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.eraseAllWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEraseAllWatchCommand([NotNull] CommandToolParser.EraseAllWatchCommandContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.compactCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCompactCommand([NotNull] CommandToolParser.CompactCommandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.compactCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCompactCommand([NotNull] CommandToolParser.CompactCommandContext context);
 }
 } // namespace Spect.Net.CommandParser.Generated

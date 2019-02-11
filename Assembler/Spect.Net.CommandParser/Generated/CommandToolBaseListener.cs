@@ -75,19 +75,6 @@ public partial class CommandToolBaseListener : ICommandToolListener {
 	public virtual void ExitGotoCommand([NotNull] CommandToolParser.GotoCommandContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandToolParser.gotoSymbolCommand"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGotoSymbolCommand([NotNull] CommandToolParser.GotoSymbolCommandContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandToolParser.gotoSymbolCommand"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGotoSymbolCommand([NotNull] CommandToolParser.GotoSymbolCommandContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="CommandToolParser.romPageCommand"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -294,6 +281,110 @@ public partial class CommandToolBaseListener : ICommandToolListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitJumpCommand([NotNull] CommandToolParser.JumpCommandContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.sectionCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSectionCommand([NotNull] CommandToolParser.SectionCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.sectionCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSectionCommand([NotNull] CommandToolParser.SectionCommandContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.addWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAddWatchCommand([NotNull] CommandToolParser.AddWatchCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.addWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAddWatchCommand([NotNull] CommandToolParser.AddWatchCommandContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.removeWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRemoveWatchCommand([NotNull] CommandToolParser.RemoveWatchCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.removeWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRemoveWatchCommand([NotNull] CommandToolParser.RemoveWatchCommandContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.updateWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUpdateWatchCommand([NotNull] CommandToolParser.UpdateWatchCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.updateWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUpdateWatchCommand([NotNull] CommandToolParser.UpdateWatchCommandContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.labelWidthCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLabelWidthCommand([NotNull] CommandToolParser.LabelWidthCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.labelWidthCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLabelWidthCommand([NotNull] CommandToolParser.LabelWidthCommandContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.exchangeWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExchangeWatchCommand([NotNull] CommandToolParser.ExchangeWatchCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.exchangeWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExchangeWatchCommand([NotNull] CommandToolParser.ExchangeWatchCommandContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.eraseAllWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEraseAllWatchCommand([NotNull] CommandToolParser.EraseAllWatchCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.eraseAllWatchCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEraseAllWatchCommand([NotNull] CommandToolParser.EraseAllWatchCommandContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandToolParser.compactCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCompactCommand([NotNull] CommandToolParser.CompactCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandToolParser.compactCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCompactCommand([NotNull] CommandToolParser.CompactCommandContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

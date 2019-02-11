@@ -15,10 +15,8 @@ namespace Spect.Net.CommandParser.SyntaxTree
 
         public UpdateBreakpointToolCommand(CommandToolParser.UpdateBreakpointCommandContext context)
         {
-            if (context.HEXNUM() != null)
-            {
-                Address = ushort.Parse(context.HEXNUM().GetText(), NumberStyles.HexNumber);
-            }
+            if (context.LITERAL() == null) return;
+            Address = ProcessNumber(context.LITERAL().GetText());
         }
     }
 }

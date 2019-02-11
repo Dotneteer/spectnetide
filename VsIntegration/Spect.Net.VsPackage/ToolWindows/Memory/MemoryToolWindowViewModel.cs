@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using Spect.Net.CommandParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Machine;
+// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
 {
@@ -115,12 +117,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// <returns>
         /// True, if the command has been handled; otherwise, false
         /// </returns>
-        public bool ProcessCommandline(string commandText, out string validationMessage, 
+        public bool ProcessCommandline(string commandText, out string validationMessage,
             out ushort? topAddress)
         {
-            const string INV_S48_COMMAND = "This command cannot be used for a Spectrum 48K model.";
-            const string INV_RUN_COMMAND = "This command can only be used when the virtual machine is running.";
-
             // --- Prepare command handling
             validationMessage = null;
             topAddress = null;
@@ -128,48 +127,50 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             var banks = MachineViewModel.SpectrumVm.MemoryConfiguration.RamBanks;
             var roms = MachineViewModel.SpectrumVm.RomConfiguration.NumberOfRoms;
 
-            var parser = new MemoryCommandParser(commandText);
-            switch (parser.Command)
+            var command = ParseCommand(commandText);
+            if (command is CompactToolCommand compactCommand)
             {
-                case MemoryCommandType.Invalid:
-                    validationMessage = "Invalid command syntax";
-                    return false;
+                command = ParseCommand(compactCommand.CommandText);
+            }
+            if (command == null || command.HasSemanticError)
+            {
+                validationMessage = "Invalid command syntax";
+                return false;
+            }
 
-                case MemoryCommandType.Goto:
-                    topAddress = parser.Address;
-                    break;
-
-                case MemoryCommandType.GotoSymbol:
-                    if (CompilerOutput == null)
+            switch (command)
+            {
+                case GotoToolCommand gotoCommand:
+                    if (gotoCommand.Symbol != null)
                     {
-                        validationMessage ="No compilation has been done, symbols cannot be used with the 'G' command";
+                        if (ResolveSymbol(gotoCommand.Symbol, out var symbolValue))
+                        {
+                            topAddress = symbolValue;
+                            break;
+                        }
+
+                        validationMessage = string.Format(UNDEF_SYMBOL, gotoCommand.Symbol);
                         return false;
                     }
-
-                    if (!CompilerOutput.Symbols.TryGetValue(parser.Arg1, out var symbolValue))
-                    {
-                        validationMessage = $"Cannot find symbol '{parser.Arg1}'";
-                        return false;
-                    }
-                    topAddress = symbolValue;
+                    topAddress = gotoCommand.Address;
                     break;
 
-                case MemoryCommandType.SetRomPage:
+                case RomPageToolCommand romPageCommand:
                     if (isSpectrum48)
                     {
                         validationMessage = INV_S48_COMMAND;
                         return false;
                     }
-                    if (parser.Address > roms - 1)
+                    if (romPageCommand.Page > roms - 1)
                     {
-                        validationMessage = $"This machine does not have a ROM bank #{parser.Address}";
+                        validationMessage = $"This machine does not have a ROM bank #{romPageCommand.Page}";
                         return false;
                     }
-                    SetRomViewMode(parser.Address);
+                    SetRomViewMode(romPageCommand.Page);
                     topAddress = 0;
                     break;
 
-                case MemoryCommandType.SetRamBank:
+                case BankPageToolCommand bankPageCommand:
                     if (isSpectrum48)
                     {
                         validationMessage = INV_S48_COMMAND;
@@ -180,17 +181,17 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                         validationMessage = INV_RUN_COMMAND;
                         return false;
                     }
-                    if (parser.Address > banks - 1)
+                    if (bankPageCommand.Page > banks - 1)
                     {
-                        validationMessage = $"This machine does not have a RAM bank #{parser.Address}";
+                        validationMessage = $"This machine does not have a RAM bank #{bankPageCommand.Page}";
                         return false;
 
                     }
-                    SetRamBankViewMode(parser.Address);
+                    SetRamBankViewMode(bankPageCommand.Page);
                     topAddress = 0;
                     break;
 
-                case MemoryCommandType.MemoryMode:
+                case MemoryModeToolCommand _:
                     if (isSpectrum48)
                     {
                         validationMessage = INV_S48_COMMAND;
@@ -203,9 +204,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     }
                     SetFullViewMode();
                     break;
-
-                default:
-                    return false;
             }
             return true;
         }

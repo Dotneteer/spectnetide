@@ -54,13 +54,6 @@ public interface ICommandToolVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitGotoCommand([NotNull] CommandToolParser.GotoCommandContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CommandToolParser.gotoSymbolCommand"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitGotoSymbolCommand([NotNull] CommandToolParser.GotoSymbolCommandContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="CommandToolParser.romPageCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -171,5 +164,61 @@ public interface ICommandToolVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitJumpCommand([NotNull] CommandToolParser.JumpCommandContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CommandToolParser.sectionCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSectionCommand([NotNull] CommandToolParser.SectionCommandContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CommandToolParser.addWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAddWatchCommand([NotNull] CommandToolParser.AddWatchCommandContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CommandToolParser.removeWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRemoveWatchCommand([NotNull] CommandToolParser.RemoveWatchCommandContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CommandToolParser.updateWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUpdateWatchCommand([NotNull] CommandToolParser.UpdateWatchCommandContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CommandToolParser.labelWidthCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLabelWidthCommand([NotNull] CommandToolParser.LabelWidthCommandContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CommandToolParser.exchangeWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExchangeWatchCommand([NotNull] CommandToolParser.ExchangeWatchCommandContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CommandToolParser.eraseAllWatchCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEraseAllWatchCommand([NotNull] CommandToolParser.EraseAllWatchCommandContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CommandToolParser.compactCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCompactCommand([NotNull] CommandToolParser.CompactCommandContext context);
 }
 } // namespace Spect.Net.CommandParser.Generated

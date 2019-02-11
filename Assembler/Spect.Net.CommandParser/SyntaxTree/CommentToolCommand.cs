@@ -21,12 +21,8 @@ namespace Spect.Net.CommandParser.SyntaxTree
 
         public CommentToolCommand(CommandToolParser.CommentCommandContext context)
         {
-            if (context.HEXNUM() != null)
-            {
-                Address = ushort.Parse(context.HEXNUM().GetText(), NumberStyles.HexNumber);
-            }
-
-            if (context.ChildCount < 5) return;
+            Address = ProcessNumber(context.LITERAL().GetText());
+            if (HasSemanticError || context.ChildCount < 5) return;
 
             var sb = new StringBuilder();
             for (var i = 4; i < context.ChildCount; i++)

@@ -10,7 +10,6 @@ compileUnit
 
 toolCommand
 	: gotoCommand
-	| gotoSymbolCommand
 	| romPageCommand
 	| bankPageCommand
 	| memModeCommand
@@ -27,28 +26,43 @@ toolCommand
 	| disassemblyTypeCommand
 	| reDisassemblyCommand
 	| jumpCommand
+	| sectionCommand
+	| addWatchCommand
+	| removeWatchCommand
+	| updateWatchCommand
+	| labelWidthCommand
+	| exchangeWatchCommand
+	| eraseAllWatchCommand
+	| compactCommand
 	;
 
-gotoCommand: G WS (HEXNUM | IDENTIFIER) ;
-gotoSymbolCommand: GS WS IDENTIFIER ;
-romPageCommand: R WS HEXNUM ;
-bankPageCommand: B WS HEXNUM ;
+gotoCommand: G WS? LITERAL ;
+romPageCommand: R WS? LITERAL ;
+bankPageCommand: B WS? LITERAL ;
 memModeCommand: M ;
-labelCommand: L WS HEXNUM (WS IDENTIFIER)? ;
-commentCommand: C WS HEXNUM WS? .*? ;
-prefixCommentCommand: P WS HEXNUM WS? .*? ;
-setBreakpointCommand: SB WS HEXNUM
-	(WS H WS? (LESS|LESSEQ|GREAT|GREATEQ|EQ|MULT) WS? HEXNUM)? 
+labelCommand: L WS? LITERAL (WS LITERAL)? ;
+commentCommand: C WS? LITERAL WS? .*? ;
+prefixCommentCommand: P WS? LITERAL WS? .*? ;
+setBreakpointCommand: SB WS? LITERAL
+	(WS H WS? (LESS|LESSEQ|GREAT|GREATEQ|EQ|MULT) WS? LITERAL)? 
 	(WS C WS .*?)? ;
-toggleBreakpointCommand: TB WS HEXNUM ;
-removeBreakpointCommand: RB WS HEXNUM ;
-updateBreakpointCommand: UB WS HEXNUM ;
+toggleBreakpointCommand: TB WS? LITERAL ;
+removeBreakpointCommand: RB WS? LITERAL ;
+updateBreakpointCommand: UB WS? LITERAL ;
 eraseAllBreakpointsCommand: EB ;
-retrieveCommand: RETRIEVE WS HEXNUM ;
-literalCommand: D WS HEXNUM (WS (HASH|IDENTIFIER)) ;
-disassemblyTypeCommand: T WS .*? ;
+retrieveCommand: RETRIEVE WS? LITERAL ;
+literalCommand: D WS? LITERAL (WS (HASH|LITERAL)) ;
+disassemblyTypeCommand: T WS? .*? ;
 reDisassemblyCommand: RD ;
-jumpCommand: J WS (HEXNUM | IDENTIFIER) ;
+jumpCommand: J WS? LITERAL ;
+sectionCommand: SECTION WS? LITERAL WS LITERAL ;
+addWatchCommand: ADD .*? ;
+removeWatchCommand: DASH WS? LITERAL ;
+updateWatchCommand: MULT WS? LITERAL .*? ;
+labelWidthCommand: LW WS? LITERAL ;
+exchangeWatchCommand: XW WS? LITERAL WS LITERAL ;
+eraseAllWatchCommand: EW ;
+compactCommand: LITERAL .*?;
 
 /*
  * Lexer Rules
@@ -63,35 +77,37 @@ GREATEQ: '>=' ;
 EQ: '=' ;
 MULT: '*' ;
 HASH: '#';
+ADD: '+' ;
+DASH: '-' ;
+COLON: ':' ;
 
 B: 'b'|'B' ;
 C: 'c'|'C' ;
 D: 'd'|'D' ;
+EB: 'eb'|'eB'|'Eb'|'EB' ;
+EW: 'ew'|'eW'|'Ew'|'EW' ;
 G: 'g'|'G' ;
 GS: 'gs'|'gS'|'Gs'|'GS' ;
+H: 'h'|'H' ;
 J: 'j'|'J' ;
 L: 'l'|'L' ;
+LW: 'lw'|'Lw'|'lW'|'LW' ;
 M: 'm'|'M' ;
 P: 'p'|'P' ;
 R: 'r'|'R' ;
 RD: 'rd'|'rD'|'Rd'|'RD' ;
+S: 's'|'S' ;
 SB: 'sb'|'sB'|'Sb'|'SB' ;
-H: 'h'|'H' ;
 T: 't'|'T' ;
 TB: 'tb'|'tB'|'Tb'|'TB' ;
 RB: 'rb'|'rB'|'Rb'|'RB' ;
 UB: 'ub'|'uB'|'Ub'|'UB' ;
-EB: 'eb'|'eB'|'Eb'|'EB' ;
+XW: 'xw'|'xW'|'Xw'|'XW' ;
+W: 'w'|'W' ;
 RETRIEVE: R (L|C|P|B) ;
+SECTION: M (B|D|W|S|C) ;
 
-HEXNUM: HEXSTART HexDigit? HexDigit? HexDigit? ;
-HEXSTART: DecimalDigit | '0' ('A'|'a'|B|C|D|'e'|'E'|'f'|'F') ;
-
-IDENTIFIER: IDSTART IDCONT*	;
-IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
-IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+LITERAL: COLON? LITCH+	;
+LITCH	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 OTHER: . ;
-
-fragment DecimalDigit: [0-9] ;
-fragment HexDigit: DecimalDigit|'A'|'a'|B|C|D|'e'|'E'|'f'|'F' ;

@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Spect.Net.CommandParser.Generated;
+using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.CommandParser.SyntaxTree
 {
@@ -13,7 +13,7 @@ namespace Spect.Net.CommandParser.SyntaxTree
         /// </summary>
         public string Type { get; }
 
-        public DisassemblyTypeToolCommand(CommandToolParser.DisassemblyTypeCommandContext context)
+        public DisassemblyTypeToolCommand(IParseTree context)
         {
             if (context.ChildCount <= 2) return;
             var sb = new StringBuilder();

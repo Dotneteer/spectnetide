@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using Spect.Net.CommandParser.Generated;
+﻿using Spect.Net.CommandParser.Generated;
+// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.CommandParser.SyntaxTree
 {
@@ -20,13 +20,17 @@ namespace Spect.Net.CommandParser.SyntaxTree
 
         public JumpToolCommand(CommandToolParser.JumpCommandContext context)
         {
-            if (context.HEXNUM() != null)
+            if (context.LITERAL() == null) return;
+            var type = ProcessId(context.LITERAL().GetText(), out var hexnum, out var symbol);
+            if (HasSemanticError) return;
+
+            if (type)
             {
-                Address = ushort.Parse(context.HEXNUM().GetText(), NumberStyles.HexNumber);
+                Symbol = symbol;
             }
-            else if (context.IDENTIFIER() != null)
+            else
             {
-                Symbol = context.IDENTIFIER().GetText();
+                Address = hexnum;
             }
         }
     }

@@ -31,38 +31,39 @@ namespace Spect.Net.CommandParser.SyntaxTree
 
         public SetBreakpointToolCommand(CommandToolParser.SetBreakpointCommandContext context)
         {
-            if (context.HEXNUM().Length > 0)
-            {
-                Address = ushort.Parse(context.HEXNUM()[0].GetText(), NumberStyles.HexNumber);
-            }
+            if (context.LITERAL().Length < 1) return;
+            Address = ProcessNumber(context.LITERAL()[0].GetText());
+            if (HasSemanticError) return;
+            var isCompact = !string.IsNullOrWhiteSpace(context.GetChild(1).GetText());
 
-            if (context.ChildCount < 4) return;
+            if (context.ChildCount < (isCompact ? 3 : 4)) return;
 
             // --- We have hit and/or filter condition
-            var hitChild = 5;
-            var conditionChild = 6; 
-            if (context.GetChild(4).GetText().ToLower() == "h")
+            var hitChild = isCompact ? 4 : 5;
+            var conditionChild = isCompact ? 5 : 6; 
+            if (context.GetChild(isCompact ? 3 : 4).GetText().ToLower() == "h")
             {
                 // --- Hit condition
-                conditionChild = 12;
+                conditionChild = isCompact ? 11 : 12;
                 HitConditionType = context.GetChild(hitChild).GetText();
                 if (string.IsNullOrWhiteSpace(HitConditionType))
                 {
-                    hitChild = 6;
+                    hitChild = isCompact ? 5 : 6;
                     HitConditionType = context.GetChild(hitChild).GetText();
                 }
                 else
                 {
-                    conditionChild = 11;
+                    conditionChild = isCompact ? 10 : 11;
                 }
                 hitChild++;
                 if (!string.IsNullOrWhiteSpace(context.GetChild(hitChild).GetText()))
                 {
                     conditionChild--;
                 }
-                if (context.HEXNUM().Length > 1)
+                if (context.LITERAL().Length > 1)
                 {
-                    HitConditionValue = ushort.Parse(context.HEXNUM()[1].GetText(), NumberStyles.HexNumber);
+                    HitConditionValue = ProcessNumber(context.LITERAL()[1].GetText());
+                    if (HasSemanticError) return;
                 }
             }
 

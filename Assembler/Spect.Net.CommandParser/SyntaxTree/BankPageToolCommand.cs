@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using Spect.Net.CommandParser.Generated;
+// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.CommandParser.SyntaxTree
 {
@@ -12,12 +13,10 @@ namespace Spect.Net.CommandParser.SyntaxTree
         /// </summary>
         public ushort Page { get; }
 
-        public BankPageToolCommand(IParseTree context)
+        public BankPageToolCommand(CommandToolParser.BankPageCommandContext context)
         {
-            if (context.ChildCount >= 2)
-            {
-                Page = ushort.Parse(context.GetChild(2).GetText());
-            }
+            if (context.LITERAL() == null) return;
+            Page = ProcessNumber(context.LITERAL().GetText());
         }
     }
 }

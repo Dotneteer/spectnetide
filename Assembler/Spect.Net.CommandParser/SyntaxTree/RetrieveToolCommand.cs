@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Spect.Net.CommandParser.Generated;
+﻿using Spect.Net.CommandParser.Generated;
 
 namespace Spect.Net.CommandParser.SyntaxTree
 {
@@ -20,11 +19,9 @@ namespace Spect.Net.CommandParser.SyntaxTree
 
         public RetrieveToolCommand(CommandToolParser.RetrieveCommandContext context)
         {
-            if (context.HEXNUM() != null)
-            {
-                Address = ushort.Parse(context.HEXNUM().GetText(), NumberStyles.HexNumber);
-            }
             Type = context.GetChild(0).GetText().Substring(1).ToUpper();
+            if (context.LITERAL() == null) return;
+            Address = ProcessNumber(context.LITERAL().GetText());
         }
     }
 }

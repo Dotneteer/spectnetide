@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Spect.Net.CommandParser.Generated;
+﻿using Spect.Net.CommandParser.Generated;
 
 namespace Spect.Net.CommandParser.SyntaxTree
 {
@@ -25,20 +24,24 @@ namespace Spect.Net.CommandParser.SyntaxTree
 
         public LiteralToolCommand(CommandToolParser.LiteralCommandContext context)
         {
-            if (context.HEXNUM() != null)
-            {
-                Address = ushort.Parse(context.HEXNUM().GetText(), NumberStyles.HexNumber);
-            }
-
-            if (context.IDENTIFIER() != null)
-            {
-                Symbol = context.IDENTIFIER().GetText().ToUpper();
-            }
+            if (context.LITERAL().Length < 1) return;
+            Address = ProcessNumber(context.LITERAL()[0].GetText());
+            if (HasSemanticError) return;
 
             if (context.HASH() != null)
             {
                 IsAuto = true;
             }
+            if (context.LITERAL().Length < 2) return;
+
+            var idText = context.LITERAL()[1].GetText();
+            if (char.IsDigit(idText[0]))
+            {
+                HasSemanticError = true;
+                return;
+            }
+            Symbol = idText;
+
         }
     }
 }

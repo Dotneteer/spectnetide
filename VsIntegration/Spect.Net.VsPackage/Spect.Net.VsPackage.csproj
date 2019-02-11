@@ -158,8 +158,6 @@
     <Compile Include="ToolWindows\KeyboardTool\Single128KeyControl.xaml.cs">
       <DependentUpon>Single128KeyControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\Memory\MemoryCommandParser.cs" />
-    <Compile Include="ToolWindows\Memory\MemoryCommandType.cs" />
     <Compile Include="ToolWindows\SpectNetPackageToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\AddVmStateDialog.xaml.cs">
       <DependentUpon>AddVmStateDialog.xaml</DependentUpon>
@@ -836,6 +834,10 @@
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bb7bd2ca-017a-43be-993b-b8c4d58ee4b5}</Project>
       <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.CommandParser\Spect.Net.CommandParser.csproj">
+      <Project>{1a125004-6611-4af1-abc9-0053d78e9a5a}</Project>
+      <Name>Spect.Net.CommandParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Assembler\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
       <Project>{adec05f1-8d6c-4282-85c5-e12a22869f36}</Project>

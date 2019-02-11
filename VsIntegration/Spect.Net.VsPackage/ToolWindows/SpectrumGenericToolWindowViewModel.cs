@@ -1,6 +1,12 @@
 ﻿using System;
+using Antlr4.Runtime;
+using Spect.Net.CommandParser;
+using Spect.Net.CommandParser.Generated;
+using Spect.Net.CommandParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Z80Programs;
 using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
+// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
@@ -12,6 +18,11 @@ namespace Spect.Net.VsPackage.ToolWindows
     {
         private bool _refreshInProgress;
         private int _screenRefreshCount;
+
+        // --- Constants used by commands
+        protected const string INV_S48_COMMAND = "This command cannot be used for a Spectrum 48K model.";
+        protected const string INV_RUN_COMMAND = "This command can only be used when the virtual machine is running.";
+        protected const string UNDEF_SYMBOL = "This command uses an undefined symbol ({0}).";
 
         /// <summary>
         /// The aggregated ZX Spectrum view model
@@ -49,9 +60,9 @@ namespace Spect.Net.VsPackage.ToolWindows
         public bool VmNotStopped => !VmStopped;
 
         /// <summary>
-        /// Gets the flag that indicates if the ZX Spectrum virtual machine is currently executing
+        /// Compiler output
         /// </summary>
-        public bool VmNotRuns => MachineViewModel.MachineState != VmState.Running;
+        public Assembler.Assembler.AssemblerOutput CompilerOutput { get; protected set; }
 
         /// <summary>
         /// Represents the event when the screen has been refreshed.
@@ -72,6 +83,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             Package.SolutionClosed += OnInternalSolutionClosed;
             MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
             MachineViewModel.VmScreenRefreshed += BridgeScreenRefreshed;
+            Package.CodeManager.CompilationCompleted += OnCompilationCompleted;
 
             // ReSharper disable once VirtualMemberCallInConstructor
             Initialize();
@@ -89,6 +101,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             Package.SolutionClosed -= OnInternalSolutionClosed;
             MachineViewModel.VmStateChanged -= OnInternalVmStateChanged;
             MachineViewModel.VmScreenRefreshed -= BridgeScreenRefreshed;
+            Package.CodeManager.CompilationCompleted -= OnCompilationCompleted;
             base.Dispose();
         }
 
@@ -174,9 +187,70 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
         }
 
+        /// <summary>
+        /// Parses the specified command
+        /// </summary>
+        /// <param name="commandText">Text to parse</param>
+        /// <returns>Parsed command node, if successful; otherwise, null</returns>
+        public ToolCommandNode ParseCommand(string commandText)
+        {
+            var inputStream = new AntlrInputStream(commandText);
+            var lexer = new CommandToolLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new CommandToolParser(tokenStream);
+            var context = parser.toolCommand();
+            var visitor = new CommandToolVisitor();
+            return parser.SyntaxErrors.Count > 0 
+                ? null 
+                : (ToolCommandNode) visitor.VisitToolCommand(context);
+        }
+
+        /// <summary>
+        /// Resolves the value of the specified symbol
+        /// </summary>
+        /// <param name="symbol">Symbol to resolve</param>
+        /// <param name="value">The resolved value</param>
+        /// <returns>True, if resolution is successful; otherwise, false</returns>
+        public bool ResolveSymbol(string symbol, out ushort value)
+        {
+            value = 0;
+
+            // --- #1: check the compiled code
+            if (CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue))
+            {
+                value = symbolValue;
+                return true;
+            }
+
+            //// #2: Check user defined RAM annotations
+            //var labelAddrs = AnnotationHandler.RamBankAnnotations[0].Labels
+            //    .Where(kp =>
+            //        string.Compare(kp.Value, parser.Arg1, StringComparison.InvariantCultureIgnoreCase) == 0)
+            //    .Select(kp => kp.Key)
+            //    .ToList();
+            //if (labelAddrs.Count > 0)
+            //{
+            //    // --- Address found in the current ROM
+            //    address = (ushort)(labelAddrs[0] + 0x4000);
+            //    break;
+            //}
+
+            // TODO: #3: Check ROM annotations
+
+            return false;
+        }
+
         #endregion
 
         #region Helper methods
+
+        /// <summary>
+        /// Catch the event of compilation
+        /// </summary>
+        private void OnCompilationCompleted(object sender, CompilationCompletedEventArgs e)
+        {
+            CompilerOutput = e.Output;
+        }
 
         /// <summary>
         /// Handles the solution opened event
@@ -196,7 +270,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
-        /// Set the machnine status and notify controls
+        /// Set the machine status and notify controls
         /// </summary>
         protected virtual void OnInternalVmStateChanged(object sender, VmStateChangedEventArgs args)
         {

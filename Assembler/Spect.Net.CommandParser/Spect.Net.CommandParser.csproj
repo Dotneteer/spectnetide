@@ -56,12 +56,15 @@
     <Compile Include="Generated\CommandToolParser.cs" />
     <Compile Include="Generated\CommandToolVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyntaxTree\AddWatchToolCommand.cs" />
     <Compile Include="SyntaxTree\BankPageToolCommand.cs" />
     <Compile Include="SyntaxTree\CommandToolParserErrorInfo.cs" />
     <Compile Include="SyntaxTree\CommentToolCommand.cs" />
+    <Compile Include="SyntaxTree\CompactToolCommand.cs" />
     <Compile Include="SyntaxTree\DisassemblyTypeToolCommand.cs" />
     <Compile Include="SyntaxTree\EraseAllBreakpointsToolCommand.cs" />
-    <Compile Include="SyntaxTree\GotoSymbolToolCommand.cs" />
+    <Compile Include="SyntaxTree\EraseAllWatchToolCommand.cs" />
+    <Compile Include="SyntaxTree\ExchangeWatchToolCommand.cs" />
     <Compile Include="SyntaxTree\GotoToolCommand.cs" />
     <Compile Include="SyntaxTree\JumpToolCommand.cs" />
     <Compile Include="SyntaxTree\LabelToolCommand.cs" />
@@ -69,13 +72,17 @@
     <Compile Include="SyntaxTree\MemoryModeToolCommand.cs" />
     <Compile Include="SyntaxTree\PrefixCommentToolCommand.cs" />
     <Compile Include="SyntaxTree\ReDisassemblyToolCommand.cs" />
+    <Compile Include="SyntaxTree\LabelWidthToolCommand.cs" />
     <Compile Include="SyntaxTree\RemoveBreakpointToolCommand.cs" />
+    <Compile Include="SyntaxTree\RemoveWatchToolCommand.cs" />
     <Compile Include="SyntaxTree\RetrieveToolCommand.cs" />
     <Compile Include="SyntaxTree\RomPageToolCommand.cs" />
+    <Compile Include="SyntaxTree\SectionToolCommand.cs" />
     <Compile Include="SyntaxTree\SetBreakpointToolCommand.cs" />
     <Compile Include="SyntaxTree\ToggleBreakpointToolCommand.cs" />
     <Compile Include="SyntaxTree\ToolCommandNode.cs" />
     <Compile Include="SyntaxTree\UpdateBreakpointToolCommand.cs" />
+    <Compile Include="SyntaxTree\UpdateWatchToolCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -11,6 +11,8 @@ namespace Spect.Net.CommandParser.Test
         [TestMethod]
         [DataRow("g 1234", 4660, null)]
         [DataRow("G 1234", 4660, null)]
+        [DataRow("G :1234", 1234, null)]
+        [DataRow("G:1234", 1234, null)]
         [DataRow("g MySymbol", 0, "MySymbol")]
         public void GotoParsingWorks(string source, int address, string symbol)
         {
@@ -61,25 +63,11 @@ namespace Spect.Net.CommandParser.Test
         }
 
         [TestMethod]
-        [DataRow("gs MySymbol", "MySymbol")]
-        [DataRow("gS MySymbol", "MySymbol")]
-        [DataRow("Gs MySymbol", "MySymbol")]
-        [DataRow("GS MySymbol", "MySymbol")]
-        public void GotoSymbolParsingWorks(string source, string symbol)
-        {
-            // --- Act
-            var parsed = ParseCommand(source);
-
-            // --- Assert
-
-            var command = parsed as GotoSymbolToolCommand;
-            command.ShouldNotBeNull();
-            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
-        }
-
-        [TestMethod]
         [DataRow("r 0", 0)]
         [DataRow("R 7", 7)]
+        [DataRow("r :0", 0)]
+        [DataRow("R :7", 7)]
+        [DataRow("r:0", 0)]
         public void RomPageParsingWorks(string source, int page)
         {
             // --- Act
@@ -95,6 +83,9 @@ namespace Spect.Net.CommandParser.Test
         [TestMethod]
         [DataRow("b 0", 0)]
         [DataRow("B 7", 7)]
+        [DataRow("b :0", 0)]
+        [DataRow("B :7", 7)]
+        [DataRow("b:0", 0)]
         public void BankPageParsingWorks(string source, int page)
         {
             // --- Act
@@ -124,8 +115,10 @@ namespace Spect.Net.CommandParser.Test
         [TestMethod]
         [DataRow("l 1234", 4660, null)]
         [DataRow("L 1234", 4660, null)]
+        [DataRow("L :1234", 1234, null)]
         [DataRow("l 1234 MySymbol", 4660, "MySymbol")]
         [DataRow("L 1234 MySymbol", 4660, "MySymbol")]
+        [DataRow("L:1234", 1234, null)]
         public void LabelParsingWorks(string source, int address, string symbol)
         {
             // --- Act
@@ -149,8 +142,10 @@ namespace Spect.Net.CommandParser.Test
         [TestMethod]
         [DataRow("c 1234", 4660, null)]
         [DataRow("C 1234", 4660, null)]
+        [DataRow("C :1234", 1234, null)]
         [DataRow("c 1234 My Comments", 4660, "My Comments")]
         [DataRow("C 1234 My Symbols", 4660, "My Symbols")]
+        [DataRow("C:1234", 1234, null)]
         public void CommentParsingWorks(string source, int address, string comment)
         {
             // --- Act
@@ -174,8 +169,10 @@ namespace Spect.Net.CommandParser.Test
         [TestMethod]
         [DataRow("p 1234", 4660, null)]
         [DataRow("P 1234", 4660, null)]
+        [DataRow("P :1234", 1234, null)]
         [DataRow("p 1234 My Comments", 4660, "My Comments")]
         [DataRow("P 1234 My Symbols", 4660, "My Symbols")]
+        [DataRow("P:1234", 1234, null)]
         public void PrefixCommentParsingWorks(string source, int address, string comment)
         {
             // --- Act
@@ -197,6 +194,8 @@ namespace Spect.Net.CommandParser.Test
         }
 
         [TestMethod]
+        [DataRow("SB :1234 H>3 C HL==5", 1234, ">", 3, "HL==5")]
+        [DataRow("SB:1234 H>3 C HL==5", 1234, ">", 3, "HL==5")]
         [DataRow("sb 12AC H>3 C HL==5", 4780, ">", 3, "HL==5")]
         [DataRow("SB 12AC H>3 C HL==5", 4780, ">", 3, "HL==5")]
         [DataRow("Sb 12AC H>3 C HL==5", 4780, ">", 3, "HL==5")]
@@ -231,6 +230,8 @@ namespace Spect.Net.CommandParser.Test
         [DataRow("Tb 1234", 4660)]
         [DataRow("tB 1234", 4660)]
         [DataRow("TB 1234", 4660)]
+        [DataRow("tb :1234", 1234)]
+        [DataRow("tb:1234", 1234)]
         public void ToggleBreakpointParsingWorks(string source, int address)
         {
             // --- Act
@@ -248,6 +249,8 @@ namespace Spect.Net.CommandParser.Test
         [DataRow("Rb 1234", 4660)]
         [DataRow("rB 1234", 4660)]
         [DataRow("RB 1234", 4660)]
+        [DataRow("rB :1234", 1234)]
+        [DataRow("rB:1234", 1234)]
         public void RemoveBreakpointParsingWorks(string source, int address)
         {
             // --- Act
@@ -265,6 +268,8 @@ namespace Spect.Net.CommandParser.Test
         [DataRow("Ub 1234", 4660)]
         [DataRow("uB 1234", 4660)]
         [DataRow("UB 1234", 4660)]
+        [DataRow("UB :1234", 1234)]
+        [DataRow("UB:1234", 1234)]
         public void UpdateBreakpointParsingWorks(string source, int address)
         {
             // --- Act
@@ -306,6 +311,8 @@ namespace Spect.Net.CommandParser.Test
         [DataRow("rP 1234", 4660, "P")]
         [DataRow("Rp 1234", 4660, "P")]
         [DataRow("RP 1234", 4660, "P")]
+        [DataRow("rl :1234", 1234, "L")]
+        [DataRow("rl:1234", 1234, "L")]
         public void RetrieveParsingWorks(string source, int address, string type)
         {
             // --- Act
@@ -322,8 +329,11 @@ namespace Spect.Net.CommandParser.Test
         [TestMethod]
         [DataRow("d 1234 MySymbol", 4660, "MYSYMBOL", false)]
         [DataRow("D 1234 MySymbol", 4660, "MYSYMBOL", false)]
+        [DataRow("d :1234 MySymbol", 1234, "MYSYMBOL", false)]
         [DataRow("D 1234", 4660, null, false)]
         [DataRow("D 1234 #", 4660, null, true)]
+        [DataRow("D :1234 #", 1234, null, true)]
+        [DataRow("D:1234 #", 1234, null, true)]
         public void RetrieveParsingWorks(string source, int address, string symbol, bool isAuto)
         {
             // --- Act
@@ -374,6 +384,8 @@ namespace Spect.Net.CommandParser.Test
         [TestMethod]
         [DataRow("j 1234", 4660, null)]
         [DataRow("J 1234", 4660, null)]
+        [DataRow("j :1234", 1234, null)]
+        [DataRow("j:1234", 1234, null)]
         [DataRow("j MySymbol", 0, "MySymbol")]
         public void JumpParsingWorks(string source, int address, string symbol)
         {
@@ -393,6 +405,238 @@ namespace Spect.Net.CommandParser.Test
                 command.Address.ShouldBe((ushort)address);
             }
         }
+
+        [TestMethod]
+        [DataRow("mb 1234 234C", 4660, 9036, null, null, "B")]
+        [DataRow("mB 1234 234C", 4660, 9036, null, null, "B")]
+        [DataRow("Mb 1234 234C", 4660, 9036, null, null, "B")]
+        [DataRow("MB 1234 234C", 4660, 9036, null, null, "B")]
+        [DataRow("mb start 234C", 0, 9036, "START", null, "B")]
+        [DataRow("mb 1234 end", 4660, 0, null, "END", "B")]
+        [DataRow("mb start end", 0, 0, "START", "END", "B")]
+        [DataRow("md 1234 234C", 4660, 9036, null, null, "D")]
+        [DataRow("mD 1234 234C", 4660, 9036, null, null, "D")]
+        [DataRow("Md 1234 234C", 4660, 9036, null, null, "D")]
+        [DataRow("MD 1234 234C", 4660, 9036, null, null, "D")]
+        [DataRow("md start 234C", 0, 9036, "START", null, "D")]
+        [DataRow("md 1234 end", 4660, 0, null, "END", "D")]
+        [DataRow("md start end", 0, 0, "START", "END", "D")]
+        [DataRow("mw 1234 234C", 4660, 9036, null, null, "W")]
+        [DataRow("mW 1234 234C", 4660, 9036, null, null, "W")]
+        [DataRow("Mw 1234 234C", 4660, 9036, null, null, "W")]
+        [DataRow("MW 1234 234C", 4660, 9036, null, null, "W")]
+        [DataRow("mw start 234C", 0, 9036, "START", null, "W")]
+        [DataRow("mw 1234 end", 4660, 0, null, "END", "W")]
+        [DataRow("mw start end", 0, 0, "START", "END", "W")]
+        [DataRow("ms 1234 234C", 4660, 9036, null, null, "S")]
+        [DataRow("mS 1234 234C", 4660, 9036, null, null, "S")]
+        [DataRow("Ms 1234 234C", 4660, 9036, null, null, "S")]
+        [DataRow("MS 1234 234C", 4660, 9036, null, null, "S")]
+        [DataRow("ms start 234C", 0, 9036, "START", null, "S")]
+        [DataRow("ms 1234 end", 4660, 0, null, "END", "S")]
+        [DataRow("ms start end", 0, 0, "START", "END", "S")]
+        [DataRow("mc 1234 234C", 4660, 9036, null, null, "C")]
+        [DataRow("mC 1234 234C", 4660, 9036, null, null, "C")]
+        [DataRow("Mc 1234 234C", 4660, 9036, null, null, "C")]
+        [DataRow("MC 1234 234C", 4660, 9036, null, null, "C")]
+        [DataRow("mc start 234C", 0, 9036, "START", null, "C")]
+        [DataRow("mc 1234 end", 4660, 0, null, "END", "C")]
+        [DataRow("mc start end", 0, 0, "START", "END", "C")]
+        [DataRow("mc :1234 end", 1234, 0, null, "END", "C")]
+        [DataRow("mc:1234 end", 1234, 0, null, "END", "C")]
+        public void SectionParsingWorks(string source, int startAddress, int endAddress, 
+            string startSymbol, string endSymbol, string type)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as SectionToolCommand;
+            command.ShouldNotBeNull();
+            if (startSymbol != null)
+            {
+                command.StartSymbol.ToUpper().ShouldBe(startSymbol.ToUpper());
+            }
+            else
+            {
+                command.StartAddress.ShouldBe((ushort)startAddress);
+            }
+            if (endSymbol != null)
+            {
+                command.EndSymbol.ToUpper().ShouldBe(endSymbol.ToUpper());
+            }
+            else
+            {
+                command.EndAddress.ShouldBe((ushort)endAddress);
+            }
+            command.Type.ShouldBe(type);
+        }
+
+        [TestMethod]
+        [DataRow("+HL==5", "HL==5")]
+        [DataRow("+ HL==5", "HL==5")]
+        public void AddWatchParsingWorks(string source, string watch)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as AddWatchToolCommand;
+            command.ShouldNotBeNull();
+            command.Condition.ShouldBe(watch);
+        }
+
+        [TestMethod]
+        [DataRow("-1234", 4660)]
+        [DataRow("-:1234", 1234)]
+        public void RemoveWatchParsingWorks(string source, int index)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as RemoveWatchToolCommand;
+            command.ShouldNotBeNull();
+            command.Index.ShouldBe((ushort)index);
+        }
+
+        [TestMethod]
+        [DataRow("* 1234 HL==5", 4660, "HL==5")]
+        [DataRow("* :1234 HL==5", 1234, "HL==5")]
+        [DataRow("*:1234 HL==5", 1234, "HL==5")]
+        public void UpdateWatchParsingWorks(string source, int index, string watch)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as UpdateWatchToolCommand;
+            command.ShouldNotBeNull();
+            command.Index.ShouldBe((ushort)index);
+            command.Condition.ShouldBe(watch);
+        }
+
+        [TestMethod]
+        [DataRow("lw 1234", 4660)]
+        [DataRow("LW :1234", 1234)]
+        [DataRow("Lw:1234", 1234)]
+        public void LabelWidthParsingWorks(string source, int width)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as LabelWidthToolCommand;
+            command.ShouldNotBeNull();
+            command.Width.ShouldBe((ushort)width);
+        }
+
+        [TestMethod]
+        [DataRow("xw 1234 :1234", 4660, 1234)]
+        [DataRow("xw:1234 1234", 1234, 4660)]
+        public void ExchangeWatchParsingWorks(string source, int from, int to)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as ExchangeWatchToolCommand;
+            command.ShouldNotBeNull();
+            command.From.ShouldBe((ushort)from);
+            command.To.ShouldBe((ushort)to);
+        }
+
+        [TestMethod]
+        [DataRow("ew")]
+        [DataRow("eW")]
+        [DataRow("Ew")]
+        [DataRow("EW")]
+        public void EraseAllWatchParsingWorks(string source)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as EraseAllWatchToolCommand;
+            command.ShouldNotBeNull();
+        }
+
+
+        [TestMethod]
+        [DataRow("g1234", "G 1234")]
+        [DataRow("GY1234", null)]
+        [DataRow("R1234", "R 1234")]
+        [DataRow("RY1234", null)]
+        [DataRow("b1234", "B 1234")]
+        [DataRow("bY1234", null)]
+        [DataRow("lw1234", "LW 1234")]
+        [DataRow("lwY1234", null)]
+        [DataRow("l1234", "L 1234")]
+        [DataRow("lY1234", null)]
+        [DataRow("c1234 comment", "C 1234 comment")]
+        [DataRow("CY1234 comment", null)]
+        [DataRow("d1234 #", "D 1234 #")]
+        [DataRow("DY1234 #", null)]
+        [DataRow("p1234 comment", "P 1234 comment")]
+        [DataRow("PY1234 comment", null)]
+        [DataRow("j1234", "J 1234")]
+        [DataRow("JY1234", null)]
+        [DataRow("mb1234 2345", "MB 1234 2345")]
+        [DataRow("mbY1234 2345", null)]
+        [DataRow("mD1234 2345", "MD 1234 2345")]
+        [DataRow("mdY1234 2345", null)]
+        [DataRow("mw1234 2345", "MW 1234 2345")]
+        [DataRow("mwY1234 2345", null)]
+        [DataRow("ms1234 2345", "MS 1234 2345")]
+        [DataRow("msY1234 2345", null)]
+        [DataRow("mc1234 2345", "MC 1234 2345")]
+        [DataRow("mCY1234 2345", null)]
+        [DataRow("sb1234 H>3 C HL==5", "SB 1234 H>3 C HL==5")]
+        [DataRow("sby1234 H>3 C HL==5", null)]
+        [DataRow("ub1234", "UB 1234")]
+        [DataRow("uby1234", null)]
+        [DataRow("tb1234", "TB 1234")]
+        [DataRow("tby1234", null)]
+        [DataRow("rb1234", "RB 1234")]
+        [DataRow("rby1234", null)]
+        [DataRow("t48", "T 48")]
+        [DataRow("ty48", null)]
+        [DataRow("rl1234", "RL 1234")]
+        [DataRow("rly1234", null)]
+        [DataRow("rc1234", "RC 1234")]
+        [DataRow("rcy1234", null)]
+        [DataRow("rp1234", "RP 1234")]
+        [DataRow("rpy1234", null)]
+        [DataRow("rb1234", "RB 1234")]
+        [DataRow("rby1234", null)]
+        [DataRow("xw1234 :2345", "XW 1234 :2345")]
+        [DataRow("xwy1234 :2345", null)]
+        public void CompactParsingWorks(string source, string expected)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as CompactToolCommand;
+            command.ShouldNotBeNull();
+            if (expected != null)
+            {
+                command.CommandText.ShouldBe(expected);
+            }
+            else
+            {
+                command.HasSemanticError.ShouldBeTrue();
+            }
+        }
+
 
     }
 }

@@ -22,11 +22,6 @@ namespace Spect.Net.CommandParser
                 return new GotoToolCommand(context.gotoCommand());
             }
 
-            if (context.gotoSymbolCommand() != null)
-            {
-                return new GotoSymbolToolCommand(context.gotoSymbolCommand());
-            }
-
             if (context.romPageCommand() != null)
             {
                 return new RomPageToolCommand(context.romPageCommand());
@@ -105,6 +100,51 @@ namespace Spect.Net.CommandParser
             if (context.jumpCommand() != null)
             {
                 return new JumpToolCommand(context.jumpCommand());
+            }
+
+            if (context.sectionCommand() != null)
+            {
+                return new SectionToolCommand(context.sectionCommand());
+            }
+
+            if (context.compactCommand() != null)
+            {
+                return new CompactToolCommand(context.compactCommand());
+            }
+
+            if (context.compactCommand() != null)
+            {
+                return new CompactToolCommand(context.compactCommand());
+            }
+
+            if (context.addWatchCommand() != null)
+            {
+                return new AddWatchToolCommand(context.addWatchCommand());
+            }
+
+            if (context.removeWatchCommand() != null)
+            {
+                return new RemoveWatchToolCommand(context.removeWatchCommand());
+            }
+
+            if (context.updateWatchCommand() != null)
+            {
+                return new UpdateWatchToolCommand(context.updateWatchCommand());
+            }
+
+            if (context.labelWidthCommand() != null)
+            {
+                return new LabelWidthToolCommand(context.labelWidthCommand());
+            }
+
+            if (context.exchangeWatchCommand() != null)
+            {
+                return new ExchangeWatchToolCommand(context.exchangeWatchCommand());
+            }
+
+            if (context.eraseAllWatchCommand() != null)
+            {
+                return new EraseAllWatchToolCommand();
             }
 
             return null;
