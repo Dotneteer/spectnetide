@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Microsoft.VisualStudio.TextManager.Interop;
 using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.Wpf.Mvvm;
 

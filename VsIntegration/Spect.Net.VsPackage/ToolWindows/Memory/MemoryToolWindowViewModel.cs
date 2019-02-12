@@ -134,7 +134,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             }
             if (command == null || command.HasSemanticError)
             {
-                validationMessage = "Invalid command syntax";
+                validationMessage = INV_SYNTAX;
                 return false;
             }
 
@@ -204,6 +204,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     }
                     SetFullViewMode();
                     break;
+                default:
+                    validationMessage = string.Format(INV_CONTEXT, "ZX Spectrum Memory window");
+                    return false;
             }
             return true;
         }

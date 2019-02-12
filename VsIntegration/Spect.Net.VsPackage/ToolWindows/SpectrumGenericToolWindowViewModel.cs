@@ -17,8 +17,10 @@ namespace Spect.Net.VsPackage.ToolWindows
         private int _screenRefreshCount;
 
         // --- Constants used by commands
+        protected const string INV_SYNTAX = "Invalid command syntax";
         protected const string INV_S48_COMMAND = "This command cannot be used for a Spectrum 48K model.";
         protected const string INV_RUN_COMMAND = "This command can only be used when the virtual machine is running.";
+        protected const string INV_CONTEXT = "This command cannot be used in {0}.";
         protected const string UNDEF_SYMBOL = "This command uses an undefined symbol ({0}).";
 
         /// <summary>

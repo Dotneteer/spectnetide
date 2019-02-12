@@ -192,8 +192,6 @@
     <Compile Include="Commands\InsertDriveACommand.cs" />
     <Compile Include="Commands\EjectFloppyCommand.cs" />
     <Compile Include="ToolWindows\Watch\SymbolAwareSpectrumEvaluationContext.cs" />
-    <Compile Include="ToolWindows\Watch\WatchCommandParser.cs" />
-    <Compile Include="ToolWindows\Watch\WatchCommandType.cs" />
     <Compile Include="ToolWindows\Watch\WatchItemControl.xaml.cs">
       <DependentUpon>WatchItemControl.xaml</DependentUpon>
     </Compile>

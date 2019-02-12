@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using Antlr4.Runtime;
+using Spect.Net.CommandParser.SyntaxTree;
 using Spect.Net.EvalParser;
 using Spect.Net.EvalParser.Generated;
 using Spect.Net.EvalParser.SyntaxTree;
@@ -12,7 +13,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
     /// <summary>
     /// This view model represents the watch view's data and behavior
     /// </summary>
-    public class WatchToolWindowViewModel : SpectrumGenericToolWindowViewModel
+    public class WatchToolWindowViewModel : BankAwareToolWindowViewModelBase
     {
         private const int MIN_LABEL_WIDTH = 40;
 
@@ -138,16 +139,23 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         public bool ProcessCommandline(string commandText, out string validationMessage)
         {
             validationMessage = null;
-            var parser = new WatchCommandParser(commandText);
-            switch (parser.Command)
-            {
-                case WatchCommandType.Invalid:
-                    validationMessage = "Invalid command syntax";
-                    return false;
+            //var parser = new WatchCommandParser(commandText);
 
-                case WatchCommandType.AddWatch:
-                    // --- Parse the given expression
-                    if (!PrepareWatchItem(parser.Arg1, ref validationMessage, out var newItem))
+            var command = ParseCommand(commandText);
+            if (command is CompactToolCommand compactCommand)
+            {
+                command = ParseCommand(compactCommand.CommandText);
+            }
+            if (command == null || command.HasSemanticError)
+            {
+                validationMessage = "Invalid command syntax";
+                return false;
+            }
+
+            switch (command)
+            {
+                case AddWatchToolCommand addWatchCommand:
+                    if (!PrepareWatchItem(addWatchCommand.Condition, ref validationMessage, out var newItem))
                     {
                         return false;
                     }
@@ -160,8 +168,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     }
                     break;
 
-                case WatchCommandType.RemoveWatch:
-                    var index = parser.Address - 1;
+                case RemoveWatchToolCommand removeWatchCommand:
+                    var index = removeWatchCommand.Index - 1;
                     if (index >= 0 && index < WatchItems.Count)
                     {
                         WatchItems.RemoveAt(index);
@@ -169,12 +177,12 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     }
                     break;
 
-                case WatchCommandType.UpdateWatch:
-                    if (!PrepareWatchItem(parser.Arg1, ref validationMessage, out var updatedItem))
+                case UpdateWatchToolCommand updateWatchCommand:
+                    if (!PrepareWatchItem(updateWatchCommand.Condition, ref validationMessage, out var updatedItem))
                     {
                         return false;
                     }
-                    index = parser.Address - 1;
+                    index = updateWatchCommand.Index - 1;
                     if (index < 0 || index >= WatchItems.Count)
                     {
                         validationMessage = $"The index value must be between 1 and {WatchItems.Count}.";
@@ -189,13 +197,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     }
                     break;
 
-                case WatchCommandType.EraseAll:
+                case EraseAllWatchToolCommand _:
                     WatchItems.Clear();
                     break;
 
-                case WatchCommandType.MoveItem:
-                    var index1 = parser.Address;
-                    var index2 = parser.Address2;
+                case ExchangeWatchToolCommand exchangeWatchCommand:
+                    var index1 = exchangeWatchCommand.From;
+                    var index2 = exchangeWatchCommand.To;
                     if (index1 < 1 || index1 > WatchItems.Count || index2 < 1 || index2 > WatchItems.Count)
                     {
                         validationMessage = $"Index values must be between 1 and {WatchItems.Count}.";
@@ -210,11 +218,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
                     RefreshWatchItems();
                     break;
 
-                case WatchCommandType.ChangeLabelWidth:
-                    LabelWidth = parser.Address < MIN_LABEL_WIDTH ? MIN_LABEL_WIDTH : parser.Address;
+                case LabelWidthToolCommand labelWidthCommand:
+                    LabelWidth = labelWidthCommand.Width < MIN_LABEL_WIDTH
+                        ? MIN_LABEL_WIDTH : labelWidthCommand.Width;
                     break;
 
                 default:
+                    validationMessage = string.Format(INV_CONTEXT, "Watch Memory window");
                     return false;
             }
             return true;
