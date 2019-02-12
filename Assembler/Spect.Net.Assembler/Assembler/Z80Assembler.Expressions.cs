@@ -176,7 +176,7 @@ namespace Spect.Net.Assembler.Assembler
         #region Evaluation methods
 
         /// <summary>
-        /// Sets the current value of the symbol to the specified van
+        /// Sets the current value of the symbol to the specified value
         /// </summary>
         /// <param name="symbol">Symbol name</param>
         /// <param name="value">Symbol value</param>

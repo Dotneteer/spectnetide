@@ -1,8 +1,5 @@
 ﻿using System;
-using Antlr4.Runtime;
-using Spect.Net.CommandParser;
-using Spect.Net.CommandParser.Generated;
-using Spect.Net.CommandParser.SyntaxTree;
+using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Z80Programs;
 using MachineViewModel = Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.MachineViewModel;
@@ -62,7 +59,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Compiler output
         /// </summary>
-        public Assembler.Assembler.AssemblerOutput CompilerOutput { get; protected set; }
+        public AssemblerOutput CompilerOutput { get; protected set; }
 
         /// <summary>
         /// Represents the event when the screen has been refreshed.
@@ -185,59 +182,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         protected virtual void OnScreenRefreshed()
         {
-        }
-
-        /// <summary>
-        /// Parses the specified command
-        /// </summary>
-        /// <param name="commandText">Text to parse</param>
-        /// <returns>Parsed command node, if successful; otherwise, null</returns>
-        public ToolCommandNode ParseCommand(string commandText)
-        {
-            var inputStream = new AntlrInputStream(commandText);
-            var lexer = new CommandToolLexer(inputStream);
-            var tokenStream = new CommonTokenStream(lexer);
-            var parser = new CommandToolParser(tokenStream);
-            var context = parser.toolCommand();
-            var visitor = new CommandToolVisitor();
-            return parser.SyntaxErrors.Count > 0 
-                ? null 
-                : (ToolCommandNode) visitor.VisitToolCommand(context);
-        }
-
-        /// <summary>
-        /// Resolves the value of the specified symbol
-        /// </summary>
-        /// <param name="symbol">Symbol to resolve</param>
-        /// <param name="value">The resolved value</param>
-        /// <returns>True, if resolution is successful; otherwise, false</returns>
-        public bool ResolveSymbol(string symbol, out ushort value)
-        {
-            value = 0;
-
-            // --- #1: check the compiled code
-            if (CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue))
-            {
-                value = symbolValue;
-                return true;
-            }
-
-            //// #2: Check user defined RAM annotations
-            //var labelAddrs = AnnotationHandler.RamBankAnnotations[0].Labels
-            //    .Where(kp =>
-            //        string.Compare(kp.Value, parser.Arg1, StringComparison.InvariantCultureIgnoreCase) == 0)
-            //    .Select(kp => kp.Key)
-            //    .ToList();
-            //if (labelAddrs.Count > 0)
-            //{
-            //    // --- Address found in the current ROM
-            //    address = (ushort)(labelAddrs[0] + 0x4000);
-            //    break;
-            //}
-
-            // TODO: #3: Check ROM annotations
-
-            return false;
         }
 
         #endregion

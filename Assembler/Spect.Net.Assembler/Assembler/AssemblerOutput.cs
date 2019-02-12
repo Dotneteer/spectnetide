@@ -21,6 +21,12 @@ namespace Spect.Net.Assembler.Assembler
             new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
+        /// The reverse symbol table to resolve addresses to symbol names
+        /// </summary>
+        public Dictionary<ushort, List<string>> SymbolMap { get; } = 
+            new Dictionary<ushort, List<string>>();
+
+        /// <summary>
         /// The variable table
         /// </summary>
         public Dictionary<string, ExpressionValue> Vars { get; } =
@@ -119,6 +125,24 @@ namespace Spect.Net.Assembler.Assembler
             else
             {
                 AddressMap[sourceInfo] = new List<ushort> {address};
+            }
+        }
+
+        /// <summary>
+        /// Creates a symbol map to get symbol names by address
+        /// </summary>
+        public void CreateSymbolMap()
+        {
+            foreach (var pair in Symbols)
+            {
+                if (!pair.Value.IsValid) continue;
+                var address = pair.Value.AsWord();
+                if (!SymbolMap.TryGetValue(address, out var symbolList))
+                {
+                    symbolList = new List<string>();
+                    SymbolMap[address] = symbolList;
+                }
+                symbolList.Add(pair.Key);
             }
         }
     }

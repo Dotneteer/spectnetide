@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -27,7 +28,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <summary>
         /// The parent view model
         /// </summary>
-        public DisassemblyToolWindowViewModel Parent { get; }
+        public BankAwareToolWindowViewModelBase Parent { get; }
 
         /// <summary>
         /// Annotations for ROM pages
@@ -53,7 +54,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// Initializes a new instance of the this class.
         /// </summary>
         /// <param name="parent">Parent view model</param>
-        public DisassemblyAnnotationHandler(DisassemblyToolWindowViewModel parent)
+        public DisassemblyAnnotationHandler(BankAwareToolWindowViewModelBase parent)
         {
             Parent = parent;
 
@@ -202,16 +203,19 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         /// <param name="address">Disassembly item address</param>
         /// <param name="literalName">Literal name</param>
+        /// <param name="lineIndexes">Indexes for disassembly lines</param>
+        /// <param name="disassemblyItems">All disassembly items</param>
         /// <returns>Null, if operation id ok, otherwise, error message</returns>
         /// <remarks>If the literal already exists, it must have the symbol's value.</remarks>
-        public string ApplyLiteral(ushort address, string literalName)
+        public string ApplyLiteral(ushort address, string literalName, 
+            Dictionary<ushort, int> lineIndexes, Collection<DisassemblyItemViewModel> disassemblyItems)
         {
-            if (!Parent.LineIndexes.TryGetValue(address, out int lineIndex))
+            if (!lineIndexes.TryGetValue(address, out int lineIndex))
             {
                 return $"No disassembly line is associated with address #{address:X4}";
             }
 
-            var disassItem = Parent.DisassemblyItems[lineIndex];
+            var disassItem = disassemblyItems[lineIndex];
             if (!disassItem.Item.HasSymbol)
             {
                 return $"Disassembly line #{address:X4} does not have an associated value to replace";

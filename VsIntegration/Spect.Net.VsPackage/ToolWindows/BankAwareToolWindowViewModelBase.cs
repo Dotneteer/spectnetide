@@ -1,15 +1,35 @@
-﻿namespace Spect.Net.VsPackage.ToolWindows
+﻿using System;
+using System.Linq;
+using Antlr4.Runtime;
+using Spect.Net.CommandParser;
+using Spect.Net.CommandParser.Generated;
+using Spect.Net.CommandParser.SyntaxTree;
+using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.VsPackage.ToolWindows.Disassembly;
+// ReSharper disable IdentifierTypo
+
+namespace Spect.Net.VsPackage.ToolWindows
 {
     /// <summary>
     /// This view model is the base of the view models that manage memory
     /// </summary>
-    public class BankAwareToolWindowViewModelBase : SpectrumGenericToolWindowViewModel
+    public abstract class BankAwareToolWindowViewModelBase : SpectrumGenericToolWindowViewModel
     {
         private bool _fullViewMode;
         private bool _romViewMode;
         private bool _ramBankViewMode;
         private int _romIndex;
         private int _ramBankIndex;
+
+        /// <summary>
+        /// Stores the object that handles annotations and their persistence
+        /// </summary>
+        public static DisassemblyAnnotationHandler AnnotationHandler { get; protected set; }
+
+        protected BankAwareToolWindowViewModelBase()
+        {
+            AnnotationHandler = new DisassemblyAnnotationHandler(this);
+        }
 
         /// <summary>
         /// The full 64K memory is displayed
@@ -266,6 +286,131 @@
 
             // --- The content at the address may change
             RefreshItem(addr);
+        }
+
+        /// <summary>
+        /// Gets the annotation for the specified address
+        /// </summary>
+        /// <param name="address">Flat memory address</param>
+        /// <param name="annAddr">Annotation address</param>
+        /// <returns>Annotations, if found; otherwise, null</returns>
+        public DisassemblyAnnotation GetAnnotationFor(ushort address, out ushort annAddr)
+        {
+            annAddr = address;
+            if (FullViewMode)
+            {
+                var memDevice = MachineViewModel.SpectrumVm.MemoryDevice;
+                var (isInRom, index, locAddress) = memDevice.GetAddressLocation(address);
+                annAddr = locAddress;
+                if (!isInRom) return GetRamBankAnnotation(index);
+
+                AnnotationHandler.RomPageAnnotations.TryGetValue(index, out var fullRomAnn);
+                return fullRomAnn;
+            }
+            if (RomViewMode)
+            {
+                AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn);
+                return romAnn;
+            }
+            return GetRamBankAnnotation(RamBankIndex);
+        }
+
+        /// <summary>
+        /// Gets the annotations for the specified RAM bank
+        /// </summary>
+        /// <param name="index">Ram bank index</param>
+        /// <returns></returns>
+        public DisassemblyAnnotation GetRamBankAnnotation(int index)
+        {
+            if (AnnotationHandler.RamBankAnnotations.TryGetValue(index, out var ramAnn))
+            {
+                return ramAnn;
+            }
+            var newBank = new DisassemblyAnnotation
+            {
+                MemoryMap =
+                {
+                    new MemorySection
+                    {
+                        StartAddress = 0,
+                        EndAddress = 0x3FFF,
+                        SectionType = MemorySectionType.ByteArray
+                    }
+                }
+            };
+            AnnotationHandler.RamBankAnnotations.Add(index, newBank);
+            return newBank;
+        }
+
+        /// <summary>
+        /// Parses the specified command
+        /// </summary>
+        /// <param name="commandText">Text to parse</param>
+        /// <returns>Parsed command node, if successful; otherwise, null</returns>
+        public ToolCommandNode ParseCommand(string commandText)
+        {
+            var inputStream = new AntlrInputStream(commandText);
+            var lexer = new CommandToolLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new CommandToolParser(tokenStream);
+            var context = parser.toolCommand();
+            var visitor = new CommandToolVisitor();
+            return parser.SyntaxErrors.Count > 0
+                ? null
+                : (ToolCommandNode)visitor.VisitToolCommand(context);
+        }
+
+        /// <summary>
+        /// Resolves the value of the specified symbol
+        /// </summary>
+        /// <param name="symbol">Symbol to resolve</param>
+        /// <param name="value">The resolved value</param>
+        /// <returns>True, if resolution is successful; otherwise, false</returns>
+        public bool ResolveSymbol(string symbol, out ushort value)
+        {
+            value = 0;
+
+            // --- #1: check the compiled code
+            if (CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue))
+            {
+                value = symbolValue;
+                return true;
+            }
+
+            // #2: Check user defined RAM annotations
+            var labelAddrs = AnnotationHandler.RamBankAnnotations[0].Labels
+                .Where(kp =>
+                    string.Compare(kp.Value, symbol, StringComparison.InvariantCultureIgnoreCase) == 0)
+                .Select(kp => kp.Key)
+                .ToList();
+            if (labelAddrs.Count > 0)
+            {
+                // --- Address found in the current RAM
+                value = (ushort)(labelAddrs[0] + 0x4000);
+                return true;
+            }
+
+            // #3: Check ROM annotations
+            var curRomIndex = MachineViewModel.SpectrumVm.MemoryDevice.GetSelectedRomIndex();
+            if (RomViewMode)
+            {
+                curRomIndex = RomIndex;
+            }
+
+            labelAddrs = AnnotationHandler.RomPageAnnotations[curRomIndex].Labels
+                .Where(kp =>
+                    string.Compare(kp.Value, symbol, StringComparison.InvariantCultureIgnoreCase) == 0)
+                .Select(kp => kp.Key)
+                .ToList();
+            if (labelAddrs.Count == 0)
+            {
+                // --- Symbol not found;
+                return false;
+            }
+
+            // --- Address found in the current ROM
+            value = labelAddrs[0];
+            return true;
         }
     }
 }

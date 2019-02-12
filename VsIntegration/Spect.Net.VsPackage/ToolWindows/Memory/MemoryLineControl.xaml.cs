@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -46,18 +47,29 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
 
         private void OnByteMouseEnter(object sender, MouseEventArgs e)
         {
-            if (sender is TextBlock tb)
+            if (!(sender is TextBlock tb)) return;
+
+            if (!(DataContext is MemoryLineViewModel ml)) return;
+            var addr = (int) tb.Tag;
+            var regs = ml.GetAffectedRegisters(addr);
+            byte.TryParse(tb.Text, NumberStyles.HexNumber, CultureInfo.CurrentUICulture, out var decValue);
+            var decString = decValue.ToString();
+            if (decValue != 0)
             {
-                if (!(DataContext is MemoryLineViewModel ml)) return;
-                var addr = (int) tb.Tag;
-                var regs = ml.GetAffectedRegisters(addr);
-                var toolTip = $"(${addr:X4}): ${tb.Text}";
-                if (regs.Count > 0)
-                {
-                    toolTip += "\n<-- " + string.Join(", ", regs);
-                }
-                tb.ToolTip = toolTip;
+                decString += "/" + (decValue - 256);
             }
+            var toolTip = $"(${addr:X4}): ${tb.Text} ({decString})";
+            if (regs.Count > 0)
+            {
+                toolTip += "\n<-- " + string.Join(", ", regs);
+            }
+
+            var symbols = ml.GetAffectedSymbols((ushort)addr);
+            if (symbols.Count > 0)
+            {
+                toolTip += "\n<-- " + string.Join(", ", symbols);
+            }
+            tb.ToolTip = toolTip;
         }
 
         private void OnByteMouseLeave(object sender, MouseEventArgs e)

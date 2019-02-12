@@ -7,6 +7,7 @@ using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Z80AsmParser = Spect.Net.Assembler.Generated.Z80AsmParser;
+// ReSharper disable StringLiteralTypo
 
 // ReSharper disable UsePatternMatching
 
@@ -54,7 +55,7 @@ namespace Spect.Net.Assembler.Assembler
         public event EventHandler<AssemblerMessageArgs> AssemblerMessageCreated;
 
         /// <summary>
-        /// Raises a new assembéer message
+        /// Raises a new assembler message
         /// </summary>
         /// <param name="message">Assembler message</param>
         protected virtual void OnAssemblerMessageCreated(string message)
@@ -134,6 +135,9 @@ namespace Spect.Net.Assembler.Assembler
                 _output.Segments.Clear();
             }
             PreprocessedLines = lines;
+
+            // --- Create symbol map
+            _output.CreateSymbolMap();
             return _output;
         }
 

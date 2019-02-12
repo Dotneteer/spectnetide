@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -17,6 +18,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
     {
         private static readonly Regex s_ColorSpecRegex = new Regex(@"^\s*#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$");
 
+        private static Brush s_SymbolBrush;
+        private static Brush s_AnnBrush;
         private static Brush s_BcBrush;
         private static Brush s_DeBrush;
         private static Brush s_HlBrush;
@@ -26,6 +29,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         private static Brush s_PcBrush;
 
         private readonly Registers _regs;
+        private BankAwareToolWindowViewModelBase _bankViewModel;
         private string _addr1;
         private string _value0;
         private string _value1;
@@ -78,6 +82,22 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         private int _tagD;
         private int _tagE;
         private int _tagF;
+        private Brush _symbolMark0;
+        private Brush _symbolMark1;
+        private Brush _symbolMark2;
+        private Brush _symbolMark3;
+        private Brush _symbolMark4;
+        private Brush _symbolMark5;
+        private Brush _symbolMark6;
+        private Brush _symbolMark7;
+        private Brush _symbolMark8;
+        private Brush _symbolMark9;
+        private Brush _symbolMarkA;
+        private Brush _symbolMarkB;
+        private Brush _symbolMarkC;
+        private Brush _symbolMarkD;
+        private Brush _symbolMarkE;
+        private Brush _symbolMarkF;
 
         /// <summary>
         /// Base address of the memory line
@@ -305,6 +325,102 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             set => Set(ref _markF, value);
         }
 
+        public Brush SymbolMark0
+        {
+            get => _symbolMark0;
+            set => Set(ref _symbolMark0, value);
+        }
+
+        public Brush SymbolMark1
+        {
+            get => _symbolMark1;
+            set => Set(ref _symbolMark1, value);
+        }
+
+        public Brush SymbolMark2
+        {
+            get => _symbolMark2;
+            set => Set(ref _symbolMark2, value);
+        }
+
+        public Brush SymbolMark3
+        {
+            get => _symbolMark3;
+            set => Set(ref _symbolMark3, value);
+        }
+
+        public Brush SymbolMark4
+        {
+            get => _symbolMark4;
+            set => Set(ref _symbolMark4, value);
+        }
+
+        public Brush SymbolMark5
+        {
+            get => _symbolMark5;
+            set => Set(ref _symbolMark5, value);
+        }
+
+        public Brush SymbolMark6
+        {
+            get => _symbolMark6;
+            set => Set(ref _symbolMark6, value);
+        }
+
+        public Brush SymbolMark7
+        {
+            get => _symbolMark7;
+            set => Set(ref _symbolMark7, value);
+        }
+
+        public Brush SymbolMark8
+        {
+            get => _symbolMark8;
+            set => Set(ref _symbolMark8, value);
+        }
+
+        public Brush SymbolMark9
+        {
+            get => _symbolMark9;
+            set => Set(ref _symbolMark9, value);
+        }
+
+        public Brush SymbolMarkA
+        {
+            get => _symbolMarkA;
+            set => Set(ref _symbolMarkA, value);
+        }
+
+        public Brush SymbolMarkB
+        {
+            get => _symbolMarkB;
+            set => Set(ref _symbolMarkB, value);
+        }
+
+        public Brush SymbolMarkC
+        {
+            get => _symbolMarkC;
+            set => Set(ref _symbolMarkC, value);
+        }
+
+        public Brush SymbolMarkD
+        {
+            get => _symbolMarkD;
+            set => Set(ref _symbolMarkD, value);
+        }
+
+        public Brush SymbolMarkE
+        {
+            get => _symbolMarkE;
+            set => Set(ref _symbolMarkE, value);
+        }
+
+        public Brush SymbolMarkF
+        {
+            get => _symbolMarkF;
+            set => Set(ref _symbolMarkF, value);
+        }
+        
         public int Tag0
         {
             get => _tag0;
@@ -401,6 +517,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             set => Set(ref _tagF, value);
         }
 
+        // ReSharper disable once UnusedMember.Global
         public MemoryLineViewModel()
         {
             if (IsInDesignMode)
@@ -449,8 +566,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// Binds this memory line to the specified memory address
         /// </summary>
         /// <param name="memory">Memory array</param>
-        public void BindTo(byte[] memory)
+        /// <param name="bankViewModel">Optional view model to set symbol border</param>
+        public void BindTo(byte[] memory, BankAwareToolWindowViewModelBase bankViewModel = null)
         {
+            _bankViewModel = bankViewModel;
             Addr1 = BaseAddress.AsHexWord();
             Dump1 = DumpValue(memory, BaseAddress);
             Value0 = GetByte(memory, 0);
@@ -476,7 +595,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             Tag6 = BaseAddress + 6;
             Value7 = GetByte(memory, 7);
             Mark7 = GetBrush(7);
-            Tag7 = BaseAddress + 8;
+            Tag7 = BaseAddress + 7;
 
             if (BaseAddress + 8 > TopAddress) return;
 
@@ -506,6 +625,26 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             ValueF = GetByte(memory, 15);
             MarkF = GetBrush(15);
             TagF = BaseAddress + 15;
+
+            if (bankViewModel != null && BankAwareToolWindowViewModelBase.AnnotationHandler != null)
+            {
+                SymbolMark0 = GetSymbolBrush(bankViewModel, 0);
+                SymbolMark1 = GetSymbolBrush(bankViewModel, 1);
+                SymbolMark2 = GetSymbolBrush(bankViewModel, 2);
+                SymbolMark3 = GetSymbolBrush(bankViewModel, 3);
+                SymbolMark4 = GetSymbolBrush(bankViewModel, 4);
+                SymbolMark5 = GetSymbolBrush(bankViewModel, 5);
+                SymbolMark6 = GetSymbolBrush(bankViewModel, 6);
+                SymbolMark7 = GetSymbolBrush(bankViewModel, 7);
+                SymbolMark8 = GetSymbolBrush(bankViewModel, 8);
+                SymbolMark9 = GetSymbolBrush(bankViewModel, 9);
+                SymbolMarkA = GetSymbolBrush(bankViewModel, 10);
+                SymbolMarkB = GetSymbolBrush(bankViewModel, 11);
+                SymbolMarkC = GetSymbolBrush(bankViewModel, 12);
+                SymbolMarkD = GetSymbolBrush(bankViewModel, 13);
+                SymbolMarkE = GetSymbolBrush(bankViewModel, 14);
+                SymbolMarkF = GetSymbolBrush(bankViewModel, 15);
+            }
         }
 
         public List<string> GetAffectedRegisters(int address)
@@ -524,11 +663,36 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             return result;
         }
 
+        public List<string> GetAffectedSymbols(ushort address)
+        {
+            var result = new List<string>();
+            if (_bankViewModel == null) return result;
+            if (_bankViewModel.CompilerOutput != null)
+            {
+                if (_bankViewModel.CompilerOutput.SymbolMap.TryGetValue(address, out var symbolList))
+                {
+                    result.AddRange(symbolList);
+                }
+            }
+
+            if (BankAwareToolWindowViewModelBase.AnnotationHandler != null)
+            {
+                var ann = _bankViewModel.GetAnnotationFor(address, out var memAddress);
+                if (ann != null && ann.Labels.TryGetValue(memAddress, out var symbol))
+                {
+                    result.Add(symbol);
+                }
+            }
+            return result.Distinct().OrderBy(item => item).ToList();
+        }
+
         /// <summary>
         /// Refreshes the register highlight brush colors from SpectNet options
         /// </summary>
         public static void RefreshRegisterBrushes()
         {
+            s_SymbolBrush = GetBrushFromColor(SpectNetPackage.Default.Options.SymbolColor);
+            s_AnnBrush = GetBrushFromColor(SpectNetPackage.Default.Options.AnnotationColor);
             s_BcBrush = GetBrushFromColor(SpectNetPackage.Default.Options.BcColor);
             s_DeBrush = GetBrushFromColor(SpectNetPackage.Default.Options.DeColor);
             s_HlBrush = GetBrushFromColor(SpectNetPackage.Default.Options.HlColor);
@@ -597,6 +761,20 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 if (_regs.SP == addr) return s_SpBrush;
             }
             return Brushes.Transparent;
+        }
+
+        private Brush GetSymbolBrush(BankAwareToolWindowViewModelBase vm, int offset)
+        {
+            var addr = (ushort)(BaseAddress + offset);
+            if (vm.CompilerOutput?.SymbolMap.ContainsKey(addr) == true)
+            {
+                return s_SymbolBrush;
+            }
+
+            var ann = vm.GetAnnotationFor(addr, out var memAddress);
+            return ann != null && ann.Labels.ContainsKey(memAddress) 
+                ? s_AnnBrush 
+                : Brushes.Transparent;
         }
     }
 }

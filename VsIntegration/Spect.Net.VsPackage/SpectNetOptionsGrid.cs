@@ -233,6 +233,15 @@ namespace Spect.Net.VsPackage
         [Description("Background color used for the Program Counter (#rrggbb)")]
         public string PcColor { get; set; } = @"#ffff00";
 
+        [Category("Memory View")]
+        [DisplayName("Symbol Border Color")]
+        [Description("Border color for memory pointing to a symbol (#rrggbb)")]
+        public string SymbolColor { get; set; } = @"OrangeRed";
+
+        [Category("Memory View")]
+        [DisplayName("Annotation Border Color")]
+        [Description("Border color for memory pointing to an annotation label (#rrggbb)")]
+        public string AnnotationColor { get; set; } = @"Green";
 
         /// <summary>
         /// Signs that the keyboard layout type has changed

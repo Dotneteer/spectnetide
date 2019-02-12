@@ -72,7 +72,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 }
             }
             var memLine = new MemoryLineViewModel(regs, addr);
-            memLine.BindTo(memory);
+            memLine.BindTo(memory, this);
             var lineNo = addr >> 4;
             if (lineNo < MemoryLines.Count)
             {
@@ -229,7 +229,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             for (var i = 0; i < length; i+= 16)
             {
                 var line = new MemoryLineViewModel(regs, (ushort)i);
-                line.BindTo(memory);
+                line.BindTo(memory, this);
                 MemoryLines.Add(line);
             }
         }

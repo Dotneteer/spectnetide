@@ -41,14 +41,30 @@
                     <ColumnDefinition Width="96"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="{Binding Addr1}" Style="{DynamicResource Z80HilitedText}" />
-                <TextBlock Grid.Column="1" x:Name="Byte0" Text="{Binding Value0}" Style="{DynamicResource MemData}" Background="{Binding Mark0}" Tag="{Binding Tag0}" />
-                <TextBlock Grid.Column="2" x:Name="Byte1" Text="{Binding Value1}" Style="{DynamicResource MemData}" Background="{Binding Mark1}" Tag="{Binding Tag1}" />
-                <TextBlock Grid.Column="3" x:Name="Byte2" Text="{Binding Value2}" Style="{DynamicResource MemData}" Background="{Binding Mark2}" Tag="{Binding Tag2}" />
-                <TextBlock Grid.Column="4" x:Name="Byte3" Text="{Binding Value3}" Style="{DynamicResource MemData}" Background="{Binding Mark3}" Tag="{Binding Tag3}" />
-                <TextBlock Grid.Column="5" x:Name="Byte4" Text="{Binding Value4}" Style="{DynamicResource MemData}" Background="{Binding Mark4}" Tag="{Binding Tag4}" />
-                <TextBlock Grid.Column="6" x:Name="Byte5" Text="{Binding Value5}" Style="{DynamicResource MemData}" Background="{Binding Mark5}" Tag="{Binding Tag5}" />
-                <TextBlock Grid.Column="7" x:Name="Byte6" Text="{Binding Value6}" Style="{DynamicResource MemData}" Background="{Binding Mark6}" Tag="{Binding Tag6}" />
-                <TextBlock Grid.Column="8" x:Name="Byte7" Text="{Binding Value7}" Style="{DynamicResource MemData}" Background="{Binding Mark7}" Tag="{Binding Tag7}" />
+                <Border Grid.Column="1" BorderBrush="{Binding SymbolMark0}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte0" Text="{Binding Value0}" Style="{DynamicResource MemData}" Background="{Binding Mark0}" Tag="{Binding Tag0}" />
+                </Border>
+                <Border Grid.Column="2" BorderBrush="{Binding SymbolMark1}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte1" Text="{Binding Value1}" Style="{DynamicResource MemData}" Background="{Binding Mark1}" Tag="{Binding Tag1}" />
+                </Border>
+                <Border Grid.Column="3" BorderBrush="{Binding SymbolMark2}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte2" Text="{Binding Value2}" Style="{DynamicResource MemData}" Background="{Binding Mark2}" Tag="{Binding Tag2}" />
+                </Border>
+                <Border Grid.Column="4" BorderBrush="{Binding SymbolMark3}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte3" Text="{Binding Value3}" Style="{DynamicResource MemData}" Background="{Binding Mark3}" Tag="{Binding Tag3}" />
+                </Border>
+                <Border Grid.Column="5" BorderBrush="{Binding SymbolMark4}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte4" Text="{Binding Value4}" Style="{DynamicResource MemData}" Background="{Binding Mark4}" Tag="{Binding Tag4}" />
+                </Border>
+                <Border Grid.Column="6" BorderBrush="{Binding SymbolMark5}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte5" Text="{Binding Value5}" Style="{DynamicResource MemData}" Background="{Binding Mark5}" Tag="{Binding Tag5}" />
+                </Border>
+                <Border Grid.Column="7" BorderBrush="{Binding SymbolMark6}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte6" Text="{Binding Value6}" Style="{DynamicResource MemData}" Background="{Binding Mark6}" Tag="{Binding Tag6}" />
+                </Border>
+                <Border Grid.Column="8" BorderBrush="{Binding SymbolMark7}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte7" Text="{Binding Value7}" Style="{DynamicResource MemData}" Background="{Binding Mark7}" Tag="{Binding Tag7}" />
+                </Border>
                 <TextBlock Grid.Column="9" Text="{Binding Dump1}" Style="{DynamicResource MemDump}" />
             </Grid>
             <Grid>
@@ -65,14 +81,30 @@
                     <ColumnDefinition Width="96"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="{Binding Addr2}" Style="{DynamicResource Z80HilitedText}" />
-                <TextBlock Grid.Column="1" x:Name="Byte8" Text="{Binding Value8}" Style="{DynamicResource MemData}" Background="{Binding Mark8}" Tag="{Binding Tag8}" />
-                <TextBlock Grid.Column="2" x:Name="Byte9" Text="{Binding Value9}" Style="{DynamicResource MemData}" Background="{Binding Mark9}" Tag="{Binding Tag9}" />
-                <TextBlock Grid.Column="3" x:Name="ByteA" Text="{Binding ValueA}" Style="{DynamicResource MemData}" Background="{Binding MarkA}" Tag="{Binding TagA}" />
-                <TextBlock Grid.Column="4" x:Name="ByteB" Text="{Binding ValueB}" Style="{DynamicResource MemData}" Background="{Binding MarkB}" Tag="{Binding TagB}" />
-                <TextBlock Grid.Column="5" x:Name="ByteC" Text="{Binding ValueC}" Style="{DynamicResource MemData}" Background="{Binding MarkC}" Tag="{Binding TagC}" />
-                <TextBlock Grid.Column="6" x:Name="ByteD" Text="{Binding ValueD}" Style="{DynamicResource MemData}" Background="{Binding MarkD}" Tag="{Binding TagD}" />
-                <TextBlock Grid.Column="7" x:Name="ByteE" Text="{Binding ValueE}" Style="{DynamicResource MemData}" Background="{Binding MarkE}" Tag="{Binding TagE}" />
-                <TextBlock Grid.Column="8" x:Name="ByteF" Text="{Binding ValueF}" Style="{DynamicResource MemData}" Background="{Binding MarkF}" Tag="{Binding TagF}" />
+                <Border Grid.Column="1" BorderBrush="{Binding SymbolMark8}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte8" Text="{Binding Value8}" Style="{DynamicResource MemData}" Background="{Binding Mark8}" Tag="{Binding Tag8}" />
+                </Border>
+                <Border Grid.Column="2" BorderBrush="{Binding SymbolMark9}" BorderThickness="1" >
+                    <TextBlock x:Name="Byte9" Text="{Binding Value9}" Style="{DynamicResource MemData}" Background="{Binding Mark9}" Tag="{Binding Tag9}" />
+                </Border>
+                <Border Grid.Column="3" BorderBrush="{Binding SymbolMarkA}" BorderThickness="1" >
+                    <TextBlock x:Name="ByteA" Text="{Binding ValueA}" Style="{DynamicResource MemData}" Background="{Binding MarkA}" Tag="{Binding TagA}" />
+                </Border>
+                <Border Grid.Column="4" BorderBrush="{Binding SymbolMarkB}" BorderThickness="1" >
+                    <TextBlock x:Name="ByteB" Text="{Binding ValueB}" Style="{DynamicResource MemData}" Background="{Binding MarkB}" Tag="{Binding TagB}" />
+                </Border>
+                <Border Grid.Column="5" BorderBrush="{Binding SymbolMarkC}" BorderThickness="1" >
+                    <TextBlock x:Name="ByteC" Text="{Binding ValueC}" Style="{DynamicResource MemData}" Background="{Binding MarkC}" Tag="{Binding TagC}" />
+                </Border>
+                <Border Grid.Column="6" BorderBrush="{Binding SymbolMarkD}" BorderThickness="1" >
+                    <TextBlock x:Name="ByteD" Text="{Binding ValueD}" Style="{DynamicResource MemData}" Background="{Binding MarkD}" Tag="{Binding TagD}" />
+                </Border>
+                <Border Grid.Column="7" BorderBrush="{Binding SymbolMarkE}" BorderThickness="1" >
+                    <TextBlock x:Name="ByteE" Text="{Binding ValueE}" Style="{DynamicResource MemData}" Background="{Binding MarkE}" Tag="{Binding TagE}" />
+                </Border>
+                <Border Grid.Column="8" BorderBrush="{Binding SymbolMarkF}" BorderThickness="1" >
+                    <TextBlock x:Name="ByteF" Text="{Binding ValueF}" Style="{DynamicResource MemData}" Background="{Binding MarkF}" Tag="{Binding TagF}" />
+                </Border>
                 <TextBlock Grid.Column="9" Text="{Binding Dump2}" Style="{DynamicResource MemDump}" />
             </Grid>
         </WrapPanel>

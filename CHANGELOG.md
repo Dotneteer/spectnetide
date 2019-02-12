@@ -1,8 +1,11 @@
-### Version 1.15.1
+### Version 1.16.0
 __FIX__: Wrong ZX Spectrum keyboard labels fixed.  
 __CHANGE__: The default `Code.z80asm` template now displays "ZX Spectrum IDE" text.  
 __FIX__: The __`G`__ disassembly view command finds symbols pointing to the RAM.
-
+__FEATURE__: Now all commands (ZX Spectrum Memory, Watch Memory) accept decimal numbers
+and symbols (wherever reasonable).  
+__FEATURE__: ZX Spectrum Memory view now marks symbol and annotations links; displays decimal 
+value and symbol information.  
 
 ### Version 1.15.0
 __FEATURE__: You can add conditional breakpoints in the Disassembly tool window and in the source code.  

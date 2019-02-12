@@ -39,11 +39,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public Dictionary<ushort, int> LineIndexes { get; private set; }
 
         /// <summary>
-        /// Stores the object that handles annotations and their persistence
-        /// </summary>
-        public DisassemblyAnnotationHandler AnnotationHandler { get; private set; }
-
-        /// <summary>
         /// We can keep track of the top address
         /// </summary>
         public ushort? TopAddress { get; set; }
@@ -132,9 +127,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public bool ProcessCommandline(string commandText, out string validationMessage,
             out string newPrompt)
         {
-            const string INV_S48_COMMAND = "This command cannot be used for a Spectrum 48K model.";
-            const string INV_RUN_COMMAND = "This command can only be used when the virtual machine is running.";
-
             // --- Prepare command handling
             validationMessage = null;
             newPrompt = null;
@@ -482,62 +474,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             AnnotationHandler.SaveAnnotations(annotation, 0x0000);
         }
 
-        /// <summary>
-        /// Gets the annotation for the specified address
-        /// </summary>
-        /// <param name="address">Flat memory address</param>
-        /// <param name="annAddr">Annotation address</param>
-        /// <returns>Annotations, if found; otherwise, null</returns>
-        public DisassemblyAnnotation GetAnnotationFor(ushort address, out ushort annAddr)
-        {
-            annAddr = address;
-            if (FullViewMode)
-            {
-                var memDevice = MachineViewModel.SpectrumVm.MemoryDevice;
-                var locationInfo = memDevice.GetAddressLocation(address);
-                annAddr = locationInfo.Address;
-                if (locationInfo.IsInRom)
-                {
-                    AnnotationHandler.RomPageAnnotations.TryGetValue(locationInfo.Index, out var fullRomAnn);
-                    return fullRomAnn;
-                }
-                return GetRamBankAnnotation(locationInfo.Index);
-            }
-            if (RomViewMode)
-            {
-                AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn);
-                return romAnn;
-            }
-            return GetRamBankAnnotation(RamBankIndex);
-        }
-
-        /// <summary>
-        /// Gets the annotations for the specified RAM bank
-        /// </summary>
-        /// <param name="index">Ram bank index</param>
-        /// <returns></returns>
-        private DisassemblyAnnotation GetRamBankAnnotation(int index)
-        {
-            if (AnnotationHandler.RamBankAnnotations.TryGetValue(index, out var ramAnn))
-            {
-                return ramAnn;
-            }
-            var newBank = new DisassemblyAnnotation
-            {
-                MemoryMap =
-                {
-                    new MemorySection
-                    {
-                        StartAddress = 0,
-                        EndAddress = 0x3FFF,
-                        SectionType = MemorySectionType.ByteArray
-                    }
-                }
-            };
-            AnnotationHandler.RamBankAnnotations.Add(index, newBank);
-            return newBank;
-        }
-
         #endregion
 
         #region Overridden methods
@@ -837,7 +773,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             validationMessage = null;
             newPrompt = null;
-            var message = AnnotationHandler.ApplyLiteral(address, literalName);
+            var message = AnnotationHandler.ApplyLiteral(address, literalName, LineIndexes, DisassemblyItems);
             if (message == null) return true;
 
             if (message.StartsWith("%"))
