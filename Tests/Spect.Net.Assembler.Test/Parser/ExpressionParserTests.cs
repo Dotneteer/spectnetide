@@ -442,6 +442,42 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        [DataRow("12 <? 23", 12, 23)]
+        public void MinOperatorParsingWorks(string source, int leftOp, int rightOp)
+        {
+            // --- Act
+            var expr = ParseExpr(source);
+
+            // --- Assert
+            var literal = expr as MinOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.AsWord.ShouldBe((ushort)leftOp);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.AsWord.ShouldBe((ushort)rightOp);
+        }
+
+        [TestMethod]
+        [DataRow("12 >? 23", 12, 23)]
+        public void MaxOperatorParsingWorks(string source, int leftOp, int rightOp)
+        {
+            // --- Act
+            var expr = ParseExpr(source);
+
+            // --- Assert
+            var literal = expr as MaxOperationNode;
+            literal.ShouldNotBeNull();
+            var left = literal.LeftOperand as LiteralNode;
+            left.ShouldNotBeNull();
+            left.AsWord.ShouldBe((ushort)leftOp);
+            var right = literal.RightOperand as LiteralNode;
+            right.ShouldNotBeNull();
+            right.AsWord.ShouldBe((ushort)rightOp);
+        }
+
+        [TestMethod]
         public void UnaryPlusParsingWorks()
         {
             // --- Act
@@ -507,16 +543,63 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        public void IdentifierParsingWorks()
+        [DataRow("Symbol", "SYMBOL")]
+        [DataRow("@Symbol", "@SYMBOL")]
+        [DataRow("S@ymbol", "S@YMBOL")]
+        public void IdentifierParsingWorks(string source, string symbol)
         {
             // --- Act
-            var expr = ParseExpr("Symbol");
+            var expr = ParseExpr(source);
 
             // --- Assert
             var ident = expr as IdentifierNode;
             ident.ShouldNotBeNull();
-            ident.SymbolName.ShouldBe("SYMBOL");
+            ident.SymbolName.ShouldBe(symbol);
         }
+
+        [TestMethod]
+        [DataRow("Symbol::s1", "SYMBOL", "S1", null, null)]
+        [DataRow("@Symbol::s1::s2", "@SYMBOL", "S1", "S2", null)]
+        [DataRow("S@ymbol::s1::S2::S3", "S@YMBOL", "S1", "S2", "S3")]
+        public void ScopedIdentifierParsingWorks(string source, string symbol, string s1, string s2, string s3)
+        {
+            // --- Act
+            var expr = ParseExpr(source);
+
+            // --- Assert
+            var ident = expr as IdentifierNode;
+            ident.ShouldNotBeNull();
+            ident.SymbolName.ShouldBe(symbol);
+            if (s1 != null)
+            {
+                ident.ScopeSymbolNames[0].ShouldBe(s1);
+            }
+            if (s2 != null)
+            {
+                ident.ScopeSymbolNames[1].ShouldBe(s2);
+            }
+            if (s3 != null)
+            {
+                ident.ScopeSymbolNames[2].ShouldBe(s3);
+            }
+        }
+
+        [TestMethod]
+        [DataRow("Symbol", false)]
+        [DataRow("::@Symbol", true)]
+        [DataRow("@Symbol", false)]
+        [DataRow("::Symbol", true)]
+        public void IdentifierWithGlobalScopeParsingWorks(string source, bool global)
+        {
+            // --- Act
+            var expr = ParseExpr(source);
+
+            // --- Assert
+            var ident = expr as IdentifierNode;
+            ident.ShouldNotBeNull();
+            ident.StartFromGlobal.ShouldBe(global);
+        }
+
 
         [TestMethod]
         [DataRow("$")]

@@ -291,7 +291,11 @@ addExpr
 	;
 
 multExpr
-	: unaryExpr ((MULOP | DIVOP | MODOP) unaryExpr)*
+	: minMaxExpr ((MULOP | DIVOP | MODOP | MINOP | MAXOP) minMaxExpr)*
+	;
+
+minMaxExpr
+	: unaryExpr ((MINOP | MAXOP) unaryExpr)*
 	;
 
 unaryExpr
@@ -333,6 +337,7 @@ builtinFunctionInvocation
 literalExpr
 	: HEXNUM 
 	| DECNUM 
+	| OCTNUM
 	| CHAR
 	| BINNUM
 	| REALNUM
@@ -344,7 +349,7 @@ literalExpr
 	;
 
 symbolExpr
-	: IDENTIFIER
+	: DCOLON? IDENTIFIER ( DCOLON IDENTIFIER)*
 	;
 
 macroParam
@@ -384,7 +389,11 @@ mnemonic
  */
 
 COMMENT
-	:	SCOLON ~('\r' | '\n')*
+	:	(SCOLON | COMSEP) ~('\r' | '\n')*
+	;
+
+BLCOMMENT
+	:	'/*'  ~('\r' | '\n')* '*/' -> channel(HIDDEN)
 	;
 
 WS
@@ -398,7 +407,9 @@ NEWLINE
 // --- Common tokens
 // --- Other tokens
 COLON	: ':' ;
+DCOLON	: '::' ;
 SCOLON	: ';' ;
+COMSEP	: '//' ;
 COMMA	: ',' ;
 ASSIGN	: '=' ;
 LPAR	: '(' ;
@@ -424,6 +435,8 @@ RSHOP	: '>>' ;
 MULOP	: '*' ;
 DIVOP	: '/' ;
 MODOP	: '%' ;
+MINOP	: '<?' ;
+MAXOP	: '>?' ;
 TILDE	: '~';
 LDBRAC	: '{{' ;
 RDBRAC	: '}}' ;
@@ -635,12 +648,24 @@ ISEXPR: 'isexpr' | 'ISEXPR' ;
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?
 		| Digit HexDigit? HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
-BINNUM	: ('%'| ('0b' '_'?)) BinDigit BinDigit? BinDigit? BinDigit?
+
+BINNUM	: ('%'|'0b') '_'? BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
+		| '_'? BinDigit BinDigit? BinDigit? BinDigit?
+		  BinDigit? BinDigit? BinDigit? BinDigit?
+		  BinDigit? BinDigit? BinDigit? BinDigit?
+		  BinDigit? BinDigit? BinDigit? BinDigit? ('B' | 'b')
 		;
+
+OCTNUM	: OctDigit OctDigit? OctDigit?
+		  OctDigit? OctDigit? OctDigit? ('q' | 'Q' | 'o' | 'O' )
+		;
+
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
+
+CURADDR	: '$' | '.' ;
 
 REALNUM	: [0-9]* '.' [0-9]+ ExponentPart? 
 		| [0-9]+ ExponentPart;
@@ -657,10 +682,9 @@ FALSE	: 'false' | '.false' | 'FALSE' | '.FALSE' ;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
-IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
-IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+IDSTART	: '_' | '@' | 'A'..'Z' | 'a'..'z'	;
+IDCONT	: '_' | '@' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
-CURADDR	: '$' | '.' ;
 CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
 NONEARG	: '$<none>$' ;
 
@@ -703,8 +727,12 @@ fragment HexDigit
 	| [a-f]
 	;
 
+fragment OctDigit
+	: [0-7]
+	;
+
 fragment Digit 
-	: '0'..'9' 
+	: OctDigit | '8' | '9'
 	;
 
 fragment BinDigit

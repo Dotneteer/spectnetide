@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -6,9 +8,19 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
     public sealed class IdentifierNode : ExpressionNode
     {
         /// <summary>
+        /// Signs if identifier evaluation should start at the global scope.
+        /// </summary>
+        public bool StartFromGlobal { get; set; }
+
+        /// <summary>
         /// The name of the symbol
         /// </summary>
         public string SymbolName { get; set; }
+
+        /// <summary>
+        /// Symbol names within scopes
+        /// </summary>
+        public List<string> ScopeSymbolNames { get; set; }
 
         /// <summary>
         /// This property signs if an expression is ready to be evaluated,

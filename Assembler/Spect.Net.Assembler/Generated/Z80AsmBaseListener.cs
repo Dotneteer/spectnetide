@@ -1037,6 +1037,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitMultExpr([NotNull] Z80AsmParser.MultExprContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.minMaxExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.minMaxExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.unaryExpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

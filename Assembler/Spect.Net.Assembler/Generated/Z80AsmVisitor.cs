@@ -572,6 +572,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMultExpr([NotNull] Z80AsmParser.MultExprContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.minMaxExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.unaryExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

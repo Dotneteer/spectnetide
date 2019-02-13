@@ -376,6 +376,154 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        [DataRow("0 <? 3", 0)]
+        [DataRow("23 <? 12", 12)]
+        [DataRow("#8000 <? #4000", 0x4000)]
+        public void MinWithIntWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("false <? false", 0)]
+        [DataRow("false <? true", 0)]
+        [DataRow("true <? false", 0)]
+        [DataRow("true <? true", 1)]
+        public void MinWithBoolWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("false <? 123", 0)]
+        [DataRow("123 <? false", 0)]
+        [DataRow("true <? 123", 1)]
+        [DataRow("123 <? true", 1)]
+        public void MinWithIntAndBoolWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("0.0 <? 3.14", 0.0)]
+        [DataRow("1e1 <? 2e1", 1e1)]
+        [DataRow("1.2 <? 3.14e-1", 3.14e-1)]
+        public void MinWithRealWorkAsExpected(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("0.0 <? 3", 0.0)]
+        [DataRow("1e1 <? 20", 1e1)]
+        [DataRow("1.2 <? 1", 1)]
+        [DataRow("3 <? 0.0", 0.0)]
+        [DataRow("20 <? 1e1", 1e1)]
+        [DataRow("1 <? 1.2", 1)]
+        public void MinWithRealAndIntWorkAsExpected(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("0.0 <? false", 0.0)]
+        [DataRow("1e1 <? true", 1)]
+        [DataRow("1.2 <? true", 1)]
+        [DataRow("false <? 0.0", 0.0)]
+        [DataRow("true <? 1e1", 1)]
+        [DataRow("false <? 1.2", 0.0)]
+        public void MinWithRealAndBoolWorkAsExpected(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("true <? \"abc\"")]
+        [DataRow("1 <? \"abc\"")]
+        [DataRow("1.1 <? \"abc\"")]
+        [DataRow("\"abc\" <? false")]
+        [DataRow("\"abc\" <? 1")]
+        [DataRow("\"abc\" <? 1.1")]
+        public void MinFailsWithIncompatibleTypes(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
+        [DataRow("0 >? 3", 3)]
+        [DataRow("23 >? 12", 23)]
+        [DataRow("#8000 >? #4000", 0x8000)]
+        public void MaxWithIntWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("false >? false", 0)]
+        [DataRow("false >? true", 1)]
+        [DataRow("true >? false", 1)]
+        [DataRow("true >? true", 1)]
+        public void MaxWithBoolWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("false >? 123", 123)]
+        [DataRow("123 >? false", 123)]
+        [DataRow("true >? 123", 123)]
+        [DataRow("123 >? true", 123)]
+        public void MaxWithIntAndBoolWorkAsExpected(string source, int expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("0.0 >? 3.14", 3.14)]
+        [DataRow("1e1 >? 2e1", 2e1)]
+        [DataRow("1.2 >? 3.14e-1", 1.2)]
+        public void MaxWithRealWorkAsExpected(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("0.0 >? 3", 3)]
+        [DataRow("1e1 >? 20", 20)]
+        [DataRow("1.2 >? 1", 1.2)]
+        [DataRow("3 >? 0.0", 3)]
+        [DataRow("20 >? 1e1", 20)]
+        [DataRow("1 >? 1.2", 1.2)]
+        public void MaxWithRealAndIntWorkAsExpected(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("0.0 >? false", 0.0)]
+        [DataRow("1e1 >? true", 1e1)]
+        [DataRow("1.2 >? true", 1.2)]
+        [DataRow("false >? 0.0", 0.0)]
+        [DataRow("true >? 1e1", 1e1)]
+        [DataRow("false >? 1.2", 1.2)]
+        public void MaxWithRealAndBoolWorkAsExpected(string source, double expected)
+        {
+            EvalExpression(source, expected);
+        }
+
+        [TestMethod]
+        [DataRow("true >? \"abc\"")]
+        [DataRow("1 >? \"abc\"")]
+        [DataRow("1.1 >? \"abc\"")]
+        [DataRow("\"abc\" >? false")]
+        [DataRow("\"abc\" >? 1")]
+        [DataRow("\"abc\" >? 1.1")]
+        public void MaxFailsWithIncompatibleTypes(string source)
+        {
+            EvalFails(source);
+        }
+
+        [TestMethod]
         [DataRow("0 / 3", 0)]
         [DataRow("23 / 12", 1)]
         [DataRow("#8000 / #4000", 2)]

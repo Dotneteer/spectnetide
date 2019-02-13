@@ -102,6 +102,8 @@
     <Compile Include="SyntaxTree\Expressions\LessThanOrEqualOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\LiteralNode.cs" />
     <Compile Include="SyntaxTree\Expressions\MacroParamNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\MaxOperationNode.cs" />
+    <Compile Include="SyntaxTree\Expressions\MinOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\ModuloOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\MultiplyOperationNode.cs" />
     <Compile Include="SyntaxTree\Expressions\NotEqualOperationNode.cs" />

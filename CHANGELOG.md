@@ -1,3 +1,10 @@
+### Version 1.17.0
+__FEATURE__: Z80 Assembler &mdash; Now you can define binary literals with the __`b`__ or __`B`__ suffix.  
+__FEATURE__: Z80 Assembler &mdash; Now you can define octal literals with the __`q`__, __`Q`__, __`o`__,
+or __`O`__ (letter, and not zero) suffix.  
+__FEATURE__: Z80 Assembler &mdash; Now, block comments (__`/*`__ ... __`*/`__) are supported.  
+
+
 ### Version 1.16.0
 __FIX__: Wrong ZX Spectrum keyboard labels fixed.  
 __CHANGE__: The default `Code.z80asm` template now displays "ZX Spectrum IDE" text.  

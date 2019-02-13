@@ -879,6 +879,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitMultExpr([NotNull] Z80AsmParser.MultExprContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.minMaxExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.minMaxExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.unaryExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

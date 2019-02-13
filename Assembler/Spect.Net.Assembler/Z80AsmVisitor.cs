@@ -1565,6 +1565,40 @@ namespace Spect.Net.Assembler
         {
             if (IsInvalidContext(context)) return null;
 
+            var expr = (ExpressionNode)VisitMinMaxExpr(context.GetChild(0) as Z80AsmParser.MinMaxExprContext);
+            var nextChildIndex = 2;
+            while (nextChildIndex < context.ChildCount)
+            {
+                var rightExpr = VisitMinMaxExpr(context.GetChild(nextChildIndex)
+                    as Z80AsmParser.MinMaxExprContext);
+                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var multExpr = opToken == "*"
+                    ? new MultiplyOperationNode()
+                    : (opToken == "/"
+                        ? new DivideOperationNode()
+                        : new ModuloOperationNode() as BinaryOperationNode);
+
+                multExpr.LeftOperand = expr;
+                multExpr.RightOperand = (ExpressionNode)rightExpr;
+                expr = multExpr;
+                nextChildIndex += 2;
+            }
+            return expr;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.minMaxExpr"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitMinMaxExpr(Z80AsmParser.MinMaxExprContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
             var expr = (ExpressionNode)VisitUnaryExpr(context.GetChild(0) as Z80AsmParser.UnaryExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
@@ -1572,11 +1606,9 @@ namespace Spect.Net.Assembler
                 var rightExpr = VisitUnaryExpr(context.GetChild(nextChildIndex)
                     as Z80AsmParser.UnaryExprContext);
                 var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
-                var multExpr = opToken == "*"
-                    ? new MultiplyOperationNode()
-                    : (opToken == "/"
-                        ? new DivideOperationNode()
-                        : new ModuloOperationNode() as BinaryOperationNode);
+                var multExpr = opToken == "<?"
+                    ? new MinOperationNode()
+                    : new MaxOperationNode() as BinaryOperationNode;
 
                 multExpr.LeftOperand = expr;
                 multExpr.RightOperand = (ExpressionNode)rightExpr;
@@ -1738,6 +1770,17 @@ namespace Spect.Net.Assembler
                 AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(2).Replace("_", ""), 2);
             }
+            else if (token.EndsWith("b") || token.EndsWith("B"))
+            {
+                AddNumber(context);
+                value = (ushort)Convert.ToInt32(token.Substring(0, token.Length - 1).Replace("_", ""), 2);
+            }
+            // --- Octal literals
+            else if (token.EndsWith("q") || token.EndsWith("Q") || token.EndsWith("o") || token.EndsWith("O"))
+            {
+                AddNumber(context);
+                value = (ushort)Convert.ToInt32(token.Substring(0, token.Length - 1), 8);
+            }
             // --- Character literals
             else if (token.StartsWith("\"") || token.StartsWith("'"))
             {
@@ -1767,7 +1810,9 @@ namespace Spect.Net.Assembler
             AddIdentifier(context);
             return new IdentifierNode
             {
-                SymbolName = context.GetChild(0).NormalizeToken()
+                StartFromGlobal = context.GetChild(0).GetText() == "::",
+                SymbolName = context.IDENTIFIER()[0].NormalizeToken(),
+                ScopeSymbolNames = context.IDENTIFIER().Skip(1).Select(i => i.NormalizeToken()).ToList()
             };
         }
 

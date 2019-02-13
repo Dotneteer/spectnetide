@@ -123,6 +123,50 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        [DataRow("%0011000000111001")]
+        [DataRow("%0011_0000_0011_1001")]
+        [DataRow("%_0011_0000_0011_1001")]
+        [DataRow("0b0011000000111001")]
+        [DataRow("0b0011_0000_0011_1001")]
+        [DataRow("0b_0011_0000_0011_1001")]
+        [DataRow("0011000000111001b")]
+        [DataRow("0011_0000_0011_1001B")]
+        [DataRow("0011_0000_0011_1001b")]
+        [DataRow("_0011_0000_0011_1001b")]
+        public void BinaryLiteralParsingWorks(string source)
+        {
+            // --- Act
+            var expr = ParseExpr(source);
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.Type.ShouldBe(ExpressionValueType.Integer);
+            literal.AsWord.ShouldBe((ushort)12345);
+        }
+
+        [TestMethod]
+        [DataRow("30071q")]
+        [DataRow("030071q")]
+        [DataRow("30071Q")]
+        [DataRow("030071Q")]
+        [DataRow("30071o")]
+        [DataRow("030071o")]
+        [DataRow("30071O")]
+        [DataRow("030071O")]
+        public void OctalLiteralParsingWorks(string source)
+        {
+            // --- Act
+            var expr = ParseExpr(source);
+
+            // --- Assert
+            var literal = expr as LiteralNode;
+            literal.ShouldNotBeNull();
+            literal.LiteralValue.Type.ShouldBe(ExpressionValueType.Integer);
+            literal.AsWord.ShouldBe((ushort)12345);
+        }
+
+        [TestMethod]
         public void CharLiteralParsingWorks1()
         {
             // --- Act

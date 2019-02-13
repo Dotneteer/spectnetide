@@ -64,10 +64,12 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        public void EndLineCommentsWork()
+        [DataRow("startLabel nop; this is a comment")]
+        [DataRow("startLabel nop // this is a comment")]
+        public void EndLineCommentsWork(string source)
         {
             // --- Act
-            var visitor = Parse("startLabel nop; this is a comment");
+            var visitor = Parse(source);
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
@@ -75,6 +77,38 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldBeOfType<TrivialOperation>();
             line.Label.ShouldBe("STARTLABEL");
         }
+
+        [TestMethod]
+        [DataRow("startLabel /* comment */ nop")]
+        [DataRow("startLabel /* comment next */ nop")]
+        public void BlockCommentsWork(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0];
+            line.ShouldBeOfType<TrivialOperation>();
+            line.Label.ShouldBe("STARTLABEL");
+        }
+
+        [TestMethod]
+        [DataRow("startLabel /* \ncomment next */ nop")]
+        [DataRow("startLabel /* comment \nnext */ nop")]
+        [DataRow("startLabel /* \ncomment next \n*/ nop")]
+        [DataRow("startLabel /* \rcomment next */ nop")]
+        [DataRow("startLabel /* comment \rnext */ nop")]
+        [DataRow("startLabel /* \rcomment next \n*/ nop")]
+        public void BlockCommentFailsWithNewLine(string source)
+        {
+            // --- Act
+            var errors = ParseWithErrors(source);
+
+            // --- Assert
+            errors.Count.ShouldBe(1);
+        }
+
 
         [TestMethod]
         public void EndLineCommentsWorkWithMultipleLines()
