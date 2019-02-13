@@ -1,36 +1,72 @@
 # Disassembly Tool Window Commands
 
-__Legend:__
+This article describes the commands you can use in the Z80 Disassembly tool window.
 
-*hexnum*: Up to 4 hexadecimal digits forming a hexadecimal address.
+## Syntax
 
-*identifier*: An identifier that start with an underscore (`_`), or with a letter, 
-and goes on with an underscore, a letter, or a digit. 
+Each _command_ has a name, and zero, one or more _arguments_. Command names are one or two characters,
+you can use both lowercase and uppercase letters. Commands may use literals, which can be hexadecimal
+numbers, decimal numbers or identifiers.
 
-*text*: A text that contains arbitrary characters, including spaces, punctuations, and so on.
+_Hexadecimal numbers_ must use the 0 to 9 digits, or letters from __`A`__ to __`F`__ or __`a`__ to __`f`__.
+If a hexadecimal number would start with a letter, you should add a __`0`__ prefix so that the parser
+consider it as a number and not as an identifier.
+
+_Decimal numbers_ should start with a colon (__`:`__) and followed by digits.
+
+_Identifiers_ should start with one a letter or an underscore (__`_`__) and may continue with digits, letters,
+or underscore characters.
+
+Here are a few examples of literals:
+
+```
+1234      (hexadecimal number!)
+0FA12     (hexadecimal number)
+FA12      (identifier: it starts with a letter!)
+:123      (decimal number)
+MySymbol  (identifier)
+```
+
+### Legend
+
+*number*: a hexadecimal or decimal number.
+
+*identifier*: an identifier, as specified earlier.
+
+*literal*: a hexadecimal number, a decimal number, or an identifier. 
+
+*text*: a text that contains arbitrary characters, including spaces, punctuations, and so on.
 
 *[optional]*: The argument is optional
 
-The commands and hexadecimal numbers can be written either in lowercase or uppercase.
+### Identifier Resolution
+
+When executing a command, identifiers are translated into addresses. During the resolution process, the command parsing engine resolves 
+identifiers in these steps:
+1. Checks the output of the last compilation. If the identifier is found, its value is taken from the Assembler's symbol table.
+2. Checks the labels and symbols in the user annotations (by default stored in the Annotations.disann file). If the identifier is found, its value is taken from the symbol table of the annotation.
+3. Checks the labels and symbols in the current ROM's annotations. If the identifier is found, its value is taken from the symbol table of the ROM annotation.
+4. The identifier cannot be resolved, the command parsing engine signs an error.
 
 ## Navigation Command
 
-__`G`__ *`hexnum`*
+__`G`__ *`literal`*
 
 Sets the top position of the Disassembly tool window to the specified address.
 
 ## Memory Section Commands
 
 These commands instructs the disassembly tool how to map a certain memory section into disassembly
-output. The *hexnum1* and *hexnum2* values specify the memory range, both values are inclusive.
+output. The *literal1* and *literal2* values specify the memory range. Be aware, *literal1* is inclusive, 
+but *literal2* is exclusive.
 
 Command | Description
 --------|------------
-__`MD`__ *`hexnum1`* *`hexnum2`* | Creates a disassembly section &mdash; this section of memory is represented as a flow id Z80 instructions.
-__`MB`__ *`hexnum1`* *`hexnum2`* | Creates a byte section. The contents of this memory area is displayed as bytes with the __`.defb`__ pragma.
-__`MW`__ *`hexnum1`* *`hexnum2`* | Creates a word section. The contents of this memory area is displayed as bytes with the __`.defw`__ pragma.
-__`MS`__ *`hexnum1`* *`hexnum2`* | Skip section &mdash; the view displays a simple __`.skip`__ pragma for the section.
-__`MC`__ *`hexnum1`* *`hexnum2`* | Calculator section. The disassembler takes these bytes into account as the byte code of the ZX Spectrum's RST #28 calculator.
+__`MD`__ *`literal1`* *`literal2`* | Creates a disassembly section &mdash; this section of memory is represented as a flow id Z80 instructions.
+__`MB`__ *`literal1`* *`literal2`* | Creates a byte section. The contents of this memory area is displayed as bytes with the __`.defb`__ pragma.
+__`MW`__ *`literal1`* *`literal2`* | Creates a word section. The contents of this memory area is displayed as bytes with the __`.defw`__ pragma.
+__`MS`__ *`literal1`* *`literal2`* | Skip section &mdash; the view displays a simple __`.skip`__ pragma for the section.
+__`MC`__ *`literal1`* *`literal2`* | Calculator section. The disassembler takes these bytes into account as the byte code of the ZX Spectrum's RST #28 calculator.
 
 ## Annotation Commands
 
@@ -39,9 +75,9 @@ The information you enter move into the annotation file.
 
 Command | Description
 --------|------------
-__`L`__ *`hexnum`* *[`identifier`]* | Adds a label with the given identifier for the specified address. If the identifier is omitted, removes the label from the address.
-__`C`__ *`hexnum`* *[`text`]* | Adds a tail comment with the given text to the instruction at the specified addres. If no text is specified, the comment is removed.
-__`P`__ *`hexnum`* *[`text`]* | Adds a prefix comment with the given text to the instruction at the specified addres. If no text is specified, the comment is removed.
+__`L`__ *`number`* *[`identifier`]* | Adds a label with the given identifier for the specified address. If the identifier is omitted, removes the label from the address.
+__`C`__ *`number`* *[`text`]* | Adds a tail comment with the given text to the instruction at the specified addres. If no text is specified, the comment is removed.
+__`P`__ *`number`* *[`text`]* | Adds a prefix comment with the given text to the instruction at the specified addres. If no text is specified, the comment is removed.
 
 ## Literal Manipulation Commands
 
@@ -50,9 +86,9 @@ corresponding identifiers.
 
 Command | Description
 --------|------------
-__`D`__ *`hexnum`* *`identifier`* | Replaces the literal value within the instruction that starts at the *hexnum* address with the specified *identifier*.
-__`D`__ *`hexnum`*  | Removes the literal replacements from instruction that starts at the *hexnum* address.
-__`D #`__  | Replaces the literal value within the instruction that starts at the *hexnum* address with the first available identifier in the symbol table that has the value of the literal.
+__`D`__ *`literal`* *`identifier`* | Replaces the literal value within the instruction that starts at the specified address with the given *identifier*.
+__`D`__ *`literal`*  | Removes the literal replacements from instruction that starts at the specified address.
+__`D`__ *`literal`* __`#`__  | Replaces the literal value within the instruction that starts at the specified address with the first available identifier in the symbol table that has the value of the literal.
 
 ## Breakpoint Commands
 
@@ -61,10 +97,10 @@ they are removed when you close the solution.
 
 Command | Description
 --------|------------
-__`SB`__ *`hexnum`* [ __`H`__ *`hit-condition`*] [ __`C`__ *`filter-condition`*] | Sets a breakpoint at the address specified by *hexnum* with the optional *hit condition* and/or *filter condition*.
-__`TB`__ *`hexnum`* | Toggles a breakpoint at the address specified by *hexnum*.
-__`RB`__ *`hexnum`* | Removes the breakpoint from the address specified by *hexnum*.
-__`UB`__ *`hexnum`* | Retrieves the breakpoint at the address specified by *hexnum* so that you can update it..
+__`SB`__ *`literal`* [ __`H`__ *`hit-condition`*] [ __`C`__ *`filter-condition`*] | Sets a breakpoint at the specified address with the optional *hit condition* and/or *filter condition*.
+__`TB`__ *`literal`* | Toggles a breakpoint at the specified address.
+__`RB`__ *`literal`* | Removes the breakpoint from the specified address.
+__`UB`__ *`literal`* | Retrieves the breakpoint at the specified address so that you can update it.
 __`EB`__ | Erases all breakpoints.
 
 ### Hit Condition
@@ -159,7 +195,7 @@ _Note:_ These commands are available with the Spectrum 128K, Spectrum +3E, and S
 
 ### Select ROM Page
 
-__`R`__ *`romindex`*
+__`R`__ *`number`*
 
 Displays the disassembly for the ROM with the specified index. When showing the disassembly, the addresses between `#0000` 
 and `#3fff` display the contents of this ROM. With a Spectrum 128K, you can use indexes `0` or `1`, as this model has two ROMs.
@@ -169,14 +205,14 @@ In this mode, the tool window displays only the disassembly of the selected ROM.
 
 ### Select Memory Bank
 
-__`B`__ *`bankindex`*
+__`B`__ *`number`*
 
 Displays the disassembly of RAM bank with the specified index. The disassembly uses the addresses between `#0000` 
 and `#3fff`. Indexes can be between `0` and `7`.
 
 In this mode, the tool window displays only the contents of the selected RAM bank, and no other parts of the memory.
 
-### Select Full Mmemory Mode
+### Select Full Memory Mode
 
 __`M`__
 
@@ -199,15 +235,15 @@ With this command you can select which model type to use for the disassembly dis
 
 ## Re-Disassembly Command
 
-__`R`__
+__`RD`__
 
 You can force a re-disassembly of the current view. If the contents of the RAM changes, you might need this command to 
 refresh the view so that you can see the latests changes.
 
 ## Jump Command
 
-__`J`__ *`hexnum`*
+__`J`__ *`literal`*
 
 This command works only when the Spectrum VM is paused. It sets the Program Counter (PC) to the
-specified *`hexnum` address. When the Spectum VM continues running &mdash; after the Start command &mdash;
+specified address. When the Spectum VM continues running &mdash; after the Start command &mdash;
 it will carry on from the specified address.

@@ -1,18 +1,54 @@
 ﻿# Watch Memory Tool Window Commands
 
-__Legend:__
+This article describes the commands you can use in the Watch Memory tool window.
 
-*index*: Up to 3 decimal digits forming an index value. (Each watch item displayed within
-the Watch window has an index. When you issue a command for that specific item, you address it
-through its index.)
+## Syntax
 
-*expression*: An expression that defines a watch item. This document treats expression syntax in details. 
+Each _command_ has a name, and zero, one or more _arguments_. Command names are one or two characters,
+you can use both lowercase and uppercase letters. Commands may use literals, which can be hexadecimal
+numbers, decimal numbers or identifiers.
 
-*format*: A specifier that describes the output format of a watch expression.
+_Hexadecimal numbers_ must use the 0 to 9 digits, or letters from __`A`__ to __`F`__ or __`a`__ to __`f`__.
+If a hexadecimal number would start with a letter, you should add a __`0`__ prefix so that the parser
+consider it as a number and not as an identifier.
+
+_Decimal numbers_ should start with a colon (__`:`__) and followed by digits.
+
+_Identifiers_ should start with one a letter or an underscore (__`_`__) and may continue with digits, letters,
+or underscore characters.
+
+Here are a few examples of literals:
+
+```
+1234      (hexadecimal number!)
+0FA12     (hexadecimal number)
+FA12      (identifier: it starts with a letter!)
+:123      (decimal number)
+MySymbol  (identifier)
+```
+
+### Legend
+
+*index*: a hexadecimal or decimal number.
+
+*identifier*: an identifier, as specified earlier.
+
+*literal*: a hexadecimal number, a decimal number, or an identifier. 
+
+*text*: a text that contains arbitrary characters, including spaces, punctuations, and so on.
+
+*expression*: a watch expression, as you will the detailed syntax later in this article.
 
 *[optional]*: The argument is optional
 
-The commands and their parts can be written either in lowercase or uppercase.
+### Identifier Resolution
+
+When executing a command, identifiers are translated into addresses. During the resolution process, the command parsing engine resolves 
+identifiers in these steps:
+1. Checks the output of the last compilation. If the identifier is found, its value is taken from the Assembler's symbol table.
+2. Checks the labels and symbols in the user annotations (by default stored in the Annotations.disann file). If the identifier is found, its value is taken from the symbol table of the annotation.
+3. Checks the labels and symbols in the current ROM's annotations. If the identifier is found, its value is taken from the symbol table of the ROM annotation.
+4. The identifier cannot be resolved, the command parsing engine signs an error.
 
 ## Add a New Watch Item Command
 
@@ -39,7 +75,7 @@ Modifies the watch item with the specified index to the provided `expression` an
 
 ## Exchange Watch Items command
 
-__`X`__ *`index`* *`index`*
+__`XW`__ *`index1`* *`index2`*
 
 Exchanges the watch items specified by the two indexes in the list.
 
@@ -48,13 +84,13 @@ Exchanges the watch items specified by the two indexes in the list.
 
 ## Erase the Watch Item List command
 
-__`E`__
+__`EW`__
 
 Erases the entire watch item list.
 
 ## Set Watch Item Label Width command
 
-__`L`__ *`index`*
+__`LW`__ *`index`*
 
 Sets the width of the label that displays the watch expression to the value specified by `index`. Here index is
 used as a width in pixels.
