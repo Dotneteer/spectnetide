@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Spect.Net.CommandParser.Generated;
+﻿using Spect.Net.CommandParser.Generated;
 
 namespace Spect.Net.CommandParser.SyntaxTree
 {
@@ -9,14 +8,29 @@ namespace Spect.Net.CommandParser.SyntaxTree
     public class ToggleBreakpointToolCommand : ToolCommandNode
     {
         /// <summary>
-        /// GOTO address
+        /// TOGGLE BREAKPOINT address
         /// </summary>
         public ushort Address { get; }
+
+        /// <summary>
+        /// TOGGLE BREAKPOINT symbol
+        /// </summary>
+        public string Symbol { get; }
 
         public ToggleBreakpointToolCommand(CommandToolParser.ToggleBreakpointCommandContext context)
         {
             if (context.LITERAL() == null) return;
-            Address = ProcessNumber(context.LITERAL().GetText());
+            var type = ProcessId(context.LITERAL().GetText(), out var number, out var symbol);
+            if (HasSemanticError) return;
+
+            if (type)
+            {
+                Symbol = symbol;
+            }
+            else
+            {
+                Address = number;
+            }
         }
     }
 }

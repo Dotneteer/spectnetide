@@ -139,7 +139,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         public bool ProcessCommandline(string commandText, out string validationMessage)
         {
             validationMessage = null;
-            //var parser = new WatchCommandParser(commandText);
 
             var command = ParseCommand(commandText);
             if (command is CompactToolCommand compactCommand)

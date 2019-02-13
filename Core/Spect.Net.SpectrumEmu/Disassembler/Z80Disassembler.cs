@@ -8,7 +8,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
     /// This class is is responsible for disassembling Z80 binary code.
     /// </summary>
     /// <remarks>
-    /// Another partion, in the Z80DisassemblerTables.cs declares the tables used
+    /// Another partition, in the Z80DisassemblerTables.cs declares the tables used
     /// for disassembling a project
     /// </remarks>
     public partial class Z80Disassembler
@@ -25,14 +25,6 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         private bool _overflow;
 
         #region Disassembly providers
-
-        /// <summary>
-        /// Resets the list of providers
-        /// </summary>
-        public static void ResetProviders()
-        {
-            s_Providers.Clear();
-        }
 
         /// <summary>
         /// Adds a provider instance with the specified type
@@ -227,8 +219,8 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     {
                         sb.Append(", ");
                     }
-                    var value = (ushort)(MemoryContents[section.StartAddress + i + j * 2] +
-                                (MemoryContents[section.StartAddress + i + j * 2 + 1] << 8));
+                    var value = (ushort)(MemoryContents[section.StartAddress + i + j] +
+                                (MemoryContents[section.StartAddress + i + j + 1] << 8));
                     sb.AppendFormat("#{0:X4}", value);
                 }
                 var item = new DisassemblyItem((ushort)(section.StartAddress + i))

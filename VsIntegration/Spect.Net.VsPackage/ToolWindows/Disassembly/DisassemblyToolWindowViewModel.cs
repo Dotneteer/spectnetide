@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using Spect.Net.CommandParser.SyntaxTree;
 using Spect.Net.EvalParser;
 using Spect.Net.EvalParser.Generated;
 using Spect.Net.EvalParser.SyntaxTree;
@@ -136,286 +137,260 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             var banks = MachineViewModel.SpectrumVm.MemoryConfiguration.RamBanks;
             var roms = MachineViewModel.SpectrumVm.RomConfiguration.NumberOfRoms;
 
-            var parser = new DisassemblyCommandParser(commandText);
-            switch (parser.Command)
+            var command = ParseCommand(commandText);
+            if (command is CompactToolCommand compactCommand)
             {
-                case DisassemblyCommandType.Invalid:
-                    validationMessage = "Invalid command syntax";
-                    return false;
+                command = ParseCommand(compactCommand.CommandText);
+            }
+            if (command == null || command.HasSemanticError)
+            {
+                validationMessage = INV_SYNTAX;
+                return false;
+            }
 
-                case DisassemblyCommandType.Goto:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+            switch (command)
+            {
+                case GotoToolCommand gotoCommand:
+                {
+                    if (!ObtainAddress(gotoCommand.Address, gotoCommand.Symbol, out var resolvedAddress, out validationMessage))
                     {
                         return false;
                     }
-
-                    address = parser.Address;
+                    address = resolvedAddress;
                     break;
+                }
 
-                case DisassemblyCommandType.GotoSymbol:
-                    // --- Check the current RAM
-                    var labelAddrs = AnnotationHandler.RamBankAnnotations[0].Labels
-                        .Where(kp =>
-                            string.Compare(kp.Value, parser.Arg1, StringComparison.InvariantCultureIgnoreCase) == 0)
-                        .Select(kp => kp.Key)
-                        .ToList();
-                    if (labelAddrs.Count > 0)
-                    {
-                        // --- Address found in the current ROM
-                        address = (ushort)(labelAddrs[0] + 0x4000);
-                        break;
-                    }
-
-                    // --- Check current ROM
-                    var curRomIndex = MachineViewModel.SpectrumVm.MemoryDevice.GetSelectedRomIndex();
-                    if (RomViewMode)
-                    {
-                        curRomIndex = RomIndex;
-                    }
-
-                    labelAddrs = AnnotationHandler.RomPageAnnotations[curRomIndex].Labels
-                        .Where(kp =>
-                            string.Compare(kp.Value, parser.Arg1, StringComparison.InvariantCultureIgnoreCase) == 0)
-                        .Select(kp => kp.Key)
-                        .ToList();
-                    if (labelAddrs.Count > 0)
-                    {
-                        // --- Address found in the current ROM
-                        address = labelAddrs[0];
-                        break;
-                    }
-
-                    if (CompilerOutput == null || !CompilerOutput.Symbols.TryGetValue(parser.Arg1, out var symbolValue))
-                    {
-                        validationMessage = $"Cannot find symbol '{parser.Arg1}'";
-                        return false;
-                    }
-
-                    address = symbolValue;
-                    break;
-
-                case DisassemblyCommandType.Label:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
+                case LabelToolCommand labelCommand:
+                {
+                    if (!ObtainAddress(labelCommand.Address, null, out var resolvedAddress,
+                        out validationMessage))
                     {
                         return false;
                     }
-
-                    AnnotationHandler.SetLabel(parser.Address, parser.Arg1, out validationMessage);
+                    AnnotationHandler.SetLabel(resolvedAddress, labelCommand.Symbol, out validationMessage);
                     if (validationMessage != null)
                     {
                         newPrompt = commandText;
                         return false;
                     }
-
-                    break;
-
-                case DisassemblyCommandType.Comment:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
-                    {
-                        return false;
-                    }
-
-                    AnnotationHandler.SetComment(parser.Address, parser.Arg1);
-                    break;
-
-                case DisassemblyCommandType.PrefixComment:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
-                    {
-                        return false;
-                    }
-
-                    AnnotationHandler.SetPrefixComment(parser.Address, parser.Arg1);
-                    break;
-
-                case DisassemblyCommandType.Retrieve:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
-                    {
-                        return false;
-                    }
-
-                    newPrompt = RetrieveAnnotation(parser.Address, parser.Arg1);
-                    return false;
-
-                case DisassemblyCommandType.Literal:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
-                    {
-                        return false;
-                    }
-
-                    var handled = ApplyLiteral(parser.Address, parser.Arg1,
-                        out validationMessage, out newPrompt);
-                    if (!handled) return false;
-                    break;
-
-                case DisassemblyCommandType.AddSection:
-                    if (!CheckCommandAddress(parser.Address, out validationMessage))
-                    {
-                        return false;
-                    }
-
-                    if (!CheckCommandAddress(parser.Address2, out validationMessage))
-                    {
-                        return false;
-                    }
-
-                    AddSection(parser.Address2, parser.Address, parser.Arg1);
-                    Disassemble();
-                    break;
-
-                case DisassemblyCommandType.SetBreakPoint:
-                {
-                    if (!PrepareBreakpointCondition(parser.Arg2, ref validationMessage, out var breakPoint))
-                    {
-                        return false;
-                    }
-
-                    breakPoint.HitConditionValue = parser.Address2;
-                    switch (parser.Arg1)
-                    {
-                        case "<":
-                            breakPoint.HitType = BreakpointHitType.Less;
-                            break;
-                        case "<=":
-                            breakPoint.HitType = BreakpointHitType.LessOrEqual;
-                            break;
-                        case "=":
-                            breakPoint.HitType = BreakpointHitType.Equal;
-                            break;
-                        case ">":
-                            breakPoint.HitType = BreakpointHitType.Greater;
-                            break;
-                        case ">=":
-                            breakPoint.HitType = BreakpointHitType.GreaterOrEqual;
-                            break;
-                        case "*":
-                            breakPoint.HitType = BreakpointHitType.Multiple;
-                            break;
-                    }
-
-                    breakPoints[parser.Address] = breakPoint;
                     break;
                 }
 
-                case DisassemblyCommandType.ToggleBreakPoint:
-                    if (!breakPoints.ContainsKey(parser.Address))
+                case CommentToolCommand commentCommand:
+                {
+                    if (!ObtainAddress(commentCommand.Address, commentCommand.Symbol, out var resolvedAddress,
+                        out validationMessage))
                     {
-                        if (!PrepareBreakpointCondition(parser.Arg2, ref validationMessage, out var breakPoint))
+                        return false;
+                    }
+                    AnnotationHandler.SetComment(resolvedAddress, commentCommand.Text);
+                    break;
+                }
+
+                case PrefixCommentToolCommand prefixCommentCommand:
+                {
+                    if (!ObtainAddress(prefixCommentCommand.Address, prefixCommentCommand.Symbol, out var resolvedAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    AnnotationHandler.SetPrefixComment(resolvedAddress, prefixCommentCommand.Text);
+                    break;
+                }
+
+                case RetrieveToolCommand retrieveCommand:
+                {
+                    if (!ObtainAddress(retrieveCommand.Address, retrieveCommand.Symbol, out var resolvedAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    newPrompt = RetrieveAnnotation(resolvedAddress, retrieveCommand.Type);
+                    return false;
+                }
+
+                case LiteralToolCommand literalCommand:
+                {
+                    if (!ObtainAddress(literalCommand.Address, literalCommand.Symbol, out var resolvedAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    var handled = ApplyLiteral(resolvedAddress, 
+                        literalCommand.IsAuto ? "#" : literalCommand.LiteralName,
+                        out validationMessage, out newPrompt);
+                    if (!handled) return false;
+                    break;
+                }
+
+                case SectionToolCommand sectionCommand:
+                {
+                    if (!ObtainAddress(sectionCommand.StartAddress, sectionCommand.StartSymbol, out var startAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    if (!ObtainAddress(sectionCommand.EndAddress, sectionCommand.EndSymbol, out var endAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    AddSection(startAddress, endAddress, sectionCommand.Type);
+                    Disassemble();
+                    break;
+                }
+
+                case SetBreakpointToolCommand setBreakpointCommand:
+                {
+                    if (!ObtainAddress(setBreakpointCommand.Address, setBreakpointCommand.Symbol, out var resolvedAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+
+                    if (!PrepareBreakpointCondition(setBreakpointCommand.Condition,
+                        setBreakpointCommand.HitConditionType,
+                        setBreakpointCommand.HitConditionValue,
+                        ref validationMessage, out var breakPoint))
+                    {
+                        return false;
+                    }
+                    breakPoints[resolvedAddress] = breakPoint;
+                    break;
+                }
+
+                case ToggleBreakpointToolCommand toggleBreakpointCommand:
+                {
+                    if (!ObtainAddress(toggleBreakpointCommand.Address, toggleBreakpointCommand.Symbol,
+                        out var resolvedAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+
+                    if (!breakPoints.ContainsKey(resolvedAddress))
+                    {
+                        if (!PrepareBreakpointCondition(null,
+                            null,
+                            0,
+                            ref validationMessage, out var breakPoint))
                         {
                             return false;
                         }
 
-                        breakPoint.HitConditionValue = parser.Address2;
-                        switch (parser.Arg1)
-                        {
-                            case "<":
-                                breakPoint.HitType = BreakpointHitType.Less;
-                                break;
-                            case "=":
-                                breakPoint.HitType = BreakpointHitType.Equal;
-                                break;
-                            case ">":
-                                breakPoint.HitType = BreakpointHitType.Greater;
-                                break;
-                            case "*":
-                                breakPoint.HitType = BreakpointHitType.Multiple;
-                                break;
-                        }
-
-                        breakPoints.Add(parser.Address, breakPoint);
+                        breakPoints[resolvedAddress] = breakPoint;
                     }
                     else
                     {
-                        breakPoints.Remove(parser.Address);
+                        breakPoints.Remove(resolvedAddress);
                     }
-
                     break;
+                }
 
-                case DisassemblyCommandType.RemoveBreakPoint:
-                    breakPoints.Remove(parser.Address);
+                case RemoveBreakpointToolCommand removeBreakpointCommand:
+                {
+                    if (!ObtainAddress(removeBreakpointCommand.Address, removeBreakpointCommand.Symbol,
+                        out var resolvedAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    breakPoints.Remove(resolvedAddress);
                     break;
+                }
 
-                case DisassemblyCommandType.UpdateBreakPoint:
-                    newPrompt = RetrieveBreakpoint(parser.Address);
+                case UpdateBreakpointToolCommand updateBreakpointCommand:
+                {
+                    if (!ObtainAddress(updateBreakpointCommand.Address, updateBreakpointCommand.Symbol,
+                        out var resolvedAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    newPrompt = RetrieveBreakpoint(resolvedAddress);
                     return false;
+                }
 
-                case DisassemblyCommandType.EraseAllBreakPoint:
+                case EraseAllBreakpointsToolCommand _:
                     var keysToRemove = breakPoints.Keys.Where(k => breakPoints[k].IsCpuBreakpoint).ToArray();
                     foreach (var key in keysToRemove)
                     {
                         breakPoints.Remove(key);
                     }
-
                     break;
 
-                case DisassemblyCommandType.SetRomPage:
+                case RomPageToolCommand romPageCommand:
                     if (isSpectrum48)
                     {
                         validationMessage = INV_S48_COMMAND;
                         return false;
                     }
-
-                    if (parser.Address > roms - 1)
+                    if (romPageCommand.Page > roms - 1)
                     {
-                        validationMessage = $"This machine does not have a ROM bank #{parser.Address}";
+                        validationMessage = $"This machine does not have a ROM bank #{romPageCommand.Page}";
                         return false;
                     }
-
-                    SetRomViewMode(parser.Address);
+                    SetRomViewMode(romPageCommand.Page);
                     address = 0;
                     break;
 
-                case DisassemblyCommandType.SetRamBank:
+                case BankPageToolCommand bankPageCommand:
                     if (isSpectrum48)
                     {
                         validationMessage = INV_S48_COMMAND;
                         return false;
                     }
-
                     if (VmStopped)
                     {
                         validationMessage = INV_RUN_COMMAND;
                         return false;
                     }
-
-                    if (parser.Address > banks - 1)
+                    if (bankPageCommand.Page > banks - 1)
                     {
-                        validationMessage = $"This machine does not have a RAM bank #{parser.Address}";
+                        validationMessage = $"This machine does not have a RAM bank #{bankPageCommand.Page}";
                         return false;
 
                     }
-
-                    SetRamBankViewMode(parser.Address);
+                    SetRamBankViewMode(bankPageCommand.Page);
                     address = 0;
                     break;
 
-                case DisassemblyCommandType.MemoryMode:
+                case MemoryModeToolCommand _:
                     if (isSpectrum48)
                     {
                         validationMessage = INV_S48_COMMAND;
                         return false;
                     }
-
                     if (VmStopped)
                     {
                         validationMessage = INV_RUN_COMMAND;
                         return false;
                     }
-
                     SetFullViewMode();
-                    address = 0;
                     break;
 
-                case DisassemblyCommandType.DisassemblyType:
+                case DisassemblyTypeToolCommand disassemblyTypeCommand:
+                    if (isSpectrum48)
+                    {
+                        validationMessage = INV_S48_COMMAND;
+                        return false;
+                    }
                     if (FullViewMode)
                     {
                         validationMessage = "This command can be used only in ROM or RAM bank view mode";
                         return false;
                     }
 
-                    SetDisassemblyType(parser.Arg1);
+                    var type = disassemblyTypeCommand.Type.ToUpper();
+                    if (type != "48" && type != "128" && type != "P3" && type != "NEXT")
+                    {
+                        validationMessage = "Disassembly type should be one of these: '48', '128', 'P3', or 'NEXT'";
+                        return false;
+                    }
+                    SetDisassemblyType(disassemblyTypeCommand.Type);
                     break;
 
-                case DisassemblyCommandType.ReDisassembly:
+                case ReDisassemblyToolCommand _:
                     Disassemble();
                     if (TopAddress.HasValue)
                     {
@@ -424,17 +399,26 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
                     break;
 
-                case DisassemblyCommandType.Jump:
+                case JumpToolCommand jumpCommand:
+                {
                     if (MachineViewModel.MachineState != VmState.Paused)
                     {
                         validationMessage = "The 'J' command can be used only when the virtual machine is paused.";
                         return false;
                     }
+                    if (!ObtainAddress(jumpCommand.Address, jumpCommand.Symbol,
+                        out var resolvedAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
 
-                    address = MachineViewModel.SpectrumVm.Cpu.Registers.PC = parser.Address;
+                    address = MachineViewModel.SpectrumVm.Cpu.Registers.PC = resolvedAddress;
                     break;
+                }
 
                 default:
+                    validationMessage = string.Format(INV_CONTEXT, "Z80 Disassembly window");
                     return false;
             }
 
@@ -817,13 +801,25 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Checks if the specified address is valid for the current view mode.
+        /// Gets and checks the specified address.
         /// </summary>
-        /// <param name="addr">Address to check</param>
-        /// <param name="validationMessage">Validation message</param>
-        /// <returns></returns>
-        private bool CheckCommandAddress(ushort addr, out string validationMessage)
+        /// <param name="addr">Address, if specified with a number</param>
+        /// <param name="symbol">Symbol, if specified</param>
+        /// <param name="resolvedAddress">Resolved address</param>
+        /// <param name="validationMessage">Validation message, in case of error</param>
+        /// <returns>True, if the address is successfully resolved; otherwise, false.</returns>
+        private bool ObtainAddress(ushort addr, string symbol, out ushort resolvedAddress, out string validationMessage)
         {
+            resolvedAddress = addr;
+            if (symbol != null)
+            {
+                if (!ResolveSymbol(symbol, out resolvedAddress))
+                {
+                    validationMessage = string.Format(UNDEF_SYMBOL, symbol);
+                    return false;
+                }
+            }
+
             validationMessage = null;
             if ((RomViewMode || RamBankViewMode) && addr >= 0x4000)
             {
@@ -908,10 +904,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// Prepares the WatchItemViewModel instance from the command line
         /// </summary>
         /// <param name="expression">Expression to parse</param>
+        /// <param name="hitConditionType">Type of hit condition</param>
+        /// <param name="hitConditionValue">Hit condition value</param>
         /// <param name="validationMessage">Validation message to pass</param>
         /// <param name="newItem">The new item</param>
         /// <returns></returns>
-        private static bool PrepareBreakpointCondition(string expression, ref string validationMessage,
+        private static bool PrepareBreakpointCondition(string expression, string hitConditionType, 
+            ushort hitConditionValue, 
+            ref string validationMessage,
             out BreakpointInfo newItem)
         {
             newItem = new BreakpointInfo()
@@ -920,7 +920,34 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 FilterCondition = expression,
                 HitType = BreakpointHitType.None,
             };
-            if (expression == null)
+
+            if (hitConditionType != null)
+            {
+                newItem.HitConditionValue = hitConditionValue;
+                switch (hitConditionType)
+                {
+                    case "<":
+                        newItem.HitType = BreakpointHitType.Less;
+                        break;
+                    case "<=":
+                        newItem.HitType = BreakpointHitType.LessOrEqual;
+                        break;
+                    case "=":
+                        newItem.HitType = BreakpointHitType.Equal;
+                        break;
+                    case ">":
+                        newItem.HitType = BreakpointHitType.Greater;
+                        break;
+                    case ">=":
+                        newItem.HitType = BreakpointHitType.GreaterOrEqual;
+                        break;
+                    case "*":
+                        newItem.HitType = BreakpointHitType.Multiple;
+                        break;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(expression))
             {
                 return true;
             }

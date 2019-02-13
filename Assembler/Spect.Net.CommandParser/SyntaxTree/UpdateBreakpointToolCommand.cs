@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Spect.Net.CommandParser.Generated;
+﻿using Spect.Net.CommandParser.Generated;
 
 namespace Spect.Net.CommandParser.SyntaxTree
 {
@@ -9,14 +8,29 @@ namespace Spect.Net.CommandParser.SyntaxTree
     public class UpdateBreakpointToolCommand : ToolCommandNode
     {
         /// <summary>
-        /// GOTO address
+        /// BREAKPOINT address
         /// </summary>
         public ushort Address { get; }
+
+        /// <summary>
+        /// BREAKPOINT symbol
+        /// </summary>
+        public string Symbol { get; }
 
         public UpdateBreakpointToolCommand(CommandToolParser.UpdateBreakpointCommandContext context)
         {
             if (context.LITERAL() == null) return;
-            Address = ProcessNumber(context.LITERAL().GetText());
+            var type = ProcessId(context.LITERAL().GetText(), out var number, out var symbol);
+            if (HasSemanticError) return;
+
+            if (type)
+            {
+                Symbol = symbol;
+            }
+            else
+            {
+                Address = number;
+            }
         }
     }
 }

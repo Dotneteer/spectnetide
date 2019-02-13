@@ -626,7 +626,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             MarkF = GetBrush(15);
             TagF = BaseAddress + 15;
 
-            if (bankViewModel != null && BankAwareToolWindowViewModelBase.AnnotationHandler != null)
+            if (bankViewModel?.AnnotationHandler != null)
             {
                 SymbolMark0 = GetSymbolBrush(bankViewModel, 0);
                 SymbolMark1 = GetSymbolBrush(bankViewModel, 1);
@@ -675,7 +675,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 }
             }
 
-            if (BankAwareToolWindowViewModelBase.AnnotationHandler != null)
+            if (_bankViewModel?.AnnotationHandler != null)
             {
                 var ann = _bankViewModel.GetAnnotationFor(address, out var memAddress);
                 if (ann != null && ann.Labels.TryGetValue(memAddress, out var symbol))

@@ -255,7 +255,6 @@
     <Compile Include="ToolWindows\Hex4Converter.cs" />
     <Compile Include="ToolWindows\KeyboardTool\KeyboardToolViewModel.cs" />
     <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
-    <Compile Include="ToolWindows\Disassembly\DisassemblyCommandType.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyControl.xaml.cs">
       <DependentUpon>DisassemblyControl.xaml</DependentUpon>
     </Compile>
@@ -307,7 +306,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpectNetCommandSet.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyAnnotationHandler.cs" />
-    <Compile Include="ToolWindows\Disassembly\DisassemblyCommandParser.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyItemViewModel.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">

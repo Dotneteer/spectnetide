@@ -15,13 +15,28 @@ namespace Spect.Net.CommandParser.SyntaxTree
         public ushort Address { get; }
 
         /// <summary>
-        /// GOTO Text
+        /// COMMENT symbol
+        /// </summary>
+        public string Symbol { get; }
+
+        /// <summary>
+        /// COMMENT Text
         /// </summary>
         public string Text { get; }
 
         public CommentToolCommand(CommandToolParser.CommentCommandContext context)
         {
-            Address = ProcessNumber(context.LITERAL().GetText());
+            var type = ProcessId(context.LITERAL().GetText(), out var number, out var symbol);
+            if (HasSemanticError) return;
+
+            if (type)
+            {
+                Symbol = symbol;
+            }
+            else
+            {
+                Address = number;
+            }
             if (HasSemanticError || context.ChildCount < 5) return;
 
             var sb = new StringBuilder();

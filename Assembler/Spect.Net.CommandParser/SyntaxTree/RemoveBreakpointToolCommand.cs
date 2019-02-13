@@ -12,10 +12,25 @@ namespace Spect.Net.CommandParser.SyntaxTree
         /// </summary>
         public ushort Address { get; }
 
+        /// <summary>
+        /// BREAKPOINT symbol
+        /// </summary>
+        public string Symbol { get; }
+
         public RemoveBreakpointToolCommand(CommandToolParser.RemoveBreakpointCommandContext context)
         {
             if (context.LITERAL() == null) return;
-            Address = ProcessNumber(context.LITERAL().GetText());
+            var type = ProcessId(context.LITERAL().GetText(), out var number, out var symbol);
+            if (HasSemanticError) return;
+
+            if (type)
+            {
+                Symbol = symbol;
+            }
+            else
+            {
+                Address = number;
+            }
         }
     }
 }

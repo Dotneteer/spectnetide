@@ -51,7 +51,7 @@ removeBreakpointCommand: RB WS? LITERAL ;
 updateBreakpointCommand: UB WS? LITERAL ;
 eraseAllBreakpointsCommand: EB ;
 retrieveCommand: RETRIEVE WS? LITERAL ;
-literalCommand: D WS? LITERAL (WS (HASH|LITERAL)) ;
+literalCommand: D WS? LITERAL (WS (HASH|LITERAL))? ;
 disassemblyTypeCommand: T WS? .*? ;
 reDisassemblyCommand: RD ;
 jumpCommand: J WS? LITERAL ;
@@ -104,7 +104,7 @@ RB: 'rb'|'rB'|'Rb'|'RB' ;
 UB: 'ub'|'uB'|'Ub'|'UB' ;
 XW: 'xw'|'xW'|'Xw'|'XW' ;
 W: 'w'|'W' ;
-RETRIEVE: R (L|C|P|B) ;
+RETRIEVE: R (L|C|P) ;
 SECTION: M (B|D|W|S|C) ;
 
 LITERAL: COLON? LITCH+	;

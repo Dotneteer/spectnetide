@@ -24,7 +24,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Stores the object that handles annotations and their persistence
         /// </summary>
-        public static DisassemblyAnnotationHandler AnnotationHandler { get; protected set; }
+        public DisassemblyAnnotationHandler AnnotationHandler { get; protected set; }
 
         protected BankAwareToolWindowViewModelBase()
         {
@@ -349,7 +349,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <returns>Parsed command node, if successful; otherwise, null</returns>
         public ToolCommandNode ParseCommand(string commandText)
         {
-            var inputStream = new AntlrInputStream(commandText);
+            var inputStream = new AntlrInputStream(commandText.TrimStart());
             var lexer = new CommandToolLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new CommandToolParser(tokenStream);
@@ -370,26 +370,30 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
             value = 0;
 
-            // --- #1: check the compiled code
-            if (CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue))
+            if (FullViewMode)
             {
-                value = symbolValue;
-                return true;
+                // --- #1: check the compiled code
+                if (CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue))
+                {
+                    value = symbolValue;
+                    return true;
+                }
+
+                // #2: Check user defined RAM annotations
+                var labelAddrs = AnnotationHandler.RamBankAnnotations[0].Labels
+                    .Where(kp =>
+                        string.Compare(kp.Value, symbol, StringComparison.InvariantCultureIgnoreCase) == 0)
+                    .Select(kp => kp.Key)
+                    .ToList();
+                if (labelAddrs.Count > 0)
+                {
+                    // --- Address found in the current RAM
+                    value = (ushort) (labelAddrs[0] + 0x4000);
+                    return true;
+                }
             }
 
-            // #2: Check user defined RAM annotations
-            var labelAddrs = AnnotationHandler.RamBankAnnotations[0].Labels
-                .Where(kp =>
-                    string.Compare(kp.Value, symbol, StringComparison.InvariantCultureIgnoreCase) == 0)
-                .Select(kp => kp.Key)
-                .ToList();
-            if (labelAddrs.Count > 0)
-            {
-                // --- Address found in the current RAM
-                value = (ushort)(labelAddrs[0] + 0x4000);
-                return true;
-            }
-
+            if (!RomViewMode && !FullViewMode) return false;
             // #3: Check ROM annotations
             var curRomIndex = MachineViewModel.SpectrumVm.MemoryDevice.GetSelectedRomIndex();
             if (RomViewMode)
@@ -397,19 +401,15 @@ namespace Spect.Net.VsPackage.ToolWindows
                 curRomIndex = RomIndex;
             }
 
-            labelAddrs = AnnotationHandler.RomPageAnnotations[curRomIndex].Labels
+            var romLabelAddrs = AnnotationHandler.RomPageAnnotations[curRomIndex].Labels
                 .Where(kp =>
                     string.Compare(kp.Value, symbol, StringComparison.InvariantCultureIgnoreCase) == 0)
                 .Select(kp => kp.Key)
                 .ToList();
-            if (labelAddrs.Count == 0)
-            {
-                // --- Symbol not found;
-                return false;
-            }
+            if (romLabelAddrs.Count == 0) return false;
 
             // --- Address found in the current ROM
-            value = labelAddrs[0];
+            value = romLabelAddrs[0];
             return true;
         }
     }

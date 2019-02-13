@@ -167,6 +167,29 @@ namespace Spect.Net.CommandParser.Test
         }
 
         [TestMethod]
+        [DataRow("c MySymbol", "MySymbol", null)]
+        [DataRow("c MySymbol Comment", "MySymbol", "Comment")]
+        public void CommentParsingWithSymbolWorks(string source, string symbol, string comment)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as CommentToolCommand;
+            command.ShouldNotBeNull();
+            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
+            if (comment == null)
+            {
+                command.Text.ShouldBeNull();
+            }
+            else
+            {
+                command.Text.ToUpper().ShouldBe(comment.ToUpper());
+            }
+        }
+
+        [TestMethod]
         [DataRow("p 1234", 4660, null)]
         [DataRow("P 1234", 4660, null)]
         [DataRow("P :1234", 1234, null)]
@@ -194,6 +217,29 @@ namespace Spect.Net.CommandParser.Test
         }
 
         [TestMethod]
+        [DataRow("p MySymbol", "MySymbol", null)]
+        [DataRow("p MySymbol Comment", "MySymbol", "Comment")]
+        public void PrefixCommentParsingWithSymbolWorks(string source, string symbol, string comment)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as PrefixCommentToolCommand;
+            command.ShouldNotBeNull();
+            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
+            if (comment == null)
+            {
+                command.Text.ShouldBeNull();
+            }
+            else
+            {
+                command.Text.ToUpper().ShouldBe(comment.ToUpper());
+            }
+        }
+
+        [TestMethod]
         [DataRow("SB :1234 H>3 C HL==5", 1234, ">", 3, "HL==5")]
         [DataRow("SB:1234 H>3 C HL==5", 1234, ">", 3, "HL==5")]
         [DataRow("sb 12AC H>3 C HL==5", 4780, ">", 3, "HL==5")]
@@ -203,6 +249,46 @@ namespace Spect.Net.CommandParser.Test
         [DataRow("sb 12AC H >3 C HL==5", 4780, ">", 3, "HL==5")]
         [DataRow("sb 12AC H > 3 C HL==5", 4780, ">", 3, "HL==5")]
         [DataRow("sb 12AC C HL==5 & B != C", 4780, null, 0, "HL==5 & B != C")]
+        [DataRow("SB :1234 H>=3 C HL==5", 1234, ">=", 3, "HL==5")]
+        [DataRow("SB:1234 H>=3 C HL==5", 1234, ">=", 3, "HL==5")]
+        [DataRow("sb 12AC H>=3 C HL==5", 4780, ">=", 3, "HL==5")]
+        [DataRow("SB 12AC H>=3 C HL==5", 4780, ">=", 3, "HL==5")]
+        [DataRow("Sb 12AC H>=3 C HL==5", 4780, ">=", 3, "HL==5")]
+        [DataRow("sB 12AC H>=3 C HL==5", 4780, ">=", 3, "HL==5")]
+        [DataRow("sb 12AC H >=3 C HL==5", 4780, ">=", 3, "HL==5")]
+        [DataRow("sb 12AC H >= 3 C HL==5", 4780, ">=", 3, "HL==5")]
+        [DataRow("SB :1234 H=3 C HL==5", 1234, "=", 3, "HL==5")]
+        [DataRow("SB:1234 H=3 C HL==5", 1234, "=", 3, "HL==5")]
+        [DataRow("sb 12AC H=3 C HL==5", 4780, "=", 3, "HL==5")]
+        [DataRow("SB 12AC H=3 C HL==5", 4780, "=", 3, "HL==5")]
+        [DataRow("Sb 12AC H=3 C HL==5", 4780, "=", 3, "HL==5")]
+        [DataRow("sB 12AC H=3 C HL==5", 4780, "=", 3, "HL==5")]
+        [DataRow("sb 12AC H =3 C HL==5", 4780, "=", 3, "HL==5")]
+        [DataRow("sb 12AC H = 3 C HL==5", 4780, "=", 3, "HL==5")]
+        [DataRow("SB :1234 H<=3 C HL==5", 1234, "<=", 3, "HL==5")]
+        [DataRow("SB:1234 H<=3 C HL==5", 1234, "<=", 3, "HL==5")]
+        [DataRow("sb 12AC H<=3 C HL==5", 4780, "<=", 3, "HL==5")]
+        [DataRow("SB 12AC H<=3 C HL==5", 4780, "<=", 3, "HL==5")]
+        [DataRow("Sb 12AC H<=3 C HL==5", 4780, "<=", 3, "HL==5")]
+        [DataRow("sB 12AC H<=3 C HL==5", 4780, "<=", 3, "HL==5")]
+        [DataRow("sb 12AC H <=3 C HL==5", 4780, "<=", 3, "HL==5")]
+        [DataRow("sb 12AC H <= 3 C HL==5", 4780, "<=", 3, "HL==5")]
+        [DataRow("SB :1234 H<3 C HL==5", 1234, "<", 3, "HL==5")]
+        [DataRow("SB:1234 H<3 C HL==5", 1234, "<", 3, "HL==5")]
+        [DataRow("sb 12AC H<3 C HL==5", 4780, "<", 3, "HL==5")]
+        [DataRow("SB 12AC H<3 C HL==5", 4780, "<", 3, "HL==5")]
+        [DataRow("Sb 12AC H<3 C HL==5", 4780, "<", 3, "HL==5")]
+        [DataRow("sB 12AC H<3 C HL==5", 4780, "<", 3, "HL==5")]
+        [DataRow("sb 12AC H <3 C HL==5", 4780, "<", 3, "HL==5")]
+        [DataRow("sb 12AC H < 3 C HL==5", 4780, "<", 3, "HL==5")]
+        [DataRow("SB :1234 H*3 C HL==5", 1234, "*", 3, "HL==5")]
+        [DataRow("SB:1234 H*3 C HL==5", 1234, "*", 3, "HL==5")]
+        [DataRow("sb 12AC H*3 C HL==5", 4780, "*", 3, "HL==5")]
+        [DataRow("SB 12AC H*3 C HL==5", 4780, "*", 3, "HL==5")]
+        [DataRow("Sb 12AC H*3 C HL==5", 4780, "*", 3, "HL==5")]
+        [DataRow("sB 12AC H*3 C HL==5", 4780, "*", 3, "HL==5")]
+        [DataRow("sb 12AC H *3 C HL==5", 4780, "*", 3, "HL==5")]
+        [DataRow("sb 12AC H * 3 C HL==5", 4780, "*", 3, "HL==5")]
         public void SetBreakPointParsingWorks(string source, int address, string hitType, int hitValue, string condition)
         {
             // --- Act
@@ -213,6 +299,34 @@ namespace Spect.Net.CommandParser.Test
             var command = parsed as SetBreakpointToolCommand;
             command.ShouldNotBeNull();
             command.Address.ShouldBe((ushort)address);
+            if (hitType != null)
+            {
+                command.HitConditionType.ShouldBe(hitType);
+                command.HitConditionValue.ShouldBe((ushort)hitValue);
+            }
+
+            if (condition != null)
+            {
+                command.Condition.ShouldBe(condition);
+            }
+        }
+
+        [TestMethod]
+        [DataRow("SB Symbol H>3 C HL==5", "SYMBOL", ">", 3, "HL==5")]
+        [DataRow("Sb Symbol H>3 C HL==5", "SYMBOL", ">", 3, "HL==5")]
+        [DataRow("sb Symbol H >3 C HL==5", "SYMBOL", ">", 3, "HL==5")]
+        [DataRow("sb Symbol H > 3 C HL==5", "SYMBOL", ">", 3, "HL==5")]
+        [DataRow("sb Symbol C HL==5 & B != C", "SYMBOL", null, 0, "HL==5 & B != C")]
+        public void SetBreakPointParsingWithSymbolWorks(string source, string symbol, string hitType, int hitValue, string condition)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as SetBreakpointToolCommand;
+            command.ShouldNotBeNull();
+            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
             if (hitType != null)
             {
                 command.HitConditionType.ShouldBe(hitType);
@@ -245,6 +359,23 @@ namespace Spect.Net.CommandParser.Test
         }
 
         [TestMethod]
+        [DataRow("tb Symbol", "Symbol")]
+        [DataRow("Tb Symbol", "Symbol")]
+        [DataRow("tB Symbol", "Symbol")]
+        [DataRow("TB Symbol", "Symbol")]
+        public void ToggleBreakpointParsingWithSymbolWorks(string source, string symbol)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as ToggleBreakpointToolCommand;
+            command.ShouldNotBeNull();
+            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
+        }
+
+        [TestMethod]
         [DataRow("rb 1234", 4660)]
         [DataRow("Rb 1234", 4660)]
         [DataRow("rB 1234", 4660)]
@@ -264,6 +395,23 @@ namespace Spect.Net.CommandParser.Test
         }
 
         [TestMethod]
+        [DataRow("rb Symbol", "Symbol")]
+        [DataRow("Rb Symbol", "Symbol")]
+        [DataRow("rB Symbol", "Symbol")]
+        [DataRow("RB Symbol", "Symbol")]
+        public void RemoveBreakpointParsingWithSymbolWorks(string source, string symbol)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as RemoveBreakpointToolCommand;
+            command.ShouldNotBeNull();
+            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
+        }
+
+        [TestMethod]
         [DataRow("ub 1234", 4660)]
         [DataRow("Ub 1234", 4660)]
         [DataRow("uB 1234", 4660)]
@@ -280,6 +428,23 @@ namespace Spect.Net.CommandParser.Test
             var command = parsed as UpdateBreakpointToolCommand;
             command.ShouldNotBeNull();
             command.Address.ShouldBe((ushort)address);
+        }
+
+        [TestMethod]
+        [DataRow("ub Symbol", "Symbol")]
+        [DataRow("Ub Symbol", "Symbol")]
+        [DataRow("uB Symbol", "Symbol")]
+        [DataRow("UB Symbol", "Symbol")]
+        public void UpdateBreakpointParsingWithSymbolWorks(string source, string symbol)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as UpdateBreakpointToolCommand;
+            command.ShouldNotBeNull();
+            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
         }
 
         [TestMethod]
@@ -327,6 +492,23 @@ namespace Spect.Net.CommandParser.Test
         }
 
         [TestMethod]
+        [DataRow("rl MySymbol", "MySymbol", "L")]
+        [DataRow("rc MySymbol", "MySymbol", "C")]
+        [DataRow("rp MySymbol", "MySymbol", "P")]
+        public void RetrieveParsingWithSymbolWorks(string source, string symbol, string type)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as RetrieveToolCommand;
+            command.ShouldNotBeNull();
+            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
+            command.Type.ShouldBe(type);
+        }
+
+        [TestMethod]
         [DataRow("d 1234 MySymbol", 4660, "MYSYMBOL", false)]
         [DataRow("D 1234 MySymbol", 4660, "MYSYMBOL", false)]
         [DataRow("d :1234 MySymbol", 1234, "MYSYMBOL", false)]
@@ -334,7 +516,7 @@ namespace Spect.Net.CommandParser.Test
         [DataRow("D 1234 #", 4660, null, true)]
         [DataRow("D :1234 #", 1234, null, true)]
         [DataRow("D:1234 #", 1234, null, true)]
-        public void RetrieveParsingWorks(string source, int address, string symbol, bool isAuto)
+        public void LiteralParsingWorks(string source, int address, string literalName, bool isAuto)
         {
             // --- Act
             var parsed = ParseCommand(source);
@@ -344,7 +526,31 @@ namespace Spect.Net.CommandParser.Test
             var command = parsed as LiteralToolCommand;
             command.ShouldNotBeNull();
             command.Address.ShouldBe((ushort)address);
-            command.Symbol.ShouldBe(symbol);
+            if (literalName != null)
+            {
+                command.LiteralName.ToUpper().ShouldBe(literalName.ToUpper());
+            }
+            command.IsAuto.ShouldBe(isAuto);
+        }
+
+        [TestMethod]
+        [DataRow("d Symbol MySymbol", "SYMBOL", "MYSYMBOL", false)]
+        [DataRow("D Symbol", "SYMBOL", null, false)]
+        [DataRow("D Symbol #", "SYMBOL", null, true)]
+        public void LiteralParsingWithSymbolWorks(string source, string symbol, string literalName, bool isAuto)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
+
+            // --- Assert
+
+            var command = parsed as LiteralToolCommand;
+            command.ShouldNotBeNull();
+            command.Symbol.ToUpper().ShouldBe(symbol.ToUpper());
+            if (literalName != null)
+            {
+                command.LiteralName.ToUpper().ShouldBe(literalName.ToUpper());
+            }
             command.IsAuto.ShouldBe(isAuto);
         }
 

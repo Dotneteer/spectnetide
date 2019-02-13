@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using System.Text;
 using Spect.Net.CommandParser.Generated;
 
 namespace Spect.Net.CommandParser.SyntaxTree
@@ -10,9 +9,14 @@ namespace Spect.Net.CommandParser.SyntaxTree
     public class SetBreakpointToolCommand : ToolCommandNode
     {
         /// <summary>
-        /// COMMENT address
+        /// SET BREAKPOINT address
         /// </summary>
         public ushort Address { get; }
+
+        /// <summary>
+        /// SET BREAKPOINT address
+        /// </summary>
+        public string Symbol { get; }
 
         /// <summary>
         /// Type of the optional HIT condition
@@ -32,7 +36,17 @@ namespace Spect.Net.CommandParser.SyntaxTree
         public SetBreakpointToolCommand(CommandToolParser.SetBreakpointCommandContext context)
         {
             if (context.LITERAL().Length < 1) return;
-            Address = ProcessNumber(context.LITERAL()[0].GetText());
+            var type = ProcessId(context.LITERAL()[0].GetText(), out var number, out var symbol);
+            if (HasSemanticError) return;
+
+            if (type)
+            {
+                Symbol = symbol;
+            }
+            else
+            {
+                Address = number;
+            }
             if (HasSemanticError) return;
             var isCompact = !string.IsNullOrWhiteSpace(context.GetChild(1).GetText());
 

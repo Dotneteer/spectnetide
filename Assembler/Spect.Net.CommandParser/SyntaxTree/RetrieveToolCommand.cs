@@ -13,7 +13,12 @@ namespace Spect.Net.CommandParser.SyntaxTree
         public ushort Address { get; }
 
         /// <summary>
-        /// GOTO symbol
+        /// RETRIEVE symbol
+        /// </summary>
+        public string Symbol { get; }
+
+        /// <summary>
+        /// RETRIEVE Type
         /// </summary>
         public string Type { get; }
 
@@ -21,7 +26,17 @@ namespace Spect.Net.CommandParser.SyntaxTree
         {
             Type = context.GetChild(0).GetText().Substring(1).ToUpper();
             if (context.LITERAL() == null) return;
-            Address = ProcessNumber(context.LITERAL().GetText());
+            var type = ProcessId(context.LITERAL().GetText(), out var number, out var symbol);
+            if (HasSemanticError) return;
+
+            if (type)
+            {
+                Symbol = symbol;
+            }
+            else
+            {
+                Address = number;
+            }
         }
     }
 }

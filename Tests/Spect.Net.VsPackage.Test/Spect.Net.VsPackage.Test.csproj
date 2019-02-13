@@ -70,7 +70,6 @@
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandParserTests.cs" />
     <Compile Include="CustomEditors\SpConfEditor\SpConfSerializerTests.cs" />
     <Compile Include="ProjectWizard\ProjectWizardTest.cs" />
-    <Compile Include="Tools\Disassembly\DisassemblyCommandParserTest.cs" />
     <Compile Include="Tools\Memory\MemoryLineViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\Watch\WatchFormatSpecifierTest.cs" />

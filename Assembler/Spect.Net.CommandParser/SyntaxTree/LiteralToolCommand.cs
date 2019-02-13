@@ -13,9 +13,14 @@ namespace Spect.Net.CommandParser.SyntaxTree
         public ushort Address { get; }
 
         /// <summary>
-        /// Associated symbol
+        /// LITERAL symbol
         /// </summary>
         public string Symbol { get; }
+
+        /// <summary>
+        /// Associated symbol
+        /// </summary>
+        public string LiteralName { get; }
 
         /// <summary>
         /// Is automatic symbol?
@@ -25,8 +30,17 @@ namespace Spect.Net.CommandParser.SyntaxTree
         public LiteralToolCommand(CommandToolParser.LiteralCommandContext context)
         {
             if (context.LITERAL().Length < 1) return;
-            Address = ProcessNumber(context.LITERAL()[0].GetText());
+            var type = ProcessId(context.LITERAL()[0].GetText(), out var number, out var symbol);
             if (HasSemanticError) return;
+
+            if (type)
+            {
+                Symbol = symbol;
+            }
+            else
+            {
+                Address = number;
+            }
 
             if (context.HASH() != null)
             {
@@ -40,8 +54,7 @@ namespace Spect.Net.CommandParser.SyntaxTree
                 HasSemanticError = true;
                 return;
             }
-            Symbol = idText;
-
+            LiteralName = idText;
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Disassembler;
@@ -15,16 +14,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
     /// </summary>
     public class DisassemblyAnnotationHandler: IDisposable
     {
-        /// <summary>
-        /// Maximum label length
-        /// </summary>
-        public const int MAX_LABEL_LENGTH = 16;
-
-        /// <summary>
-        /// Regex to check label syntax
-        /// </summary>
-        public static readonly Regex LabelRegex = new Regex(@"^[_a-zA-Z][_a-zA-Z0-9]{0,15}$");
-
         /// <summary>
         /// The parent view model
         /// </summary>
@@ -166,7 +155,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         public void AddSection(ushort startAddress, ushort endAddress, MemorySectionType type)
         {
             var startAnn = Parent.GetAnnotationFor(startAddress, out var start);
-            var endAnn = Parent.GetAnnotationFor(endAddress, out var end);
+            var endAnn = Parent.GetAnnotationFor((ushort)(endAddress - 1), out var end);
             if (startAnn == endAnn)
             {
                 // --- The section is within one bank
