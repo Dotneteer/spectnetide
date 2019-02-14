@@ -2,6 +2,7 @@
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
+// ReSharper disable StringLiteralTypo
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -25,8 +26,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)123);
-            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)122);
+            output.Symbols["SYMBOL1"].Value.Value.ShouldBe((ushort)123);
+            output.Symbols["SYMBOL2"].Value.Value.ShouldBe((ushort)122);
         }
 
         [TestMethod]
@@ -86,8 +87,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)0xF3);
-            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)0xF2);
+            output.Symbols["SYMBOL1"].Value.Value.ShouldBe((ushort)0xF3);
+            output.Symbols["SYMBOL2"].Value.Value.ShouldBe((ushort)0xF2);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -151,8 +152,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["SYMBOL2"].Value.ShouldBe((ushort)0x8003);
-            output.Symbols["SYMBOL1"].Value.ShouldBe((ushort)0x8004);
+            output.Symbols["SYMBOL2"].Value.Value.ShouldBe((ushort)0x8003);
+            output.Symbols["SYMBOL1"].Value.Value.ShouldBe((ushort)0x8004);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -216,7 +217,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["FORWADDR"].Value.ShouldBe((ushort)0x8004);
+            output.Symbols["FORWADDR"].Value.Value.ShouldBe((ushort)0x8004);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -243,7 +244,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             var segment = output.Segments[0];
-            output.Symbols["BACKADDR"].Value.ShouldBe((ushort)0x8000);
+            output.Symbols["BACKADDR"].Value.Value.ShouldBe((ushort)0x8000);
             segment.EmittedCode.Count.ShouldBe(expected.Length);
             for (var i = 0; i < expected.Length; i++)
             {
@@ -304,8 +305,8 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["SYMBOL1"].Type.ShouldBe(ExpressionValueType.String);
-            output.Symbols["SYMBOL1"].AsString().ShouldBe("hello");
+            output.Symbols["SYMBOL1"].Value.Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL1"].Value.AsString().ShouldBe("hello");
         }
 
         [TestMethod]
@@ -323,10 +324,10 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["SYMBOL1"].Type.ShouldBe(ExpressionValueType.String);
-            output.Symbols["SYMBOL1"].AsString().ShouldBe("helloyou");
-            output.Symbols["SYMBOL2"].Type.ShouldBe(ExpressionValueType.String);
-            output.Symbols["SYMBOL2"].AsString().ShouldBe("hello");
+            output.Symbols["SYMBOL1"].Value.Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL1"].Value.AsString().ShouldBe("helloyou");
+            output.Symbols["SYMBOL2"].Value.Type.ShouldBe(ExpressionValueType.String);
+            output.Symbols["SYMBOL2"].Value.AsString().ShouldBe("hello");
         }
 
         [TestMethod]

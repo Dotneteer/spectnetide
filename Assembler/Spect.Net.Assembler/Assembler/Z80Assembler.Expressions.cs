@@ -32,21 +32,13 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (scope.Symbols.TryGetValue(symbol, out var localSymbolValue))
                 {
-                    return localSymbolValue;
-                }
-                if (scope.Vars.TryGetValue(symbol, out var localVarValue))
-                {
-                    return localVarValue;
+                    return localSymbolValue.Value;
                 }
             }
 
             // --- Check the global scope
-            if (_output.Symbols.TryGetValue(symbol, out var symbolValue))
-            {
-                return symbolValue;
-            }
-            return _output.Vars.TryGetValue(symbol, out var varValue) 
-                ? varValue
+            return _output.Symbols.TryGetValue(symbol, out var symbolValue) 
+                ? symbolValue.Value 
                 : null;
         }
 
@@ -104,7 +96,7 @@ namespace Spect.Net.Assembler.Assembler
             var lookup = _output.LocalScopes.Count > 0
                 ? _output.LocalScopes.Peek().Symbols
                 : _output.Symbols;
-            return lookup.ContainsKey(symbol);
+            return lookup.TryGetValue(symbol, out var symbolInfo) && symbolInfo.Type == SymbolType.Label;
         }
 
         /// <summary>
@@ -117,11 +109,11 @@ namespace Spect.Net.Assembler.Assembler
             var lookup = _output.LocalScopes.Count > 0
                 ? _output.LocalScopes.Peek().Symbols
                 : _output.Symbols;
-            lookup.Add(symbol, value);
+            lookup.Add(symbol, new AssemblySymbolInfo(symbol, SymbolType.Label, value));
         }
 
         /// <summary>
-        /// Checks if the variable with the specified name exisits
+        /// Checks if the variable with the specified name exists
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -130,14 +122,15 @@ namespace Spect.Net.Assembler.Assembler
             // --- Search for the variable from inside out
             foreach (var scope in _output.LocalScopes)
             {
-                if (scope.Vars.ContainsKey(name))
+                if (scope.Symbols.TryGetValue(name, out var symbolInfo) && symbolInfo.Type == SymbolType.Var)
                 {
                     return true;
                 }
             }
 
             // --- Check the global scope
-            return _output.Vars.ContainsKey(name);
+            return _output.Symbols.TryGetValue(name, out var globalSymbol) 
+                && globalSymbol.Type == SymbolType.Var;
         }
 
         /// <summary>
@@ -150,25 +143,26 @@ namespace Spect.Net.Assembler.Assembler
             // --- Search for the variable from inside out
             foreach (var scope in _output.LocalScopes)
             {
-                if (scope.Vars.ContainsKey(name))
+                if (scope.Symbols.TryGetValue(name, out var symbolInfo) && symbolInfo.Type == SymbolType.Var)
                 {
-                    scope.Vars[name] = value;
+                    symbolInfo.Value = value;
                     return;
                 }
             }
 
             // --- Check the global scope
-            if (_output.Vars.ContainsKey(name))
+            if (_output.Symbols.TryGetValue(name, out var globalSymbol) 
+                && globalSymbol.Type == SymbolType.Var)
             {
-                _output.Vars[name] = value;
+                globalSymbol.Value = value;
                 return;
             }
 
             // --- The variable does not exist, create it in the current scope
             var vars = _output.LocalScopes.Count > 0
-                ? _output.LocalScopes.Peek().Vars
-                : _output.Vars;
-            vars[name] = value;
+                ? _output.LocalScopes.Peek().Symbols
+                : _output.Symbols;
+            vars[name] = new AssemblySymbolInfo(name, SymbolType.Var, value);
         }
 
         #endregion
@@ -181,7 +175,16 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="symbol">Symbol name</param>
         /// <param name="value">Symbol value</param>
         public void SetSymbolValue(string symbol, ExpressionValue value)
-            => _output.Symbols[symbol] = value;
+        {
+            if (_output.Symbols.TryGetValue(symbol, out var symbolInfo))
+            {
+                symbolInfo.Value = value;
+            }
+            else
+            {
+                _output.Symbols.Add(symbol, new AssemblySymbolInfo(symbol, SymbolType.Label, value));
+            }
+        }
 
         /// <summary>
         /// Evaluates the specified expression.
@@ -290,7 +293,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="symbols">Symbols in the scope</param>
         /// <param name="signNotEvaluable">Raise error if the symbol is not evaluable</param>
         /// <returns></returns>
-        private bool FixupSymbols(List<FixupEntry> fixups, Dictionary<string, ExpressionValue> symbols, bool signNotEvaluable)
+        private bool FixupSymbols(List<FixupEntry> fixups, Dictionary<string, AssemblySymbolInfo> symbols, bool signNotEvaluable)
         {
             // --- First, fix the .equ values
             var success = true;
@@ -298,7 +301,14 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (EvaluateFixupExpression(equ, false, signNotEvaluable, out var value))
                 {
-                    symbols[equ.Label] = value;
+                    if (symbols.TryGetValue(equ.Label, out var symbolInfo))
+                    {
+                        symbolInfo.Value = value;
+                    }
+                    else
+                    {
+                        symbols.Add(equ.Label, new AssemblySymbolInfo(equ.Label, SymbolType.Label, value));
+                    }
                 }
                 else
                 {

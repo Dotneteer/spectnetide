@@ -54,6 +54,8 @@
     <Compile Include="Assembler\AssemblerOptions.cs" />
     <Compile Include="Assembler\AssemblerOutput.cs" />
     <Compile Include="Assembler\AssemblerTaskInfo.cs" />
+    <Compile Include="Assembler\AssemblySymbolInfo.cs" />
+    <Compile Include="Assembler\SymbolType.cs" />
     <Compile Include="Assembler\BinarySegment.cs" />
     <Compile Include="Assembler\CompoundOperationDescriptor.cs" />
     <Compile Include="Assembler\DefinitionSection.cs" />

@@ -388,16 +388,16 @@ mnemonic
  * Lexer Rules
  */
 
-COMMENT
-	:	(SCOLON | COMSEP) ~('\r' | '\n')*
+WS
+	:	('\u0020' | '\t')+ -> channel(HIDDEN)
 	;
 
 BLCOMMENT
-	:	'/*'  ~('\r' | '\n')* '*/' -> channel(HIDDEN)
+	:	'/*'  ~('\r' | '\n')*? '*/' -> channel(HIDDEN)
 	;
 
-WS
-	:	('\u0020' | '\t') -> channel(HIDDEN)
+COMMENT
+	:	(SCOLON | COMSEP) ~('\r' | '\n')*
 	;
 
 NEWLINE

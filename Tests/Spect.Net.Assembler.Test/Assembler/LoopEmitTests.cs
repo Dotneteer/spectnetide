@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+// ReSharper disable StringLiteralTypo
+// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -130,7 +132,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Symbols.ContainsKey("MYLOOP").ShouldBeTrue();
-            output.Symbols["MYLOOP"].Value.ShouldBe((ushort) 0x8000);
+            output.Symbols["MYLOOP"].Value.Value.ShouldBe((ushort) 0x8000);
         }
 
         [TestMethod]
@@ -149,7 +151,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Symbols.ContainsKey("MYLOOP").ShouldBeTrue();
-            output.Symbols["MYLOOP"].Value.ShouldBe((ushort) 0x8000);
+            output.Symbols["MYLOOP"].Value.Value.ShouldBe((ushort) 0x8000);
         }
 
         [TestMethod]

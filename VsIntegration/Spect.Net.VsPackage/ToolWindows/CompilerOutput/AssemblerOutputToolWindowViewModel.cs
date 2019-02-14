@@ -62,7 +62,7 @@ namespace Spect.Net.VsPackage.ToolWindows.CompilerOutput
         /// <summary>
         /// Compilation output
         /// </summary>
-        public Assembler.Assembler.AssemblerOutput Output { get; set; }
+        public AssemblerOutput Output { get; set; }
 
         /// <summary>
         /// Command that toggles symbol orders
@@ -185,14 +185,14 @@ namespace Spect.Net.VsPackage.ToolWindows.CompilerOutput
             {
                 ToggleSymbolCommandText = "Order by values";
                 if (Output == null) return;
-                var symbols = Output.Symbols.OrderBy(kv => kv.Key).Select(kv => new AssemblySymbol(kv.Key, kv.Value));
+                var symbols = Output.Symbols.OrderBy(kv => kv.Key).Select(kv => new AssemblySymbol(kv.Key, kv.Value.Value));
                 Symbols = new List<AssemblySymbol>(symbols);
             }
             else
             {
                 ToggleSymbolCommandText = "Order by symbols";
                 if (Output == null) return;
-                var symbols = Output.Symbols.OrderBy(kv => kv.Value.Value).Select(kv => new AssemblySymbol(kv.Key, kv.Value));
+                var symbols = Output.Symbols.OrderBy(kv => kv.Value.Value).Select(kv => new AssemblySymbol(kv.Key, kv.Value.Value));
                 Symbols = new List<AssemblySymbol>(symbols);
             }
         }

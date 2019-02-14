@@ -31,7 +31,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 [System.CLSCompliant(false)]
 public partial class Z80AsmParser : Parser {
 	public const int
-		COMMENT=1, BLCOMMENT=2, WS=3, NEWLINE=4, COLON=5, DCOLON=6, SCOLON=7, 
+		WS=1, BLCOMMENT=2, COMMENT=3, NEWLINE=4, COLON=5, DCOLON=6, SCOLON=7, 
 		COMSEP=8, COMMA=9, ASSIGN=10, LPAR=11, RPAR=12, LSBRAC=13, RSBRAC=14, 
 		QMARK=15, PLUS=16, MINUS=17, VBAR=18, UPARR=19, AMP=20, EQOP=21, CIEQOP=22, 
 		NEQOP=23, CINEQOP=24, LTOP=25, LTEOP=26, GTOP=27, GTEOP=28, LSHOP=29, 
@@ -135,7 +135,7 @@ public partial class Z80AsmParser : Parser {
 		null, null, null, null, null, null, null, "'$<none>$'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "COMMENT", "BLCOMMENT", "WS", "NEWLINE", "COLON", "DCOLON", "SCOLON", 
+		null, "WS", "BLCOMMENT", "COMMENT", "NEWLINE", "COLON", "DCOLON", "SCOLON", 
 		"COMSEP", "COMMA", "ASSIGN", "LPAR", "RPAR", "LSBRAC", "RSBRAC", "QMARK", 
 		"PLUS", "MINUS", "VBAR", "UPARR", "AMP", "EQOP", "CIEQOP", "NEQOP", "CINEQOP", 
 		"LTOP", "LTEOP", "GTOP", "GTEOP", "LSHOP", "RSHOP", "MULOP", "DIVOP", 
@@ -7661,7 +7661,7 @@ public partial class Z80AsmParser : Parser {
 		"\x2\xE1\xE0\x3\x2\x2\x2\xE1\xE2\x3\x2\x2\x2\xE2\xE4\x3\x2\x2\x2\xE3\xCE"+
 		"\x3\x2\x2\x2\xE3\xDA\x3\x2\x2\x2\xE3\xDE\x3\x2\x2\x2\xE3\xDF\x3\x2\x2"+
 		"\x2\xE4\x5\x3\x2\x2\x2\xE5\xE7\a\xEF\x2\x2\xE6\xE8\a\a\x2\x2\xE7\xE6\x3"+
-		"\x2\x2\x2\xE7\xE8\x3\x2\x2\x2\xE8\a\x3\x2\x2\x2\xE9\xEA\a\x3\x2\x2\xEA"+
+		"\x2\x2\x2\xE7\xE8\x3\x2\x2\x2\xE8\a\x3\x2\x2\x2\xE9\xEA\a\x5\x2\x2\xEA"+
 		"\t\x3\x2\x2\x2\xEB\x104\x5\x38\x1D\x2\xEC\x104\x5:\x1E\x2\xED\x104\x5"+
 		"<\x1F\x2\xEE\x104\x5> \x2\xEF\x104\x5@!\x2\xF0\x104\x5\x42\"\x2\xF1\x104"+
 		"\x5\x44#\x2\xF2\x104\x5\x46$\x2\xF3\x104\x5H%\x2\xF4\x104\x5J&\x2\xF5"+

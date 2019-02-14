@@ -91,11 +91,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Check the global scope
                 if (LocalScope.Symbols.TryGetValue(symbol, out var symbolValue))
                 {
-                    return symbolValue;
-                }
-                if (LocalScope.Vars.TryGetValue(symbol, out var varValue))
-                {
-                    return varValue;
+                    return symbolValue.Value;
                 }
             }
             return ParentContext.GetSymbolValue(symbol);

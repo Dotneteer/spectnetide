@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.Assembler
 {
@@ -17,8 +16,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// The symbol table with properly defined symbols
         /// </summary>
-        public Dictionary<string, ExpressionValue> Symbols { get; } =
-            new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
+        public Dictionary<string, AssemblySymbolInfo> Symbols { get; } =
+            new Dictionary<string, AssemblySymbolInfo>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// The reverse symbol table to resolve addresses to symbol names
@@ -26,11 +25,11 @@ namespace Spect.Net.Assembler.Assembler
         public Dictionary<ushort, List<string>> SymbolMap { get; } = 
             new Dictionary<ushort, List<string>>();
 
-        /// <summary>
-        /// The variable table
-        /// </summary>
-        public Dictionary<string, ExpressionValue> Vars { get; } =
-            new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
+        ///// <summary>
+        ///// The variable table
+        ///// </summary>
+        //public Dictionary<string, ExpressionValue> Vars { get; } =
+        //    new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// The list of fixups to carry out as the last phase of the compilation
@@ -84,7 +83,7 @@ namespace Spect.Net.Assembler.Assembler
         public SourceFileItem SourceItem { get; }
 
         /// <summary>
-        /// The source files involved in this compilation, in theor file index order
+        /// The source files involved in this compilation, in their file index order
         /// </summary>
         public List<SourceFileItem> SourceFileList { get; }
 
@@ -135,8 +134,8 @@ namespace Spect.Net.Assembler.Assembler
         {
             foreach (var pair in Symbols)
             {
-                if (!pair.Value.IsValid) continue;
-                var address = pair.Value.AsWord();
+                if (pair.Value.Type != SymbolType.Label || !pair.Value.Value.IsValid) continue;
+                var address = pair.Value.Value.AsWord();
                 if (!SymbolMap.TryGetValue(address, out var symbolList))
                 {
                     symbolList = new List<string>();

@@ -30,14 +30,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// The symbol table with properly defined symbols
         /// </summary>
-        public Dictionary<string, ExpressionValue> Symbols { get; } =
-            new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
-
-        /// <summary>
-        /// The variable table
-        /// </summary>
-        public Dictionary<string, ExpressionValue> Vars { get; } =
-            new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
+        public Dictionary<string, AssemblySymbolInfo> Symbols { get; } =
+            new Dictionary<string, AssemblySymbolInfo>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// The list of fixups to carry out as the last phase of the compilation

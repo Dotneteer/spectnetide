@@ -78,7 +78,7 @@ namespace Spect.Net.TestParser.Plan
         /// Sets the data member with the specified id and given value
         /// </summary>
         /// <param name="id">Data member ID</param>
-        /// <param name="value">Data memer value</param>
+        /// <param name="value">Data member value</param>
         public void SetDataMember(string id, ExpressionValue value)
         {
             _dataEntries[id] = value;
@@ -88,7 +88,7 @@ namespace Spect.Net.TestParser.Plan
         /// Gets the value of the specified data member
         /// </summary>
         /// <param name="id">Data member ID</param>
-        /// <returns>The named data merber, if found; otherwise, null</returns>
+        /// <returns>The named data member, if found; otherwise, null</returns>
         public ExpressionValue GetDataMember(string id) => 
             _dataEntries.TryGetValue(id, out var value) 
                 ? value 
@@ -98,7 +98,7 @@ namespace Spect.Net.TestParser.Plan
         /// Sets the port mock with the specified id and given value
         /// </summary>
         /// <param name="id">Data member ID</param>
-        /// <param name="value">Data memer value</param>
+        /// <param name="value">Data member value</param>
         public void SetPortMock(string id, PortMockPlan value)
         {
             _portMocks[id] = value;
@@ -108,7 +108,7 @@ namespace Spect.Net.TestParser.Plan
         /// Gets the value of the specified port mock
         /// </summary>
         /// <param name="id">Data member ID</param>
-        /// <returns>The named data merber, if found; otherwise, null</returns>
+        /// <returns>The named data member, if found; otherwise, null</returns>
         public PortMockPlan GetPortMock(string id) =>
             _portMocks.TryGetValue(id, out var value)
                 ? value
@@ -132,7 +132,7 @@ namespace Spect.Net.TestParser.Plan
             // --- Second, find within the assembly output symbols
             if (CodeOutput?.Symbols == null) return null;
             return CodeOutput.Symbols.TryGetValue(symbol, out var ushortValue) 
-                ? new ExpressionValue(ushortValue) 
+                ? new ExpressionValue(ushortValue.Value) 
                 : null;
         }
 

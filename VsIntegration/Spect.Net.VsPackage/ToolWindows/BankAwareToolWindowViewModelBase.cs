@@ -375,7 +375,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 // --- #1: check the compiled code
                 if (CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue))
                 {
-                    value = symbolValue;
+                    value = symbolValue.Value;
                     return true;
                 }
 

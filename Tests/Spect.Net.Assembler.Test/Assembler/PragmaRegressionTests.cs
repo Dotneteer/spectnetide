@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+// ReSharper disable IdentifierTypo
+// ReSharper disable StringLiteralTypo
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -21,7 +23,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
-            output.Symbols["MYSYMBOL"].Value.ShouldBe((ushort)0x6789);
+            output.Symbols["MYSYMBOL"].Value.Value.ShouldBe((ushort)0x6789);
         }
 
         [TestMethod]

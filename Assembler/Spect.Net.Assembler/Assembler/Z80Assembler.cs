@@ -23,7 +23,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// The file name of a direct text compilation
         /// </summary>
-        public const string NOFILE_ITEM = "#";
+        public const string NO_FILE_ITEM = "#";
 
         /// <summary>
         /// The valid Spectrum model values
@@ -98,7 +98,7 @@ namespace Spect.Net.Assembler.Assembler
         /// Output of the compilation
         /// </returns>
         public AssemblerOutput Compile(string sourceText, AssemblerOptions options = null)
-            => DoCompile(new SourceFileItem(NOFILE_ITEM), sourceText, options);
+            => DoCompile(new SourceFileItem(NO_FILE_ITEM), sourceText, options);
 
         /// <summary>
         /// This method compiles the passed Z80 Assembly code into Z80
@@ -157,7 +157,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- No lines has been parsed yet
             parsedLines = new List<SourceLineBase>();
 
-            // --- Parse all source codelines
+            // --- Parse all source code lines
             var inputStream = new AntlrInputStream(sourceText);
             var lexer = new Z80AsmLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
@@ -267,7 +267,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Now, we have the file name, calculate the path
-            if (sourceItem.Filename != NOFILE_ITEM)
+            if (sourceItem.Filename != NO_FILE_ITEM)
             {
                 // --- The file name is taken into account as relative
                 var dirname = Path.GetDirectoryName(sourceItem.Filename) ?? string.Empty;
@@ -319,7 +319,7 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
-        /// Apply the specified prprocessor directive, and modify the
+        /// Apply the specified preprocessor directive, and modify the
         /// current line index accordingly
         /// </summary>
         /// <param name="directive">Preprocessor directive</param>
@@ -409,7 +409,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else
                 {
-                    // --- It is the end of an #ifden/#ifndef block
+                    // --- It is the end of an #ifdef/#ifndef block
                     ifdefStack.Pop();
                     // ReSharper disable once PossibleInvalidOperationException
                     processOps = ifdefStack.Count == 0 || ifdefStack.Peek().HasValue && ifdefStack.Peek().Value;
@@ -425,7 +425,7 @@ namespace Spect.Net.Assembler.Assembler
         /// Translates a Z80AsmParserErrorInfo instance into an error
         /// </summary>
         /// <param name="sourceItem">
-        /// Source file information, to allow the error to track the filename the error ocurred in
+        /// Source file information, to allow the error to track the filename the error occurred in
         /// </param>
         /// <param name="error">Error information</param>
         private void ReportError(SourceFileItem sourceItem, Z80AsmParserErrorInfo error)
@@ -440,7 +440,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="errorCode">Code of error</param>
         /// <param name="line">Source line associated with the error</param>
-        /// <param name="parameters">Optiona error message parameters</param>
+        /// <param name="parameters">Optional error message parameters</param>
         public void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
         {
             var sourceItem = line != null 

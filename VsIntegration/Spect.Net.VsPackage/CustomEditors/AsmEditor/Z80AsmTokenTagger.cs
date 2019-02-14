@@ -96,6 +96,20 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 visitor.Visit(context);
                 if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
 
+                // --- Check for a block comment
+                var lastStartIndex = 0;
+                while (true)
+                {
+                    var blockBeginsPos = textOfLine.IndexOf("/*", lastStartIndex, StringComparison.Ordinal);
+                    if (blockBeginsPos < 0) break;
+                    var blockEndsPos = textOfLine.IndexOf("*/", blockBeginsPos, StringComparison.Ordinal);
+                    if (blockEndsPos <= blockBeginsPos) break;
+
+                    // --- Block comment found
+                    lastStartIndex = blockEndsPos + 2;
+                    yield return CreateSpan(currentLine, new TextSpan(blockBeginsPos, blockEndsPos + 2), Z80AsmTokenType.Comment);
+                }
+
                 if (asmline is EmittingOperationBase && asmline.InstructionSpan != null)
                 {
                     // --- This line contains executable instruction,
@@ -222,7 +236,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         }
 
         /// <summary>
-        /// Creates a snaphot span from an other snapshot span and a text span
+        /// Creates a snapshot span from an other snapshot span and a text span
         /// </summary>
         private static TagSpan<Z80AsmTokenTag> CreateSpan(ITextSnapshotLine line,
             TextSpan text, Z80AsmTokenType tokenType)

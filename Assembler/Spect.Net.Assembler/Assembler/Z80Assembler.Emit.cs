@@ -13,6 +13,9 @@ using Spect.Net.Assembler.SyntaxTree.Operations;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Spect.Net.Assembler.SyntaxTree.Statements;
 
+// ReSharper disable IdentifierTypo
+// ReSharper disable CommentTypo
+// ReSharper disable StringLiteralTypo
 // ReSharper disable InlineOutVariableDeclaration
 // ReSharper disable UsePatternMatching
 
@@ -36,7 +39,7 @@ namespace Spect.Net.Assembler.Assembler
         public SourceLineBase CurrentSourceLine { get; private set; }
 
         /// <summary>
-        /// A lable that overflew from a label-only line
+        /// A label that overflew from a label-only line
         /// </summary>
         public NoInstructionLine OverflowLabelLine { get; private set; }
 
@@ -851,7 +854,8 @@ namespace Spect.Net.Assembler.Assembler
             _output.LocalScopes.Push(loopScope);
 
             // --- Init the FOR variable
-            loopScope.Vars[forStmt.ForVariable] = fromValue;
+            loopScope.Symbols.Add(forStmt.ForVariable, 
+                new AssemblySymbolInfo(forStmt.ForVariable, SymbolType.Var, fromValue));
             var errorsBefore = _output.ErrorCount;
 
             var isIntLoop =
@@ -948,12 +952,12 @@ namespace Spect.Net.Assembler.Assembler
                 if (isIntLoop)
                 {
                     loopIntValue += incIntValue;
-                    loopScope.Vars[forStmt.ForVariable] = new ExpressionValue(loopIntValue);
+                    loopScope.Symbols[forStmt.ForVariable].Value = new ExpressionValue(loopIntValue);
                 }
                 else
                 {
                     loopRealValue += incRealValue;
-                    loopScope.Vars[forStmt.ForVariable] = new ExpressionValue(loopRealValue);
+                    loopScope.Symbols[forStmt.ForVariable].Value = new ExpressionValue(loopRealValue);
                 }
             }
 
@@ -1282,7 +1286,8 @@ namespace Spect.Net.Assembler.Assembler
             _output.LocalScopes.Push(macroScope);
 
             // --- The macro name will serve as its starting label
-            macroScope.Symbols.Add(macroDef.MacroName, new ExpressionValue(GetCurrentAssemblyAddress()));
+            macroScope.Symbols.Add(macroDef.MacroName, 
+                new AssemblySymbolInfo(macroDef.MacroName, SymbolType.Label, new ExpressionValue(GetCurrentAssemblyAddress())));
 
             var lineIndex = macroDef.Section.FirstLine + 1;
             var lastLine = macroDef.Section.LastLine;
@@ -1347,9 +1352,9 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Translate the syntax error location
                 if (error.SourceLine > 0 && error.SourceLine < sourceInfo.Count)
                 {
-                    var errorLocation = sourceInfo[error.SourceLine - 1];
-                    error.SourceLine = errorLocation.line;
-                    ReportError(_output.SourceFileList[errorLocation.fileIndex], error);
+                    var (fileIndex, line) = sourceInfo[error.SourceLine - 1];
+                    error.SourceLine = line;
+                    ReportError(_output.SourceFileList[fileIndex], error);
                 }
                 else
                 {
@@ -2246,8 +2251,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </param>
         private void EmitCompoundOperation(CompoundOperation compoundOpLine)
         {
-            CompoundOperationDescriptor rules;
-            if (!_compoundOpTable.TryGetValue(compoundOpLine.Mnemonic, out rules))
+            if (!_compoundOpTable.TryGetValue(compoundOpLine.Mnemonic, out var rules))
             {
                 ReportError(Errors.Z0084, compoundOpLine, compoundOpLine.Mnemonic);
                 return;
