@@ -2,6 +2,8 @@
 using Shouldly;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
+// ReSharper disable StringLiteralTypo
+// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.Assembler.Test.Parser
 {
@@ -453,6 +455,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Message.ShouldNotBeNull();
             line.NullTerminator.ShouldBeFalse();
+            line.Bit7Terminator.ShouldBeFalse();
         }
 
         [TestMethod]
@@ -475,6 +478,30 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Message.ShouldNotBeNull();
             line.NullTerminator.ShouldBeTrue();
+            line.Bit7Terminator.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        [DataRow("defc")]
+        [DataRow("DEFC")]
+        [DataRow("dc")]
+        [DataRow("DC")]
+        [DataRow(".defc")]
+        [DataRow(".DEFC")]
+        [DataRow(".dc")]
+        [DataRow(".DC")]
+        public void DefcPragmaWorksAsExpected(string pragma)
+        {
+            // --- Act
+            var visitor = Parse($"{pragma} \"Message with \\\" mark\"");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefmnPragma;
+            line.ShouldNotBeNull();
+            line.Message.ShouldNotBeNull();
+            line.NullTerminator.ShouldBeFalse();
+            line.Bit7Terminator.ShouldBeTrue();
         }
 
         [TestMethod]

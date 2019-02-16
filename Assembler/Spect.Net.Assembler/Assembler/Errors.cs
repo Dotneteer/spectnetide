@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+// ReSharper disable StringLiteralTypo
 
 namespace Spect.Net.Assembler.Assembler
 {
@@ -95,6 +96,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0424 = "Z0424";
         public const string Z0425 = "Z0425";
         public const string Z0426 = "Z0426";
+        public const string Z0427 = "Z0427";
 
         public const string Z0500 = "Z0500";
 
@@ -184,6 +186,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0424, "Invalid INCLUDEBIN offset value (negative, or greater than the file length)." },
             { Z0425, "Invalid INCLUDEBIN length value (negative, or segment exceends the file length)." },
             { Z0426, "Emitting the INCLUDEBIN segment would overflow the #FFFF assembly address." },
+            { Z0427, "You cannot define a macro with a local name ({0})" },
             { Z0500, "ERROR: {0}" },
         };
 

@@ -370,6 +370,11 @@ namespace Spect.Net.Assembler.Assembler
                 errorFound = true;
                 ReportError(Errors.Z0400, macro);
             }
+            else if (label.StartsWith("`"))
+            {
+                errorFound = true;
+                ReportError(Errors.Z0427, macro, label);
+            }
             else if (_output.Macros.ContainsKey(label))
             {
                 errorFound = true;
@@ -498,6 +503,14 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Clean up the hanging label
                 OverflowLabelLine = null;
 
+                // --- Fixup the temporary scope over the iteration scope, if there is any
+                var topScope = _output.LocalScopes.Peek();
+                if (topScope != iterationScope && topScope.IsTemporaryScope)
+                {
+                    FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+                    _output.LocalScopes.Pop();
+                }
+
                 // --- Fixup the symbols locally
                 FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
@@ -570,6 +583,14 @@ namespace Spect.Net.Assembler.Assembler
             // --- Clean up the hanging label
             OverflowLabelLine = null;
 
+            // --- Fixup the temporary scope over the iteration scope, if there is any
+            var topScope = _output.LocalScopes.Peek();
+            if (topScope != procScope && topScope.IsTemporaryScope)
+            {
+                FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+                _output.LocalScopes.Pop();
+            }
+
             // --- Fixup the symbols locally
             FixupSymbols(procScope.Fixups, procScope.Symbols, false);
 
@@ -640,6 +661,14 @@ namespace Spect.Net.Assembler.Assembler
 
                 // --- Clean up the hanging label
                 OverflowLabelLine = null;
+
+                // --- Fixup the temporary scope over the iteration scope, if there is any
+                var topScope = _output.LocalScopes.Peek();
+                if (topScope != iterationScope && topScope.IsTemporaryScope)
+                {
+                    FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+                    _output.LocalScopes.Pop();
+                }
 
                 // --- Fixup the symbols locally
                 FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
@@ -758,6 +787,14 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Clean up the hanging label
                 OverflowLabelLine = null;
 
+                // --- Fixup the temporary scope over the iteration scope, if there is any
+                var topScope = _output.LocalScopes.Peek();
+                if (topScope != iterationScope && topScope.IsTemporaryScope)
+                {
+                    FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+                    _output.LocalScopes.Pop();
+                }
+
                 // --- Fixup the symbols locally
                 FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
@@ -855,7 +892,7 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Init the FOR variable
             loopScope.Symbols.Add(forStmt.ForVariable, 
-                new AssemblySymbolInfo(forStmt.ForVariable, SymbolType.Var, fromValue));
+                AssemblySymbolInfo.CreateVar(forStmt.ForVariable, fromValue));
             var errorsBefore = _output.ErrorCount;
 
             var isIntLoop =
@@ -870,7 +907,7 @@ namespace Spect.Net.Assembler.Assembler
             var endRealValue = toValue.AsReal();
             var incRealValue = stepValue.AsReal();
 
-            // --- Execute the WHILE body
+            // --- Execute the FOR body
             var loopCount = 0;
             while (true)
             {
@@ -928,6 +965,14 @@ namespace Spect.Net.Assembler.Assembler
 
                 // --- Clean up the hanging label
                 OverflowLabelLine = null;
+
+                // --- Fixup the temporary scope over the iteration scope, if there is any
+                var topScope = _output.LocalScopes.Peek();
+                if (topScope != iterationScope && topScope.IsTemporaryScope)
+                {
+                    FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+                    _output.LocalScopes.Pop();
+                }
 
                 // --- Fixup the symbols locally
                 FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
@@ -1287,7 +1332,7 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- The macro name will serve as its starting label
             macroScope.Symbols.Add(macroDef.MacroName, 
-                new AssemblySymbolInfo(macroDef.MacroName, SymbolType.Label, new ExpressionValue(GetCurrentAssemblyAddress())));
+                AssemblySymbolInfo.CreateLabel(macroDef.MacroName, new ExpressionValue(GetCurrentAssemblyAddress())));
 
             var lineIndex = macroDef.Section.FirstLine + 1;
             var lastLine = macroDef.Section.LastLine;
@@ -1411,6 +1456,14 @@ namespace Spect.Net.Assembler.Assembler
             // --- Clean up the hanging label
             OverflowLabelLine = null;
 
+            // --- Fixup the temporary scope over the iteration scope, if there is any
+            var topScope = _output.LocalScopes.Peek();
+            if (topScope != macroScope && topScope.IsTemporaryScope)
+            {
+                FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+                _output.LocalScopes.Pop();
+            }
+
             // --- Fixup the symbols locally
             FixupSymbols(macroScope.Fixups, macroScope.Symbols, false);
 
@@ -1526,6 +1579,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 return;
             }
+            FixupTemporaryScope();
 
             // --- There is a label, set its value
             if (SymbolExists(label))
@@ -1594,17 +1648,22 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="label">Label to use</param>
         private void ProcessEquPragma(EquPragma pragma, string label)
         {
+            // --- Check label validity
             if (label == null)
             {
                 ReportError(Errors.Z0082, pragma);
                 return;
             }
+            FixupTemporaryScope();
+
+            // --- Do not allow duplicate labels
             if (SymbolExists(label))
             {
                 ReportError(Errors.Z0040, pragma, label);
                 return;
             }
 
+            // --- Evaluate EQU value
             var value = Eval(pragma, pragma.Expr);
             if (value.IsNonEvaluated)
             {
@@ -1614,6 +1673,18 @@ namespace Spect.Net.Assembler.Assembler
             {
                 AddSymbol(label, value);
             }
+        }
+
+        /// <summary>
+        /// Checks if there's a temporary scope, and disposes it after a fixup.
+        /// </summary>
+        private void FixupTemporaryScope()
+        {
+            if (_output.LocalScopes.Count <= 0) return;
+            var topScope = _output.LocalScopes.Peek();
+            if (!topScope.IsTemporaryScope) return;
+            FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+            _output.LocalScopes.Pop();
         }
 
         /// <summary>
@@ -1628,6 +1699,7 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0086, pragma);
                 return;
             }
+            FixupTemporaryScope();
 
             var value = EvalImmediate(pragma, pragma.Expr);
             if (!value.IsValid) return;
@@ -1736,10 +1808,15 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0091, pragma);
             }
             var bytes = SpectrumStringToBytes(message.AsString());
-            foreach (var msgByte in bytes)
+            if (bytes.Count > 1)
             {
-                EmitByte(msgByte);
+                for (var i = 0; i < bytes.Count - 1; i++)
+                {
+                    EmitByte(bytes[i]);
+                }
             }
+            var lastByte = (byte)(bytes[bytes.Count - 1] | (pragma.Bit7Terminator ? 0x80 : 0x00));
+            EmitByte(lastByte);
             if (pragma.NullTerminator)
             {
                 EmitByte(0x00);

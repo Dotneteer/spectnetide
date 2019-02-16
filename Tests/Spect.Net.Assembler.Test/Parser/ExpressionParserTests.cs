@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
+// ReSharper disable StringLiteralTypo
 
 namespace Spect.Net.Assembler.Test.Parser
 {
@@ -546,6 +547,11 @@ namespace Spect.Net.Assembler.Test.Parser
         [DataRow("Symbol", "SYMBOL")]
         [DataRow("@Symbol", "@SYMBOL")]
         [DataRow("S@ymbol", "S@YMBOL")]
+        [DataRow("`symbol", "`SYMBOL")]
+        [DataRow("S!ymbol!", "S!YMBOL!")]
+        [DataRow("S!ymbol?", "S!YMBOL?")]
+        [DataRow("S#ymbol!", "S#YMBOL!")]
+        [DataRow("Symbol#", "SYMBOL#")]
         public void IdentifierParsingWorks(string source, string symbol)
         {
             // --- Act
@@ -558,9 +564,9 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        [DataRow("Symbol::s1", "SYMBOL", "S1", null, null)]
-        [DataRow("@Symbol::s1::s2", "@SYMBOL", "S1", "S2", null)]
-        [DataRow("S@ymbol::s1::S2::S3", "S@YMBOL", "S1", "S2", "S3")]
+        [DataRow("Symbol.s1", "SYMBOL", "S1", null, null)]
+        [DataRow("@Symbol.s1.s2", "@SYMBOL", "S1", "S2", null)]
+        [DataRow("S@ymbol.s1.S2.S3", "S@YMBOL", "S1", "S2", "S3")]
         public void ScopedIdentifierParsingWorks(string source, string symbol, string s1, string s2, string s3)
         {
             // --- Act

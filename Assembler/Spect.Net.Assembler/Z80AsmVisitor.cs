@@ -12,6 +12,8 @@ using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Spect.Net.Assembler.SyntaxTree.Statements;
+// ReSharper disable IdentifierTypo
+// ReSharper disable CommentTypo
 
 // ReSharper disable PossibleNullReferenceException
 // ReSharper disable UsePatternMatching
@@ -397,6 +399,26 @@ namespace Spect.Net.Assembler
             {
                 Message = (ExpressionNode)VisitExpr(context.expr()),
                 NullTerminator = true
+            }, context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.defcPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitDefcPragma(Z80AsmParser.DefcPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            return AddLine(new DefmnPragma
+            {
+                Message = (ExpressionNode)VisitExpr(context.expr()),
+                Bit7Terminator = true
             }, context);
         }
 
@@ -1655,9 +1677,9 @@ namespace Spect.Net.Assembler
                 return new MacroParamNode(context.macroParam().IDENTIFIER()?.NormalizeToken());
             }
 
-            if (child0 is Z80AsmParser.SymbolExprContext)
+            if (child0 is Z80AsmParser.SymbolExprContext exprContext)
             {
-                return VisitSymbolExpr(child0 as Z80AsmParser.SymbolExprContext);
+                return VisitSymbolExpr(exprContext);
             }
             if (child0.GetText() == "+")
             {
@@ -1700,7 +1722,7 @@ namespace Spect.Net.Assembler
             if (IsInvalidContext(context)) return null;
 
             var token = context.NormalizeToken();
-            if (context.CURADDR() != null || context.MULOP() != null)
+            if (context.CURADDR() != null || context.MULOP() != null || context.DOT() != null)
             {
                 AddSemiVar(context);
                 return new CurrentAddressNode();

@@ -25,6 +25,23 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void MacroWithLocalLabelFails()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                `local .macro()
+                .endm
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0427);
+        }
+
+        [TestMethod]
         public void MacroWithLabelWorks()
         {
             // --- Arrange

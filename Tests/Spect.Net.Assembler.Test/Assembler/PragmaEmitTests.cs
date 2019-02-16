@@ -54,6 +54,16 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void OrgPragmaWorksWithLocalLabel()
+        {
+            // --- Act
+            CodeEmitWorks(@"
+                `local .org #6000
+                ld bc,`local",
+                0x01, 0x00, 0x60);
+        }
+
+        [TestMethod]
         public void SingleEntPragmaWorksAsExpected()
         {
             // --- Arrange
@@ -254,6 +264,16 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void EquPragmaWorksWithLocalLabel()
+        {
+            // --- Act
+            CodeEmitWorks(@"
+                `local .equ #10+#10
+                ld a,`local",
+                0x3E, 0x20);
+        }
+
+        [TestMethod]
         public void EquPragmaWorksWithImmediateEvaluation()
         {
             // --- Arrange
@@ -403,6 +423,16 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0086);
+        }
+
+        [TestMethod]
+        public void VarPragmaWorksWithLocalLabel()
+        {
+            // --- Act
+            CodeEmitWorks(@"
+                `local .var #68
+                ld a,`local",
+                0x3e, 0x68);
         }
 
         [TestMethod]
@@ -582,6 +612,42 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Act
             var output = compiler.Compile(@"
                 .defn 123");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0091);
+        }
+
+        [TestMethod]
+        public void DefcPragmaWorksAsExpected()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x12, 0x10, 0x14, 0x61, 0x62, 0x63, 0xE0 };
+
+            // --- Act
+            var output = compiler.Compile(".defc \"\\x12\\i\\Iabc\\P\"");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void DefcPragmaFailsWithNonString()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .defc 123");
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);

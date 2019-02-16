@@ -106,10 +106,39 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="value"></param>
         public void AddSymbol(string symbol, ExpressionValue value)
         {
-            var lookup = _output.LocalScopes.Count > 0
-                ? _output.LocalScopes.Peek().Symbols
-                : _output.Symbols;
-            lookup.Add(symbol, new AssemblySymbolInfo(symbol, SymbolType.Label, value));
+            Dictionary<string, AssemblySymbolInfo> GetSymbols() =>
+                _output.LocalScopes.Count > 0
+                    ? _output.LocalScopes.Peek().Symbols
+                    : _output.Symbols;
+
+            var currentScopeIsTemporary = _output.LocalScopes.Count != 0 
+                && _output.LocalScopes.Peek().IsTemporaryScope;
+            var symbolIsTemporary = symbol.StartsWith("`");
+
+            var lookup = GetSymbols();
+            if (currentScopeIsTemporary)
+            {
+                if (!symbolIsTemporary)
+                {
+                    // --- Remove the previous temporary scope
+                    var tempScope = _output.LocalScopes.Peek();
+                    FixupSymbols(tempScope.Fixups, tempScope.Symbols, false);
+                    _output.LocalScopes.Pop();
+
+                    lookup = GetSymbols();
+                }
+            }
+            else
+            {
+                // --- Create a new temporary scope
+                _output.LocalScopes.Push(new SymbolScope() { IsTemporaryScope = true });
+                if (symbolIsTemporary)
+                {
+                    // --- Temporary symbol should go into the new temporary scope
+                    lookup = GetSymbols();
+                }
+            }
+            lookup.Add(symbol, AssemblySymbolInfo.CreateLabel(symbol, value));
         }
 
         /// <summary>
@@ -162,7 +191,7 @@ namespace Spect.Net.Assembler.Assembler
             var vars = _output.LocalScopes.Count > 0
                 ? _output.LocalScopes.Peek().Symbols
                 : _output.Symbols;
-            vars[name] = new AssemblySymbolInfo(name, SymbolType.Var, value);
+            vars[name] = AssemblySymbolInfo.CreateVar(name, value);
         }
 
         #endregion
@@ -182,7 +211,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             else
             {
-                _output.Symbols.Add(symbol, new AssemblySymbolInfo(symbol, SymbolType.Label, value));
+                _output.Symbols.Add(symbol, AssemblySymbolInfo.CreateLabel(symbol, value));
             }
         }
 
@@ -276,6 +305,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- Go through all scopes from inside to outside
             foreach (var scope in _output.LocalScopes)
             {
+                if (scope.Fixups.Count == 0) continue;
                 if (FixupSymbols(scope.Fixups, scope.Symbols, false))
                 {
                     // --- Successful fixup in the local scope
@@ -307,7 +337,7 @@ namespace Spect.Net.Assembler.Assembler
                     }
                     else
                     {
-                        symbols.Add(equ.Label, new AssemblySymbolInfo(equ.Label, SymbolType.Label, value));
+                        symbols.Add(equ.Label, AssemblySymbolInfo.CreateLabel(equ.Label, value));
                     }
                 }
                 else

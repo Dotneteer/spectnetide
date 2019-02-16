@@ -28,6 +28,11 @@ namespace Spect.Net.Assembler.Assembler
         public int LoopCounter { get; set; } = 0;
 
         /// <summary>
+        /// Indicates that this is a temporary scope
+        /// </summary>
+        public bool IsTemporaryScope { get; set; } = false;
+
+        /// <summary>
         /// The symbol table with properly defined symbols
         /// </summary>
         public Dictionary<string, AssemblySymbolInfo> Symbols { get; } =

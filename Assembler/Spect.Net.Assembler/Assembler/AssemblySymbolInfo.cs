@@ -22,12 +22,42 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public ExpressionValue Value { get; set; }
 
+        /// <summary>
+        /// Tests if this symbol is a local symbol within a module.
+        /// </summary>
+        public bool IsModuleLocal { get; }
+
+        /// <summary>
+        /// Tests if this symbol is a short-term symbol
+        /// </summary>
+        public bool IsShortTerm { get; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public AssemblySymbolInfo(string name, SymbolType type, ExpressionValue value)
+        private AssemblySymbolInfo(string name, SymbolType type, ExpressionValue value)
         {
             Name = name;
             Type = type;
             Value = value;
+            IsModuleLocal = name != null && name.StartsWith("@");
+            IsShortTerm = name != null && name.StartsWith("`");
         }
+
+        /// <summary>
+        /// Factory method that creates a label
+        /// </summary>
+        /// <param name="name">Label name</param>
+        /// <param name="value">Label value</param>
+        /// <returns></returns>
+        public static AssemblySymbolInfo CreateLabel(string name, ExpressionValue value)
+            => new AssemblySymbolInfo(name, SymbolType.Label, value);
+
+        /// <summary>
+        /// Factory method that creates a variable
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="value">Variable initial value</param>
+        /// <returns></returns>
+        public static AssemblySymbolInfo CreateVar(string name, ExpressionValue value)
+            => new AssemblySymbolInfo(name, SymbolType.Var, value);
     }
 }

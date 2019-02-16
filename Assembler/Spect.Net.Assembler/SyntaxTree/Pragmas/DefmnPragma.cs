@@ -16,5 +16,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
         /// Should the message be terminated with zero?
         /// </summary>
         public bool NullTerminator { get; set; }
+
+        /// <summary>
+        /// Should the message have the last byte's bit 7 set?
+        /// </summary>
+        public bool Bit7Terminator { get; set; }
     }
 }

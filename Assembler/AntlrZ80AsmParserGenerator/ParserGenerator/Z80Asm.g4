@@ -34,6 +34,7 @@ pragma
 	|	defbPragma
 	|	defwPragma
 	|	defmPragma
+	|	defcPragma
 	|	defnPragma
 	|	defhPragma
 	|	skipPragma
@@ -110,6 +111,7 @@ equPragma	: EQUPRAG expr ;
 varPragma	: (VARPRAG | ASSIGN) expr ;
 defbPragma	: DBPRAG expr (COMMA expr)* ;
 defwPragma	: DWPRAG expr (COMMA expr)* ;
+defcPragma	: DCPRAG expr ;
 defmPragma	: DMPRAG expr ;
 defnPragma	: DNPRAG expr ;
 defhPragma	: DHPRAG expr ;
@@ -344,12 +346,13 @@ literalExpr
 	| BOOLLIT
 	| STRING
 	| CURADDR
+	| DOT	  // Functions as the second CURADDR token
 	| MULOP   // Functions as the third CURADDR token
 	| CURCNT
 	;
 
 symbolExpr
-	: DCOLON? IDENTIFIER ( DCOLON IDENTIFIER)*
+	: DCOLON? IDENTIFIER ( DOT IDENTIFIER)*
 	;
 
 macroParam
@@ -441,6 +444,7 @@ TILDE	: '~';
 LDBRAC	: '{{' ;
 RDBRAC	: '}}' ;
 EXCLM	: '!' ;
+DOT		: '.' ;
 
 // --- Register and flag tokens
 A	: 'a'|'A' ;
@@ -589,6 +593,7 @@ DNPRAG	: '.defn' | '.DEFN' | 'defn' | 'DEFN' | 'dn' | '.dn' | 'DN' | '.DN' ;
 DHPRAG	: '.defh' | '.DEFH' | 'defh' | 'DEFH' | 'dh' | '.dh' | 'DH' | '.DH' ;
 DGXPRAG	: '.defgx' | '.DEFGX' | 'defgx' | 'DEFGX' | 'dgx' | '.dgx' | 'DGX' | '.DGX' ;
 DGPRAG	: ( '.defg' | '.DEFG' | 'defg' | 'DEFG' | 'dg' | '.dg' | 'DG' | '.DG' ) WS+ ~('\r' | '\n')+;
+DCPRAG	: '.defc' | '.DEFC' | 'defc' | 'DEFC' | 'dc' | '.dc' | 'DC' | '.DC' ;
 SKIPRAG	: '.skip' | '.SKIP' | 'skip' | 'SKIP' ;
 EXTPRAG : '.extern'|'.EXTERN'|'extern'|'EXTERN' ;
 DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' | '.ds' | '.DS' | 'ds' | 'DS' ;
@@ -665,9 +670,9 @@ OCTNUM	: OctDigit OctDigit? OctDigit?
 
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
 
-CURADDR	: '$' | '.' ;
+CURADDR	: '$' ;
 
-REALNUM	: [0-9]* '.' [0-9]+ ExponentPart? 
+REALNUM	: [0-9]* DOT [0-9]+ ExponentPart? 
 		| [0-9]+ ExponentPart;
 
 CHAR	: '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' ;
@@ -682,8 +687,8 @@ FALSE	: 'false' | '.false' | 'FALSE' | '.FALSE' ;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
-IDSTART	: '_' | '@' | 'A'..'Z' | 'a'..'z'	;
-IDCONT	: '_' | '@' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+IDSTART	: '_' | '@' | '`' | 'A'..'Z' | 'a'..'z'	;
+IDCONT	: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
 NONEARG	: '$<none>$' ;

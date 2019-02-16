@@ -89,5 +89,45 @@ namespace Spect.Net.Assembler.Test.Assembler
                 LabelOnly:",
                 0x78, 0x01, 0x04, 0x60);
         }
+
+        [TestMethod]
+        public void SingleTempLabelWithBackReferenceWorks()
+        {
+            CodeEmitWorks(@"
+                Start:
+                    .org #6000
+                    ld a,b
+                `t1:
+                    ld bc,`t1",
+                0x78, 0x01, 0x01, 0x60);
+        }
+
+        [TestMethod]
+        public void SingleTempLabelWithForwardReferenceWorks()
+        {
+            CodeEmitWorks(@"
+                Start:
+                    .org #6000
+                    ld a,b
+                    ld bc,`t1
+                `t1:
+                    ld a,b",
+                0x78, 0x01, 0x04, 0x60, 0x78);
+        }
+
+        [TestMethod]
+        public void StartAndEndLabelWithForwardReferenceWorks()
+        {
+            CodeEmitWorks(@"
+                Start:
+                    .org #6000
+                    ld a,b
+                    ld bc,End
+                End:
+                    ld a,b",
+                0x78, 0x01, 0x04, 0x60, 0x78);
+        }
+
+
     }
 }
