@@ -30,8 +30,8 @@
       <div class="ui container">
         <div class="ui menu with-menu-back">
           <a class="item" href="{{ site.baseurl }}/">Home</a>
-          <a class="active item" href="{{ site.baseurl }}/getting-started/install-spectnetide.html">Getting Started</a>
-          <a class="item" href="{{ site.baseurl }}/documents/main-features.html">Documents</a>
+          <a class="item" href="{{ site.baseurl }}/getting-started/install-spectnetide.html">Getting Started</a>
+          <a class="active item" href="{{ site.baseurl }}/documents/main-features.html">Documents</a>
           <a class="item">ZX Spectrum</a>
           <a class="item" target="_blank" href="https://github.com/Dotneteer/spectnetide">GitHub</a>
         </div>
@@ -41,10 +41,9 @@
     <div class="ui vertical stripe segment with-content-back as-first">
       <div class="ui container">
         <div class="page-title-area">
-          <h2>Getting Started with SpectNetIDE</h2>
+          <h2>SpectNetIDE Documents</h2>
           <p>
-            This section provides you with brief articles that help you install
-            SpectNetIDE and learn the most relevant activities to start using it.
+            You can find a collection of categorized documents and reference material that help you work with SpectNetIDE.
           </p>
         </div>
       </div>
@@ -55,11 +54,18 @@
         <div class="ui grid">
           <div class="three wide computer sixteen wide mobile column">
             <div class="document-list">
-              {% assign sorted = site.posts|sort:"seqno" %}
-              {% for post in sorted %}
-              {% if post.selector==page.selector%}
-              <a class="{% if post.id==page.id %} active {% endif %} {% if post==sorted.last%} last {% endif %}" href="{{ site.baseurl }}{{ post.url }}#article">{{ post.title }}</a>
-              {% endif %}
+              {% assign catsorted = site.categories %}
+                {% for cat in catsorted %}
+                  <div class="document-category">{{ cat[0] }}</div>
+                  {% assign sorted = site.posts|sort:"seqno" %}
+                  {% for post in sorted %}
+                  {% if post.selector==page.selector %}
+                    {% if post.categories contains cat[0] %}
+                    <a class="{% if post.id==page.id %} active {% endif %}" href="{{ site.baseurl }}{{ post.url }}#article">{{ post.title }}</a>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+                <br/>
               {% endfor %}
             </div>
           </div>

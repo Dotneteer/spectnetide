@@ -1,4 +1,364 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-10T09:37:18+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Create a BASIC Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-basic-program" rel="alternate" type="text/html" title="Create a BASIC Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-basic-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-basic-program">&lt;p&gt;In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-17T18:51:56+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">How the assembler works</title><link href="http://localhost:4000/spectnetide/documents/how-assembler-works" rel="alternate" type="text/html" title="How the assembler works" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/how-assembler-works</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/how-assembler-works">&lt;p&gt;The assembler compiles the code in three phases:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;It takes the source code and runs a preprocessor that parses the entire code, and applies the
+&lt;em&gt;directives&lt;/em&gt; in the code. You can easily recognize directives, as they start with &lt;code class=&quot;highlighter-rouge&quot;&gt;#&lt;/code&gt;, such as
+&lt;code class=&quot;highlighter-rouge&quot;&gt;#ifdef&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#endif&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#define&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#include&lt;/code&gt; and others. During the preprocessing phase,
+the assembler detects the syntax errors, loads and processes the included files. The result is 
+a &lt;em&gt;digested syntax tree&lt;/em&gt; that does not contain directives anymore, only &lt;em&gt;instructions&lt;/em&gt;, &lt;em&gt;pragmas&lt;/em&gt;,
+and &lt;em&gt;statements&lt;/em&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The assembler collects macro definitions and stores their syntax tree so that later it can use them when macros are invoked with their actual parameters.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The assembler goes through the digested syntax tree and emits code. During this operation, it needs
+to evaluate expressions, resolve symbols and identifiers to their actual values. Because the assembler 
+progresses from the first line to the last, it may happen that it cannot get the value of an identifier
+which is defined somewhere later in the code. When the assembler detects such a situation, it makes 
+a note of it — it creates a &lt;em&gt;fixup&lt;/em&gt; entry.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The assembler goes through all fixup entries and resolves symbols that were not defined in
+the previous phase. Of course, it might find unknows symbols. If this happens, the assembler reports
+an error.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Several pragmas and statements intend to evaluate an expression in phase 3. If they find an
+unresolved symbol during that phase, they do not create a fixup entry but immediately report an error.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">The assembler compiles the code in three phases:</summary></entry><entry><title type="html">Language structure</title><link href="http://localhost:4000/spectnetide/documents/language-structure" rel="alternate" type="text/html" title="Language structure" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/language-structure</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/language-structure">&lt;p&gt;Each line of the source code is a declaration unit and is parsed in its own context. Such a 
+source code line can be one of these constructs:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;A Z80 &lt;em&gt;instruction&lt;/em&gt;, which can be directly compiled to binary code (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;ld bc,#12AC&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;A &lt;em&gt;directive&lt;/em&gt; that is used by the preprocessor of the compiler (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;#include&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#if&lt;/code&gt;, etc.)&lt;/li&gt;
+  &lt;li&gt;A &lt;em&gt;pragma&lt;/em&gt; that emits binary output or instructs the compiler for about code emission (&lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.defb&lt;/code&gt;, etc.)&lt;/li&gt;
+  &lt;li&gt;A &lt;em&gt;compiler statement&lt;/em&gt; (or shortly, a &lt;em&gt;statement&lt;/em&gt;) that implements control flow operations for the compiler
+(e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.repeat&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;.until&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;.elif&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;.else&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;.endif&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;A &lt;em&gt;comment&lt;/em&gt; that helps the understanding of the code.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;the-two-set-of-symbols&quot;&gt;The Two Set of Symbols&lt;/h2&gt;
+
+&lt;p&gt;The compiler works with two set of symbols. It uses the first set during the preprocessing phase in the
+only in the directives. For example, with the &lt;code class=&quot;highlighter-rouge&quot;&gt;#define&lt;/code&gt; directive, you define a symbol, with &lt;code class=&quot;highlighter-rouge&quot;&gt;#undef&lt;/code&gt;
+you remove it. Within the expressions you use in directives (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;#if&lt;/code&gt;), you can refer only to these symbols.&lt;/p&gt;
+
+&lt;p&gt;The &lt;strong&gt;SpectNetIde&lt;/strong&gt; option pages provide two options to declare your predefined symbols. When you compile
+the code in the IDE, it will use these symbols as if you’d declare them with &lt;code class=&quot;highlighter-rouge&quot;&gt;#define&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/z80-assembler/predefined-symbols.png&quot; alt=&quot;Predefined symbols&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You can declare multiple symbols and separate them with the &lt;code class=&quot;highlighter-rouge&quot;&gt;;&lt;/code&gt; character.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The other set of symbols are the one you declare as &lt;em&gt;labels&lt;/em&gt;, or with the &lt;code class=&quot;highlighter-rouge&quot;&gt;.equ&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.var&lt;/code&gt; pragmas
+You can use this set everywhere except directives.&lt;/p&gt;
+
+&lt;p&gt;This duality is related to the way the compiler works: in the first, preprocessing phase it only
+analyses directives. In the second, code emission phase, the compiler does not have any information
+about directives, and thus it does not accesses the symbols used in the preprocessor.&lt;/p&gt;
+
+&lt;h2 id=&quot;assembly-language-flavors&quot;&gt;Assembly Language Flavors&lt;/h2&gt;
+
+&lt;p&gt;I’ve designed the assembler with supporting multiple syntax flavors in mind. You do not have 
+to explicitly declare the type of the syntax you intend to use, just use the flavor you prefer
+— or mix muliple flavors, as you wish.&lt;/p&gt;
+
+&lt;p&gt;For example, you can use several mnemonics for defining a series of bytes, such as &lt;code class=&quot;highlighter-rouge&quot;&gt;.db&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.defb&lt;/code&gt;,
+&lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;defb&lt;/code&gt;, and both lowecase or uppercase versions are welcome.&lt;/p&gt;
+
+&lt;h2 id=&quot;syntax-basics&quot;&gt;Syntax Basics&lt;/h2&gt;
+
+&lt;p&gt;The assembler language uses a special way of case-sensitivity. You can write the reserved
+words (such as assembly instructions, pragmas, or directives) either with lowercase or
+uppercase letters, but you cannot mix these cases. For example, this instructions use
+proper syntax:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    LD c,A
+    JP #12ac
+    ldir
+    djnz MyLabel
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, in these samples, character cases are mixed, and do the compiler will refuse them:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    Ld c,A
+    Jp #12ac
+    ldIR
+    djNZ MyLabel
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In symbolic names (labels, identifiers, etc.), you can mix lowercase and uppercase letters. Nonetheless, the compiler applies
+case-insensitive comparison when mathcing symbolic names. So, these statement pairs are totally equivalent with
+each other:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    jp MainEx
+    jp MAINEX
+
+    djnz mylabel
+    djnz MyLabel
+
+    ld hl,ErrNo
+    ld hl,errNo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In the future, I might implement a compiler option that allows turning off case-insensitivity.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;comments&quot;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;Comments start with a semicolon (&lt;code class=&quot;highlighter-rouge&quot;&gt;;&lt;/code&gt;). The compiler takes the rest of the line into account as the body
+of the comment. This sample illustrates this concept:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; This line is comment-only line
+Wait:   ld b,8
+Wait1:  djnz Wait1 ; wait while the counter reaches zero
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If you need multi-line comments, you can add single-line comments after each other. 
+The Z80 assembly in &lt;strong&gt;spectnetide&lt;/strong&gt; does not have separate multi-line comment syntax.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;literals&quot;&gt;Literals&lt;/h2&gt;
+
+&lt;p&gt;The language syntax provides these types of literals:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Boolean values.&lt;/strong&gt; The following tokens represent Booleans: &lt;code class=&quot;highlighter-rouge&quot;&gt;.false&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.true&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Decimal numbers.&lt;/strong&gt; You can use up to 5 digits (0..9) to declare a decimal number. Examples:
+16, 32768, 2354.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Floating point numbers.&lt;/strong&gt; You can use the same notation for floating point numbers as in C/C++/Java/C#.
+Here are a few samples:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.25
+123.456
+12.45E34
+12.45e-12
+3e+4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Hexadecimal numbers.&lt;/strong&gt; You can use up to 4 hexadecimal digits (0..9, a..f or A..F) to declare
+a hexadecimal literal. The compiler looks for one of the &lt;code class=&quot;highlighter-rouge&quot;&gt;#&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;0x&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt; prefix, or one of 
+the &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;H&lt;/code&gt; suffixes to recognize them as hexadecimal. If you use the &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;H&lt;/code&gt;
+suffixes, the hexadecimal number should start with a decimal digit &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;…&lt;code class=&quot;highlighter-rouge&quot;&gt;9&lt;/code&gt;; otherwise the 
+assembler interprets it as an identifier (label).
+Here are a few samples:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    #12AC
+    0x12ac
+    $12Ac
+    12ACh
+    12acH
+    0AC34H
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Binary numbers.&lt;/strong&gt; Literal starting with the one of the &lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;0b&lt;/code&gt; prefix are taken into 
+account as binary literals. You can follow the prefix with up to 16 &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt; digits. To make
+them more readable, you can separate adjacent digits with the underscore (&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt;) character. These 
+are all valid binary literals:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    %01011111
+    0b01011111
+    0b_0101_1111
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You can use negative number with the minus sign in front of them. Actually, the sign is not
+the part of the numeric literal, it is an operator.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Characters&lt;/strong&gt;. You can put a character between single quotes (for example: &lt;code class=&quot;highlighter-rouge&quot;&gt;'Q'&lt;/code&gt;).&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Strings&lt;/strong&gt;. You can put a series of character between double quotes (for example: &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;Sinclair&quot;&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You can use escape sequences to define non-visible or control characters, as you will learn soon.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt; tokens&lt;/strong&gt;. These literals are equivalent; all represent the current assembly address.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;identifiers&quot;&gt;Identifiers&lt;/h2&gt;
+
+&lt;p&gt;You can use identifiers to refer to labels and other constants. Identifiers must start with 
+a letter (a..z or A..Z) or with one of these characters: &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;`&lt;/code&gt;&lt;/strong&gt; (backtick), &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt;&lt;/strong&gt; (underscore), &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;@&lt;/code&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;!&lt;/code&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/strong&gt;, and &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;#&lt;/code&gt;&lt;/strong&gt;. The subsequent ones can be digits and any of the start characters except backtick. Here are a few samples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyCycle
+ERR_NO
+Cycle_4_Wait
+`MyTemp
+@ModLocal
+IsLastLine?
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;There are strings that can be both identifiers or hexadecimal literals with the &lt;code class=&quot;highlighter-rouge&quot;&gt;H&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt; suffix, like
+&lt;code class=&quot;highlighter-rouge&quot;&gt;AC0Fh&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;FADH&lt;/code&gt;. The assembler considers such strings as identifiers. To sign a hexadecimal literal, use a &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;
+prefix: &lt;code class=&quot;highlighter-rouge&quot;&gt;0FADH&lt;/code&gt; is a hexadecimal literal, while &lt;code class=&quot;highlighter-rouge&quot;&gt;FADH&lt;/code&gt; is an identifier.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Theoretically, you can use as long identifiers as you want. I suggest you to make them no longer than
+32 characters so that readers may read your code easily.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;scoped-identifiers&quot;&gt;Scoped Identifiers&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;TBD&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;characters-and-strings&quot;&gt;Characters and Strings&lt;/h2&gt;
+
+&lt;p&gt;You have already learned that you can utilize character and string literals (wrapped into single, or double quotes, 
+respectively), such as in these samples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;This is a string. The next sample is a single character:&quot;
+'c'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ZX Spectrum has a character set with special control characters such as AT, INK, PAPER, and so on.&lt;/p&gt;
+
+&lt;p&gt;The &lt;strong&gt;SpectNetIde&lt;/strong&gt; assembler allows you to define them with special escape sequences:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Escape&lt;/th&gt;
+      &lt;th&gt;Code&lt;/th&gt;
+      &lt;th&gt;Character&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\i&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x10&lt;/td&gt;
+      &lt;td&gt;INK&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\p&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x11&lt;/td&gt;
+      &lt;td&gt;PAPER&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\f&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x12&lt;/td&gt;
+      &lt;td&gt;FLASH&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\b&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x13&lt;/td&gt;
+      &lt;td&gt;BRIGHT&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\I&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x14&lt;/td&gt;
+      &lt;td&gt;INVERSE&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\o&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x15&lt;/td&gt;
+      &lt;td&gt;OVER&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\a&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x16&lt;/td&gt;
+      &lt;td&gt;AT&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\t&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x17&lt;/td&gt;
+      &lt;td&gt;TAB&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\P&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x60&lt;/td&gt;
+      &lt;td&gt;pound sign&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\C&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x7F&lt;/td&gt;
+      &lt;td&gt;copyright sign&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\\&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x5C&lt;/td&gt;
+      &lt;td&gt;backslash&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\'&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x27&lt;/td&gt;
+      &lt;td&gt;single quote&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\&quot;&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x22&lt;/td&gt;
+      &lt;td&gt;double quote&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\0&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;0x00&lt;/td&gt;
+      &lt;td&gt;binary zero&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Observe, some of these sequences have different values than their corresponding
+pairs in other languages, such as C, C++, C#, or Java.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;To declare a character by its binary code, you can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;\xH&lt;/code&gt; or&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;\xHH&lt;/code&gt; sequences (&lt;code class=&quot;highlighter-rouge&quot;&gt;H&lt;/code&gt; is a hexadecimal digit). For example, these
+escape sequence pairs are equivalent:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;\i&quot;
+&quot;\x10&quot;
+
+&quot;\C by me&quot;
+&quot;\x7f \x62y me&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Each line of the source code is a declaration unit and is parsed in its own context. Such a source code line can be one of these constructs: A Z80 instruction, which can be directly compiled to binary code (such as ld bc,#12AC) A directive that is used by the preprocessor of the compiler (e.g. #include, #if, etc.) A pragma that emits binary output or instructs the compiler for about code emission (.org, .defb, etc.) A compiler statement (or shortly, a statement) that implements control flow operations for the compiler (e.g. .loop, .repeat...until, .if...elif...else...endif) A comment that helps the understanding of the code.</summary></entry><entry><title type="html">Main Features</title><link href="http://localhost:4000/spectnetide/documents/main-features" rel="alternate" type="text/html" title="Main Features" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/main-features</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/main-features">&lt;p&gt;The original goal of the &lt;strong&gt;SpectNetIde&lt;/strong&gt; assembler was to have a simple tool that allows you to compile
+Z80 assembly code and inject it into the ZX Spectrum virtual machine. As the community has started
+using it, I’ve been receiving feature requests to add some useful capability to the Assembler.&lt;/p&gt;
+
+&lt;p&gt;Here is a list of important features the &lt;strong&gt;SpectNetIde&lt;/strong&gt; suports:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Full Z80 instruction set&lt;/strong&gt;, including the initially undocumented Z80 registers and instructions
+(such as the 8-bit halves of &lt;code class=&quot;highlighter-rouge&quot;&gt;ix&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;iy&lt;/code&gt;, namely &lt;code class=&quot;highlighter-rouge&quot;&gt;ixl&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;ixh&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;iyl&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;iyh&lt;/code&gt;).&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;ZX Spectrum Next extended Z80 instruction set&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Alternate syntax versions&lt;/strong&gt;. All directives, pragmas, and statements have multiple versions so that 
+you can use your preferred notation. For example, you can use &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;loop&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.LOOP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;LOOP&lt;/code&gt; to 
+declare a loop. All of the &lt;code class=&quot;highlighter-rouge&quot;&gt;.defb&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DEFB&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.db&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DB&lt;/code&gt; (and a few other) tokens can be used for defining
+byte data. The &lt;code class=&quot;highlighter-rouge&quot;&gt;.endw&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;WEND&lt;/code&gt; tokens can close a WHILE-loop.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Z80 Preprocessor&lt;/strong&gt;. With preprocessor directives, you can carry out conditional compilation and include
+other source files. You can inject symbols for debug time and run time compilations separately. &lt;em&gt;In &lt;strong&gt;SpectNetIde&lt;/strong&gt;
+you can use powerful macros, too, notheless, they are not preprocessor constructs (see below)&lt;/em&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Fast compilation&lt;/strong&gt;. Of course, it depends on the code, but the compiler can emit code for about 8.000 
+source code lines per second.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Rich expressions&lt;/strong&gt;. The compiler can handle most arithmetic and logic operators we have in C, C++, C#
+Java, and JavaScript. You can use integer, float, and string expressions. The language support more than 40
+functions that you can use in the expressions (e.g: &lt;code class=&quot;highlighter-rouge&quot;&gt;Amp * sin($cnt * Pi() / 16))&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Rich literal formats&lt;/strong&gt;. Decimal, float, hexadecimal, binary, and string literals are at your displosal.
+You can use multiple variants for hexadecimal numbers (&lt;code class=&quot;highlighter-rouge&quot;&gt;$12ae&lt;/code&gt;, #12AE, 0x12AE, 12AEh), and binary numbers
+(0b00111100, %00111100, %0011_1100). In strings, you can use ZX Spectrum specific escape codes, for example,
+&lt;code class=&quot;highlighter-rouge&quot;&gt;\i&lt;/code&gt; for INK, &lt;code class=&quot;highlighter-rouge&quot;&gt;\P&lt;/code&gt; for the pound sign, and many others.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Assembler control flow statements&lt;/strong&gt;. You can use loops (&lt;code class=&quot;highlighter-rouge&quot;&gt;loop&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;repeat&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;until&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;while&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;wend&lt;/code&gt;,
+&lt;code class=&quot;highlighter-rouge&quot;&gt;for&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt;) and conditional statements (&lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt;) to create an assembler control flow. These constructs 
+can be nested and provide local scope for labels, symbols, and variables.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Powerful dynamic Macros&lt;/strong&gt;. You can create macros with arguments. In the macro bodies, the current values 
+of arguments can replace entire instructions, operands, or parts of expressions. Moreover, through arguments,
+you can inject multiline instructions and statements into macro declarations.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Modules&lt;/strong&gt;. You can use modules to serve both as logical containers to separating partitions of the code and namespaces to create scopes for labels and symbols.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">The original goal of the SpectNetIde assembler was to have a simple tool that allows you to compile Z80 assembly code and inject it into the ZX Spectrum virtual machine. As the community has started using it, I’ve been receiving feature requests to add some useful capability to the Assembler.</summary></entry><entry><title type="html">Tool Commands</title><link href="http://localhost:4000/spectnetide/documents/tool-commands" rel="alternate" type="text/html" title="Tool Commands" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/tool-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/tool-commands">&lt;p&gt;Tool Command reference&lt;/p&gt;</content><author><name></name></author><summary type="html">Tool Command reference</summary></entry><entry><title type="html">Create a BASIC Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-basic-program" rel="alternate" type="text/html" title="Create a BASIC Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-basic-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-basic-program">&lt;p&gt;In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.&lt;/p&gt;
 
 &lt;p&gt;Here, you will create and run a simple BASIC program. Although you can use the keyboard of the PC to enter a program — provided, the ZX Spectrum Emulator window has the focus — if you’re not familiar with the Spectrum keys and BASIC editor, it may frustrate you while entering the code. To avoid such chaffing, use the ZX Spectrum Keyboard tool window to enter the program.&lt;/p&gt;
 
@@ -312,154 +672,4 @@ and then, press &lt;strong&gt;Enter&lt;/strong&gt;. The program starts, and disp
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-completed.png&quot; alt=&quot;Welcome in action&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You have just scratched the surface! There are many other features you can use in the
-IDE to discover the structure and internals of ZX Spectrum applications.&lt;/p&gt;</content><author><name></name></author><summary type="html">Run the File|New|Project command (Ctrl+Shift+N), select the ZX Spectrum tab and choose the ZX Spectrum Code Discovery project type. Specify a project name (use MyFirstDiscovery).</summary></entry><entry><title type="html">Create Watch Expressions</title><link href="http://localhost:4000/spectnetide/getting-started/create-watch-expressions" rel="alternate" type="text/html" title="Create Watch Expressions" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-watch-expressions</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-watch-expressions">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Debug Machine Code</title><link href="http://localhost:4000/spectnetide/getting-started/debug-machine-code" rel="alternate" type="text/html" title="Debug Machine Code" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/debug-machine-code</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/debug-machine-code">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Display Memory Contents</title><link href="http://localhost:4000/spectnetide/getting-started/display-memory-contents" rel="alternate" type="text/html" title="Display Memory Contents" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/display-memory-contents</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/display-memory-contents">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Export a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/export-a-z80-program" rel="alternate" type="text/html" title="Export a Z80 Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/export-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/export-a-z80-program">&lt;p&gt;After you created your Z80 Assembler program, you can easily export it into a &lt;code class=&quot;highlighter-rouge&quot;&gt;.TAP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.TZX&lt;/code&gt; file so that you
-could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum
-(with the help of TZXDuino or CASDuino hardware).&lt;/p&gt;
-
-&lt;p&gt;To try how easy it is, create a simple Z80 program:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Create a new ZX Spectrum 48 project (see details &lt;a href=&quot;/spectnetide/getting-started/create-zx-spectrum-48k-project.html#article&quot;&gt;here&lt;/a&gt;).
-The &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CodeFiles &lt;/code&gt;&lt;/strong&gt; project of the folder contains a &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Code.z80asm&lt;/code&gt;&lt;/strong&gt; file:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Code file
-start:
-    .org #8000
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol start=&quot;2&quot;&gt;
-  &lt;li&gt;Extend to the code with a few lines:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Code file
-start:
-    .org #8000
-    ld a,2
-    out (#fe),a
-    jp #12a2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol start=&quot;3&quot;&gt;
-  &lt;li&gt;In Solution Explorer, right-click the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Code.z80asm&lt;/code&gt;&lt;/strong&gt; file, and invoke the &lt;strong&gt;Run Z80 program&lt;/strong&gt; command (or use the &lt;strong&gt;Ctrl+M&lt;/strong&gt;, &lt;strong&gt;Ctrl+R&lt;/strong&gt; double shortcut keys):&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-z80-code-command.png&quot; alt=&quot;Run Z80 code command&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This command compiles the Z80 assembly code to binary machine code, starts (or restarts) the Spectrum virtual machine,
-injects the binary code, and runs it:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/z80-code-runs.png&quot; alt=&quot;Z80 code runs&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You can easily export the code with these steps:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;In Solution Explorer, right-click the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Code.z80asm&lt;/code&gt;&lt;/strong&gt; file, and invoke the &lt;strong&gt;Export Z80 program&lt;/strong&gt; command:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/export-z80-code-command.png&quot; alt=&quot;Export Z80 code command&quot; /&gt;&lt;/p&gt;
-
-&lt;ol start=&quot;2&quot;&gt;
-  &lt;li&gt;The IDE pops up the &lt;strong&gt;Export Z80 Program&lt;/strong&gt; dialog:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/export-z80-program-dialog.png&quot; alt=&quot;Export Z80 code command&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You can change the attributes of the exported program. The default settings of the dialog will create a loader program that automatically loads and runs the code. Beside the default options, I set the &lt;strong&gt;Add the exported tape file&lt;/strong&gt; to the project checkbox.&lt;/p&gt;
-
-&lt;ol start=&quot;3&quot;&gt;
-  &lt;li&gt;Click Export.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Now, you can find the exported code file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Temp&lt;/code&gt; folder (&lt;code class=&quot;highlighter-rouge&quot;&gt;Code.tzx&lt;/code&gt;), and also in your project, within the &lt;code class=&quot;highlighter-rouge&quot;&gt;TapeFile&lt;/code&gt; folder:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/exported-code-in-project.png&quot; alt=&quot;Exported Z80 code in project&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You have many other options to export your code, I will explain them in another tutorial.&lt;/p&gt;</content><author><name></name></author><summary type="html">After you created your Z80 Assembler program, you can easily export it into a .TAP or .TZX file so that you could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum (with the help of TZXDuino or CASDuino hardware).</summary></entry><entry><title type="html">Fast (Instant) LOAD</title><link href="http://localhost:4000/spectnetide/getting-started/fast-load" rel="alternate" type="text/html" title="Fast (Instant) LOAD" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/fast-load</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/fast-load">&lt;p&gt;I like the retro feeling of the ZX Spectrum border stripes when a program is being loaded. Today’s kind cannot imagine being patient for three to five minutes while a bigger game gets into the memory from the tape.&lt;/p&gt;
-
-&lt;p&gt;Well, while you develop code, you probably do not the same time as you had in your childhood.&lt;/p&gt;
-
-&lt;p&gt;SpectNetIDE provides an option to load programs instantly. Open the &lt;strong&gt;Tools|Options&lt;/strong&gt; dialog in the Visual Studio IDE, and navigate to the &lt;strong&gt;Spect.Net IDE&lt;/strong&gt; tab. Under the &lt;strong&gt;Virtual machine&lt;/strong&gt; section, you find the &lt;strong&gt;Use Fast Load&lt;/strong&gt; configuration option. Set it to &lt;strong&gt;True&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/use-fast-load.png&quot; alt=&quot;Use fast load&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Setting this option requires that you restart the ZX Spectrum virtual machine – fortunately not your computer :-).&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;The next time you load a program, it happens instantly.&lt;/p&gt;
-
-&lt;h2 id=&quot;under-the-hood&quot;&gt;Under the Hood&lt;/h2&gt;
-
-&lt;p&gt;SpectNetIDE uses a technique called ROM hooking.&lt;/p&gt;
-
-&lt;p&gt;The virtual machine senses that the execution flow enters into the LOAD routine within the ZX Spectrum ROM (at address &lt;strong&gt;$056C&lt;/strong&gt;), and temporarily suspends the CPU. The virtual machine executes its custom loader subroutine to get the contents of the tape file and injects the code into the memory. Then, it sets the contents of the Z80 CPU’s registers as if the original ROM routine had run successfully, and resumes the CPU as if it just returned from the ROM routine (at address &lt;strong&gt;$05E2&lt;/strong&gt;).&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Fast load does not work with programs that dodge the LOAD routine in the ROM, e.g., the ones which use custom loaders. In such cases, turn off fast loading.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">I like the retro feeling of the ZX Spectrum border stripes when a program is being loaded. Today’s kind cannot imagine being patient for three to five minutes while a bigger game gets into the memory from the tape.</summary></entry><entry><title type="html">Install SpectNetIDE</title><link href="http://localhost:4000/spectnetide/getting-started/install-spectnetide" rel="alternate" type="text/html" title="Install SpectNetIDE" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/install-spectnetide</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/install-spectnetide">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;You need Visual Studio installed on your machine. You do not have to pay to get a legal license for VS, SpectNetIDE works with the free Community edition seamlessly. You can download the Visual Studio edition of your choice from its &lt;a href=&quot;https://visualstudio.microsoft.com/downloads/&quot;&gt;home page&lt;/a&gt;.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Select the Tools|Extensions and Updates menu command. It displays a dialog to install VS extensions. Click the Online tab and type “SpectNetIDE” in the search box.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The dialog looks up the Visual Studio Marketplace and displays the SpectNetIDE extension. Click Download to start the installation.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/extensions-dialog-in-vs.png&quot; alt=&quot;Extensions and Updates&quot; /&gt;&lt;/p&gt;
-
-&lt;ol start=&quot;4&quot;&gt;
-  &lt;li&gt;The IDE prepares the downloaded package for setup. However, it will begin installing it only after you close Visual Studio.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/extension-ready-to-install.png&quot; alt=&quot;Ready to Install&quot; /&gt;&lt;/p&gt;
-
-&lt;ol start=&quot;5&quot;&gt;
-  &lt;li&gt;When you have closed all running instances of Visual Studio, the VSIX installer automatically starts the setup. First, you have to confirm the license terms and click Modify.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/confirm-vsix-install.png&quot; alt=&quot;Confirm VSIX Install&quot; /&gt;&lt;/p&gt;
-
-&lt;ol start=&quot;6&quot;&gt;
-  &lt;li&gt;The VSIX installer sets up the extension—it takes less than a minute—and signs when it completes.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/vsix-install-completes.png&quot; alt=&quot;VSIX Install Completes&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now, SpectNetIDE is ready to use. When you start Visual Studio, in the Help|About dialog you can check it’s integrated with VS.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectnetide-in-about.png&quot; alt=&quot;SpectNetIde in About&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;To get familiar with using the ZX Spectrum IDE, take a look at the other tutorials!&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:</summary></entry><entry><title type="html">LOAD a Program</title><link href="http://localhost:4000/spectnetide/getting-started/load-a-program" rel="alternate" type="text/html" title="LOAD a Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/load-a-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/load-a-program">&lt;p&gt;You can load a program from the tape into the memory with the &lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?&lt;/p&gt;
-
-&lt;p&gt;As a part of your project, you can add tape files with standard &lt;code class=&quot;highlighter-rouge&quot;&gt;.TAP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.TZX&lt;/code&gt; format. When the IDE creates a new ZX Spectrum project, it adds a sample tape file, &lt;code class=&quot;highlighter-rouge&quot;&gt;Welcome.tzx&lt;/code&gt;; it puts it into the &lt;code class=&quot;highlighter-rouge&quot;&gt;TapeFiles&lt;/code&gt; folder. With the Add Existing Item command of Visual Studio, you can attach more tape files to the project. The virtual machine – that runs the ZX Spectrum Emulator – can work only with a single tape file at a time. To load that one – called the default tape –, follow these steps:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;In Solution Explorer, select the tape file you want to attach to the virtual machine.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Right-click the &lt;strong&gt;Set as default tape file&lt;/strong&gt; command:&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/set-default-tape-file.png&quot; alt=&quot;Set default tape&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The IDE marks the default tape file with bold typeface.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/default-tape-file-set.png&quot; alt=&quot;Default tape file set&quot; /&gt;&lt;/p&gt;
-
-&lt;ol start=&quot;3&quot;&gt;
-  &lt;li&gt;Next time you enter the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt;&lt;/strong&gt; statement, the virtual machine will play the newly selected tape file.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/pacman-loads.png&quot; alt=&quot;Pacman loads&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: You can change the default tape file between loads while the machine runs – without stopping and restarting it.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">You can load a program from the tape into the memory with the LOAD &quot;&quot; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?</summary></entry></feed>
+IDE to discover the structure and internals of ZX Spectrum applications.&lt;/p&gt;</content><author><name></name></author><summary type="html">Run the File|New|Project command (Ctrl+Shift+N), select the ZX Spectrum tab and choose the ZX Spectrum Code Discovery project type. Specify a project name (use MyFirstDiscovery).</summary></entry><entry><title type="html">Create Watch Expressions</title><link href="http://localhost:4000/spectnetide/getting-started/create-watch-expressions" rel="alternate" type="text/html" title="Create Watch Expressions" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-watch-expressions</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-watch-expressions">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Debug Machine Code</title><link href="http://localhost:4000/spectnetide/getting-started/debug-machine-code" rel="alternate" type="text/html" title="Debug Machine Code" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/debug-machine-code</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/debug-machine-code">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Display Memory Contents</title><link href="http://localhost:4000/spectnetide/getting-started/display-memory-contents" rel="alternate" type="text/html" title="Display Memory Contents" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/display-memory-contents</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/display-memory-contents">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry></feed>

@@ -212,6 +212,14 @@ footer p {
   display: flex;
   flex-direction: column;
   margin-top: 12px; }
+  .ui.vertical.segment.with-content-back .ui.grid .document-list .document-category {
+    font-family: "Roboto Condensed", sans-serif;
+    color: #3A89C9;
+    font-size: 1.6em;
+    font-weight: bold;
+    border-bottom: 2px dotted #3A89C9;
+    padding-bottom: 2px;
+    margin-bottom: 12px; }
   .ui.vertical.segment.with-content-back .ui.grid .document-list a {
     white-space: normal;
     background: transparent;
@@ -227,7 +235,8 @@ footer p {
   .ui.vertical.segment.with-content-back .ui.grid .document-list a.active {
     color: #ED303C; }
   .ui.vertical.segment.with-content-back .ui.grid .document-list a.last {
-    border: none; }
+    border: none;
+    margin-bottom: 8px; }
   .ui.vertical.segment.with-content-back .ui.grid .document-list a:hover {
     color: #3A89C9; }
 .ui.vertical.segment.with-content-back .ui.grid .with-main-back {
@@ -245,11 +254,25 @@ footer p {
   .ui.vertical.segment.with-content-back .main-content-area ol {
     padding-left: 1em;
     margin-left: 6px; }
-  .ui.vertical.segment.with-content-back .main-content-area ol > li {
+  .ui.vertical.segment.with-content-back .main-content-area ol li {
     font-size: 18px;
     font-weight: 400;
     margin-bottom: 8px;
     padding-left: 1em; }
+  .ui.vertical.segment.with-content-back .main-content-area ul li {
+    list-style: none;
+    margin: 8px 0px;
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    padding-left: 1em; }
+    .ui.vertical.segment.with-content-back .main-content-area ul li::before {
+      content: "\2022";
+      color: #1B325F;
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em; }
   .ui.vertical.segment.with-content-back .main-content-area p {
     font-size: 18px;
     font-weight: 400; }
