@@ -79,6 +79,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Z80SemiVar")]
         internal static ClassificationTypeDefinition semiVar;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Z80Module")]
+        internal static ClassificationTypeDefinition module;
     }
 }
 

@@ -136,6 +136,25 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void LoopWithDuplicateStartLabelFails()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyLoop: .loop 3
+                    .endl
+                MyLoop: .loop 3
+                    .endl
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0040);
+        }
+
+        [TestMethod]
         public void HangingLabeledLoopWithEmptyBodyWorks()
         {
             // --- Arrange

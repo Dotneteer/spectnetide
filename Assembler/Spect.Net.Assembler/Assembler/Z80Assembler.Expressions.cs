@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
+// ReSharper disable IdentifierTypo
 
 // ReSharper disable InlineOutVariableDeclaration
 
@@ -22,24 +23,16 @@ namespace Spect.Net.Assembler.Assembler
         /// Gets the value of the specified symbol
         /// </summary>
         /// <param name="symbol">Symbol name</param>
+        /// <param name="scopeSymbolNames">Additional symbol name segments</param>
+        /// <param name="startFromGlobal">Should resolution start from global scope?</param>
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        ExpressionValue IEvaluationContext.GetSymbolValue(string symbol)
+        public ExpressionValue GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false)
         {
-            // --- Check the local scope in stack order
-            foreach (var scope in _output.LocalScopes)
-            {
-                if (scope.Symbols.TryGetValue(symbol, out var localSymbolValue))
-                {
-                    return localSymbolValue.Value;
-                }
-            }
-
-            // --- Check the global scope
-            return _output.Symbols.TryGetValue(symbol, out var symbolValue) 
-                ? symbolValue.Value 
-                : null;
+            return (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal 
+                ? CurrentModule.ResolveSimpleSymbol(symbol) 
+                : CurrentModule.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal);
         }
 
         /// <summary>
@@ -53,7 +46,7 @@ namespace Spect.Net.Assembler.Assembler
                 return ExpressionValue.Error;
             }
 
-            var scope = _output.LocalScopes.Peek();
+            var scope = CurrentModule.LocalScopes.Peek();
             if (!scope.IsLoopScope)
             {
                 ReportError(Errors.Z0412, CurrentSourceLine);
@@ -66,9 +59,9 @@ namespace Spect.Net.Assembler.Assembler
         #region Symbol handler methods
 
         /// <summary>
-        /// Tests if the current assembly instruction is in the global scope
+        /// Tests if the current assembly instruction is in the global scope of the current module
         /// </summary>
-        public bool IsInGlobalScope => _output.LocalScopes.Count == 0;
+        public bool IsInGlobalScope => CurrentModule.LocalScopes.Count == 0;
 
         /// <summary>
         /// Checks is the specified error should be reported in the local scope
@@ -78,7 +71,7 @@ namespace Spect.Net.Assembler.Assembler
         public bool ShouldReportErrorInCurrentScope(string errorCode)
         {
             if (IsInGlobalScope) return true;
-            var localScope = _output.LocalScopes.Peek();
+            var localScope = CurrentModule.LocalScopes.Peek();
             if (localScope.OwnerScope != null)
             {
                 localScope = localScope.OwnerScope;
@@ -93,9 +86,9 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns></returns>
         public bool SymbolExists(string symbol)
         {
-            var lookup = _output.LocalScopes.Count > 0
-                ? _output.LocalScopes.Peek().Symbols
-                : _output.Symbols;
+            var lookup = CurrentModule.LocalScopes.Count > 0
+                ? CurrentModule.LocalScopes.Peek().Symbols
+                : CurrentModule.Symbols;
             return lookup.TryGetValue(symbol, out var symbolInfo) && symbolInfo.Type == SymbolType.Label;
         }
 
@@ -107,12 +100,12 @@ namespace Spect.Net.Assembler.Assembler
         public void AddSymbol(string symbol, ExpressionValue value)
         {
             Dictionary<string, AssemblySymbolInfo> GetSymbols() =>
-                _output.LocalScopes.Count > 0
-                    ? _output.LocalScopes.Peek().Symbols
-                    : _output.Symbols;
+                CurrentModule.LocalScopes.Count > 0
+                    ? CurrentModule.LocalScopes.Peek().Symbols
+                    : CurrentModule.Symbols;
 
-            var currentScopeIsTemporary = _output.LocalScopes.Count != 0 
-                && _output.LocalScopes.Peek().IsTemporaryScope;
+            var currentScopeIsTemporary = CurrentModule.LocalScopes.Count != 0 
+                && CurrentModule.LocalScopes.Peek().IsTemporaryScope;
             var symbolIsTemporary = symbol.StartsWith("`");
 
             var lookup = GetSymbols();
@@ -121,9 +114,9 @@ namespace Spect.Net.Assembler.Assembler
                 if (!symbolIsTemporary)
                 {
                     // --- Remove the previous temporary scope
-                    var tempScope = _output.LocalScopes.Peek();
+                    var tempScope = CurrentModule.LocalScopes.Peek();
                     FixupSymbols(tempScope.Fixups, tempScope.Symbols, false);
-                    _output.LocalScopes.Pop();
+                    CurrentModule.LocalScopes.Pop();
 
                     lookup = GetSymbols();
                 }
@@ -131,7 +124,7 @@ namespace Spect.Net.Assembler.Assembler
             else
             {
                 // --- Create a new temporary scope
-                _output.LocalScopes.Push(new SymbolScope() { IsTemporaryScope = true });
+                CurrentModule.LocalScopes.Push(new SymbolScope() { IsTemporaryScope = true });
                 if (symbolIsTemporary)
                 {
                     // --- Temporary symbol should go into the new temporary scope
@@ -149,7 +142,7 @@ namespace Spect.Net.Assembler.Assembler
         public bool VariableExists(string name)
         {
             // --- Search for the variable from inside out
-            foreach (var scope in _output.LocalScopes)
+            foreach (var scope in CurrentModule.LocalScopes)
             {
                 if (scope.Symbols.TryGetValue(name, out var symbolInfo) && symbolInfo.Type == SymbolType.Var)
                 {
@@ -158,7 +151,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Check the global scope
-            return _output.Symbols.TryGetValue(name, out var globalSymbol) 
+            return CurrentModule.Symbols.TryGetValue(name, out var globalSymbol) 
                 && globalSymbol.Type == SymbolType.Var;
         }
 
@@ -170,7 +163,7 @@ namespace Spect.Net.Assembler.Assembler
         public void SetVariable(string name, ExpressionValue value)
         {
             // --- Search for the variable from inside out
-            foreach (var scope in _output.LocalScopes)
+            foreach (var scope in CurrentModule.LocalScopes)
             {
                 if (scope.Symbols.TryGetValue(name, out var symbolInfo) && symbolInfo.Type == SymbolType.Var)
                 {
@@ -180,7 +173,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Check the global scope
-            if (_output.Symbols.TryGetValue(name, out var globalSymbol) 
+            if (CurrentModule.Symbols.TryGetValue(name, out var globalSymbol) 
                 && globalSymbol.Type == SymbolType.Var)
             {
                 globalSymbol.Value = value;
@@ -188,9 +181,9 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- The variable does not exist, create it in the current scope
-            var vars = _output.LocalScopes.Count > 0
-                ? _output.LocalScopes.Peek().Symbols
-                : _output.Symbols;
+            var vars = CurrentModule.LocalScopes.Count > 0
+                ? CurrentModule.LocalScopes.Peek().Symbols
+                : CurrentModule.Symbols;
             vars[name] = AssemblySymbolInfo.CreateVar(name, value);
         }
 
@@ -205,13 +198,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="value">Symbol value</param>
         public void SetSymbolValue(string symbol, ExpressionValue value)
         {
-            if (_output.Symbols.TryGetValue(symbol, out var symbolInfo))
+            if (CurrentModule.Symbols.TryGetValue(symbol, out var symbolInfo))
             {
                 symbolInfo.Value = value;
             }
             else
             {
-                _output.Symbols.Add(symbol, AssemblySymbolInfo.CreateLabel(symbol, value));
+                CurrentModule.Symbols.Add(symbol, AssemblySymbolInfo.CreateLabel(symbol, value));
             }
         }
 
@@ -286,14 +279,22 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="label">Optional EQU label</param>
         private void RecordFixup(SourceLineBase opLine, FixupType type, ExpressionNode expression, string label = null)
         {
-            var localScope = IsInGlobalScope ? null : _output.LocalScopes.Peek();
-            var fixup = new FixupEntry(this, localScope, opLine, type, _output.Segments.Count - 1,
+            var fixup = new FixupEntry(this, CurrentModule, opLine, type, Output.Segments.Count - 1,
                 CurrentSegment.CurrentOffset, expression, label);
-            foreach (var scope in _output.LocalScopes)
+
+            // --- Record fixups in every local scope up to the root
+            foreach (var scope in CurrentModule.LocalScopes)
             {
                 scope.Fixups.Add(fixup);
             }
-            _output.Fixups.Add(fixup);
+
+            // --- Record fixup in every module up to the root
+            var currentModule = CurrentModule;
+            while (currentModule != null)
+            {
+                currentModule.Fixups.Add(fixup);
+                currentModule = currentModule.ParentModule;
+            }
         }
 
         /// <summary>
@@ -303,7 +304,7 @@ namespace Spect.Net.Assembler.Assembler
         private bool FixupSymbols()
         {
             // --- Go through all scopes from inside to outside
-            foreach (var scope in _output.LocalScopes)
+            foreach (var scope in CurrentModule.LocalScopes)
             {
                 if (scope.Fixups.Count == 0) continue;
                 if (FixupSymbols(scope.Fixups, scope.Symbols, false))
@@ -313,7 +314,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
             }
 
-            return FixupSymbols(_output.Fixups, _output.Symbols, true);
+            return FixupSymbols(CurrentModule.Fixups, CurrentModule.Symbols, true);
         }
 
         /// <summary>
@@ -351,7 +352,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (EvaluateFixupExpression(fixup, true, signNotEvaluable, out var value))
                 {
-                    var segment = _output.Segments[fixup.SegmentIndex];
+                    var segment = Output.Segments[fixup.SegmentIndex];
                     var emittedCode = segment.EmittedCode;
                     switch (fixup.Type)
                     {
@@ -380,11 +381,11 @@ namespace Spect.Net.Assembler.Assembler
                             break;
 
                         case FixupType.Ent:
-                            _output.EntryAddress = value.AsWord();
+                            Output.EntryAddress = value.AsWord();
                             break;
 
                         case FixupType.Xent:
-                            _output.ExportEntryAddress = value.AsWord();
+                            Output.ExportEntryAddress = value.AsWord();
                             break;
                     }
                 }

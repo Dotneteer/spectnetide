@@ -8,6 +8,7 @@ using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
+using Spect.Net.Assembler.SyntaxTree.Statements;
 using Spect.Net.VsPackage.ProjectStructure;
 
 #pragma warning disable 649
@@ -84,8 +85,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 var currentLine = curSpan.Start.GetContainingLine();
                 var textOfLine = currentLine.GetText();
 
-                // TODO: Implement coloring of the block comment (/* ... */)
-
                 // --- Let's use the Z80 assembly parser to obtain tags
                 var inputStream = new AntlrInputStream(textOfLine);
                 var lexer = new Z80AsmLexer(inputStream);
@@ -145,6 +144,10 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     else if (asmline is MacroInvocation)
                     {
                         type = Z80AsmTokenType.MacroInvocation;
+                    }
+                    else if (asmline is ModuleStatement || asmline is ModuleEndStatement)
+                    {
+                        type = Z80AsmTokenType.ModuleKeyword;
                     }
                     else if (asmline is StatementBase)
                     {

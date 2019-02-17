@@ -7,10 +7,9 @@ using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Z80AsmParser = Spect.Net.Assembler.Generated.Z80AsmParser;
+
 // ReSharper disable StringLiteralTypo
-
 // ReSharper disable UsePatternMatching
-
 // ReSharper disable JoinNullCheckWithUsage
 
 namespace Spect.Net.Assembler.Assembler
@@ -37,7 +36,16 @@ namespace Spect.Net.Assembler.Assembler
         };
 
         private AssemblerOptions _options;
-        private AssemblerOutput _output;
+
+        /// <summary>
+        /// The output of the assembler
+        /// </summary>
+        public AssemblerOutput Output { get; private set; }
+
+        /// <summary>
+        /// The current module that determines the scope of labels
+        /// </summary>
+        public AssemblyModule CurrentModule { get; private set; }
 
         /// <summary>
         /// The condition symbols
@@ -124,7 +132,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             _options = options ?? new AssemblerOptions();
             ConditionSymbols = new HashSet<string>(_options.PredefinedSymbols);
-            _output = new AssemblerOutput(sourceItem);
+            CurrentModule = Output = new AssemblerOutput(sourceItem);
 
             // --- Do the compilation phases
             if (!ExecuteParse(0, sourceItem, sourceText, out var lines)
@@ -132,13 +140,13 @@ namespace Spect.Net.Assembler.Assembler
                 || !FixupSymbols())
             {
                 // --- Compilation failed, remove segments
-                _output.Segments.Clear();
+                Output.Segments.Clear();
             }
             PreprocessedLines = lines;
 
             // --- Create symbol map
-            _output.CreateSymbolMap();
-            return _output;
+            Output.CreateSymbolMap();
+            return Output;
         }
 
         #region Parsing and Directive processing
@@ -177,7 +185,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Exit if there are any errors
-            if (_output.ErrorCount != 0)
+            if (Output.ErrorCount != 0)
             {
                 return false;
             }
@@ -226,7 +234,7 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0062, visitedLines.Lines.Last());
             }
 
-            return _output.ErrorCount == 0;
+            return Output.ErrorCount == 0;
         }
 
         /// <summary>
@@ -240,7 +248,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 if (line.DefinesTask)
                 {
-                    _output.Tasks.Add(new AssemblerTaskInfo(line.TaskDescription, 
+                    Output.Tasks.Add(new AssemblerTaskInfo(line.TaskDescription, 
                         sourceItem.Filename, line.SourceLine));
                 }
             }
@@ -300,7 +308,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Now, add the included item to the output
-            _output.SourceFileList.Add(childItem);
+            Output.SourceFileList.Add(childItem);
 
             // --- Read the include file
             string sourceText;
@@ -315,7 +323,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Parse the file
-            return ExecuteParse(_output.SourceFileList.Count - 1, childItem, sourceText, out parsedLines);
+            return ExecuteParse(Output.SourceFileList.Count - 1, childItem, sourceText, out parsedLines);
         }
 
         /// <summary>
@@ -361,7 +369,7 @@ namespace Spect.Net.Assembler.Assembler
                         else
                         {
                             // --- OK, check the condition
-                            var refModel = _output.ModelType ?? _options.CurrentModel;
+                            var refModel = Output.ModelType ?? _options.CurrentModel;
                             processOps = refModel.ToString().ToUpper() == directive.Identifier ^
                                          directive.Mnemonic == "#IFNMOD";
                         }
@@ -431,7 +439,7 @@ namespace Spect.Net.Assembler.Assembler
         private void ReportError(SourceFileItem sourceItem, Z80AsmParserErrorInfo error)
         {
             var errInfo = new AssemblerErrorInfo(sourceItem, error);
-            _output.Errors.Add(errInfo);
+            Output.Errors.Add(errInfo);
             ReportScopeError(errInfo.ErrorCode);
         }
 
@@ -444,9 +452,9 @@ namespace Spect.Net.Assembler.Assembler
         public void ReportError(string errorCode, SourceLineBase line, params object[] parameters)
         {
             var sourceItem = line != null 
-                ? _output.SourceFileList[line.FileIndex] 
+                ? Output.SourceFileList[line.FileIndex] 
                 : null;
-            _output.Errors.Add(new AssemblerErrorInfo(sourceItem, errorCode, line, parameters));
+            Output.Errors.Add(new AssemblerErrorInfo(sourceItem, errorCode, line, parameters));
             ReportScopeError(errorCode);
         }
 
@@ -456,8 +464,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="errorCode"></param>
         private void ReportScopeError(string errorCode)
         {
-            if (_output.LocalScopes.Count == 0) return;
-            var localScope = _output.LocalScopes.Peek();
+            if (Output.LocalScopes.Count == 0) return;
+            var localScope = Output.LocalScopes.Peek();
             if (localScope.OwnerScope != null)
             {
                 localScope = localScope.OwnerScope;

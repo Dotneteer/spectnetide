@@ -79,6 +79,8 @@ statement
 	|	nextStatement
 	|	breakStatement
 	|	continueStatement
+	|	moduleStatement
+	|	moduleEndMarker
 	;
 
 macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
@@ -99,6 +101,8 @@ forStatement: FOR IDENTIFIER ASSIGN expr TO expr (STEP expr)? ;
 nextStatement: (NEXT | FORNEXT) ;
 breakStatement: BREAK ;
 continueStatement: CONTINUE ;
+moduleStatement: MODULE IDENTIFIER? ;
+moduleEndMarker: ENDMOD ;
 
 macroInvocation: IDENTIFIER LPAR macroArgument (COMMA macroArgument)* RPAR	;
 macroArgument: operand? ;
@@ -630,6 +634,11 @@ FORNEXT	: '.next' | '.NEXT' ;
 NEXT	: 'next' | 'NEXT' ;
 BREAK	: '.break' | 'break' | '.BREAK' | 'BREAK' ;
 CONTINUE: '.continue' | 'continue' | '.CONTINUE' | 'CONTINUE' ;
+MODULE	: '.module' | '.MODULE' | 'module' | 'MODULE' | '.scope' | '.SCOPE' | 'scope' | 'SCOPE' ;
+ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE' 
+		  | '.endscope' | '.ENDSCOPE' | 'endscope' | 'ENDSCOPE'
+		  | '.moduleend' | '.MODULEEND' | 'moduleend' | 'MODULEEND'
+		  | '.scopeend' | '.SCOPEEND' | 'scopeend' | 'SCOPEEND' ;
 
 // --- Built-in function names
 TEXTOF	: 'textof' | 'TEXTOF' ;

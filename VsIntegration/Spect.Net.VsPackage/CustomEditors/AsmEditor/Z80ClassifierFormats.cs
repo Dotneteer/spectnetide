@@ -57,7 +57,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
-    /// Defines an editor format for a Z80 assembly directive
+    /// Defines an editor format for a Z80 assembly include directive
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80IncludeDirective")]
@@ -127,7 +127,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
-    /// Defines an editor format for a Z80 assembly number
+    /// Defines an editor format for a Z80 assembly string
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80String")]
@@ -144,7 +144,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
-    /// Defines an editor format for a Z80 assembly number
+    /// Defines an editor format for a Z80 assembly identifier
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Identifier")]
@@ -161,7 +161,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
-    /// Defines an editor format for a Z80 assembly number
+    /// Defines an editor format for a Z80 assembly function
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Function")]
@@ -197,7 +197,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
-    /// Defines an editor format for a Z80 breakpoint line
+    /// Defines an editor format for the current Z80 breakpoint line
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80CurrentBreakpoint")]
@@ -215,7 +215,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
-    /// Defines an editor format for a Z80 assembly instruction
+    /// Defines an editor format for a Z80 assembly macro parameter
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80MacroParam")]
@@ -233,7 +233,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
-    /// Defines an editor format for a Z80 assembly instruction
+    /// Defines an editor format for a Z80 assembly statement
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80Statement")]
@@ -251,7 +251,26 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
     }
 
     /// <summary>
-    /// Defines an editor format for a Z80 assembly instruction
+    /// Defines an editor format for a Z80 assembly module keyword
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Z80Module")]
+    [Name("Z80Module")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class Z80ModuleFormat : ClassificationFormatDefinition
+    {
+        public Z80ModuleFormat()
+        {
+            DisplayName = "Z80 Asm - Module";
+            ForegroundColor = Colors.Yellow;
+            BackgroundColor = Color.FromArgb(255, 80, 80, 80);
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a Z80 assembly macro invocation
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "Z80MacroInvocation")]

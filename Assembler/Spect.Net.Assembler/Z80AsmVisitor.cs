@@ -1067,6 +1067,38 @@ namespace Spect.Net.Assembler
         }
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.moduleStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitModuleStatement(Z80AsmParser.ModuleStatementContext context)
+        {
+            return IsInvalidContext(context) 
+                ? null 
+                : AddLine(new ModuleStatement(context), context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.moduleEndMarker"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitModuleEndMarker(Z80AsmParser.ModuleEndMarkerContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new ModuleEndStatement(), context);
+        }
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -2062,7 +2094,7 @@ namespace Spect.Net.Assembler
         private void AddIdentifier(ParserRuleContext context)
         {
             if (_identifiers == null) _identifiers = new List<TextSpan>();
-            _identifiers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+            _identifiers.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
         }
 
         /// <summary>

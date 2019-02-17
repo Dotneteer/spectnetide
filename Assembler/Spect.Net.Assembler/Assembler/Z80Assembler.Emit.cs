@@ -76,7 +76,7 @@ namespace Spect.Net.Assembler.Assembler
         private bool EmitCode(List<SourceLineBase> lines)
         {
             // --- Initialize code emission
-            _output.Segments.Clear();
+            Output.Segments.Clear();
             EnsureCodeSegment();
 
             // --- Iterate through all parsed lines
@@ -98,7 +98,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Ok, it's time to return with the result
-            return _output.ErrorCount == 0;
+            return Output.ErrorCount == 0;
         }
 
         /// <summary>
@@ -166,9 +166,21 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // --- There's a label, we clear the previous hanging label
                     OverflowLabelLine = null;
+
+                    // --- Create the label unless the current pragma does it
                     if (!(asmLine is ILabelSetter))
                     {
-                        // --- Create the label unless the current pragma does it
+                        if (!currentLabel.StartsWith("`")
+                            && CurrentModule.LocalScopes.Count > 0)
+                        {
+                            // --- Check if temporary scope should be fixed and disposed
+                            var topScope = CurrentModule.LocalScopes.Peek();
+                            if (topScope.IsTemporaryScope)
+                            {
+                                FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+                                CurrentModule.LocalScopes.Pop();
+                            }
+                        }
                         if (SymbolExists(currentLabel))
                         {
                             ReportError(Errors.Z0040, asmLine, currentLabel);
@@ -196,7 +208,7 @@ namespace Spect.Net.Assembler.Assembler
                     else
                     {
                         // --- Macro argument used outside of a macro definition
-                        var scope = _output.LocalScopes.Peek();
+                        var scope = CurrentModule.LocalScopes.Peek();
                         if (scope.IsMacroContext) return;
 
                         if (ShouldReportErrorInCurrentScope(Errors.Z0420))
@@ -227,8 +239,8 @@ namespace Spect.Net.Assembler.Assembler
 
                     // --- Generate source map information
                     var sourceInfo = (opLine.FileIndex, opLine.SourceLine);
-                    _output.SourceMap[addr] = sourceInfo;
-                    _output.AddToAddressMap(opLine.FileIndex, opLine.SourceLine, addr);
+                    Output.SourceMap[addr] = sourceInfo;
+                    Output.AddToAddressMap(opLine.FileIndex, opLine.SourceLine, addr);
                 }
             }
         }
@@ -264,6 +276,14 @@ namespace Spect.Net.Assembler.Assembler
         {
             switch (stmt)
             {
+                case ModuleStatement moduleStatement:
+                    ProcessModuleStatement(moduleStatement, label, allLines, scopeLines, ref currentLineIndex);
+                    break;
+
+                case ModuleEndStatement moduleEndStmt:
+                    ReportError(Errors.Z0405, moduleEndStmt, "ENDMODULE/MODULEEND", "MODULE");
+                    break;
+
                 case MacroStatement macroStmt:
                     CollectMacroDefinition(macroStmt, label, allLines, ref currentLineIndex);
                     break;
@@ -375,7 +395,7 @@ namespace Spect.Net.Assembler.Assembler
                 errorFound = true;
                 ReportError(Errors.Z0427, macro, label);
             }
-            else if (_output.Macros.ContainsKey(label))
+            else if (CurrentModule.Macros.ContainsKey(label))
             {
                 errorFound = true;
                 ReportError(Errors.Z0402, macro, label);
@@ -423,7 +443,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- If macro is OK, store it
             if (!errorFound)
             {
-                _output.Macros[label] = macroDef;
+                CurrentModule.Macros[label] = macroDef;
             }
         }
 
@@ -463,14 +483,14 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Create a scope for the loop
             var loopScope = new SymbolScope();
-            _output.LocalScopes.Push(loopScope);
-            var errorsBefore = _output.ErrorCount;
+            CurrentModule.LocalScopes.Push(loopScope);
+            var errorsBefore = Output.ErrorCount;
 
             for (var i = 0; i < counter; i++)
             {
                 // --- Create a local scope for the loop body
                 var iterationScope = new SymbolScope(loopScope);
-                _output.LocalScopes.Push(iterationScope);
+                CurrentModule.LocalScopes.Push(iterationScope);
                 iterationScope.LoopCounter = i + 1;
 
                 var loopLineIndex = firstLine + 1;
@@ -504,21 +524,21 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
 
                 // --- Fixup the temporary scope over the iteration scope, if there is any
-                var topScope = _output.LocalScopes.Peek();
+                var topScope = CurrentModule.LocalScopes.Peek();
                 if (topScope != iterationScope && topScope.IsTemporaryScope)
                 {
                     FixupSymbols(topScope.Fixups, topScope.Symbols, false);
-                    _output.LocalScopes.Pop();
+                    CurrentModule.LocalScopes.Pop();
                 }
 
                 // --- Fixup the symbols locally
                 FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
                 // --- Remove the local scope
-                _output.LocalScopes.Pop();
+                CurrentModule.LocalScopes.Pop();
 
                 // --- Check for the maximum number of error
-                if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
+                if (Output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
                 {
                     ReportError(Errors.Z0408, loop);
                     break;
@@ -532,7 +552,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Clean up the loop's scope
-            _output.LocalScopes.Pop();
+            CurrentModule.LocalScopes.Pop();
         }
 
         /// <summary>
@@ -554,7 +574,7 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Create a scope for the proc
             var procScope = new SymbolScope {IsLoopScope = false};
-            _output.LocalScopes.Push(procScope);
+            CurrentModule.LocalScopes.Push(procScope);
 
             // --- Create a local scope for the loop body
             var loopLineIndex = firstLine + 1;
@@ -584,18 +604,108 @@ namespace Spect.Net.Assembler.Assembler
             OverflowLabelLine = null;
 
             // --- Fixup the temporary scope over the iteration scope, if there is any
-            var topScope = _output.LocalScopes.Peek();
+            var topScope = CurrentModule.LocalScopes.Peek();
             if (topScope != procScope && topScope.IsTemporaryScope)
             {
                 FixupSymbols(topScope.Fixups, topScope.Symbols, false);
-                _output.LocalScopes.Pop();
+                CurrentModule.LocalScopes.Pop();
             }
 
             // --- Fixup the symbols locally
             FixupSymbols(procScope.Fixups, procScope.Symbols, false);
 
             // --- Clean up the loop's scope
-            _output.LocalScopes.Pop();
+            CurrentModule.LocalScopes.Pop();
+        }
+
+        /// <summary>
+        /// Processes the MODULE statement
+        /// </summary>
+        /// <param name="module">MODULE statement</param>
+        /// <param name="label">MODULE label</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="scopeLines">Lines to process in the current scope</param>
+        /// <param name="currentLineIndex">Index of the LOOP definition line</param>
+        private void ProcessModuleStatement(ModuleStatement module, string label,
+            List<SourceLineBase> allLines, List<SourceLineBase> scopeLines,
+            ref int currentLineIndex)
+        {
+            // --- Search for the end of the loop
+            var firstLine = currentLineIndex;
+            if (!module.SearchForEnd(this, scopeLines, ref currentLineIndex, out var endLabel)) return;
+
+            // --- End found
+            var lastLine = currentLineIndex;
+
+            // --- Process label
+            var moduleName = module.Name ?? label;
+            if (moduleName == null)
+            {
+                ReportError(Errors.Z0428, module);
+                return;
+            }
+            if (label != null && label.StartsWith("`") || moduleName.StartsWith("`"))
+            {
+                ReportError(Errors.Z0430, module, label);
+                return;
+            }
+            if (CurrentModule.NestedModules.ContainsKey(moduleName))
+            {
+                ReportError(Errors.Z0429, module, label);
+                return;
+            }
+
+            // --- Create a new nested module
+            var newModule = new AssemblyModule(CurrentModule);
+            CurrentModule.NestedModules.Add(moduleName, newModule);
+            CurrentModule = newModule;
+
+            // --- The module has a label, so create a temporary scope, too
+            newModule.LocalScopes.Push(new SymbolScope { IsTemporaryScope = true });
+
+            // --- Create a local scope for the loop body
+            var loopLineIndex = firstLine + 1;
+            while (loopLineIndex < lastLine)
+            {
+                var curLine = scopeLines[loopLineIndex];
+                EmitSingleLine(allLines, scopeLines, curLine, ref loopLineIndex);
+                loopLineIndex++;
+            }
+
+            // --- Add the end label to the local scope
+            if (endLabel != null)
+            {
+                // --- Add the end label to the loop scope
+                var endLine = scopeLines[currentLineIndex];
+                if (SymbolExists(endLabel))
+                {
+                    ReportError(Errors.Z0040, endLine, endLabel);
+                }
+                else
+                {
+                    AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
+                }
+            }
+
+            // --- Clean up the hanging label
+            OverflowLabelLine = null;
+
+            // --- Fixup the temporary scope over the iteration scope, if there is any
+            if (CurrentModule.LocalScopes.Count > 0)
+            {
+                var topScope = CurrentModule.LocalScopes.Peek();
+                if (topScope.IsTemporaryScope)
+                {
+                    FixupSymbols(topScope.Fixups, topScope.Symbols, false);
+                    CurrentModule.LocalScopes.Pop();
+                }
+            }
+
+            // --- Fixup the symbols locally
+            FixupSymbols(newModule.Fixups, newModule.Symbols, false);
+
+            // --- Step back to the outer module
+            CurrentModule = newModule.ParentModule;
         }
 
         /// <summary>
@@ -619,8 +729,8 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Create a scope for the repeat loop
             var loopScope = new SymbolScope();
-            _output.LocalScopes.Push(loopScope);
-            var errorsBefore = _output.ErrorCount;
+            CurrentModule.LocalScopes.Push(loopScope);
+            var errorsBefore = Output.ErrorCount;
 
             // --- Execute the REPEAT body
             var loopCount = 1;
@@ -629,7 +739,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 // --- Create a local scope for the repeat body
                 var iterationScope = new SymbolScope(loopScope);
-                _output.LocalScopes.Push(iterationScope);
+                CurrentModule.LocalScopes.Push(iterationScope);
                 iterationScope.LoopCounter = loopCount;
 
                 var loopLineIndex = firstLine + 1;
@@ -663,18 +773,18 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
 
                 // --- Fixup the temporary scope over the iteration scope, if there is any
-                var topScope = _output.LocalScopes.Peek();
+                var topScope = CurrentModule.LocalScopes.Peek();
                 if (topScope != iterationScope && topScope.IsTemporaryScope)
                 {
                     FixupSymbols(topScope.Fixups, topScope.Symbols, false);
-                    _output.LocalScopes.Pop();
+                    CurrentModule.LocalScopes.Pop();
                 }
 
                 // --- Fixup the symbols locally
                 FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
                 // --- Check for the maximum number of error
-                if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
+                if (Output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
                 {
                     ReportError(Errors.Z0408, repeat);
                     break;
@@ -700,7 +810,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Remove the local scope
-                _output.LocalScopes.Pop();
+                CurrentModule.LocalScopes.Pop();
 
                 // --- BREAK reached, exit the loop
                 if (iterationScope.BreakReached)
@@ -710,7 +820,7 @@ namespace Spect.Net.Assembler.Assembler
             } while (!condition);
 
             // --- Clean up the loop's scope
-            _output.LocalScopes.Pop();
+            CurrentModule.LocalScopes.Pop();
         }
 
         /// <summary>
@@ -733,8 +843,8 @@ namespace Spect.Net.Assembler.Assembler
             
             // --- Create a scope for the while loop
             var loopScope = new SymbolScope();
-            _output.LocalScopes.Push(loopScope);
-            var errorsBefore = _output.ErrorCount;
+            CurrentModule.LocalScopes.Push(loopScope);
+            var errorsBefore = Output.ErrorCount;
 
             // --- Execute the WHILE body
             var loopCount = 1;
@@ -742,7 +852,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 // --- Create a local scope for the repeat body
                 var iterationScope = new SymbolScope(loopScope);
-                _output.LocalScopes.Push(iterationScope);
+                CurrentModule.LocalScopes.Push(iterationScope);
                 iterationScope.LoopCounter = loopCount;
 
                 // --- Evaluate the loop expression
@@ -788,21 +898,21 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
 
                 // --- Fixup the temporary scope over the iteration scope, if there is any
-                var topScope = _output.LocalScopes.Peek();
+                var topScope = CurrentModule.LocalScopes.Peek();
                 if (topScope != iterationScope && topScope.IsTemporaryScope)
                 {
                     FixupSymbols(topScope.Fixups, topScope.Symbols, false);
-                    _output.LocalScopes.Pop();
+                    CurrentModule.LocalScopes.Pop();
                 }
 
                 // --- Fixup the symbols locally
                 FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
                 // --- Remove the local scope
-                _output.LocalScopes.Pop();
+                CurrentModule.LocalScopes.Pop();
 
                 // --- Check for the maximum number of error
-                if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
+                if (Output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
                 {
                     ReportError(Errors.Z0408, whileStmt);
                     break;
@@ -824,7 +934,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Clean up the loop's scope
-            _output.LocalScopes.Pop();
+            CurrentModule.LocalScopes.Pop();
         }
 
         /// <summary>
@@ -888,12 +998,12 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Create a scope for the FOR loop
             var loopScope = new SymbolScope();
-            _output.LocalScopes.Push(loopScope);
+            CurrentModule.LocalScopes.Push(loopScope);
 
             // --- Init the FOR variable
             loopScope.Symbols.Add(forStmt.ForVariable, 
                 AssemblySymbolInfo.CreateVar(forStmt.ForVariable, fromValue));
-            var errorsBefore = _output.ErrorCount;
+            var errorsBefore = Output.ErrorCount;
 
             var isIntLoop =
                 (fromValue.Type == ExpressionValueType.Bool || fromValue.Type == ExpressionValueType.Integer)
@@ -933,7 +1043,7 @@ namespace Spect.Net.Assembler.Assembler
 
                 // --- Create a local scope for the FOR body
                 var iterationScope = new SymbolScope(loopScope);
-                _output.LocalScopes.Push(iterationScope);
+                CurrentModule.LocalScopes.Push(iterationScope);
                 iterationScope.LoopCounter = loopCount;
 
                 var loopLineIndex = firstLine + 1;
@@ -967,21 +1077,21 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
 
                 // --- Fixup the temporary scope over the iteration scope, if there is any
-                var topScope = _output.LocalScopes.Peek();
+                var topScope = CurrentModule.LocalScopes.Peek();
                 if (topScope != iterationScope && topScope.IsTemporaryScope)
                 {
                     FixupSymbols(topScope.Fixups, topScope.Symbols, false);
-                    _output.LocalScopes.Pop();
+                    CurrentModule.LocalScopes.Pop();
                 }
 
                 // --- Fixup the symbols locally
                 FixupSymbols(iterationScope.Fixups, iterationScope.Symbols, false);
 
                 // --- Remove the local scope
-                _output.LocalScopes.Pop();
+                CurrentModule.LocalScopes.Pop();
 
                 // --- Check for the maximum number of error
-                if (_output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
+                if (Output.ErrorCount - errorsBefore >= _options.MaxLoopErrorsToReport)
                 {
                     ReportError(Errors.Z0408, forStmt);
                     break;
@@ -1007,7 +1117,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Clean up the loop's scope
-            _output.LocalScopes.Pop();
+            CurrentModule.LocalScopes.Pop();
         }
 
         /// <summary>
@@ -1016,12 +1126,12 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="breakStmt">BREAK statement</param>
         private void ProcessBreakStatement(SourceLineBase breakStmt)
         {
-            if (IsInGlobalScope || !_output.LocalScopes.Peek().IsLoopScope)
+            if (IsInGlobalScope || !CurrentModule.LocalScopes.Peek().IsLoopScope)
             {
                 ReportError(Errors.Z0415, breakStmt);
                 return;
             }
-            _output.LocalScopes.Peek().BreakReached = true;
+            CurrentModule.LocalScopes.Peek().BreakReached = true;
         }
 
         /// <summary>
@@ -1030,12 +1140,12 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="continueStmt">CONTINUE statement</param>
         private void ProcessContinueStatement(SourceLineBase continueStmt)
         {
-            if (IsInGlobalScope || !_output.LocalScopes.Peek().IsLoopScope)
+            if (IsInGlobalScope || !CurrentModule.LocalScopes.Peek().IsLoopScope)
             {
                 ReportError(Errors.Z0416, continueStmt);
                 return;
             }
-            _output.LocalScopes.Peek().ContinueReached = true;
+            CurrentModule.LocalScopes.Peek().ContinueReached = true;
         }
 
         /// <summary>
@@ -1243,7 +1353,7 @@ namespace Spect.Net.Assembler.Assembler
             List<SourceLineBase> allLines)
         {
             // --- Check if macro definition exists
-            if (!_output.Macros.TryGetValue(macroStmt.Name, out var macroDef))
+            if (!CurrentModule.Macros.TryGetValue(macroStmt.Name, out var macroDef))
             {
                 ReportError(Errors.Z0418, macroStmt, macroStmt.Name);
                 return;
@@ -1328,7 +1438,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 MacroArguments = arguments
             };
-            _output.LocalScopes.Push(macroScope);
+            CurrentModule.LocalScopes.Push(macroScope);
 
             // --- The macro name will serve as its starting label
             macroScope.Symbols.Add(macroDef.MacroName, 
@@ -1339,8 +1449,8 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Create source info for the macro invocation
             var currentAddress = GetCurrentAssemblyAddress();
-            _output.AddToAddressMap(macroStmt.FileIndex, macroStmt.SourceLine, currentAddress);
-            _output.SourceMap[currentAddress] = (macroStmt.FileIndex, macroStmt.SourceLine);
+            Output.AddToAddressMap(macroStmt.FileIndex, macroStmt.SourceLine, currentAddress);
+            Output.SourceMap[currentAddress] = (macroStmt.FileIndex, macroStmt.SourceLine);
 
             // --- We store the original source file information to
             // --- assign it later with the re-parsed macro code
@@ -1389,7 +1499,7 @@ namespace Spect.Net.Assembler.Assembler
             var visitedLines = visitor.Compilation;
 
             // --- Store any tasks defined by the user
-            StoreTasks(_output.SourceItem, visitedLines.Lines);
+            StoreTasks(Output.SourceItem, visitedLines.Lines);
 
             // --- Collect syntax errors
             foreach (var error in parser.SyntaxErrors)
@@ -1399,11 +1509,11 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     var (fileIndex, line) = sourceInfo[error.SourceLine - 1];
                     error.SourceLine = line;
-                    ReportError(_output.SourceFileList[fileIndex], error);
+                    ReportError(Output.SourceFileList[fileIndex], error);
                 }
                 else
                 {
-                    ReportError(_output.SourceItem, error);
+                    ReportError(Output.SourceItem, error);
                 }
                 errorFound = true;
             }
@@ -1457,18 +1567,18 @@ namespace Spect.Net.Assembler.Assembler
             OverflowLabelLine = null;
 
             // --- Fixup the temporary scope over the iteration scope, if there is any
-            var topScope = _output.LocalScopes.Peek();
+            var topScope = CurrentModule.LocalScopes.Peek();
             if (topScope != macroScope && topScope.IsTemporaryScope)
             {
                 FixupSymbols(topScope.Fixups, topScope.Symbols, false);
-                _output.LocalScopes.Pop();
+                CurrentModule.LocalScopes.Pop();
             }
 
             // --- Fixup the symbols locally
             FixupSymbols(macroScope.Fixups, macroScope.Symbols, false);
 
             // --- Remove the macro's scope
-            _output.LocalScopes.Pop();
+            CurrentModule.LocalScopes.Pop();
         }
 
         #endregion
@@ -1568,7 +1678,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     StartAddress = value.Value
                 };
-                _output.Segments.Add(CurrentSegment);
+                Output.Segments.Add(CurrentSegment);
             }
             else
             {
@@ -1606,7 +1716,7 @@ namespace Spect.Net.Assembler.Assembler
                 RecordFixup(pragma, FixupType.Ent, pragma.Expr);
                 return;
             }
-            _output.EntryAddress = value.Value;
+            Output.EntryAddress = value.Value;
         }
 
         /// <summary>
@@ -1625,7 +1735,7 @@ namespace Spect.Net.Assembler.Assembler
                 RecordFixup(pragma, FixupType.Xent, pragma.Expr);
                 return;
             }
-            _output.ExportEntryAddress = value.Value;
+            Output.ExportEntryAddress = value.Value;
         }
 
         /// <summary>
@@ -1680,11 +1790,11 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private void FixupTemporaryScope()
         {
-            if (_output.LocalScopes.Count <= 0) return;
-            var topScope = _output.LocalScopes.Peek();
+            if (CurrentModule.LocalScopes.Count <= 0) return;
+            var topScope = CurrentModule.LocalScopes.Peek();
             if (!topScope.IsTemporaryScope) return;
             FixupSymbols(topScope.Fixups, topScope.Symbols, false);
-            _output.LocalScopes.Pop();
+            CurrentModule.LocalScopes.Pop();
         }
 
         /// <summary>
@@ -1934,7 +2044,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of MODEL pragma</param>
         private void ProcessModelPragma(ModelPragma pragma)
         {
-            if (_output.ModelType != null)
+            if (Output.ModelType != null)
             {
                 ReportError(Errors.Z0088, pragma);
                 return;
@@ -1960,7 +2070,7 @@ namespace Spect.Net.Assembler.Assembler
                     return;
             }
 
-            _output.ModelType = modelType;
+            Output.ModelType = modelType;
         }
 
         /// <summary>
@@ -2215,7 +2325,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Read the binary file
-            var currentSourceFile = _output.SourceFileList[pragma.FileIndex];
+            var currentSourceFile = Output.SourceFileList[pragma.FileIndex];
             var dirname = Path.GetDirectoryName(currentSourceFile.Filename) ?? string.Empty;
             var filename = Path.Combine(dirname, fileNameValue.AsString());
 
@@ -2288,7 +2398,7 @@ namespace Spect.Net.Assembler.Assembler
             var trivOpLine = opLine as TrivialOperation;
             if (trivOpLine != null)
             {
-                if (trivOpLine is TrivialNextOperation && _output.ModelType != SpectrumModelType.Next)
+                if (trivOpLine is TrivialNextOperation && Output.ModelType != SpectrumModelType.Next)
                 {
                     ReportError(Errors.Z0102, opLine);
                     return;
@@ -3037,7 +3147,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Spectrum Next extended opcodes
                 if (op.Operand2.Type == OperandType.Reg8)
                 {
-                    if (asm._output.ModelType != SpectrumModelType.Next)
+                    if (asm.Output.ModelType != SpectrumModelType.Next)
                     {
                         asm.ReportError(Errors.Z0102, op);
                         return;
@@ -3073,7 +3183,7 @@ namespace Spect.Net.Assembler.Assembler
 
                 if (op.Operand2.Type == OperandType.Expr)
                 {
-                    if (asm._output.ModelType != SpectrumModelType.Next)
+                    if (asm.Output.ModelType != SpectrumModelType.Next)
                     {
                         asm.ReportError(Errors.Z0102, op);
                         return;
@@ -3400,7 +3510,7 @@ namespace Spect.Net.Assembler.Assembler
                     asm.ReportError(Errors.Z0024, op);
                     return;
                 }
-                if (asm._output.ModelType != SpectrumModelType.Next)
+                if (asm.Output.ModelType != SpectrumModelType.Next)
                 {
                     asm.ReportError(Errors.Z0102, op);
                     return;
@@ -3443,7 +3553,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessMirrorOp(Z80Assembler asm, CompoundOperation op)
         {
-            if (asm._output.ModelType != SpectrumModelType.Next)
+            if (asm.Output.ModelType != SpectrumModelType.Next)
             {
                 asm.ReportError(Errors.Z0102, op);
                 return;
@@ -3463,7 +3573,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessNextRegOp(Z80Assembler asm, CompoundOperation op)
         {
-            if (asm._output.ModelType != SpectrumModelType.Next)
+            if (asm.Output.ModelType != SpectrumModelType.Next)
             {
                 asm.ReportError(Errors.Z0102, op);
                 return;
@@ -3492,7 +3602,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         private static void ProcessTestOp(Z80Assembler asm, CompoundOperation op)
         {
-            if (asm._output.ModelType != SpectrumModelType.Next)
+            if (asm.Output.ModelType != SpectrumModelType.Next)
             {
                 asm.ReportError(Errors.Z0102, op);
                 return;
@@ -3717,7 +3827,7 @@ namespace Spect.Net.Assembler.Assembler
                     StartAddress = _options?.DefaultStartAddress ?? 0x8000,
                     CurrentInstructionOffset = 0
                 };
-                _output.Segments.Add(CurrentSegment);
+                Output.Segments.Add(CurrentSegment);
             }
         }
 

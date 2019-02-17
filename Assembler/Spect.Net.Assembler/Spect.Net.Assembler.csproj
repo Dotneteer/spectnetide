@@ -54,6 +54,7 @@
     <Compile Include="Assembler\AssemblerOptions.cs" />
     <Compile Include="Assembler\AssemblerOutput.cs" />
     <Compile Include="Assembler\AssemblerTaskInfo.cs" />
+    <Compile Include="Assembler\AssemblyModule.cs" />
     <Compile Include="Assembler\AssemblySymbolInfo.cs" />
     <Compile Include="Assembler\SymbolType.cs" />
     <Compile Include="Assembler\BinarySegment.cs" />
@@ -172,6 +173,8 @@
     <Compile Include="SyntaxTree\Statements\LoopStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\ModuleEndStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\ModuleStatement.cs" />
     <Compile Include="SyntaxTree\Statements\NextStatement.cs" />
     <Compile Include="SyntaxTree\Statements\ProcEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\ProcStatement.cs" />

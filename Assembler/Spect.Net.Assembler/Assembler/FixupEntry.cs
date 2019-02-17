@@ -1,4 +1,5 @@
-﻿using Spect.Net.Assembler.SyntaxTree;
+﻿using System.Collections.Generic;
+using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.Assembler
@@ -15,9 +16,9 @@ namespace Spect.Net.Assembler.Assembler
         public IEvaluationContext ParentContext { get; }
 
         /// <summary>
-        /// Gets the optional local scope of the fixup
+        /// The module of the evaluation context
         /// </summary>
-        public SymbolScope LocalScope { get; }
+        public AssemblyModule Module { get; }
 
         /// <summary>
         /// The source line that belongs to the fixup
@@ -57,12 +58,12 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public FixupEntry(IEvaluationContext parentContext, SymbolScope localScope,
+        public FixupEntry(IEvaluationContext parentContext, AssemblyModule module,
             SourceLineBase sourceLine, FixupType type, 
             int segmentIndex, int offset, ExpressionNode expression, string label = null)
         {
             ParentContext = parentContext;
-            LocalScope = localScope;
+            Module = module;
             SourceLine = sourceLine;
             Type = type;
             SegmentIndex = segmentIndex;
@@ -81,20 +82,17 @@ namespace Spect.Net.Assembler.Assembler
         /// Gets the value of the specified symbol
         /// </summary>
         /// <param name="symbol">Symbol name</param>
+        /// <param name="scopeSymbolNames">Additional symbol name segments</param>
+        /// <param name="startFromGlobal">Should resolution start from global scope?</param>
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        public ExpressionValue GetSymbolValue(string symbol)
+        public ExpressionValue GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false)
         {
-            if (LocalScope != null)
-            {
-                // --- Check the global scope
-                if (LocalScope.Symbols.TryGetValue(symbol, out var symbolValue))
-                {
-                    return symbolValue.Value;
-                }
-            }
-            return ParentContext.GetSymbolValue(symbol);
+            var value = (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
+                ? Module.ResolveSimpleSymbol(symbol)
+                : Module.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal);
+            return value ?? ParentContext.GetSymbolValue(symbol, scopeSymbolNames, startFromGlobal);
         }
 
         /// <summary>

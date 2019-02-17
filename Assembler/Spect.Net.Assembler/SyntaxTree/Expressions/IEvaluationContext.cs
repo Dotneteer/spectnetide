@@ -1,7 +1,9 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Expressions
+﻿using System.Collections.Generic;
+
+namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
-    /// This interface represents the contex an expression
+    /// This interface represents the context an expression
     /// is evaluated in
     /// </summary>
     public interface IEvaluationContext
@@ -15,10 +17,12 @@
         /// Gets the value of the specified symbol
         /// </summary>
         /// <param name="symbol">Symbol name</param>
+        /// <param name="scopeSymbolNames">Additional symbol name segments</param>
+        /// <param name="startFromGlobal">Should resolution start from global scope?</param>
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        ExpressionValue GetSymbolValue(string symbol);
+        ExpressionValue GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false);
 
         /// <summary>
         /// Gets the current loop counter value

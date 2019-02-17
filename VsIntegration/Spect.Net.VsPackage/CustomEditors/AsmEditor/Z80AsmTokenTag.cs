@@ -43,6 +43,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         Statement,
         MacroInvocation,
         Operand,
-        SemiVar
+        SemiVar,
+        ModuleKeyword
     }
 }

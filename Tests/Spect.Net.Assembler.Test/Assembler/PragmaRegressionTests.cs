@@ -44,6 +44,23 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void EquPragmaRaisesErrorWithDuplicatedLabel()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MySymbol .equ #100
+                MySymbol .equ #6789
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0040);
+        }
+
+        [TestMethod]
         public void VarPragmaRefusesSymbolCreatedWithEqu()
         {
             // --- Arrange

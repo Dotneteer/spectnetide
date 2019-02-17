@@ -128,6 +128,39 @@ namespace Spect.Net.Assembler.Test.Assembler
                 0x78, 0x01, 0x04, 0x60, 0x78);
         }
 
+        [TestMethod]
+        public void TempLabelInDifferentScopesWork()
+        {
+            CodeEmitWorks(@"
+                Start:
+                    .org #6000
+                    ld a,b
+                    ld bc,`t1
+                `t1:
+                    ld a,b
+                Next: 
+                    ld a,b
+                    ld bc,`t1
+                `t1:
+                    ld a,b",
+                0x78, 0x01, 0x04, 0x60, 0x78, 0x78, 0x01, 0x09, 0x60, 0x78);
+        }
 
+        [TestMethod]
+        public void TempLabelWithLoopWork()
+        {
+            CodeEmitWorks(@"
+                Start:
+                    .org #6000
+                    ld a,b
+                    ld bc,`t1
+                    .loop 3
+                    nop
+                    .endl
+                `t1:
+                    ld a,b
+                ",
+                0x78, 0x01, 0x07, 0x60, 0x00, 0x00, 0x00, 0x78);
+        }
     }
 }

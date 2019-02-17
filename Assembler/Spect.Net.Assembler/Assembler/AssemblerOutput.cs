@@ -6,7 +6,7 @@ namespace Spect.Net.Assembler.Assembler
     /// <summary>
     /// This class represents the output of the compiler
     /// </summary>
-    public class AssemblerOutput
+    public class AssemblerOutput: AssemblyModule
     {
         /// <summary>
         /// The segments of the compilation output
@@ -14,38 +14,10 @@ namespace Spect.Net.Assembler.Assembler
         public List<BinarySegment> Segments { get; } = new List<BinarySegment>();
 
         /// <summary>
-        /// The symbol table with properly defined symbols
-        /// </summary>
-        public Dictionary<string, AssemblySymbolInfo> Symbols { get; } =
-            new Dictionary<string, AssemblySymbolInfo>(StringComparer.InvariantCultureIgnoreCase);
-
-        /// <summary>
         /// The reverse symbol table to resolve addresses to symbol names
         /// </summary>
         public Dictionary<ushort, List<string>> SymbolMap { get; } = 
             new Dictionary<ushort, List<string>>();
-
-        ///// <summary>
-        ///// The variable table
-        ///// </summary>
-        //public Dictionary<string, ExpressionValue> Vars { get; } =
-        //    new Dictionary<string, ExpressionValue>(StringComparer.InvariantCultureIgnoreCase);
-
-        /// <summary>
-        /// The list of fixups to carry out as the last phase of the compilation
-        /// </summary>
-        public List<FixupEntry> Fixups { get; } = new List<FixupEntry>();
-
-        /// <summary>
-        /// Local symbol scopes
-        /// </summary>
-        public Stack<SymbolScope> LocalScopes = new Stack<SymbolScope>();
-
-        /// <summary>
-        /// The macro table
-        /// </summary>
-        public Dictionary<string, MacroDefinition> Macros { get; } =
-            new Dictionary<string, MacroDefinition>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// The errors found during the compilation

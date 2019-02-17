@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -30,10 +31,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>True, if the expression is ready; otherwise, false</returns>
         public override bool ReadyToEvaluate(IEvaluationContext evalContext)
         {
-            var result = evalContext.GetSymbolValue(SymbolName) != null;
+            var result = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal) != null;
             if (!result)
             {
-                AddError(SymbolName);
+                AddError(FullSymbolName);
             }
             return result;
         }
@@ -45,13 +46,32 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>Evaluated expression value</returns>
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
-            var idExpr = evalContext.GetSymbolValue(SymbolName);
+            var idExpr = evalContext.GetSymbolValue(SymbolName,ScopeSymbolNames, StartFromGlobal);
             if (idExpr != null)
             {
                 return idExpr;
             }
-            AddError(SymbolName);
+            AddError(FullSymbolName);
             return ExpressionValue.NonEvaluated;
         }
+
+        /// <summary>
+        /// Gets the full name of the symbol
+        /// </summary>
+        public string FullSymbolName
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                if (StartFromGlobal) sb.Append("::");
+                sb.Append(SymbolName);
+                if (ScopeSymbolNames != null && ScopeSymbolNames.Count > 0)
+                {
+                    sb.Append(".");
+                    sb.Append(string.Join(".", ScopeSymbolNames));
+                }
+                return sb.ToString();
+            }
+        } 
     }
 }
