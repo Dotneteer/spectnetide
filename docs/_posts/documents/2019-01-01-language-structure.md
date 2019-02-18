@@ -55,33 +55,33 @@ uppercase letters, but you cannot mix these cases. For example, this instruction
 proper syntax:
 
 ```
-    LD c,A
-    JP #12ac
-    ldir
-    djnz MyLabel
+LD c,A
+JP #12ac
+ldir
+djnz MyLabel
 ```
 
 However, in these samples, character cases are mixed, and do the compiler will refuse them:
 
 ```
-    Ld c,A
-    Jp #12ac
-    ldIR
-    djNZ MyLabel
+Ld c,A
+Jp #12ac
+ldIR
+djNZ MyLabel
 ```
 
 In symbolic names (labels, identifiers, etc.), you can mix lowercase and uppercase letters. Nonetheless, the compiler applies
 case-insensitive comparison when mathcing symbolic names. So, these statement pairs are totally equivalent with
 each other:
 ```
-    jp MainEx
-    jp MAINEX
+jp MainEx
+jp MAINEX
 
-    djnz mylabel
-    djnz MyLabel
+djnz mylabel
+djnz MyLabel
 
-    ld hl,ErrNo
-    ld hl,errNo
+ld hl,ErrNo
+ld hl,errNo
 ```
 
 > In the future, I might implement a compiler option that allows turning off case-insensitivity.
@@ -125,24 +125,28 @@ assembler interprets it as an identifier (label).
 Here are a few samples:
 
 ```
-    #12AC
-    0x12ac
-    $12Ac
-    12ACh
-    12acH
-    0AC34H
+#12AC
+0x12ac
+$12Ac
+12ACh
+12acH
+0AC34H
 ```
 
-* __Binary numbers.__ Literal starting with the one of the `%` or `0b` prefix are taken into 
+* __Binary numbers.__ Literal starting with the one of the `%` or `0b` prefix, (or, alternatively with the `b` or `B` suffix) are taken into 
 account as binary literals. You can follow the prefix with up to 16 `0` or `1` digits. To make
 them more readable, you can separate adjacent digits with the underscore (`_`) character. These 
 are all valid binary literals:
 
 ```
-    %01011111
-    0b01011111
-    0b_0101_1111
+%01011111
+0b01011111
+0b_0101_1111
+0101_1111b
 ```
+
+* __Octal numbers.__ You can use up to 6 digits (0..7) with an `o`, `O` (letter O), `q`, or `Q` suffix to declare an octal number. Examples:
+16, 327, 2354.
 
 > You can use negative number with the minus sign in front of them. Actually, the sign is not
 > the part of the numeric literal, it is an operator. 
@@ -176,7 +180,17 @@ prefix: `0FADH` is a hexadecimal literal, while `FADH` is an identifier.
 
 ## Scoped Identifiers
 
-_TBD_
+As you will later learn, the SpectNetIDE assembler supports modules that work like namespaces in other languages (Java, C#, C++, etc.) to encapsulate labels and symbols. To access symbols within modules, you can use scoped identifiers with this syntax:
+
+__`::`__? _identifier_ (__`.`__ _identifier_)*
+
+The optional `::` token means that name should start in the outermost (global) scope. The module and identifier segments are separated with a dot. Examples:
+
+```
+::FirstLevelModule.Routine1
+NestedModule.ClearScreen
+FirstLevelModule.NestedModule.ClearScreen
+```
 
 ## Characters and Strings
 

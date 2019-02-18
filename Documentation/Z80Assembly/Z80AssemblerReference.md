@@ -1125,6 +1125,7 @@ The three lines of code above are the same as if we had written these code lines
 > an error if you define a segment that does not fit into the binary file.  
 > You can use alternative syntax for `.includebin`. The compiler accepts these tokens and their
 > uppercase versions, too: `includebin`, `.include_bin`, and `include_bin`.
+> 
 ## Statements
 
 Statements are __SpectNetIde__ specific control flow constructs &mdash; thanks again for the inspiration by

@@ -1,4 +1,796 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-17T18:51:56+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">How the assembler works</title><link href="http://localhost:4000/spectnetide/documents/how-assembler-works" rel="alternate" type="text/html" title="How the assembler works" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/how-assembler-works</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/how-assembler-works">&lt;p&gt;The assembler compiles the code in three phases:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-18T17:49:43+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Directives</title><link href="http://localhost:4000/spectnetide/documents/directives" rel="alternate" type="text/html" title="Directives" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/directives</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/directives">&lt;p&gt;The directives of the &lt;strong&gt;SpectNetIDE&lt;/strong&gt; Z80 Assembler representation are used for preprocessing
+— similarly as in the C and C++ programming languages — though their semantics are
+different.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Although you can add comments to the end of directives, they may not have labels.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-if-directive&quot;&gt;The #IF Directive&lt;/h2&gt;
+
+&lt;p&gt;You can use this directive for conditional compilation. The argument of the directive is a
+conditional expression, and it determines on which branch the compilation goes on. &lt;strong&gt;#IF&lt;/strong&gt;
+works in concert with &lt;strong&gt;#ELSE&lt;/strong&gt; and &lt;strong&gt;#ENDIF&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Block #1
+#if 2 &amp;gt; 3
+    ld a,b
+#endif
+
+; Block #2;
+#if 2 &amp;lt; 3
+    nop
+#else
+    ld b,c
+#endif
+
+; Block #3
+#if $ &amp;gt; $+2
+    nop
+#else
+    ld b,c
+#endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, &lt;strong&gt;Block #1&lt;/strong&gt; does not generate output, since the condition is false. &lt;strong&gt;Block #2&lt;/strong&gt; emits
+a &lt;code class=&quot;highlighter-rouge&quot;&gt;nop&lt;/code&gt;, as the condition is true. The fals condition value in &lt;strong&gt;Block #3&lt;/strong&gt; moves code
+parsing to the &lt;code class=&quot;highlighter-rouge&quot;&gt;#else&lt;/code&gt; branch, so it emits a &lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,c&lt;/code&gt; instruction.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-ifdef-and-ifndef-directives&quot;&gt;The #IFDEF and #IFNDEF Directives&lt;/h2&gt;
+
+&lt;p&gt;These directives works similarly to #IF. However, these check if a particular symbol has 
+(&lt;strong&gt;#IFDEF&lt;/strong&gt;) or has not (&lt;strong&gt;#IFNDEF&lt;/strong&gt;) defined. So their single argument is an identifier name.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-ifmod-and-ifnmod-directives&quot;&gt;The #IFMOD and #IFNMOD Directives&lt;/h2&gt;
+
+&lt;p&gt;These directives works similarly to #IF. However, these check if the code’s current model is the one 
+specified with the identifier following the &lt;strong&gt;#IFMOD&lt;/strong&gt; or &lt;strong&gt;#IFNMOD&lt;/strong&gt; pragma. Here is a short sample of
+using this directive:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    .model Spectrum48
+
+#ifmod Spectrum128
+    BorderColor: .equ 5
+    RetAddr: .equ #2604
+#else
+    BorderColor: .equ 4
+    RetAddr: .equ #12a2
+#endif
+
+
+Start:
+	.org #8000
+    ld a,BorderColor
+    out (#fe),a
+    jp RetAddr
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can use only these identifiers with this pragma (case-insensitively): &lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUM48&lt;/code&gt;, 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUM128&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUMP3&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;NEXT&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-define-and-undef-directives&quot;&gt;The #DEFINE and #UNDEF Directives&lt;/h2&gt;
+
+&lt;p&gt;With the &lt;strong&gt;#DEFINE&lt;/strong&gt; directive, you can explicitly define a symbol. Such a symbol has no concrete value, 
+just its existence. With &lt;strong&gt;#UNDEF&lt;/strong&gt; you may declare a symbol undefined.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#define SYMB
+
+; Block #1
+#ifdef SYMB
+    ld a,b
+#endif
+
+#undef SYMB
+
+; Block #2;
+#ifdef SYMB
+    nop
+#else
+    ld b,c
+#endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;According to this definition, the first block emits a &lt;code class=&quot;highlighter-rouge&quot;&gt;ld, a,b&lt;/code&gt; instruction, the second one a
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,c&lt;/code&gt; instruction.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-include-directive&quot;&gt;The #INCLUDE Directive&lt;/h2&gt;
+
+&lt;p&gt;You can use this directive to load and process a source file from within another source file.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;#INCLUDE&lt;/strong&gt; accepts a string that names a file with its extension. The file name may contain either
+an absolute or a relative path. When a relative path is provided, its strating point is always
+the source file that holds the &lt;strong&gt;#INCLUDE&lt;/strong&gt; directive.&lt;/p&gt;
+
+&lt;p&gt;Assume that this code is in the &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Work&lt;/code&gt; folder:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#include &quot;Symbol.z80Asm&quot;
+#include &quot;./MyRules.z80Asm&quot;
+#include &quot;/Common/scroll.z80Asm&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler will check the &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Work&lt;/code&gt; folder for the first two include filem and
+&lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Work\Commmon&lt;/code&gt; for the third one.&lt;/p&gt;</content><author><name></name></author><summary type="html">The directives of the SpectNetIDE Z80 Assembler representation are used for preprocessing — similarly as in the C and C++ programming languages — though their semantics are different.</summary></entry><entry><title type="html">Expressions</title><link href="http://localhost:4000/spectnetide/documents/expressions" rel="alternate" type="text/html" title="Expressions" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/expressions</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/expressions">&lt;p&gt;The &lt;strong&gt;SpectNetIde&lt;/strong&gt; assembler has a rich syntax for evaluating expressions. You can use the very
+same syntax with the &lt;code class=&quot;highlighter-rouge&quot;&gt;#if&lt;/code&gt; directives, the Z80 instructions, and the compiler statements.&lt;/p&gt;
+
+&lt;p&gt;You can use operands and operators just like in most programming languages. Nevertheless, 
+the &lt;strong&gt;SpectNetIde&lt;/strong&gt; implementation has its particular way of evaluating expressions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Expressions can be one of these types:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;em&gt;Booleans&lt;/em&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;)&lt;/li&gt;
+      &lt;li&gt;&lt;em&gt;integers&lt;/em&gt; (64-bit)&lt;/li&gt;
+      &lt;li&gt;&lt;em&gt;floating point numbers&lt;/em&gt; (64-bit precision)&lt;/li&gt;
+      &lt;li&gt;&lt;em&gt;strings&lt;/em&gt; (with 8-bit characters)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;The assembler applies implicit conversion whenever it’s possible.
+    &lt;ul&gt;
+      &lt;li&gt;Floating point numbers are truncated to integer values.&lt;/li&gt;
+      &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; Boolean literal is represented with the integer value &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;; &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;.&lt;/li&gt;
+      &lt;li&gt;When the assembler needs a Boolean value, &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; is taken into account as &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;, any other values as &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;.&lt;/li&gt;
+      &lt;li&gt;There is no implicit conversion between strings and any numeric values.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;When the compiler needs a 16-bit value (for example, &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,NNNN&lt;/code&gt;), it uses the rightmost 
+16 bits of an expression’s value.&lt;/li&gt;
+  &lt;li&gt;When a Z80 operation (for example, &lt;code class=&quot;highlighter-rouge&quot;&gt;ld a,NN&lt;/code&gt;) needs an 8-bit value, it utilizes the 
+rightmost 8 bits.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In the future, these compiler features may change by issuing a warning in case of
+arithmetic overflow.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Besides the parentheses — &lt;code class=&quot;highlighter-rouge&quot;&gt;(&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;)&lt;/code&gt; — you can use square brackets 
+— &lt;code class=&quot;highlighter-rouge&quot;&gt;[&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;]&lt;/code&gt; — to group operations and change operator precedence.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; This is valid
+ld hl,(Offset+#20)*2+BaseAddr
+
+; Just like this
+ld hl,[Offset+#20]*2+BaseAddr
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;instant-and-late-expression-evaluation&quot;&gt;Instant and Late Expression Evaluation&lt;/h2&gt;
+
+&lt;p&gt;Depending on the context in which an expression is used, the compiler evaluates it instantly or
+decides to postpone the evaluation. For example, when you use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt; pragma, the compiler applies
+immediate evaluation. Let’s assume, this is your code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Start: .org #8000 + Later
+; code body (omitted)
+Later: .db #ff
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The value of &lt;code class=&quot;highlighter-rouge&quot;&gt;Later&lt;/code&gt; depends on the address in &lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt;, and the &lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt; address depends on &lt;code class=&quot;highlighter-rouge&quot;&gt;Later&lt;/code&gt;, 
+so this declaration could not be resolved properly, it’s like a deadlock. To avoid such situations, 
+the &lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt; pragma would raise an error, as the moment of its evaluation the &lt;code class=&quot;highlighter-rouge&quot;&gt;Later&lt;/code&gt; symbol’s value is 
+unknown.&lt;/p&gt;
+
+&lt;p&gt;For most Z80 instructions the compiler uses late evaluation:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Start: .org #6000
+    ld hl,(MyVar)
+    ; code body omitted
+    ret
+MyVar: .defs 2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When the compiler reaches the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,(MyVar)&lt;/code&gt; instruction, it does not know the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;MyVar&lt;/code&gt;. Nonetheless,
+it does not stop with an error, but generates the machine code for &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,(0)&lt;/code&gt;, namely #21, #00, and #00; 
+takes a note (it is called a &lt;em&gt;fixup&lt;/em&gt;) when &lt;code class=&quot;highlighter-rouge&quot;&gt;MyVal&lt;/code&gt; gets a value, the two #00 bytes generated at address #6001 
+should be updated accordingly.&lt;/p&gt;
+
+&lt;h2 id=&quot;operands&quot;&gt;Operands&lt;/h2&gt;
+&lt;p&gt;You can use the following operands in epressions:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Boolean, Decimal and hexadecimal literals&lt;/li&gt;
+  &lt;li&gt;Character literals&lt;/li&gt;
+  &lt;li&gt;Identifiers&lt;/li&gt;
+  &lt;li&gt;The current assembly address&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;String literals cannot be used as operands.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;operators&quot;&gt;Operators&lt;/h2&gt;
+
+&lt;p&gt;You can use about a dozen operators, including unary, binary and ternary ones. In this section
+you will learn about them. I will introduce them in descending order of their precendence.&lt;/p&gt;
+
+&lt;h3 id=&quot;conditional-operator&quot;&gt;Conditional Operator&lt;/h3&gt;
+
+&lt;p&gt;The assembler supports using only one ternary operator, the conditional operator:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;conditional-expression&lt;/em&gt; &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;true-value&lt;/em&gt; &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;false-value&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;This operation results in -1:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;2 &amp;gt; 3 ? 2 : -1&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;When the &lt;em&gt;conditional-expression&lt;/em&gt; evaluates to true, the operation results 
+in &lt;em&gt;true-value&lt;/em&gt;; otherwise in &lt;em&gt;false-value&lt;/em&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Conditional expressions are evaluated from right to left, in contrast to binary operators,
+which use left-to-right evaluation.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;binary-bitwise-operators&quot;&gt;Binary Bitwise Operators&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Operator token&lt;/th&gt;
+      &lt;th&gt;Precedence&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;Bitwise OR&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;^&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;Bitwise XOR&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;Bitwise AND — string concatenation with new line&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; operator can be applied on two strings. If you do so, the compiler concatenates the two 
+strings and puts a &lt;code class=&quot;highlighter-rouge&quot;&gt;\r\n&lt;/code&gt; (next line) character pair between them.&lt;/p&gt;
+  &lt;h3 id=&quot;relational-operators&quot;&gt;Relational Operators&lt;/h3&gt;
+&lt;/blockquote&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Operator token&lt;/th&gt;
+      &lt;th&gt;Precedence&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;==&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;Equality&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;!=&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;Non-equality&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;Less than&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;Less than or equal&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;Greater than&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;=&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;Greater than or equal&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;shift-operators&quot;&gt;Shift Operators&lt;/h3&gt;
+
+&lt;p&gt;The bits of the left operand are shifted by the number of bits given by the right operand.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Operator token&lt;/th&gt;
+      &lt;th&gt;Precedence&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;6&lt;/td&gt;
+      &lt;td&gt;Shift left&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;6&lt;/td&gt;
+      &lt;td&gt;Shift right&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;basic-arithmetic-operators&quot;&gt;Basic Arithmetic Operators&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Operator token&lt;/th&gt;
+      &lt;th&gt;Precedence&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;7&lt;/td&gt;
+      &lt;td&gt;Addition — string concatenation&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;7&lt;/td&gt;
+      &lt;td&gt;Subtraction&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+      &lt;td&gt;Multiplication&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+      &lt;td&gt;Division&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+      &lt;td&gt;Modulo calculation&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h1 id=&quot;min-max-operators&quot;&gt;Min-Max operators&lt;/h1&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Operator token&lt;/th&gt;
+      &lt;th&gt;Precedence&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;?&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;9&lt;/td&gt;
+      &lt;td&gt;Minimum of the left and right operand&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;?&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;9&lt;/td&gt;
+      &lt;td&gt;Maximum of the left and right operand&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;unary-operators&quot;&gt;Unary operators&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Operator token&lt;/th&gt;
+      &lt;th&gt;Precedence&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;Unary plus&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;Unary minus&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;~&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;Unary bitwise NOT&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;!&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;Unary logical NOT&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Do not forget, you can change the defult precendence with &lt;code class=&quot;highlighter-rouge&quot;&gt;(&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;)&lt;/code&gt;, or with &lt;code class=&quot;highlighter-rouge&quot;&gt;[&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;]&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;functions&quot;&gt;Functions&lt;/h2&gt;
+
+&lt;p&gt;The Z80 assembler provides a number of functions that can have zero, one, or more arguments. 
+Several functions (for example as &lt;code class=&quot;highlighter-rouge&quot;&gt;rnd()&lt;/code&gt;) have overloads with different signatures. Each 
+function has a name and a parameter list wrapped into parentheses, the parameters are separated
+by a comma. Of course, parameters can be expressions, and they may invoke other functions, too.
+Here are a few samples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lenght(&quot;Hello&quot; + &quot; world&quot;)
+max(value1, value2)
+sin(pi()/2)
+sqrt(pear + 3.0)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;strong&gt;SpectNetIde&lt;/strong&gt; support these function signatures:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Signature&lt;/th&gt;
+      &lt;th&gt;Value&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;abs(integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The absolute value of an &lt;em&gt;integer&lt;/em&gt; number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;abs(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The absolute value of a &lt;em&gt;float&lt;/em&gt; number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;acos(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The angle whose cosine is the specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;asin(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The angle whose sine is the specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;atan(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The angle whose tangent is the specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;atan2(float, float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The angle whose tangent is the quotient of two specified numbers.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;attr(integer, integer, boolean, boolean)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Retrieves the color attribute byte value defined by &lt;code class=&quot;highlighter-rouge&quot;&gt;ink&lt;/code&gt; (first argument, 0 to 7), &lt;code class=&quot;highlighter-rouge&quot;&gt;paper&lt;/code&gt; (second argument, 0 to 7), &lt;code class=&quot;highlighter-rouge&quot;&gt;bright&lt;/code&gt; (third argument, 0 - non-zero), and &lt;code class=&quot;highlighter-rouge&quot;&gt;flash&lt;/code&gt; (fourth argument, 0 - non-zero). The &lt;code class=&quot;highlighter-rouge&quot;&gt;bright&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;flash&lt;/code&gt; values are optional.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;attraddr(integer, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Returns the memory address of the byte specified screen attribute in the given line (first argument, from top to bottom, 0-192) and column (second argumment, from left to right, 0-255).&lt;code class=&quot;highlighter-rouge&quot;&gt;ceiling(float)&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;bright(boolean)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Retrieves the bright flag defined by the attribute (0 - non-zero). Can be ORed to create color attribute value.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ceiling(float&lt;/code&gt;)&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The smallest integral value that is greater than or equal to the specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cos(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The cosine of the specified angle.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cosh(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The hyperbolic cosine of the specified angle.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;exp(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;e&lt;/strong&gt; raised to the specified power.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;fill(string, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Creates a new string by concatenating the specified one with the given times.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;flash(boolean)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Retrieves the flash flag defined by the argument (0 - non-zero). Can be ORed to create color attribute value.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;floor(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The largest integer less than or equal to the specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;frac(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The fractional part of the specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;high(integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The leftmost 8 bits (MSB) of a 16-bit integer number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ink(integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Retrieves the three ink bits defined by the color argument (0 to 7). Can be ORed to create color attribute value.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;int(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The integer part of the specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lcase(string)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The lowercase version of the input string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;left(string, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Takes the leftmost characters of the string with the length specified.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;len(string)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The length of the specified string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;length(string)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The length of the specified string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;log(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The natural (base &lt;strong&gt;e&lt;/strong&gt;) logarithm of a specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;log(float, float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The logarithm of a specified number in a specified base.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;log10(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The base 10 logarithm of a specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;low(integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The rightmost 8 bits (LSB) of an integer number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lowercase(string)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The lowercase version of the input string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;max(integer, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The larger of two &lt;em&gt;integer&lt;/em&gt; numbers.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;max(float, float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The larger of two &lt;em&gt;float&lt;/em&gt; numbers.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;min(integer, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The smaller of two &lt;em&gt;integer&lt;/em&gt; numbers.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;min(float, float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The smaller of two &lt;em&gt;float&lt;/em&gt; numbers.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;nat()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Represents the natural logarithmic base, specified by the constant, &lt;strong&gt;e&lt;/strong&gt;.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;paper(integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;retrieves the three paper bits defined by the argument (0 to 7). Can be ORed to create color attribute value.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pi()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Represents the ratio of the circumference of a circle to its diameter, specified by the constant, &lt;strong&gt;π&lt;/strong&gt;.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pow(float, float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The specified number raised to the specified power.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;right(string, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Takes the rightmost characters of the string with the length specified.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;round(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Rounds a &lt;em&gt;float&lt;/em&gt; value to the nearest integral value.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;round(float, int)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Rounds a &lt;em&gt;float&lt;/em&gt; value to a specified number of fractional digits.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rnd()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Returns a random 32-bit number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rnd(integer, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Returns a random 32-bit integer between the first and second number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;scraddr(integer, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Retrieves the memory address of the screen pixel byte in the specified line (first argument, from top to bottom, 0-192) and in the specified column (second argument, from left to right, 0-255).&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sign(integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Returns an integer that indicates the sign of an &lt;em&gt;integer&lt;/em&gt; number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sign(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Returns an integer that indicates the sign of a &lt;em&gt;float&lt;/em&gt; number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sin(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The sine of the specified angle.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sinh(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The hyperbolic sine of the specified angle.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqrt(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The square root of a specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;str(bool)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Convert the input value to a string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;str(integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Convert the input value to a string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;str(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Convert the input value to a string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;substr(string, integer, integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Takes a substring of the specified string from the given position (zero-based) and length.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tan(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The tangent of the specified angle.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tanh(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The hyperbolic tangent of the specified angle.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;truncate(float)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Calculates the integral part of a specified number.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ucase(string)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The uppercase version of the input string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;uppercase(string)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The uppercase version of the input string.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;word(integer)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The rightmost 16 bits of an integer number.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Functions have the same precedence as the unary operators (such as the unary &lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h2 id=&quot;parse-time-functions&quot;&gt;Parse Time Functions&lt;/h2&gt;
+
+&lt;p&gt;The compiler provides a construct, &lt;em&gt;parse time functions&lt;/em&gt;. These functions can receive a Z80 assembly language token
+and transform them into other language constructs. As the name suggests, these function run in the parsing phase, before
+the compiler emits code.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-lreg-and-hreg-parse-time-functions&quot;&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;lreg()&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;hreg()&lt;/code&gt; Parse Time Functions&lt;/h3&gt;
+
+&lt;p&gt;These functions accept a 16-bit register pair token (&lt;strong&gt;BC&lt;/strong&gt;, &lt;strong&gt;DE&lt;/strong&gt;, &lt;strong&gt;HL&lt;/strong&gt;, &lt;strong&gt;IX&lt;/strong&gt;, or &lt;strong&gt;IY&lt;/strong&gt;), and retrieve the lower
+or higher 8-bit register half of their input. Here is a sample code snippet:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld a,lreg(bc)
+ld c,hreg(hl)
+ld a,lreg(ix)
+ld l,hreg(de)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler sees as if you wrote this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld a,c
+ld c,h
+ld a,ixl
+ld l,d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;the-textof-parse-time-function&quot;&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;textof()&lt;/code&gt; Parse Time Function&lt;/h3&gt;
+
+&lt;p&gt;You can use &lt;code class=&quot;highlighter-rouge&quot;&gt;textof()&lt;/code&gt;, which accepts these kinds of tokens: mnemonic, register, register indirection, C port, 
+or condition. This function translates these tokens into uppercase string constants that represent them.
+Here is a sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.dm textof(ldir)
+.dm textof(bc)
+.dm textof((de))
+.dm textof((c))
+.dm textof(nz)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler sees as if you wrote this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.dm &quot;LDIR&quot;
+.dm &quot;BC&quot;
+.dm &quot;(DE)&quot;
+.dm &quot;(C)&quot;
+.dm &quot;NZ&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">The SpectNetIde assembler has a rich syntax for evaluating expressions. You can use the very same syntax with the #if directives, the Z80 instructions, and the compiler statements.</summary></entry><entry><title type="html">How the assembler works</title><link href="http://localhost:4000/spectnetide/documents/how-assembler-works" rel="alternate" type="text/html" title="How the assembler works" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/how-assembler-works</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/how-assembler-works">&lt;p&gt;The assembler compiles the code in three phases:&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -78,31 +870,31 @@ words (such as assembly instructions, pragmas, or directives) either with lowerc
 uppercase letters, but you cannot mix these cases. For example, this instructions use
 proper syntax:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    LD c,A
-    JP #12ac
-    ldir
-    djnz MyLabel
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LD c,A
+JP #12ac
+ldir
+djnz MyLabel
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;However, in these samples, character cases are mixed, and do the compiler will refuse them:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    Ld c,A
-    Jp #12ac
-    ldIR
-    djNZ MyLabel
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Ld c,A
+Jp #12ac
+ldIR
+djNZ MyLabel
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;In symbolic names (labels, identifiers, etc.), you can mix lowercase and uppercase letters. Nonetheless, the compiler applies
 case-insensitive comparison when mathcing symbolic names. So, these statement pairs are totally equivalent with
 each other:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    jp MainEx
-    jp MAINEX
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jp MainEx
+jp MAINEX
 
-    djnz mylabel
-    djnz MyLabel
+djnz mylabel
+djnz MyLabel
 
-    ld hl,ErrNo
-    ld hl,errNo
+ld hl,ErrNo
+ld hl,errNo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
@@ -151,25 +943,31 @@ assembler interprets it as an identifier (label).
 Here are a few samples:&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    #12AC
-    0x12ac
-    $12Ac
-    12ACh
-    12acH
-    0AC34H
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#12AC
+0x12ac
+$12Ac
+12ACh
+12acH
+0AC34H
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Binary numbers.&lt;/strong&gt; Literal starting with the one of the &lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;0b&lt;/code&gt; prefix are taken into 
+  &lt;li&gt;&lt;strong&gt;Binary numbers.&lt;/strong&gt; Literal starting with the one of the &lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;0b&lt;/code&gt; prefix, (or, alternatively with the &lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;B&lt;/code&gt; suffix) are taken into 
 account as binary literals. You can follow the prefix with up to 16 &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt; digits. To make
 them more readable, you can separate adjacent digits with the underscore (&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt;) character. These 
 are all valid binary literals:&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    %01011111
-    0b01011111
-    0b_0101_1111
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;%01011111
+0b01011111
+0b_0101_1111
+0101_1111b
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Octal numbers.&lt;/strong&gt; You can use up to 6 digits (0..7) with an &lt;code class=&quot;highlighter-rouge&quot;&gt;o&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;O&lt;/code&gt; (letter O), &lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;Q&lt;/code&gt; suffix to declare an octal number. Examples:
+16, 327, 2354.&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;You can use negative number with the minus sign in front of them. Actually, the sign is not
@@ -214,7 +1012,16 @@ prefix: &lt;code class=&quot;highlighter-rouge&quot;&gt;0FADH&lt;/code&gt; is a 
 
 &lt;h2 id=&quot;scoped-identifiers&quot;&gt;Scoped Identifiers&lt;/h2&gt;
 
-&lt;p&gt;&lt;em&gt;TBD&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;As you will later learn, the SpectNetIDE assembler supports modules that work like namespaces in other languages (Java, C#, C++, etc.) to encapsulate labels and symbols. To access symbols within modules, you can use scoped identifiers with this syntax:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt;&lt;/strong&gt;? &lt;em&gt;identifier&lt;/em&gt; (&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;identifier&lt;/em&gt;)*&lt;/p&gt;
+
+&lt;p&gt;The optional &lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt; token means that name should start in the outermost (global) scope. The module and identifier segments are separated with a dot. Examples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;::FirstLevelModule.Routine1
+NestedModule.ClearScreen
+FirstLevelModule.NestedModule.ClearScreen
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;characters-and-strings&quot;&gt;Characters and Strings&lt;/h2&gt;
 
@@ -325,7 +1132,654 @@ escape sequence pairs are equivalent:&lt;/p&gt;
 
 &quot;\C by me&quot;
 &quot;\x7f \x62y me&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Each line of the source code is a declaration unit and is parsed in its own context. Such a source code line can be one of these constructs: A Z80 instruction, which can be directly compiled to binary code (such as ld bc,#12AC) A directive that is used by the preprocessor of the compiler (e.g. #include, #if, etc.) A pragma that emits binary output or instructs the compiler for about code emission (.org, .defb, etc.) A compiler statement (or shortly, a statement) that implements control flow operations for the compiler (e.g. .loop, .repeat...until, .if...elif...else...endif) A comment that helps the understanding of the code.</summary></entry><entry><title type="html">Main Features</title><link href="http://localhost:4000/spectnetide/documents/main-features" rel="alternate" type="text/html" title="Main Features" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/main-features</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/main-features">&lt;p&gt;The original goal of the &lt;strong&gt;SpectNetIde&lt;/strong&gt; assembler was to have a simple tool that allows you to compile
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Each line of the source code is a declaration unit and is parsed in its own context. Such a source code line can be one of these constructs: A Z80 instruction, which can be directly compiled to binary code (such as ld bc,#12AC) A directive that is used by the preprocessor of the compiler (e.g. #include, #if, etc.) A pragma that emits binary output or instructs the compiler for about code emission (.org, .defb, etc.) A compiler statement (or shortly, a statement) that implements control flow operations for the compiler (e.g. .loop, .repeat...until, .if...elif...else...endif) A comment that helps the understanding of the code.</summary></entry><entry><title type="html">Macros</title><link href="http://localhost:4000/spectnetide/documents/macros" rel="alternate" type="text/html" title="Macros" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/macros</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/macros">&lt;p&gt;The &lt;strong&gt;SpectNetIDE&lt;/strong&gt; assembler provides you a powerful way to declare macros, and apply them in the code.
+While in most programming languages and assemblers the macros are preprocessor constructs and use simple
+text replacement, the &lt;strong&gt;SpectNetIDE&lt;/strong&gt; implementation is different.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Unlike in C, C++ (and some Z80 Assemblers), &lt;strong&gt;SpectNetIDE&lt;/strong&gt; macros emit only code (through instructions
+and pragmas), they cannot be used as user-defined functions. When you pass parameters to macros, any expression in the parameters is evaluated instantly, so you cannot
+use unknown symbols or variables — ones that will get their values only somewhere later in the code.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;getting-started-with-macros&quot;&gt;Getting Started with Macros&lt;/h2&gt;
+
+&lt;p&gt;The best way to show you what macros can do is real code. Let’s start with a simple parameterless macro:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Delay: 
+    .macro()    
+    DelayLoop:
+        djnz DelayLoop
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can easily use this macro in your code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld b,#24
+Delay()
+; ...and later
+ld b,#44
+Delay()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The assembler will emit the code like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld b,#24
+DelayLoop_1: djnz DelayLoop_1
+; ...and later
+ld b,#44
+DelayLoop_2: djnz DelayLoop_2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you expect, it takes care that the &lt;code class=&quot;highlighter-rouge&quot;&gt;DelayLoop&lt;/code&gt; label remains local within the scope of the macro; otherwise
+it would lead to a duplicated label name.&lt;/p&gt;
+
+&lt;p&gt;This macro is named &lt;code class=&quot;highlighter-rouge&quot;&gt;Delay&lt;/code&gt;, and it uses the value of the &lt;strong&gt;B&lt;/strong&gt; register to create a &lt;code class=&quot;highlighter-rouge&quot;&gt;djnz&lt;/code&gt; loop. 
+You can easily apply this macro&lt;/p&gt;
+
+&lt;p&gt;Now, let’s enhance this macro with an argument:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Delay: 
+    .macro(wait)    
+        ld b,
+    DelayLoop:
+        djnz DelayLoop
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As the body of the macro suggests, `` is a placeholder for the &lt;code class=&quot;highlighter-rouge&quot;&gt;wait&lt;/code&gt; argument. While other assemblers do not
+use a separate markup for a placeholder — they’d just use &lt;code class=&quot;highlighter-rouge&quot;&gt;wait&lt;/code&gt; — &lt;strong&gt;SpectNetIde&lt;/strong&gt; applies this markup for 
+two reasons: first, it is visually better and more eye-catching; second, it allows the compiler to provide better
+performance.&lt;/p&gt;
+
+&lt;p&gt;You can use this macro passing an argument value for &lt;code class=&quot;highlighter-rouge&quot;&gt;wait&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Delay(#24)
+Delay(d)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you expect, the compiler now emits this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld b,#24
+DelayLoop_1: djnz DelayLoop_1
+; ...and later
+ld b,d
+DelayLoop_2: djnz DelayLoop_2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Macros allow you to pass anything that could be an operand in a Z80 instruction, so this is entirelly valid:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Delay((ix+23))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can imagine, this macro invocation results as if you wrote this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld b,(ix+23)
+DelayLoop: djnz DelayLoop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; macros do not stop here. You can define macros that recveive an entire Z80 instruction
+as an argument:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RepeatLight: 
+    .macro(count, body)    
+        ld b,8
+    DelayLoop:
+        
+        djnz DelayLoop
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This macro is to repeat the &lt;code class=&quot;highlighter-rouge&quot;&gt;body&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;count&lt;/code&gt; number of times. This is how you can invoke it:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RepeatLight(4, &quot;add a,c&quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Observe, the second argument of the macro is a string that names the &lt;code class=&quot;highlighter-rouge&quot;&gt;add a,c&lt;/code&gt; operation. The result of this
+macro is this set of instructions:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld b,4
+DelayLoop_1: 
+  add a,c
+djnz DelayLoop_1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Instead of a run time loop, you can apply a compile time loop within the macro:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RepeatLight: 
+    .macro(count, body)
+      .loop 8
+          
+      .endl
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;RepeatLight(3, &quot;add a,c&quot;)&lt;/code&gt; line invokes the macro and the macro’s body translates to this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.loop 3
+    add a,c
+.endl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you already learned, the compiler handles this as if you wrote:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;add a,c
+add a,c
+add a,c
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; allows you to pass a set of lines as a macro argument. You can invoke &lt;code class=&quot;highlighter-rouge&quot;&gt;RepeatLight&lt;/code&gt; like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RepeatLigth(3, &quot;add a,c&quot; &amp;amp; &quot;add a,10&quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Or, you can make it with variables:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FirstOp = &quot;add a,c&quot;
+SecondOp = &quot;add a,10&quot;
+RepeatLight(3, FirstOp &amp;amp; SecondOp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; operator between the two string value concatenates them with a next line character set (#0A and #0D). If
+you’d apply the &lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt; operator, the above code would fail: the assembler accepts only a single instruction in a
+text line, and would reject multiple instructions.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In the context of macros, you can use several special functions, such as &lt;code class=&quot;highlighter-rouge&quot;&gt;lreg()&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;hreg()&lt;/code&gt;. These work during
+parse time, and retrieve the lower register, and higher register of an 16-bit register pair:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LdHl: 
+    .macro(reg16)
+        ld h,hreg()
+        ld l,lreg()
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, you can apply the &lt;code class=&quot;highlighter-rouge&quot;&gt;LdHl&lt;/code&gt; macro like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LdHl(de)
+LdHl(bc)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler translates these macro invocations into these Z80 instructions:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld h,d
+ld l,e
+ld h,b
+ld l,c
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When you invoke a macro, you can pass less parameters than the macro declares. Within the macro body,
+you can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;def()&lt;/code&gt; function to check whether the specified parameter has been passed:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Push:
+    .macro(r1, r2, r3, r4)
+      .if def()
+        push 
+      .endif
+      .if def()
+        push 
+      .endif
+      .if def()
+        push 
+      .endif
+      .if def()
+        push 
+      .endif
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;Push&lt;/code&gt; macro in this code snippet allows you to create a &lt;code class=&quot;highlighter-rouge&quot;&gt;push&lt;/code&gt; instruction for up to 4 register pairs.
+Look at these usages:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Push(af)
+; ... and later
+Push(bc, de, ix)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is what the compiler generates:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;push af
+; ... and later
+push bc
+push de
+push ix
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can opt to not pass a macro parameter for a specific argument. Look at this macro declaration:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LdBcDeHl:
+    .macro(bcVal, deVal, hlVal)
+      .if def()
+        ld bc,
+      .endif
+      .if def()
+        ld de,
+      .endif
+      .if def()
+        ld hl,
+      .endif
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can invoke this macro in these ways, leaving a parameter empty to sign that you do not intend to use it:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LdBcDeHl(,#1000,#2000)
+; ... and later
+LdBcDeHl(#3000,,#4000)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler understands your intention and generates this output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld de,#1000
+ld hl,#2000
+; ... and later
+ld bc,#3000
+ld hl,#4000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It’s time to deep into the nitty-gritty details of creating and using macros in &lt;strong&gt;SpectNetIDE&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;macro-declaration&quot;&gt;Macro Declaration&lt;/h2&gt;
+
+&lt;p&gt;Macros must have a name. Each macro is named according to the label preceding its declaration either in the same
+line as the &lt;code class=&quot;highlighter-rouge&quot;&gt;.macro&lt;/code&gt; token, or before it as a hanging label. Macros can have zero, one, or more named arguments
+separated with a comma. The macro declaration is closed with the &lt;code class=&quot;highlighter-rouge&quot;&gt;.endm&lt;/code&gt; token:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MacroWithHangingLabel:
+    .macro(myParam, otherParam)
+    ; Macro body
+    .endm
+
+MyMacro: macro()
+    ; Macro body
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Even if a macro does not have arguments, its declaration must contain the parentheses.&lt;/p&gt;
+
+&lt;p&gt;The macro body can contain Z80 instructions, pragmas, or statements. The only exception are the &lt;strong&gt;ENT&lt;/strong&gt; and &lt;strong&gt;XENT&lt;/strong&gt;
+pragmas.&lt;/p&gt;
+
+&lt;p&gt;As you already experienced, the assembler supports syntax variants for the macro-related keywords. The compiler
+accepts these tokens: &lt;code class=&quot;highlighter-rouge&quot;&gt;.macro&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;macro&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.MACRO&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;MACRO&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.endm&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;endm&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ENDM&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;ENDM&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.mend&lt;/code&gt;, 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;mend&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.MEND&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;MEND&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Within the macro’s body, you can refer to the arguments of the macros wrapping them into double curly braces:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Mul10:
+    .macro(reg8)
+    push af
+    ld a,
+    add a,a
+    push bc
+    ld b,a
+    add a,a
+    add a,a
+    add a,b
+    pop bc
+    ld ,a
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Arguments are identifiers, thus the corresponding naming rules are applied to them. You cannot use a reserved word
+(for example a mnemonic like &lt;code class=&quot;highlighter-rouge&quot;&gt;ldir&lt;/code&gt; or a register name like &lt;code class=&quot;highlighter-rouge&quot;&gt;hl&lt;/code&gt;) as a macro argument.&lt;/p&gt;
+
+&lt;h2 id=&quot;macro-parameters&quot;&gt;Macro Parameters&lt;/h2&gt;
+
+&lt;p&gt;You can invoke a macro with as many parameters as many argument its declaration has, or even with less parameters.
+If the macro invocation has more parameters than arguments, the compiler raises an error.&lt;/p&gt;
+
+&lt;p&gt;Let’s assume, you’ve created this macro declaration:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyMacro: .macro(arg1, arg2, arg2)
+; Macro body
+.endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;All of these usages are valid:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyMacro()
+MyMacro(a)
+MyMacro(a, b)
+MyMacro(a, b, c)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Nonetheless, these usage is invalid since it passes more than three parameters:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyMacro(a, b, c, d) ; ERROR: To many parameters
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Sometimes it is convenient to omit not the last parameters but one in the beginning or the middle of the
+parameter list. You can do that: an empy comma separator signs that the preceeding parameter is empty. Using this
+notation, all these invocations of &lt;code class=&quot;highlighter-rouge&quot;&gt;MyMacro&lt;/code&gt; is valid:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyMacro(,b)
+MyMacro(a,,c)
+MyMacro(,,)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Within the macro declaration, you can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;def()&lt;/code&gt; function to check if a particular argument has a value.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LdBcDeHl:
+    .macro(bcVal, deVal, hlVal)
+      .if def()
+        ld bc,
+      .endif
+      .if def()
+        ld de,
+      .endif
+      .if def()
+        ld hl,
+      .endif
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;def()&lt;/code&gt; function accepts only a macro argument reference (the name of the argument wrapped in double curlay braces).
+This function evaluates to true only when the macro argument is not empty.&lt;/p&gt;
+
+&lt;p&gt;You can use the logical NOT operator (&lt;code class=&quot;highlighter-rouge&quot;&gt;!&lt;/code&gt;) combined to &lt;code class=&quot;highlighter-rouge&quot;&gt;def()&lt;/code&gt; to check if an argument is empty.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyMacro: .macro(arg)
+  .if !def()
+    ; generate something for empty arg
+  .endif
+.endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;passing-parameters-to-macros&quot;&gt;Passing Parameters to Macros&lt;/h2&gt;
+
+&lt;p&gt;You can pass &lt;em&gt;anything&lt;/em&gt; as a macro parameter that is a &lt;em&gt;valid operand&lt;/em&gt; of a Z80 instruction. This means the
+following options:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Names of 8-bit registers and 16-bit register pairs (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;ixl&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;hl&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;sp&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;af&lt;/code&gt;, etc.)&lt;/li&gt;
+  &lt;li&gt;Names of conditions (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;z&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;nz&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pe&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;m&lt;/code&gt;, etc.)&lt;/li&gt;
+  &lt;li&gt;Memory address indirection (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;(#4000)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(#4000+#20)&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;Register pair indirection (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;(bc)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(de)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(hl)&lt;/code&gt;, etc.)&lt;/li&gt;
+  &lt;li&gt;Indexed indirection (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;(ix+#20)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(iy-12)&lt;/code&gt;, etc.)&lt;/li&gt;
+  &lt;li&gt;C-port (&lt;code class=&quot;highlighter-rouge&quot;&gt;(c)&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;Expression (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;(MyId &amp;lt;&amp;lt; 1) + 23&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#4000&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;12*sin(pi()/4)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;ld &quot; + &quot;a,b&quot;&lt;/code&gt;, etc.)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You should be careful when you use parentheses in expressions. Let’s assume, you declare this macro:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SetHlValue:
+    .macro(value)
+        ld hl,
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When you use it, the first invocation uses an expression, the second has a memory address indirection:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SetHlValue(#4000+#20)
+SetHlValue((#4000+#20))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler translates them to these instructions:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld hl,#4020
+ld hl,(#4020)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To avoid such issues, you can use the square brackets to group parts of expressions. When you invoke the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;SetHlValue&lt;/code&gt; macro with this way, both usage with generate a &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,#4020&lt;/code&gt; statement:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SetHlValue(#4000+#20)
+SetHlValue([#4000+#20])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;When you pass parameters to macros, any expression in the parameters is evaluated instantly, so you cannot
+use unknown symbols or variables — ones that will get their values only somewhere later in the code.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The compiler replaces the macro argument references to their current values passed in parameters. 
+Whenever you use an expression, its value is converted into a string and put into the place of the 
+macro argument.&lt;/p&gt;
+
+&lt;h2 id=&quot;passing-instructions-in-a-macro-parameter&quot;&gt;Passing Instructions in a Macro Parameter&lt;/h2&gt;
+
+&lt;p&gt;Within a macro declaration, you can use macro argument reference in stead of an entire Z80 instruction.
+Take a look at this macro:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ShortDi:
+    .macro(body)
+        di
+        
+        ei
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;code class=&quot;highlighter-rouge&quot;&gt;body&lt;/code&gt; argument is expected to get something that the compiler can understand as an entire
+instruction. When you invoke the macro, you need to pass a string expression so that the compiler can
+replace the `` reference. Here is an example:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ShortDi(&quot;in a,(#fe)&quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you expect, the compiler generates this output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;di
+in a,(#fe)
+ei
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You are not obliged to use Z80 instructions, the compiler accepts pragmas, too:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ShortDi(&quot;.db #00&quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Well, the output is not pretty useful, nonetheless, the compiler generates this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;di
+.db #00
+ei
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;passing-multiple-lines-in-a-macro-parameter&quot;&gt;Passing Multiple Lines in a Macro Parameter&lt;/h2&gt;
+
+&lt;p&gt;If you can pass multiple lines in a macro parameter where the corresponding 
+argument reference is used in stead of an entire instruction line, the compiler
+will apply all those lines. To do that, the individual lines should be separated
+by new line characters (&lt;code class=&quot;highlighter-rouge&quot;&gt;\r\n&lt;/code&gt;). The &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; operator, when applied for two strings,
+does this step for you, as it concatenates the two strings with &lt;code class=&quot;highlighter-rouge&quot;&gt;\r\n&lt;/code&gt; between 
+them. Let’s assume, you invoke the &lt;code class=&quot;highlighter-rouge&quot;&gt;ShortDi&lt;/code&gt; macro with this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ShortDi(&quot;ld a,#7f&quot; &amp;amp; &quot;in a,(#fe)&quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, the compiler will generate this output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;di
+ld a,#7f
+in a,(#fe)
+ei
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Because you can pass expressions as macro parameters, you can invoke the macro
+in this way, too:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FirstOp = &quot;ld a,#7f&quot;
+SecondOp = &quot;in a,(#fe)&quot;
+ShortDi(FirstOp &amp;amp; SecondOp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can pass not only instructions and pragmas to macros, but also statements:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LoopOp = &quot;.loop 3&quot; &amp;amp; &quot;nop&quot; &amp;amp; &quot;.endl&quot;
+ShortDi(LoopOp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler will emit this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;di
+nop
+nop
+nop
+ei
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;labels-symbols-and-variables-in-macros&quot;&gt;Labels, Symbols, and Variables in Macros&lt;/h2&gt;
+
+&lt;p&gt;Macros have a local scope for all labels, symbols, and variables created within their body, including the label
+attached to the &lt;code class=&quot;highlighter-rouge&quot;&gt;.endm&lt;/code&gt; statement. The name of the macro is a label that also represents the start of the macro.&lt;/p&gt;
+
+&lt;p&gt;Take a look at this macro definition:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GetBoundaries:
+    .macro(instr)
+        
+        ld de,EndLabel
+        ld hl,GetBoundaries
+EndLabel:
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,GetBoundaries&lt;/code&gt; instruction fills &lt;strong&gt;HL&lt;/strong&gt; with the start address of the macro, while the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ld de,EndLabel&lt;/code&gt; instruction puts the address of the next instruction following the macro int &lt;strong&gt;DE&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s assume, you use the macro this way:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #8000
+GetBoundaries(&quot;nop&quot;)
+GetBoundaries(&quot;ld ix,#ABCD&quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler will create this output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#8000 GetBoundaries_1 nop
+#8001                 ld de,#8007 ; EndLabel_1
+#8004                 ld hl,#8000 ; GetBoundaries_1
+#8007 EndLabel_1
+      GetBoundaries_2 ld ix,#ABCD
+#800B                 ld de,#8011 ; Endlabel_2
+#800E                 ld hl,#8007 ; GetBoundaries_2
+#8011 EndLabel_2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Symbols and variables within the context work exactly as they do with loops. Do not forget: Symbols
+are constant values, while variables may change!&lt;/p&gt;
+
+&lt;h2 id=&quot;invoking-macros-from-macros&quot;&gt;Invoking Macros from Macros&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;SpectNetIde&lt;/strong&gt; allows you to invoke a macro from another macro, too. Here is a short sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Delay:
+    .macro(wait)
+        ld b,
+        WaitLoop: djnz WaitLoop
+    .endm
+
+BorderPulse:
+    .macro(col1, wait1, col2, wait2)
+        ld a,
+        out (#fe),a
+        Delay()
+        ld a,
+        out (#fe),a
+        Delay()
+    .endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;code class=&quot;highlighter-rouge&quot;&gt;BorderPulse&lt;/code&gt; macro uses &lt;code class=&quot;highlighter-rouge&quot;&gt;Delay&lt;/code&gt; as a helper macro. The &lt;code class=&quot;highlighter-rouge&quot;&gt;BorderPulse(2, 10, 3, 20)&lt;/code&gt; invocation
+produces this output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld a,2
+out (#fe),a
+ld b,10
+WaitLoop_1: djnz WaitLoop_1
+ld a,3
+out (#fe),a
+ld b,20
+WaitLoop_2: djnz WaitLoop_2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;macro-related-parse-time-functions&quot;&gt;Macro-Related Parse-Time Functions&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;SpectNetIde&lt;/strong&gt; Assembler allows using several parse-time functions with macro arguments the
+similar way as you can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;def()&lt;/code&gt; function to check whether a macro argument has been passed
+to the macro invocation.&lt;/p&gt;
+
+&lt;p&gt;These functions check if the argument is an operand the name of the function suggest. Each
+of them returns true, provided the function recognizes the operand; otherwise, false.&lt;/p&gt;
+
+&lt;p&gt;The assembler support these functions:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Name&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isreg8std()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The operand is an 8-bit register, one of these: &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;e&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;l&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;r&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;xh&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;ixh&lt;/code&gt;), &lt;code class=&quot;highlighter-rouge&quot;&gt;xl&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;ixl&lt;/code&gt;), &lt;code class=&quot;highlighter-rouge&quot;&gt;yh&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;iyh&lt;/code&gt;), or &lt;code class=&quot;highlighter-rouge&quot;&gt;yl&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;iyl&lt;/code&gt;)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isreg8std()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The operand is a standard 8-bit register, one of these: &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;e&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;l&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isreg8spec()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The operand is a special 8-bit register, &lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;r&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isreg8idx()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;One of these 8-bit index registers: &lt;code class=&quot;highlighter-rouge&quot;&gt;xh&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;ixh&lt;/code&gt;), &lt;code class=&quot;highlighter-rouge&quot;&gt;xl&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;ixl&lt;/code&gt;), &lt;code class=&quot;highlighter-rouge&quot;&gt;yh&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;iyh&lt;/code&gt;), or &lt;code class=&quot;highlighter-rouge&quot;&gt;yl&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;iyl&lt;/code&gt;)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isreg16()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Any of these 16-bit registers: &lt;code class=&quot;highlighter-rouge&quot;&gt;af&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;bc&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;de&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;hl&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;sp&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;ix&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;iy&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isreg16std()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Any of the standard 16-bit registers: &lt;code class=&quot;highlighter-rouge&quot;&gt;bc&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;de&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;hl&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;sp&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isreg16idx()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Any of the &lt;code class=&quot;highlighter-rouge&quot;&gt;ix&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;iy&lt;/code&gt; registers&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isregindirect()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The operand is one of these: &lt;code class=&quot;highlighter-rouge&quot;&gt;(bc)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(de)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(hl)&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;(sp)&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isindexedaddr()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The operand is an indexed address like &lt;code class=&quot;highlighter-rouge&quot;&gt;(ix)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(iy)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(ix+#12)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;(iy-#23)&lt;/code&gt;, and so on&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;iscport()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The operand is &lt;code class=&quot;highlighter-rouge&quot;&gt;(c)&lt;/code&gt; (e.g. in the &lt;code class=&quot;highlighter-rouge&quot;&gt;out (c),a&lt;/code&gt; instruction)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;iscondition()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The operand is one of these conditions: &lt;code class=&quot;highlighter-rouge&quot;&gt;z&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;nz&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;po&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pe&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;p&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;m&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isexpr()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;The operand is an expression, for example: &lt;code class=&quot;highlighter-rouge&quot;&gt;1 + 2&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#1000&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;myvalue + 23&lt;/code&gt;, etc.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When you pass &lt;code class=&quot;highlighter-rouge&quot;&gt;'c'&lt;/code&gt; as a macro argument, both the &lt;code class=&quot;highlighter-rouge&quot;&gt;isreg8()&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;iscondition()&lt;/code&gt; parse-time functions accept it,
+as the &lt;code class=&quot;highlighter-rouge&quot;&gt;'c'&lt;/code&gt; token can be either an 8-bit register or a condition (carry flag is set).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Here is a short sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyRegMacro: .macro(arg)
+    .if isreg8()
+        ld a,
+    .else
+        .error &quot;Only 8-bit registers are allowed&quot;
+    .endif
+.endm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MyRegMacro&lt;/code&gt; allows using only an 8-bit register as its argument. If you provide another type of
+parameter, the macro raises an error.&lt;/p&gt;</content><author><name></name></author><summary type="html">The SpectNetIDE assembler provides you a powerful way to declare macros, and apply them in the code. While in most programming languages and assemblers the macros are preprocessor constructs and use simple text replacement, the SpectNetIDE implementation is different.</summary></entry><entry><title type="html">Main Features</title><link href="http://localhost:4000/spectnetide/documents/main-features" rel="alternate" type="text/html" title="Main Features" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/main-features</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/main-features">&lt;p&gt;The original goal of the &lt;strong&gt;SpectNetIde&lt;/strong&gt; assembler was to have a simple tool that allows you to compile
 Z80 assembly code and inject it into the ZX Spectrum virtual machine. As the community has started
 using it, I’ve been receiving feature requests to add some useful capability to the Assembler.&lt;/p&gt;
 
@@ -358,318 +1812,1231 @@ can be nested and provide local scope for labels, symbols, and variables.&lt;/li
 of arguments can replace entire instructions, operands, or parts of expressions. Moreover, through arguments,
 you can inject multiline instructions and statements into macro declarations.&lt;/li&gt;
   &lt;li&gt;&lt;strong&gt;Modules&lt;/strong&gt;. You can use modules to serve both as logical containers to separating partitions of the code and namespaces to create scopes for labels and symbols.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">The original goal of the SpectNetIde assembler was to have a simple tool that allows you to compile Z80 assembly code and inject it into the ZX Spectrum virtual machine. As the community has started using it, I’ve been receiving feature requests to add some useful capability to the Assembler.</summary></entry><entry><title type="html">Tool Commands</title><link href="http://localhost:4000/spectnetide/documents/tool-commands" rel="alternate" type="text/html" title="Tool Commands" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/tool-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/tool-commands">&lt;p&gt;Tool Command reference&lt;/p&gt;</content><author><name></name></author><summary type="html">Tool Command reference</summary></entry><entry><title type="html">Create a BASIC Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-basic-program" rel="alternate" type="text/html" title="Create a BASIC Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-basic-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-basic-program">&lt;p&gt;In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.&lt;/p&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">The original goal of the SpectNetIde assembler was to have a simple tool that allows you to compile Z80 assembly code and inject it into the ZX Spectrum virtual machine. As the community has started using it, I’ve been receiving feature requests to add some useful capability to the Assembler.</summary></entry><entry><title type="html">Modules</title><link href="http://localhost:4000/spectnetide/documents/modules" rel="alternate" type="text/html" title="Modules" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/modules</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/modules">&lt;p&gt;&lt;em&gt;TBD&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">TBD</summary></entry><entry><title type="html">Pragmas</title><link href="http://localhost:4000/spectnetide/documents/pragmas" rel="alternate" type="text/html" title="Pragmas" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/pragmas</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/pragmas">&lt;p&gt;The compiler understands several pragmas that — thought they are not Z80 
+instructions — they influence the emitted code. Each pragma has two alternative syntax,
+one with a dot prefix and another without it.&lt;/p&gt;
 
-&lt;p&gt;Here, you will create and run a simple BASIC program. Although you can use the keyboard of the PC to enter a program — provided, the ZX Spectrum Emulator window has the focus — if you’re not familiar with the Spectrum keys and BASIC editor, it may frustrate you while entering the code. To avoid such chaffing, use the ZX Spectrum Keyboard tool window to enter the program.&lt;/p&gt;
-
-&lt;p&gt;First, add this line:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;10 BORDER 2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;To enter this BASIC line, press these keys, in this order: “&lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;”, “&lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;”, “&lt;code class=&quot;highlighter-rouge&quot;&gt;B&lt;/code&gt;”, “&lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt;”, “&lt;code class=&quot;highlighter-rouge&quot;&gt;Enter&lt;/code&gt;” (of course, you do not need to click comma between the keys wrapped in double quotes)&lt;/p&gt;
-
-&lt;p&gt;As soon as you’ve added this program line, it appears in the screen listing:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/basic-line-1.png&quot; alt=&quot;Basic line 1&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now, add these lines to the code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;20 BORDER 5
-30 BORDER 6
-40 PAUSE 1
-50 GOTO 10
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/basic-line-1.png&quot; alt=&quot;Basic line 2&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Your first BASIC program is ready to run. Invoke the &lt;code class=&quot;highlighter-rouge&quot;&gt;RUN&lt;/code&gt; command (press
-&lt;code class=&quot;highlighter-rouge&quot;&gt;R&lt;/code&gt;, and then &lt;code class=&quot;highlighter-rouge&quot;&gt;Enter&lt;/code&gt;) to start this code. As you can see from the listing, 
-it implements an infinite loop while changing the background color:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/basic-program-runs.png&quot; alt=&quot;Basic code runs&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;To stop the program, press the &lt;code class=&quot;highlighter-rouge&quot;&gt;SPACE&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;SYM SHIFT&lt;/code&gt; keys simultaneously
-or click the &lt;code class=&quot;highlighter-rouge&quot;&gt;BREAK&lt;/code&gt; button in the ZX Spectrum Keyboard window with the right
-mouse button:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/basic-program-stopped.png&quot; alt=&quot;Basic program stopped&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Congratulations! It is time to move on and create a Z80 assembly program!&lt;/p&gt;</content><author><name></name></author><summary type="html">In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.</summary></entry><entry><title type="html">Create a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-z80-program" rel="alternate" type="text/html" title="Create a Z80 Program" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-z80-program">&lt;p&gt;In this article, you will learn that SpectNetIde provides you a straightforward way to create and run Z80 assembly programs.&lt;/p&gt;
-
-&lt;p&gt;To create your first Z80 assembly program, follow these steps:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Create a new ZX Spectrum 48 project (see details &lt;a href=&quot;/spectnetide/getting-started/create-zx-spectrum-48k-project.html#article&quot;&gt;here&lt;/a&gt;).
-The &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CodeFiles &lt;/code&gt;&lt;/strong&gt; project of the folder contains a &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Code.z80asm&lt;/code&gt;&lt;/strong&gt; file:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Code file
-start:
-    .org #8000
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol start=&quot;2&quot;&gt;
-  &lt;li&gt;Extend to the code with a few lines:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Code file
-start:
-    .org #8000
-    ld a,2
-    out (#fe),a
-    jp #12a2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol start=&quot;3&quot;&gt;
-  &lt;li&gt;In Solution Explorer, right-click the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Code.z80asm&lt;/code&gt;&lt;/strong&gt; file, and invoke the &lt;strong&gt;Run Z80 program&lt;/strong&gt; command:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-z80-code-command.png&quot; alt=&quot;Run Z80 code command&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;For example, you can write &lt;code class=&quot;highlighter-rouge&quot;&gt;ORG&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.ORG&lt;/code&gt; to use the &lt;strong&gt;ORG&lt;/strong&gt; pragma.&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: You can use the &lt;strong&gt;Ctrl+M&lt;/strong&gt;, &lt;strong&gt;Ctrl+R&lt;/strong&gt; double shortcut keys to execute the &lt;strong&gt;Run Z80 program&lt;/strong&gt;.&lt;/p&gt;
+  &lt;p&gt;I prefer using the dot-prefixed versions of pragmas.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;This command compiles the Z80 assembly code to binary machine code, starts (or restarts) the Spectrum virtual machine,
-injects the binary code, and runs it:&lt;/p&gt;
+&lt;h2 id=&quot;the-org-pragma&quot;&gt;The ORG pragma&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/z80-code-runs.png&quot; alt=&quot;Z80 code runs&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;With the &lt;strong&gt;ORG&lt;/strong&gt; pragma, you define where to place the compiled Z80 code when you run it.
+For example, the following line sets this location to the 0x6000 address:&lt;/p&gt;
 
-&lt;p&gt;You have just created your first Z80 assembly program in SpectNetIde!&lt;/p&gt;
-
-&lt;h2 id=&quot;errors-in-the-code&quot;&gt;Errors in the code&lt;/h2&gt;
-
-&lt;p&gt;If you make an error – either syntax or semantic error – the SpectNetIDE assembler gives an error message. Let’s assume you make an error in the code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Code file
-start:
-    org #8000
-    ld a,hl      ; &quot;hl&quot; is a semantic error
-    out (#fe),a 
-    jp #12a2
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #6000
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;The Z80 Assembler displays the issue in the Error List:&lt;/p&gt;
+&lt;p&gt;If you do not use &lt;strong&gt;ORG&lt;/strong&gt;, the default address is 0x8000.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/compile-error.png&quot; alt=&quot;Compile error&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;You can apply multiple &lt;strong&gt;ORG&lt;/strong&gt; pragmas in your source code. Each usage creates a new segment in the
+assembler output. Take a look at this code:&lt;/p&gt;
 
-&lt;p&gt;When you double click the error line, the IDE navigates you to the error line in the source code:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld h,a
+.org #8100
+ld d,a
+.org #8200
+ld b,a
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/error-marked-in-source.png&quot; alt=&quot;Error marked in source&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;This code generates three output segment, each with one emitted byte that represents the 
+corresponding &lt;code class=&quot;highlighter-rouge&quot;&gt;LD&lt;/code&gt; operation. The first segment will start at 0x8000 (default), 
+the second at 0x8100, whilst the third at 0x8200.&lt;/p&gt;
 
-&lt;h2 id=&quot;a-bit-longer-z80-program&quot;&gt;A Bit Longer Z80 Program&lt;/h2&gt;
+&lt;h2 id=&quot;the-ent-pragma&quot;&gt;The ENT pragma&lt;/h2&gt;
 
-&lt;p&gt;If you’re excited, you can try a bit longer Z80 code with border manipulations and delays. When you run it, the code sets the screen colors and uses the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;HALT&lt;/code&gt;&lt;/strong&gt; statement to synchronized border drawing. When you start it, it runs until you press &lt;code class=&quot;highlighter-rouge&quot;&gt;SPACE&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;ENT&lt;/strong&gt; pragma defines the entry code of the program when you run it from Visual Studio.
+If you do not apply &lt;strong&gt;ENT&lt;/strong&gt; in your code, the entry point will be the first address of the 
+very first output code segment. Here’s a sample:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/banner-program-runs.png&quot; alt=&quot;Z80 baner runs&quot; /&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #6200
+ld hl,#4000
+.ent $
+jp #6100
 
-&lt;p&gt;Here is the entire source code:&lt;/p&gt;
+.org #6100
+call MyCode
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Define symbols
-LAST_K:		.equ #5c08
-MAIN_EX:	.equ #12a2
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;.ent $&lt;/code&gt; pragma will sign the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;jp #6100&lt;/code&gt; isntruction as the entry
+address of the code. Should you omit the &lt;strong&gt;ENT&lt;/strong&gt; pragma from this code, the entry point would be
+0x6200, for this is the start of the very first output segment, even though there is another
+segment starting at 0x6100.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-xent-pragma&quot;&gt;The XENT pragma&lt;/h2&gt;
+
+&lt;p&gt;The IDE provides a command, &lt;strong&gt;Export Z80 Program&lt;/strong&gt;, which allows you to create a LOAD block
+that automatically starts the code. The &lt;strong&gt;Run Z80 Program&lt;/strong&gt; and &lt;strong&gt;Debug Z80 Program&lt;/strong&gt; command
+simply jump to the address you specify with the &lt;strong&gt;ENT&lt;/strong&gt; pragma. However, the auto LOAD block uses
+the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RANDOMIZE USR address&lt;/code&gt;&lt;/strong&gt; pattern where you need to define a different entry address that
+can be closed with a &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RET&lt;/code&gt;&lt;/strong&gt; statement. The &lt;strong&gt;XENT&lt;/strong&gt; pragma sets this address.
+ Here’s a sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;start: 
+	.org #8000
+	.ent #8000
+	call SetBorder
+	jp #12ac
+SetBorder:
+	.xent $
+	ld a,4
+	out (#fe),a
+	ret
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The IDE will use #8000 — according to the &lt;code class=&quot;highlighter-rouge&quot;&gt;.ent #8000&lt;/code&gt; pragma — when starting
+the code with the &lt;strong&gt;Run Z80 Program&lt;/strong&gt;. Nonetheless, the &lt;strong&gt;Export Z80 Program&lt;/strong&gt; will offer #8006
+— according to the &lt;code class=&quot;highlighter-rouge&quot;&gt;.xent $&lt;/code&gt; pragma — as the startup code address.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-disp-pragma&quot;&gt;The DISP pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;DISP&lt;/strong&gt; pragma allows you to define a displacement for the code. The value affects the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt; token that represents the current assembly address. Your code is placed according 
+to the &lt;strong&gt;ORG&lt;/strong&gt; of the particular output segment, but the assembly address is always displaced
+with the value according to &lt;strong&gt;DISP&lt;/strong&gt;. Take a look at this sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #6000
+.disp #1000
+ld hl,$
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,$&lt;/code&gt; instruction will be placed to the 0x6000 address, but it will be equivalent
+with the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,#7000&lt;/code&gt; statement due to the &lt;code class=&quot;highlighter-rouge&quot;&gt;.disp #1000&lt;/code&gt; displacement.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Of course, you can use negative displacement, too.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-equ-pragma&quot;&gt;The EQU pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;EQU&lt;/strong&gt; pragma allows you assign a value to an identifier. The label before &lt;strong&gt;EQU&lt;/strong&gt; is the
+name of the identifier (or symbol), the exression used in &lt;strong&gt;EQU&lt;/strong&gt; is the value of the variable.
+This is a short sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      .org #6200
+      ld hl,Sym1
+Sym1: .equ #4000
+      ld bc,Sym2
+Sym2: .equ $+4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This sample is equivalent with this one:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #6200
+ld hl,#4000 ; Sym1 &amp;lt;-- #4000
+ld bc,#620a ; Sym2 &amp;lt;-- #620a as an ld bc,NNNN operation and
+                       an ld hl,NNNN each takes 3 bytes
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;the-var-pragma&quot;&gt;The VAR pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;VAR&lt;/strong&gt; pragma works similarly to &lt;strong&gt;EQU&lt;/strong&gt;. However, while &lt;strong&gt;EQU&lt;/strong&gt; does not allow using the same symbol
+with mulitple value assignments, &lt;strong&gt;VAR&lt;/strong&gt; assigns a new value to the symbol every time it is used.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The VAR pragma accepts extra syntax alternatives: &lt;code class=&quot;highlighter-rouge&quot;&gt;=&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;:=&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-defb-pragma&quot;&gt;The DEFB pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;DEFB&lt;/strong&gt; pragma emits 8-bit expressions (bytes) from the current assembly position.
+here is a sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #6000
+.defb #01, #02, $, #04
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;strong&gt;DEFB&lt;/strong&gt; pragma will emit these four bytes starting at 0x6000: 0x01, 0x02, 0x03, 0x04.
+The &lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt; expression will emit 0x03, because at the emission point the current assembly
+address is 0x6003. The &lt;strong&gt;DEFB&lt;/strong&gt; program takes into account only the rightmost 8 bits of any
+expression: this is how &lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt; results in 0x03.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFB&lt;/strong&gt; has extra syntax variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.db&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DB&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DB&lt;/code&gt; are accepted, too.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-defw-pragma&quot;&gt;The DEFW pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;DEFW&lt;/strong&gt; pragma is similar to &lt;strong&gt;DEFB&lt;/strong&gt;, but it emits 16-bit values with LSB, MSB order.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.defw #1234, #abcd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This simple code above will emit these four bytes: 0x34, 0x12, 0xcd, 0xab.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFW&lt;/strong&gt; has extra syntax variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;dw&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.dw&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DW&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DW&lt;/code&gt; are accepted, too.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-defm-pragma&quot;&gt;The DEFM pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;DEFM&lt;/strong&gt; pragma emits the byte-array representation of a string. Each character
+in the string is replaced with the correcponding byte. Take a look at this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.defm &quot;\C by me&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;strong&gt;DEFM&lt;/strong&gt; pragma emits 7 bytes for the seven characters (the first escape 
+sequence represents the copyrigh sign) : 0x7f, 0x20, 0x62, 0x69, 0x20, 0x6d, 0x65.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFM&lt;/strong&gt; has extra syntax variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;dm&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.dm&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DM&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DM&lt;/code&gt; are accepted, too.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-defn-pragma&quot;&gt;The DEFN pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;DEFN&lt;/strong&gt; pragma works just like the &lt;code class=&quot;highlighter-rouge&quot;&gt;DEFM&lt;/code&gt; pragma but it emits an additional &lt;code class=&quot;highlighter-rouge&quot;&gt;0x00&lt;/code&gt;
+byte to terminate the string. Look at this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.defn &quot;\C by me&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;strong&gt;DEFN&lt;/strong&gt; pragma emits 8 bytes for the seven characters (the first escape 
+sequence represents the copyrigh sign) plus the terminating zero:
+0x7f, 0x20, 0x62, 0x69, 0x20, 0x6d, 0x65, 0x00.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFN&lt;/strong&gt; has extra syntax variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;dn&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.dn&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DN&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DN&lt;/code&gt; are also accepted.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-defc-pragma&quot;&gt;The DEFC pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;DEFC&lt;/strong&gt; pragma works just like the &lt;code class=&quot;highlighter-rouge&quot;&gt;DEFM&lt;/code&gt; pragma but it sets Bit 7 of the last 
+emitted character. Look at this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.defc &quot;\C by me&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;strong&gt;DEFC&lt;/strong&gt; pragma emits 7 bytes for the seven characters (the first escape 
+sequence represents the copyrigh sign) with Bit 7 of the last character (0x65) set (so it become 0xE5):
+0x7f, 0x20, 0x62, 0x69, 0x20, 0x6d, 0xE5.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFC&lt;/strong&gt; has extra syntax variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;dc&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.dc&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DC&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DC&lt;/code&gt; are also accepted.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-defh-pragma&quot;&gt;The DEFH pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;DEFH&lt;/strong&gt; pragma uses a string with even number of hexadecimal digits to emits a 
+byte-array representation of the input. Each character pair in the string is replaced
+with the correcponding byte. Take a look at this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.defh &quot;12E4afD2&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;strong&gt;DEFH&lt;/strong&gt; pragma emits 4 bytes: 0x12, 0xe4, 0xaf, 0xd2.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFH&lt;/strong&gt; has extra aliases: &lt;code class=&quot;highlighter-rouge&quot;&gt;dh&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.dh&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DH&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DH&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-defs-pragma&quot;&gt;The DEFS pragma&lt;/h2&gt;
+
+&lt;p&gt;You can emit zero (&lt;code class=&quot;highlighter-rouge&quot;&gt;0x00&lt;/code&gt;) bytes with this pragma. It accepts a single argument,
+the number of zeros to emit. This code sends 16 zeros to the generated output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.defs 16
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFS&lt;/strong&gt; has extra syntax variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;ds&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ds&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DS&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DS&lt;/code&gt; are also accepted.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-fillb-pragma&quot;&gt;The FILLB pragma&lt;/h2&gt;
+
+&lt;p&gt;With &lt;strong&gt;FILLB&lt;/strong&gt;, you can emit a particular count of a specific byte. The first argument
+of the pragma sets the count, the second specifies the byte to emit. This code emits 24
+bytes of &lt;code class=&quot;highlighter-rouge&quot;&gt;#A5&lt;/code&gt; values:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.fillb 24,#a5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;the-fillw-pragma&quot;&gt;The FILLW pragma&lt;/h2&gt;
+
+&lt;p&gt;With &lt;strong&gt;FILLW&lt;/strong&gt;, you can emit a particular count of a specific 16-bit word. The first argument
+of the pragma sets the count, the second specifies the word to emit. This code emits 8
+words (16 bytes) of &lt;code class=&quot;highlighter-rouge&quot;&gt;#12A5&lt;/code&gt; values:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.fillw 8,#12a5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Of course, the bytes of a word are emitted in LSB/MSB order.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-skip-pragma&quot;&gt;The SKIP pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;SKIP&lt;/strong&gt; pragma — as its name suggests — skips the number of bytes
+as specified in its argument. It fills up the skipped bytes with 0xFF.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-extern-pragma&quot;&gt;The EXTERN pragma&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;EXTERN&lt;/strong&gt; pragma is kept for future extension. The current compiler accepts it, but
+does not do any action when observing this pragma.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-model-pragma&quot;&gt;The MODEL pragma&lt;/h2&gt;
+
+&lt;p&gt;This pragma is used when you run or debug your Z80 code within the emulator. With Spectrum 128K, Spectrum +3, 
+and Spectrum Next models, you can run the Z80 code in differend contexts. The &lt;strong&gt;MODEL&lt;/strong&gt; pragma lets you
+specify on which model you want to run the code. You can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUM48&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUM128&lt;/code&gt;, 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUMP3&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;NEXT&lt;/code&gt; identifiers to choose the model (identifiers are case-insensitive):&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.model Spectrum48
+.model Spectrum128
+.model SpectrumP3
+.model Next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For example, when you create code for Spectrum 128K, and add the &lt;code class=&quot;highlighter-rouge&quot;&gt;.model Spectrum48&lt;/code&gt; pragma to the code,
+the &lt;strong&gt;Run Z80 Code&lt;/strong&gt; command will start the virtual machine, turns the machine into Spectrum 48K mode, and ignites
+the code just after that.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Note&lt;/em&gt;: With the &lt;code class=&quot;highlighter-rouge&quot;&gt;#ifmod&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;#ifnmod&lt;/code&gt; directives, you can check the model type. For example, the following
+Z80 code results green background on Spectrum 48K, cyan an Spectrum 128K:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    .model Spectrum48
+
+#ifmod Spectrum128
+    BorderColor: .equ 5
+    RetAddr: .equ #2604
+#else
+    BorderColor: .equ 4
+    RetAddr: .equ #12a2
+#endif
 
 Start:
     .org #8000
-
-; Set Banner lines
-SetScreen:
-    call ClearScreen
-    ld a,0b00_010_010
-    ld b,0
-    call ClearLine
-    ld a,0b00_110_110
-    ld b,1
-    call ClearLine
-    ld a,0b00_101_101
-    ld b,2
-    call ClearLine
-    ld a,0b00_100_100
-    ld b,3
-    call ClearLine
-
-; Set banner border area
-Top:
-    ld bc,#200
-    call LongDelay
-    ld a,2
-    call SetBorder
-    ld a,6
-    call SetBorder
-    ld a,5
-    call SetBorder
-    ld a,4
-    call SetBorder
-    ld a,0
-    call SetBorder
-    halt        ; Wait for the next interrupt
-    ld hl,LAST_K
-    ld a, (hl)	; put last keyboard press into A
-    cp #20		; was &quot;space&quot; pressed?
-    jr nz,Top	; If not, back to the cycle
-    ld a,7
-    call SetBorder
-    jp MAIN_EX
-
-; Sets the entire screen to black
-ClearScreen:
-    ld bc,24*32-1 ; #of screen attribute bytes
-    ld hl,#5800 ; First attr address
-    ld de,#5801 ; Next attr address
-    ld (hl),0   ; Black on Black
-    ldir        ; Set all attribute bytes
-    ret
-
-; A = Attr byte to set
-; B = Line index
-ClearLine:
-    push af     ; Save A
-    ld a,b      ; Multiply the line count with 32
-    sla a
-    sla a
-    sla a
-    sla a
-    sla a
-    ld hl,#5800 ; Calculate the attribute address
-    ld d,0
-    ld e,a
-    add hl,de
-    pop af      ; Restore A
-    ld b,#20    ; Set all the 32 attribute bytes
-SetAttr:
-    ld (hl),a
-    inc hl
-    djnz SetAttr
-    ret
-
-; Sets the border color
-SetBorder:
+    ld a,BorderColor
     out (#fe),a
-    ld b,#86
-Delay:
-    djnz Delay
-    ret
-
-; Delays code execution
-LongDelay:
-    dec bc
-    ld a,b
-    or c
-    jr nz,LongDelay
-    ret
+    jp RetAddr
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; makes it extremely simple to reuse the Z80 assembly code, as you
-will learn in the next article.&lt;/p&gt;</content><author><name></name></author><summary type="html">In this article, you will learn that SpectNetIde provides you a straightforward way to create and run Z80 assembly programs.</summary></entry><entry><title type="html">Create a ZX Spectrum 48K Project</title><link href="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project" rel="alternate" type="text/html" title="Create a ZX Spectrum 48K Project" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-zx-spectrum-project</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project">&lt;ol&gt;
-  &lt;li&gt;Run the &lt;strong&gt;File|New|Project&lt;/strong&gt; command (Ctrl+Shift+N), select the &lt;strong&gt;ZX Spectrum&lt;/strong&gt; tab and choose
-the &lt;strong&gt;ZX Spectrum Code Discovery&lt;/strong&gt; project type. Specify a project name (use &lt;strong&gt;MyFirstDiscovery&lt;/strong&gt;).&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2 id=&quot;the-align-pragma&quot;&gt;The ALIGN pragma&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/new-zx-spectrum-project.png&quot; alt=&quot;New Zx Spectrum Project&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;This pragma allows you to align the current assembly counter to the specified byte boundary. 
+You can use this pragma with an optional expression. Look at these samples:&lt;/p&gt;
 
-&lt;ol start=&quot;2&quot;&gt;
-  &lt;li&gt;The IDE displays a list of available Spectrum models. Select the first Spectrum 48K model
-(PAL - Normal Speed) from the list, and click &lt;strong&gt;Create&lt;/strong&gt;.&lt;/li&gt;
-&lt;/ol&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #8000
+    nop
+.align 4
+    nop
+.align
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/select-machine-type.png&quot; alt=&quot;Select Spectrum model&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;The first pragma aligns the assembly counter to #8004, as this one is the next 4-byte boundary.
+With no value specified, &lt;code class=&quot;highlighter-rouge&quot;&gt;.align&lt;/code&gt; uses #100, and thus the second &lt;code class=&quot;highlighter-rouge&quot;&gt;.align&lt;/code&gt; in the sample sets
+the current assembly counter to the next page boundary, #8100.&lt;/p&gt;
 
-&lt;ol start=&quot;3&quot;&gt;
-  &lt;li&gt;The IDE creates a new project with a few files and folders:&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2 id=&quot;the-trace-and-tracehex-pragmas&quot;&gt;The TRACE and TRACEHEX pragmas&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/solution-structure.png&quot; alt=&quot;Solution Explorer with the new project&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;These pragmas send trace information to the assembler output. In the Visual Studio IDE, these
+messages are displayed in the Z80 Build Output window pane. You can list one or more expressions 
+separated by a comma after the &lt;code class=&quot;highlighter-rouge&quot;&gt;.trace&lt;/code&gt; token. TRACEHEX works just like TRACE, but id displays 
+integer numbers and strings in hexadecimal format.&lt;/p&gt;
 
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;File/Folder&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rom&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;The folder that holds Spectrum ROMs&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rom/ZxSpectrum.spconfig&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;This file stores the configuration information about the selected ZX Spectrum model&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rom/ZxSpectrum48.rom&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;The binary ROM file for the Spectrum 48K model&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rom/ZxSpectrum48.disann&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;Disassembly annotations for the Spectrum 48K ROM&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;TapeFiles&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;Stores &lt;em&gt;.tzx&lt;/em&gt;, &lt;em&gt;.tap&lt;/em&gt; (and, in the future, other) tape files&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Z80CodeFiles&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;The folder to put your Z80 Assembly code files in&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Z80CodeFiles/Code.z80asm&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;A simple Z80 Assembly code file&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Z80UnitTests&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;The folder to put your Z80 unit tests files in&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Z80UnitTests/UnitTest.z80test&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;A simple Z80 unit test file&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Annotations.disann&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;Your custom disassembly annotations are saved into this file&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;Let’assume, you add these lines to the source code:&lt;/p&gt;
 
-&lt;ol start=&quot;4&quot;&gt;
-  &lt;li&gt;As soon as the IDE created the project, you can discover a new top-level menu, 
-&lt;strong&gt;ZX Spectrum IDE&lt;/strong&gt;:&lt;/li&gt;
-&lt;/ol&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.trace &quot;Hello, this is: &quot;, 42
+.tracehex &quot;Hello, this is: &quot;, 42
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zx-spectrum-menu.png&quot; alt=&quot;ZX Spectrum IDE menu&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;When you compile the source, the lines above display these messages:&lt;/p&gt;
 
-&lt;h2 id=&quot;run-the-zx-spectrum-virtual-machine&quot;&gt;Run the ZX Spectrum Virtual Machine&lt;/h2&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;TRACE: Hello, this is: 42
+TRACE: 48656C6C6F2C20746869732069733A20002A
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;Run the &lt;strong&gt;ZX Spectrum IDE|ZX Spectrum Emulator&lt;/strong&gt; command. The IDE shows up the emulator tool window.
-As the title of the tool window indicates, the virtual machine is momentarily stopped.&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2 id=&quot;the-rndseed-pragma&quot;&gt;The RNDSEED pragma&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/machine-not-started.png&quot; alt=&quot;The Emulator Tool Window&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;With the &lt;code class=&quot;highlighter-rouge&quot;&gt;rnd()&lt;/code&gt; function, you can generate random numbers. The RNDSEED pragma sets the seed
+value to use for random number generation. If you use this pragma with an integer expression,
+the seed is set to tha value of that expression. If you do not provide the expression, the compiler
+uses the system clock to set up the seed.&lt;/p&gt;
 
-&lt;ol start=&quot;2&quot;&gt;
-  &lt;li&gt;Click the little &lt;em&gt;Play&lt;/em&gt; icon in the toolbar of the emulator to start the virtual machine.
-The ZX Spectrum comes to life. As you resize the tool window, the emulator changes its screen size, 
-accordingly.&lt;/li&gt;
-&lt;/ol&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.rndseed ; sets the seed according to the system clock
+.rndseed 123 ; sets the seed to 123
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/machine-started.png&quot; alt=&quot;Spectrum VM started&quot; /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;the-defgx-pragma&quot;&gt;The DEFGX pragma&lt;/h2&gt;
 
-&lt;ol start=&quot;3&quot;&gt;
-  &lt;li&gt;Type the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt;&lt;/strong&gt; command into the emulator. Take care that the emulator window is the active one, receiving the
-keyboard focus, and press the &lt;strong&gt;J&lt;/strong&gt;, and then twice the &lt;strong&gt;Shift+P&lt;/strong&gt; keys again. With pressing &lt;strong&gt;Enter&lt;/strong&gt;, you can execute &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt;&lt;/strong&gt;.
-Th virtual machine starts loading the &lt;code class=&quot;highlighter-rouge&quot;&gt;Welcome.tzx&lt;/code&gt; file.&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;This pragma helps you define bitmaps in the code. This pragma excepts a string expression 
+and utilizes that string as a pattern to generate bytes for the bitmap.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/machine-loading.png&quot; alt=&quot;Loading a Game&quot; /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFGX&lt;/strong&gt; has extra syntax variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;dgx&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.dgx&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DGX&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DGX&lt;/code&gt; are accepted, too.&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;ol start=&quot;4&quot;&gt;
-  &lt;li&gt;When the game has been loaded, type the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RUN&lt;/code&gt;&lt;/strong&gt; command into the emulator (while the emulator window is the active one, press the &lt;strong&gt;R&lt;/strong&gt; key),
-and then, press &lt;strong&gt;Enter&lt;/strong&gt;. The program starts, and displays its message:&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;If the very first character of the string pattern is &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt;, the pattern is left aligned, 
+and starts with the second character. Should the first character be &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt;, the pattern is 
+right aligned and starts with the second character. By default, (if no &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt; is used)
+the pattern is left-aligned.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-completed.png&quot; alt=&quot;Welcome in action&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Any space within the pattern are ignored, taken into account as helpers. Other characters
+are converted into bits one-by-one.&lt;/p&gt;
 
-&lt;p&gt;You have just scratched the surface! There are many other features you can use in the
-IDE to discover the structure and internals of ZX Spectrum applications.&lt;/p&gt;</content><author><name></name></author><summary type="html">Run the File|New|Project command (Ctrl+Shift+N), select the ZX Spectrum tab and choose the ZX Spectrum Code Discovery project type. Specify a project name (use MyFirstDiscovery).</summary></entry><entry><title type="html">Create Watch Expressions</title><link href="http://localhost:4000/spectnetide/getting-started/create-watch-expressions" rel="alternate" type="text/html" title="Create Watch Expressions" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-watch-expressions</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-watch-expressions">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Debug Machine Code</title><link href="http://localhost:4000/spectnetide/getting-started/debug-machine-code" rel="alternate" type="text/html" title="Debug Machine Code" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/debug-machine-code</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/debug-machine-code">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry><entry><title type="html">Display Memory Contents</title><link href="http://localhost:4000/spectnetide/getting-started/display-memory-contents" rel="alternate" type="text/html" title="Display Memory Contents" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/getting-started/display-memory-contents</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/display-memory-contents">&lt;p&gt;Under construction.&lt;/p&gt;</content><author><name></name></author><summary type="html">Under construction.</summary></entry></feed>
+&lt;p&gt;Before the conversion, the pragma checks if the pattern constitutes multiples of 8 bits.
+If not, it uses zero bit prefixes (right-aligned), or zero-bit suffixes (left-aligned)
+so that the pattern would be adjusted to contain entire bytes.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt; (dot), &lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt; (dash), and &lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt; (underscore) sign 0, any other characters stand for 1. 
+Every 8 bits in the pattern emit a byte.&lt;/p&gt;
+
+&lt;p&gt;Here are a few samples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.dg &quot;....OOOO&quot;         ; #0F
+.dg &quot;&amp;gt;....OOOO&quot;        ; #0F
+.dg &quot;&amp;lt;----OOOO&quot;        ; #0F
+.dg &quot;___OOOO&quot;          ; #1E
+.dg &quot;....OOOO ..OO&quot;    ; #0F, #30
+.dg &quot;&amp;gt;....OO OO..OOOO&quot; ; #03, #CF
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;the-defg-pragma&quot;&gt;The DEFG pragma&lt;/h2&gt;
+
+&lt;p&gt;This pragma helps you define bitmaps in the code. This pragma excepts a string pattern (&lt;em&gt;note: not a string expression!&lt;/em&gt;) 
+and utilizes that string as a pattern to generate bytes for the bitmap.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;DEFG&lt;/strong&gt; has extra syntax variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;dg&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.dg&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DG&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.DG&lt;/code&gt; are also accepted.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Any space within the pattern are ignored, taken into account as helpers. Other characters
+are converted into bits one-by-one. The pixels in a byte are planted with the LHS as the 
+most-significant bit, and multiple bytes are planted LHS byte first.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt; (dot), &lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt; (dash), and &lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt; (underscore) sign 0, any other characters stand for 1. 
+Every 8 bits in the pattern emit a byte.&lt;/p&gt;
+
+&lt;p&gt;Here are a few samples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.dg ....OOOO        ; #0F
+.dg ___OOOO         ; #1E
+.dg ....OOOO ..OO&quot;  ; #0F, #30
+.dg ....OO OO..OOOO ; #0F, #3C
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Please note, unlinke in the pattern used with &lt;code class=&quot;highlighter-rouge&quot;&gt;DEFGX&lt;/code&gt;, here, the leading &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt; characters 
+are taken as bit 1. They do not specify bit alignment.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-error-pragma&quot;&gt;The ERROR Pragma&lt;/h2&gt;
+
+&lt;p&gt;You can raise custom error messages with this pragma. &lt;strong&gt;ERROR&lt;/strong&gt; accepts an expression
+and displays an error message with code &lt;code class=&quot;highlighter-rouge&quot;&gt;Z0500&lt;/code&gt; using the text you provide. Here is a sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.error &quot;The value must be greater than&quot; + str(minvalue)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;the-includebin-pragma&quot;&gt;The INCLUDEBIN Pragma&lt;/h2&gt;
+
+&lt;p&gt;You can include a binary file into the source code to emit all bytes just as if you used the 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;.defb&lt;/code&gt; pragma. You can include the entire file, or a single segment of it. The pragma has a 
+mandatory argument — the name of the binary file to include — and two optional 
+ones, the start offset of the segment, and its length, respectively. Let’s see a few examples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.includebin &quot;./myfile.bin&quot;
+.includebin &quot;./myfile.bin&quot; 2
+.includebin &quot;./myfile.bin&quot; 2, 3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This snippet loads the &lt;code class=&quot;highlighter-rouge&quot;&gt;myfile.bin&lt;/code&gt; file from the same directory that contains the source 
+with the &lt;code class=&quot;highlighter-rouge&quot;&gt;.includebin&lt;/code&gt; directive.&lt;/p&gt;
+
+&lt;p&gt;Let’s assume that &lt;code class=&quot;highlighter-rouge&quot;&gt;myfile.bin&lt;/code&gt; contains these bytes:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#00, #01, #02, #03, #04, #05, #06, #07 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The three lines of code above are the same as if we had written these code lines:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.defb #00, #01, #02, #03, #04, #05, #06, #07 ; .includebin &quot;./myfile.bin&quot;
+.defb #02, #03, #04, #05, #06, #07           ; .includebin &quot;./myfile.bin&quot; 2
+.defb #02, #03, #04                          ; .includebin &quot;./myfile.bin&quot; 2, 3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Of course, the compiler does not allow negative file offset or length. It alse raises
+an error if you define a segment that does not fit into the binary file.&lt;br /&gt;
+You can use alternative syntax for &lt;code class=&quot;highlighter-rouge&quot;&gt;.includebin&lt;/code&gt;. The compiler accepts these tokens and their
+uppercase versions, too: &lt;code class=&quot;highlighter-rouge&quot;&gt;includebin&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.include_bin&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;include_bin&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">The compiler understands several pragmas that — thought they are not Z80 instructions — they influence the emitted code. Each pragma has two alternative syntax, one with a dot prefix and another without it.</summary></entry><entry><title type="html">Statements</title><link href="http://localhost:4000/spectnetide/documents/statements" rel="alternate" type="text/html" title="Statements" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/statements</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/statements">&lt;p&gt;Statements are &lt;strong&gt;SpectNetIDE&lt;/strong&gt; specific control flow constructs — thanks again for the inspiration by
+&lt;a href=&quot;http://www.desdes.com/index.htm&quot;&gt;Simon Brattel&lt;/a&gt; — that instruct the compiler about loop-like and
+conditional compilation.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;While &lt;em&gt;directives&lt;/em&gt; help you to organize your code and include code files optionally according to the
+compilation context, &lt;em&gt;statements&lt;/em&gt; provide you more useful tools to shorten the way you can declare Z80
+assembly code.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Each statement can be written with a leading dot, or without it, and the compiler accepts both lowercase 
+and uppercase versions. For example all of these version are valid: &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.IF&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;IF&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-loop-block&quot;&gt;The LOOP Block&lt;/h2&gt;
+
+&lt;p&gt;With LOOP block, you can organize a cycle to emit code. Here is a sample that tells the gist:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.loop 6
+  add hl,hl 
+.endl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is a shorter way to multiply &lt;strong&gt;HL&lt;/strong&gt; with 64. It is equivalent with the following code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  add hl,hl
+  add hl,hl
+  add hl,hl
+  add hl,hl
+  add hl,hl
+  add hl,hl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt; statement accepts an expression. The compiler repeats the instructions within the 
+loop’s body according to the value of the expression. The &lt;code class=&quot;highlighter-rouge&quot;&gt;.endl&lt;/code&gt; statement marks the end of the loop.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You can use many flavors for the &lt;code class=&quot;highlighter-rouge&quot;&gt;.endl&lt;/code&gt; block closing statement. &lt;code class=&quot;highlighter-rouge&quot;&gt;.endl&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;endl&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.lend&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;lend&lt;/code&gt;
+are all accepted — with fully uppercase letters, too.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Look at this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;counter .equ 2
+; do something (code omitted)
+.loop counter + 1
+  .db #80, #00
+.endl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is as if you wrote this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  .db #80, #00
+  .db #80, #00
+  .db #80, #00
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;the-loop-scope&quot;&gt;The LOOP Scope&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt; statement declares a scope for all labels, symbols, and variables declared in the loop’s
+body. Every iteration has its separate local scope. When the assembler resolves symbols, it starts 
+from the scope of the loop, and tries to resolve the value of a symbol. If it fails, steps out to 
+the outer scope, and goes on with the resolution.&lt;/p&gt;
+
+&lt;p&gt;Check this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;value .equ 2
+; do something (code omitted)
+.loop 2
+    value .equ 5
+    ld a,value
+.endl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler takes it into account as if you wrote this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    ld a,5
+    ld a,5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt; symbol declared within the loop, overrides &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt; in the outer scope, and
+thus 5 is used instead of 5.&lt;/p&gt;
+
+&lt;p&gt;Nonetheless, you when you utilize a different construct, it seems a bit strange at first:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;value .equ 2
+; do something (code omitted)
+.loop 2
+    ld a,value
+    value .equ 5
+    ld b,value
+.endl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The strangeness is that the compiler creates this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    ld a,2
+    ld b,5
+    ld a,2
+    ld b,5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When the assembler resolves &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt; in the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld a,value&lt;/code&gt; instruction, if finds &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt; 
+in the outer scope only, as it is not declared yet within the loop’s scope. In the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,value&lt;/code&gt;
+instruction &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt; gets resolved from the inner scope, so it takes 5.&lt;/p&gt;
+
+&lt;h2 id=&quot;variables-and-scopes&quot;&gt;Variables and Scopes&lt;/h2&gt;
+
+&lt;p&gt;Unlike symbols that work as constant values, variables (declared with the &lt;code class=&quot;highlighter-rouge&quot;&gt;.var&lt;/code&gt; pragma, or its syntactical 
+equivalents, the &lt;code class=&quot;highlighter-rouge&quot;&gt;=&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;:=&lt;/code&gt; tokens) can change their values.&lt;/p&gt;
+
+&lt;p&gt;Take a look at this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;counter = 4
+.loop 3
+    innercounter = 4
+    ld a,counter + innercounter
+    counter = counter + 1
+.endl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;code class=&quot;highlighter-rouge&quot;&gt;counter&lt;/code&gt; variable is defined in the global scope (out of the loop’s scope), while &lt;code class=&quot;highlighter-rouge&quot;&gt;innercounter&lt;/code&gt; in
+the local scope of the loop. When evaluating the &lt;code class=&quot;highlighter-rouge&quot;&gt;counter = counter + 1&lt;/code&gt; statement, the compiler finds &lt;code class=&quot;highlighter-rouge&quot;&gt;counter&lt;/code&gt; in
+the outer scope, so it uses that variable to increment its value. This code emits machine code for this source:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld a,#08
+ld a,#09
+ld a,#0A
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, add a single line to the loop’s code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;counter = 4
+.loop 3
+    innercounter = 4
+    ld a,counter + innercounter
+    counter = counter + 1
+.endl
+ld b,innercounter
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler will not compile this code, as it cannot find the value for &lt;code class=&quot;highlighter-rouge&quot;&gt;innercounter&lt;/code&gt; in the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,innercount&lt;/code&gt; 
+instruction. Because &lt;code class=&quot;highlighter-rouge&quot;&gt;innercounter&lt;/code&gt; is defined in the local scope of the loop, this scope is immediately disposed as
+the loop is completed. When the compiler processes the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,innercounter&lt;/code&gt; instruction, the local scope is not 
+available.&lt;/p&gt;
+
+&lt;h2 id=&quot;labels-and-scopes&quot;&gt;Labels and Scopes&lt;/h2&gt;
+
+&lt;p&gt;Labels behave like symbols, and they work similarly. When you create a label within a loop, that label is created in
+the local scope of the loop. The following code helps you understand which labels are the part of the global scope, and
+which are created in the loop’s scope:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #8000
+MyLoop: .loop 2
+    ld bc,MyLoop
+Inner: 
+    ld de,MyEnd
+    ld hl,Inner
+    ld ix,Outer
+MyEnd: .endl
+Outer: nop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The label of the &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt; statement is part of the outer (global) scope, just like the label that &lt;em&gt;follows&lt;/em&gt; the 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;.endl&lt;/code&gt; statement. However, all labels declared within the loop’s body, including the label of the &lt;code class=&quot;highlighter-rouge&quot;&gt;.endl&lt;/code&gt;
+statement belongs to the local scope of the loop.&lt;/p&gt;
+
+&lt;p&gt;Thus, the compiler translates the code above into this one:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;         (#8000): ld bc,#8000 (MyLoop)
+Inner_1  (#8003): ld de,#800D (MyEnd_1)
+         (#8006): ld hl,#8003 (Inner_1)
+         (#8009): ld ix,#801A (Outer)
+MyEnd_1  (#800D): ld bc,#8000 (MyLoop)
+Inner_2  (#8010): ld de,#801A (MyEnd_2)
+         (#8013): ld hl,#8010 (Inner_2)
+         (#8016): ld ix,#801A (Outer)
+MyEnd_2
+Outer    (#801A): nop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, &lt;code class=&quot;highlighter-rouge&quot;&gt;Inner_1&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Inner_2&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;MyEnd_1&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;MyEnd_2&lt;/code&gt; represents the labels created in the local scope of the
+loop. The &lt;code class=&quot;highlighter-rouge&quot;&gt;_1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;_2&lt;/code&gt; suffixes indicate that each loop iteration has a separate local scope. As you can see,
+the last iteration of &lt;code class=&quot;highlighter-rouge&quot;&gt;MyLabel&lt;/code&gt; points to the first outer address (&lt;code class=&quot;highlighter-rouge&quot;&gt;Outer&lt;/code&gt; label).&lt;/p&gt;
+
+&lt;h2 id=&quot;nesting-loops&quot;&gt;Nesting LOOPs&lt;/h2&gt;
+
+&lt;p&gt;Of course, you can nest loops, such as in this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.loop 3
+  nop
+  .loop 2
+    ld a,b
+  .endl
+  inc b
+.endl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This code snippet translates to this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nop
+ld a,b
+ld a,b
+inc b
+nop
+ld a,b
+ld a,b
+inc b
+nop
+ld a,b
+ld a,b
+inc b
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When you nest loops, each loop has its separate scope.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-cnt-value&quot;&gt;The $CNT value&lt;/h2&gt;
+
+&lt;p&gt;It is very useful to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;$cnt&lt;/code&gt; value that represents the current loop counter. It starts from 
+1 and increments to the maximum number of loops. This sample demonstrates how you can use it:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.loop 2
+  outerCount = $cnt
+  .loop 3
+     .db #10 * outerCount + $cnt
+  .endl
+.endl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This code translates to this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db #11
+.db #12
+.db #13
+.db #21
+.db #22
+.db #23
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can observe that each loop has its spearate &lt;code class=&quot;highlighter-rouge&quot;&gt;$cnt&lt;/code&gt; value.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;$ctn&lt;/code&gt; value has several syntax versions that the compiler accepts: &lt;code class=&quot;highlighter-rouge&quot;&gt;$CNT&lt;/code&gt;, 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;.cnt&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.CNT&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-procendp-block&quot;&gt;The PROC..ENDP Block&lt;/h2&gt;
+
+&lt;p&gt;In the previous section you could understand how labels and scopes work for the &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt; statement.
+You can utilize this scoping mechanism with the help of the &lt;code class=&quot;highlighter-rouge&quot;&gt;.proc&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;.endp&lt;/code&gt; statement.
+This sample code demonstrates the concepts (just as you learned earlier):&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #8000
+MyLabel:
+  ld de,Outer
+  ld hl,Mylabel
+  call MyProc
+  halt
+
+MyProc: 
+  .proc
+    ld bc,MyProc
+  MyLabel: 
+    ld de,MyEnd
+    ld hl,MyLabel
+    ld ix,Outer
+    ret
+MyEnd:
+    .endp
+Outer: nop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The first &lt;code class=&quot;highlighter-rouge&quot;&gt;MyLabel&lt;/code&gt; label belongs to the global scope, while the second (within &lt;code class=&quot;highlighter-rouge&quot;&gt;MyProc&lt;/code&gt;)
+to the local scope of the procedure wrapped between &lt;code class=&quot;highlighter-rouge&quot;&gt;.proc&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;endp&lt;/code&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;MyProc&lt;/code&gt; belongs to the
+global scope too, however, &lt;code class=&quot;highlighter-rouge&quot;&gt;MyEnd&lt;/code&gt; is the part of the &lt;code class=&quot;highlighter-rouge&quot;&gt;MyProc&lt;/code&gt; scope, so it is visible only from
+within the procedure.&lt;/p&gt;
+
+&lt;p&gt;The assembler emits this code:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyLabel  (#8000): ld de,#8018 (Outer)
+         (#8003): ld hl,#8000 (MyLabel)
+         (#8006): call #800A (MyProc)
+         (#8009): halt
+MyProc   (#800A): ld bc,#800A (MyProc)
+MyLabel_ (#800D): ld de,#8018 (MyEnd)
+         (#8010): ld hl,#800D (MyLabel_)
+         (#8013): ld ix,#8018 (Outer)
+         (#8017): ret
+MyEnd
+Outer    (#8018): nop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can nest &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt; bloks just as &lt;code class=&quot;highlighter-rouge&quot;&gt;LOOP&lt;/code&gt; blocks. Each &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt; block has its private scope.
+When the compiler sees a &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt; block, it works just as if you wrote &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop 1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;NOTE: &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt; is different than a loop. You cannot use the &lt;code class=&quot;highlighter-rouge&quot;&gt;$cnt&lt;/code&gt; value. Similarly, the &lt;code class=&quot;highlighter-rouge&quot;&gt;break&lt;/code&gt; 
+and &lt;code class=&quot;highlighter-rouge&quot;&gt;continue&lt;/code&gt; instructions are unavailable within a &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt; block.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The assembler accepts these aliases for &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;ENDP&lt;/code&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;.proc&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;proc&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.PROC&lt;/code&gt;
+, &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.endp&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ENDP&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;endp&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;ENDP&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.pend&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.PEND&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pend&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;PEND&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-repeatuntil-block&quot;&gt;The REPEAT..UNTIL Block&lt;/h2&gt;
+
+&lt;p&gt;While the &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt; statement works with an expression that specified the loop counter,
+the &lt;code class=&quot;highlighter-rouge&quot;&gt;.repeat&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;.until&lt;/code&gt; block uses an exit condition to create more flexible loops.
+Here is a sample:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;counter = 0
+.repeat 
+    .db counter
+    counter = counter + 3
+.until counter % 7 == 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Observe, the &lt;code class=&quot;highlighter-rouge&quot;&gt;counter % 7 == 0&lt;/code&gt; condition specifies when &lt;em&gt;to exit&lt;/em&gt; the loop. Because the
+exit condition is examined only at the end of the loop, the &lt;code class=&quot;highlighter-rouge&quot;&gt;.repeat&lt;/code&gt; blocks executes 
+at least once.&lt;/p&gt;
+
+&lt;p&gt;The sample above translates to this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db 0
+.db 3
+.db 6
+.db 9
+.db 12
+.db 15
+.db 18
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;.repeat&lt;/code&gt; block uses the same approach to handle its local scope, symbols, labels, and
+variables as the &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt; block. The block also provides the &lt;code class=&quot;highlighter-rouge&quot;&gt;$cnt&lt;/code&gt; loop counter that starts 
+from 1 and increments in every loop cycle.&lt;/p&gt;
+
+&lt;p&gt;This sample demontrates the &lt;code class=&quot;highlighter-rouge&quot;&gt;.repeat&lt;/code&gt; block in action:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #8000
+counter = 0
+.repeat 
+    .db low(EndLabel), high(Endlabel), $cnt
+    counter = counter + 3
+EndLabel: .until counter % 7 == 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler translates the code to this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db #03, #80, #01
+.db #06, #80, #02
+.db #09, #80, #03
+.db #0C, #80, #04
+.db #0F, #80, #05
+.db #12, #80, #06
+.db #15, #80, #07
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;the-whileendw-block&quot;&gt;The WHILE..ENDW Block&lt;/h2&gt;
+
+&lt;p&gt;With &lt;code class=&quot;highlighter-rouge&quot;&gt;.while&lt;/code&gt; loop, you can create another kind of block, which uses entry condition. For example,
+the following code snippet generates instructions to create the sum of numbers from 1 to 9:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;counter = 1
+    ld a,0
+.while counter &amp;lt; 10
+    add a,counter
+    counter = counter + 1
+.endw
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;.while&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;.endw&lt;/code&gt; block uses an entry condition declared in the &lt;code class=&quot;highlighter-rouge&quot;&gt;.while&lt;/code&gt; statement. Provided, this
+condition is true, the compiler enters into the body of the loop, and compiles all instructions and statements
+until it reaches the &lt;code class=&quot;highlighter-rouge&quot;&gt;.endw&lt;/code&gt; statement. Observe, it may happen that the body of the loop is never reached.&lt;/p&gt;
+
+&lt;p&gt;The compiler translates the code snippet above to the following:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld a,0
+add a,1
+add a,2
+add a,3
+add a,4
+add a,5
+add a,6
+add a,7
+add a,8
+add a,9
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Just like the &lt;code class=&quot;highlighter-rouge&quot;&gt;.loop&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;.repeat&lt;/code&gt; blocks, &lt;code class=&quot;highlighter-rouge&quot;&gt;.while&lt;/code&gt; uses the same approach to handle its local scope, 
+symbols, labels, and variables. This block also provides the &lt;code class=&quot;highlighter-rouge&quot;&gt;$cnt&lt;/code&gt; loop counter that starts  from 1 and increments 
+in every loop cycle.&lt;/p&gt;
+
+&lt;p&gt;This code demonstrates the &lt;code class=&quot;highlighter-rouge&quot;&gt;.while&lt;/code&gt; block with labels and using &lt;code class=&quot;highlighter-rouge&quot;&gt;$cnt&lt;/code&gt; value:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;counter = 0
+.while counter &amp;lt; 21 
+    .db low(EndLabel), high(Endlabel), $cnt
+    counter = counter + 3
+EndLabel: .endw
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler translates the code to this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db #03, #80, #01
+.db #06, #80, #02
+.db #09, #80, #03
+.db #0C, #80, #04
+.db #0F, #80, #05
+.db #12, #80, #06
+.db #15, #80, #07
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You can use many flavors for the &lt;code class=&quot;highlighter-rouge&quot;&gt;.endw&lt;/code&gt; block closing statement. &lt;code class=&quot;highlighter-rouge&quot;&gt;.endw&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;endw&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.wend&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;wend&lt;/code&gt;
+are all accepted — with fully uppercase letters, too.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-fornext-loop&quot;&gt;The FOR..NEXT Loop&lt;/h2&gt;
+
+&lt;p&gt;Tou can use the traditional &lt;code class=&quot;highlighter-rouge&quot;&gt;.for&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;.next&lt;/code&gt; loop to create a loop:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.for myVar = 2 .to 5
+  .db 1 &amp;lt;&amp;lt; int(myVar)
+.next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This loop uses the &lt;code class=&quot;highlighter-rouge&quot;&gt;myVar&lt;/code&gt; variable as its &lt;em&gt;iteration variable&lt;/em&gt;, which iterates from 1 to 4. As you expect, 
+the compiler translates the for-loop into this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db #04
+.db #08
+.db #10
+.db #20
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can specify a &lt;code class=&quot;highlighter-rouge&quot;&gt;.step&lt;/code&gt; close to change the loop increment value:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.for myVar = 1 .to 7 .step 2
+  .db 1 &amp;lt;&amp;lt; int(myVar)
+.next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, the code translates to this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db #02
+.db #08
+.db #20
+.db #80
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can create a loop with decrementing iteration variable value:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.for myVar = 7 .to 1 .step -2
+  .db 1 &amp;lt;&amp;lt; int(myVar)
+.next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you expect, now you get this translation:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db #80
+.db #20
+.db #08
+.db #02
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Just as with the other statements, you can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.for&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.to&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;.step&lt;/code&gt; keywords without the &lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;
+prefix, so &lt;code class=&quot;highlighter-rouge&quot;&gt;for&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;to&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;step&lt;/code&gt; are also valid.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The for-loop can do the same stunts as the other kind of loops; it handles labels, symbols, and variables exactly 
+the same way. There’s only one exception, the loop iteration variable. If this variable is found in an outer scope,
+instead of using that value, the compiler raises an error. You can us the for-loop only with a freshly created
+variable.&lt;/p&gt;
+
+&lt;p&gt;So both cases in this code raise an error:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;myVar = 0
+.for myVar = 1 .to 4 ; ERROR: Variable myVar is already declared
+  ; ...
+.next
+
+.for _i = 1 .to 3
+  .for _i = 3 .to 8 ; ; ERROR: Variable _i is already declared
+    ; ...
+  .next
+.next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;As &lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt; is a reserved token (it represents the &lt;code class=&quot;highlighter-rouge&quot;&gt;I&lt;/code&gt; register), you cannot use &lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt; as a variable name. Nonetheless,
+&lt;code class=&quot;highlighter-rouge&quot;&gt;_i&lt;/code&gt; is a valid variable name.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The for-loop works with both integer and float variables. If any of the initial value, the last value (the one after &lt;code class=&quot;highlighter-rouge&quot;&gt;.to&lt;/code&gt;), 
+or the increment value (the one after &lt;code class=&quot;highlighter-rouge&quot;&gt;.step&lt;/code&gt;) is a float value, the for-loop uses float operations; otherwise it uses
+integer operations.&lt;/p&gt;
+
+&lt;p&gt;This code snippet demonstrates the difference:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.for myVar = 1 .to 4 .step 1
+  .db 1 &amp;lt;&amp;lt; myVar
+.next
+
+.for myVar = 1 .to 4 .step 1.4
+  .db 1 &amp;lt;&amp;lt; myVar ; ERROR: Right operand of the shift left operator must be integral
+.next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Nonetheless, you can solve this issue with applying the &lt;code class=&quot;highlighter-rouge&quot;&gt;int()&lt;/code&gt; function:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.for myVar = 1 .to 4 .step 1.4
+  .db 1 &amp;lt;&amp;lt; int(myVar) ; Now, it's OK.
+.next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You can still use the &lt;code class=&quot;highlighter-rouge&quot;&gt;$cnt&lt;/code&gt; value in for loops. Just like with other loop, it indicates the count of
+cycles strating from one and incremented by one in each iteration.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;maximum-loop-count&quot;&gt;Maximum Loop Count&lt;/h2&gt;
+
+&lt;p&gt;It’s pretty easy to create an infinite (or at least a very long) loop. For example, these loops are
+obviously infinite ones:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.repeat
+.until false
+
+.while true
+.wend 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The assembler checks the loop counter during compilation. Whenever it exceeds #FFFF (65535), it raises an error.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-ifelifelseendif-statement&quot;&gt;The IF..ELIF..ELSE..ENDIF Statement&lt;/h2&gt;
+
+&lt;p&gt;You can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt; statement to create branches with conditions. For example, this code emits &lt;code class=&quot;highlighter-rouge&quot;&gt;inc b&lt;/code&gt;
+or &lt;code class=&quot;highlighter-rouge&quot;&gt;inc c&lt;/code&gt; statement depending on whether the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;branch&lt;/code&gt; is even or odd:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.if branch % 2 == 0
+  inc b
+.else
+  inc c
+.endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You do not have to specify an &lt;code class=&quot;highlighter-rouge&quot;&gt;.else&lt;/code&gt; branch, so this statement is entirely valid:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.if branch % 2 == 0
+  inc b
+.endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can nest if statements like this to manage four different code branches according to the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;branch&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.if branch == 1
+  inc b
+.else
+  .if branch == 2
+    inc c
+  .else 
+    .if branch == 3
+      inc d
+    .else
+      inc e
+    .endif
+  .endif
+.endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Nonetheless, you can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.elif&lt;/code&gt; statement to create the code snippet above in clearer way:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.if branch == 1
+  inc b
+.elif branch == 2
+  inc c
+.elif branch == 3
+  inc d
+.else
+  inc e
+.endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;if-and-scopes&quot;&gt;IF and Scopes&lt;/h2&gt;
+
+&lt;p&gt;Unlike the loop statements, &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt; does not provide its local scope. Whenever you create a symbol, a label or
+a variable, those get into the current scope. This code defines a label with the same name in each branches. Because
+the compiler evaluates the &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt; branches from top to down, it either compiles one of the &lt;code class=&quot;highlighter-rouge&quot;&gt;.elif&lt;/code&gt; branches —
+the first with a matching condition — or the else branch. Thus, this code does not define &lt;code class=&quot;highlighter-rouge&quot;&gt;MyLabel&lt;/code&gt; twice:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;branch = 4 ; Try to set up a different value
+; Do something (omitted from code)
+    ld hl,MyLabel
+.if branch == 1
+  inc b
+  MyLabel ld a,20
+.elif branch &amp;gt; 2
+  MyLabel ld a,30
+  inc c
+.elif branch &amp;lt; 6
+  inc d
+  MyLabel ld a,40
+.else
+  MyLabel ld a,50
+  inc e
+.endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Generally, you can decorate any statement with labels. The &lt;code class=&quot;highlighter-rouge&quot;&gt;.elif&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;.else&lt;/code&gt; statements are exception. If you
+do so, the compiler raises an error:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.if branch == 1
+  inc b
+  MyLabel ld a,20
+.elif branch &amp;gt; 2
+  MyLabel ld a,30
+  inc c
+Other .elif branch &amp;lt; 6 ; ERROR: ELIF section cannot have a label
+  inc d
+  MyLabel ld a,40
+Another .else          ; ERROR: ELSE section cannot have a label
+  MyLabel ld a,50
+  inc e
+.endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;if-nesting&quot;&gt;IF Nesting&lt;/h2&gt;
+
+&lt;p&gt;When you nest &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt; statements, take care that each of them has a corresponding &lt;code class=&quot;highlighter-rouge&quot;&gt;.endif&lt;/code&gt;. Whenever
+the compiler finds an &lt;code class=&quot;highlighter-rouge&quot;&gt;.endif&lt;/code&gt;, is associates it with the closest &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt; statement before &lt;code class=&quot;highlighter-rouge&quot;&gt;.endif&lt;/code&gt;.
+I suggest you use indentation to make the structure more straightforward, as the following code snippet shows:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;row = 2
+col = 2
+; Change row and col (omitted from code)
+.if row == 0
+  .if col == 0
+    .db #00
+  .elif col == 1
+    .db #01
+  .else
+    .db #02
+  .endif
+.elif row == 1
+  .if col == 0
+    .db #03
+  .elif col == 1
+    .db #04
+  .else
+    .db #05
+  .endif
+.elif row == 2
+  .if col == 0
+    .db #06
+  .elif col == 1
+    .db #07
+  .else
+    .db #08
+  .endif
+.else
+  .if col == 0
+    .db #09
+  .elif col == 1
+    .db #0A
+  .else
+    .db #0B
+  .endif
+.endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;block-statements-without-a-closing-statement&quot;&gt;Block Statements without a Closing Statement&lt;/h2&gt;
+
+&lt;p&gt;The compiler automatically recognizes if a block does not have a closing statement, and provides an
+error message accordingly.&lt;/p&gt;
+
+&lt;h2 id=&quot;orphan-closing-statements&quot;&gt;Orphan Closing Statements&lt;/h2&gt;
+
+&lt;p&gt;When the compiler finds a closing statement (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;.endw&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.endl&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.until&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.endif&lt;/code&gt;, etc.) it will
+issue an error.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-break-statement&quot;&gt;The BREAK statement&lt;/h2&gt;
+
+&lt;p&gt;You can exit the loop — independently of the loop’s exit condition — with the &lt;code class=&quot;highlighter-rouge&quot;&gt;.break&lt;/code&gt; statement:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; LOOP sample
+.loop 5
+  .if $cnt == 4
+    .break
+  .endif
+  .db $cnt
+.endl
+
+; REPEAT sample
+.repeat
+  .if $cnt == 4
+    .break
+  .endif
+  .db $cnt
+.until $cnt == 5
+
+; WHILE sample
+.while $cnt &amp;lt; 5
+  .if $cnt == 4
+    .break
+  .endif
+  .db $cnt
+.endw
+
+; FOR-loop sample
+.for value = 1 to 5
+  .if value == 4
+    .break
+  .endif
+  .db value
+.next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Because all these loops are exited at the beginning of the 4th iteration, they produce this output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db #01
+.db #02
+.db #03
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You cannot use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.break&lt;/code&gt; statement outside of a loop construct. If you do so, the compiler 
+raises an error.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-continue-statement&quot;&gt;The CONTINUE Statement&lt;/h2&gt;
+
+&lt;p&gt;You can interrupt the current iteration of the loop and carry on the next iteration with the &lt;code class=&quot;highlighter-rouge&quot;&gt;.continue&lt;/code&gt; statement:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; LOOP sample
+.loop 5
+  .if $cnt == 4
+    .continue
+  .endif
+  .db $cnt
+.endl
+
+; REPEAT sample
+.repeat
+  .if $cnt == 4
+    .continue
+  .endif
+  .db $cnt
+.until $cnt == 5
+
+; WHILE sample
+.while $cnt &amp;lt;= 5 
+  .if $cnt == 4
+    .continue
+  .endif
+  .db $cnt
+.endw
+
+; FOR-loop sample
+.for value = 1 to 5
+  .if value == 4
+    .continue
+  .endif
+  .db value
+.next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Because all these loops skip the 4th iteration, they produce this output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.db #01
+.db #02
+.db #03
+; #04 is skipped
+.db #05
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You cannot use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.continue&lt;/code&gt; statement outside of a loop construct. If you do so, the compiler 
+raises an error.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">Statements are SpectNetIDE specific control flow constructs — thanks again for the inspiration by Simon Brattel — that instruct the compiler about loop-like and conditional compilation.</summary></entry><entry><title type="html">Tool Commands</title><link href="http://localhost:4000/spectnetide/documents/tool-commands" rel="alternate" type="text/html" title="Tool Commands" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/tool-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/tool-commands">&lt;p&gt;Tool Command reference&lt;/p&gt;</content><author><name></name></author><summary type="html">Tool Command reference</summary></entry></feed>

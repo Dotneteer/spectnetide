@@ -295,9 +295,9 @@ footer p {
     width: 100%; }
 
 code {
-  background-color: #F2E9E1;
   box-shadow: none;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: bold;
   padding: 0 4px; }
 
 pre {
@@ -306,12 +306,14 @@ pre {
 pre code {
   background-color: #F2E9E1;
   font-size: 16px;
+  font-weight: normal;
   padding: 0; }
 
 pre.highlight {
   padding: 8px 12px;
   background-color: #F2E9E1;
-  margin: 12px 0px; }
+  margin: 18px 0px;
+  line-height: 22px; }
 
 .highlight .c1 {
   color: #519548;
