@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-19T10:28:06+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Directives</title><link href="http://localhost:4000/spectnetide/documents/directives" rel="alternate" type="text/html" title="Directives" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/directives</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/directives">&lt;p&gt;The directives of the &lt;strong&gt;SpectNetIDE&lt;/strong&gt; Z80 Assembler representation are used for preprocessing
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-19T18:41:06+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Directives</title><link href="http://localhost:4000/spectnetide/documents/directives" rel="alternate" type="text/html" title="Directives" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/directives</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/directives">&lt;p&gt;The directives of the &lt;strong&gt;SpectNetIDE&lt;/strong&gt; Z80 Assembler representation are used for preprocessing
 — similarly as in the C and C++ programming languages — though their semantics are
 different.&lt;/p&gt;
 
@@ -1268,7 +1268,7 @@ You can easily apply this macro&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Delay: 
     .macro(wait)    
-        ld b,
+        ld b,{{wait}}
     DelayLoop:
         djnz DelayLoop
     .endm
@@ -1310,9 +1310,9 @@ as an argument:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RepeatLight: 
     .macro(count, body)    
-        ld b,8
+        ld b,{{count}}
     DelayLoop:
-        
+        {{body}}
         djnz DelayLoop
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1335,8 +1335,8 @@ djnz DelayLoop_1
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RepeatLight: 
     .macro(count, body)
-      .loop 8
-          
+      .loop {{count}}
+          {{body}}
       .endl
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1378,8 +1378,8 @@ parse time, and retrieve the lower register, and higher register of an 16-bit re
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LdHl: 
     .macro(reg16)
-        ld h,hreg()
-        ld l,lreg()
+        ld h,hreg({{reg16}})
+        ld l,lreg({{reg16}})
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -1402,17 +1402,17 @@ you can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;def()&lt;/code&g
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Push:
     .macro(r1, r2, r3, r4)
-      .if def()
-        push 
+      .if def({{r1}})
+        push {{r1}}
       .endif
-      .if def()
-        push 
+      .if def({{r2}})
+        push {{r2}}
       .endif
-      .if def()
-        push 
+      .if def({{r3}})
+        push {{r3}}
       .endif
-      .if def()
-        push 
+      .if def({{r4}})
+        push {{r4}}
       .endif
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1438,14 +1438,14 @@ push ix
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LdBcDeHl:
     .macro(bcVal, deVal, hlVal)
-      .if def()
-        ld bc,
+      .if def({{bcVal}})
+        ld bc,{{bcVal}}
       .endif
-      .if def()
-        ld de,
+      .if def({{deVal}})
+        ld de,{{deVal}}
       .endif
-      .if def()
-        ld hl,
+      .if def({{hlVal}})
+        ld hl,{{hlVal}}
       .endif
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1498,7 +1498,7 @@ accepts these tokens: &lt;code class=&quot;highlighter-rouge&quot;&gt;.macro&lt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Mul10:
     .macro(reg8)
     push af
-    ld a,
+    ld a,{{reg8}}
     add a,a
     push bc
     ld b,a
@@ -1506,7 +1506,7 @@ accepts these tokens: &lt;code class=&quot;highlighter-rouge&quot;&gt;.macro&lt;
     add a,a
     add a,b
     pop bc
-    ld ,a
+    ld {{reg8}},a
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -1551,14 +1551,14 @@ MyMacro(,,)
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LdBcDeHl:
     .macro(bcVal, deVal, hlVal)
-      .if def()
-        ld bc,
+      .if def({{bcVal}})
+        ld bc,{{bcVal}}
       .endif
-      .if def()
-        ld de,
+      .if def({{deVal}})
+        ld de,{{deVal}}
       .endif
-      .if def()
-        ld hl,
+      .if def({{hlVal}})
+        ld hl,{{hlVal}}
       .endif
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1569,11 +1569,12 @@ This function evaluates to true only when the macro argument is not empty.&lt;/p
 &lt;p&gt;You can use the logical NOT operator (&lt;code class=&quot;highlighter-rouge&quot;&gt;!&lt;/code&gt;) combined to &lt;code class=&quot;highlighter-rouge&quot;&gt;def()&lt;/code&gt; to check if an argument is empty.&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyMacro: .macro(arg)
-  .if !def()
+  .if !def({{arg}})
     ; generate something for empty arg
   .endif
 .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;h2 id=&quot;passing-parameters-to-macros&quot;&gt;Passing Parameters to Macros&lt;/h2&gt;
 
 &lt;p&gt;You can pass &lt;em&gt;anything&lt;/em&gt; as a macro parameter that is a &lt;em&gt;valid operand&lt;/em&gt; of a Z80 instruction. This means the
@@ -1592,7 +1593,7 @@ following options:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SetHlValue:
     .macro(value)
-        ld hl,
+        ld hl,{{value}}
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -1630,7 +1631,7 @@ Take a look at this macro:&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ShortDi:
     .macro(body)
         di
-        
+        {{body}}
         ei
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1713,7 +1714,7 @@ attached to the &lt;code class=&quot;highlighter-rouge&quot;&gt;.endm&lt;/code&g
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GetBoundaries:
     .macro(instr)
-        
+        {{instr}}
         ld de,EndLabel
         ld hl,GetBoundaries
 EndLabel:
@@ -1751,18 +1752,18 @@ are constant values, while variables may change!&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Delay:
     .macro(wait)
-        ld b,
+        ld b,{{wait}}
         WaitLoop: djnz WaitLoop
     .endm
 
 BorderPulse:
     .macro(col1, wait1, col2, wait2)
-        ld a,
+        ld a,{{col1}}
         out (#fe),a
-        Delay()
-        ld a,
+        Delay({{wait1}})
+        ld a,{{col2}}
         out (#fe),a
-        Delay()
+        Delay({{wait2}})
     .endm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -1857,8 +1858,8 @@ as the &lt;code class=&quot;highlighter-rouge&quot;&gt;'c'&lt;/code&gt; token ca
 &lt;p&gt;Here is a short sample:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyRegMacro: .macro(arg)
-    .if isreg8()
-        ld a,
+    .if isreg8({{arg}})
+        ld a,{{arg}}
     .else
         .error &quot;Only 8-bit registers are allowed&quot;
     .endif
