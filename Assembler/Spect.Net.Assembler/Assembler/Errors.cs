@@ -189,10 +189,10 @@ namespace Spect.Net.Assembler.Assembler
             { Z0424, "Invalid INCLUDEBIN offset value (negative, or greater than the file length)." },
             { Z0425, "Invalid INCLUDEBIN length value (negative, or segment exceends the file length)." },
             { Z0426, "Emitting the INCLUDEBIN segment would overflow the #FFFF assembly address." },
-            { Z0427, "You cannot define a macro with a local name ({0})." },
+            { Z0427, "You cannot define a macro with a temporary name ({0})." },
             { Z0428, "You cannot define a module without a name." },
             { Z0429, "Module with name '{0}' already exists." },
-            { Z0430, "You cannot define a module with a local name ({0})." },
+            { Z0430, "You cannot define a module with a temporary name ({0})." },
             { Z0500, "ERROR: {0}" },
         };
 

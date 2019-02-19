@@ -644,14 +644,14 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0428, module);
                 return;
             }
-            if (label != null && label.StartsWith("`") || moduleName.StartsWith("`"))
+            if (moduleName.StartsWith("`"))
             {
-                ReportError(Errors.Z0430, module, label);
+                ReportError(Errors.Z0430, module, moduleName);
                 return;
             }
             if (CurrentModule.NestedModules.ContainsKey(moduleName))
             {
-                ReportError(Errors.Z0429, module, label);
+                ReportError(Errors.Z0429, module, moduleName);
                 return;
             }
 

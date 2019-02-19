@@ -88,17 +88,44 @@ ld hl,errNo
 
 ## Comments
 
-Comments start with a semicolon (```;```). The compiler takes the rest of the line into account as the body
+__SpectNetIDE__ support two types of comments: _end-of-line_ and _block_ comments.
+
+En-of-line comments start with a semicolon (```;```) or with a double forward slash (`//`). The compiler takes the rest of the line into account as the body
 of the comment. This sample illustrates this concept:
 
 ```
 ; This line is comment-only line
-Wait:   ld b,8
-Wait1:  djnz Wait1 ; wait while the counter reaches zero
+Wait:   ld b,8     ; Set the counter
+Wait1:  djnz Wait1 // wait while the counter reaches zero
 ```
 
+Block comments can be put anywhere within an instruction line betwen `/*` and `*/` tokens, until they do not break other tokens. Nonetheless, block comments cannot span multiple lines, they must start and end within the same source code line. All of the block comments in this code snippet are correct:
+
+```
+SetAttr:
+	ld b,32
+fill:
+  /* block */
+  /* b2 */ ld (hl),a
+  inc /* b3 */ hl
+  djnz /* b4 */ fill /* b5 */
+  ret
+```
+
+However, this will result in syntax error:
+
+```
+/* 
+  This block comment spans multiple lines,
+  and thus, it is invalid
+*/
+SetAttr:
+	ld b,32
+```
+
+
 > If you need multi-line comments, you can add single-line comments after each other. 
-> The Z80 assembly in __spectnetide__ does not have separate multi-line comment syntax.
+> The Z80 assembly in __SpectNetIDE__ does not have separate multi-line comment syntax.
 
 ## Literals
 

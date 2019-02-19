@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-18T17:49:43+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Directives</title><link href="http://localhost:4000/spectnetide/documents/directives" rel="alternate" type="text/html" title="Directives" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/directives</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/directives">&lt;p&gt;The directives of the &lt;strong&gt;SpectNetIDE&lt;/strong&gt; Z80 Assembler representation are used for preprocessing
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-19T10:28:06+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Directives</title><link href="http://localhost:4000/spectnetide/documents/directives" rel="alternate" type="text/html" title="Directives" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/directives</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/directives">&lt;p&gt;The directives of the &lt;strong&gt;SpectNetIDE&lt;/strong&gt; Z80 Assembler representation are used for preprocessing
 — similarly as in the C and C++ programming languages — though their semantics are
 different.&lt;/p&gt;
 
@@ -821,7 +821,70 @@ an error.&lt;/p&gt;
 &lt;blockquote&gt;
   &lt;p&gt;Several pragmas and statements intend to evaluate an expression in phase 3. If they find an
 unresolved symbol during that phase, they do not create a fixup entry but immediately report an error.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">The assembler compiles the code in three phases:</summary></entry><entry><title type="html">Language structure</title><link href="http://localhost:4000/spectnetide/documents/language-structure" rel="alternate" type="text/html" title="Language structure" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/language-structure</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/language-structure">&lt;p&gt;Each line of the source code is a declaration unit and is parsed in its own context. Such a 
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">The assembler compiles the code in three phases:</summary></entry><entry><title type="html">Labels and Symbols</title><link href="http://localhost:4000/spectnetide/documents/labels-and-symbols" rel="alternate" type="text/html" title="Labels and Symbols" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/labels-and-symbols</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/labels-and-symbols">&lt;p&gt;In Z80 assembly, you can define labels and symbols. Both constructs are syntactically the same, but there is some difference in their semantics. While we define labels to mark addresses (code points) in the program so that we can jump to those addresses, read or write their contents, symbols are not as specific, they just store values we intend to use.
+From now on, I will mention “label” for both constructs and will do otherwise only when the context requires.
+When you write a &lt;strong&gt;SpectNetIDE&lt;/strong&gt; assembly instruction, you can start the line with a label:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyStart: ld hl,0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, in this sample, &lt;code class=&quot;highlighter-rouge&quot;&gt;MyStart&lt;/code&gt; is a label. The assembler allows you to omit the colon after the label name, so this line is valid:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyStart ld hl,0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Some developers like to put a label in a separate line from the instruction it belongs. You can use the same hanging label style within &lt;strong&gt;SpectNetIDE&lt;/strong&gt;. In this case, the label should go &lt;em&gt;before&lt;/em&gt; its instruction. Take a look at this code snippet:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyStart:
+  ld hl,0
+MyNext
+  ; Use B as a counter
+  ld b,32
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This code is entirely correct. Note, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,32&lt;/code&gt; instruction belongs to the &lt;code class=&quot;highlighter-rouge&quot;&gt;MyNext&lt;/code&gt; label. As you see from the sample, the colon character is optional for hanging labels, too. You can have multiple line breaks between a label and its instruction, and the space can include comments.&lt;/p&gt;
+
+&lt;h2 id=&quot;label-and-symbol-declarations&quot;&gt;Label and Symbol Declarations&lt;/h2&gt;
+
+&lt;p&gt;As you will learn later, you can define symbols with the &lt;code class=&quot;highlighter-rouge&quot;&gt;.EQU&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.VAR&lt;/code&gt; pragmas. While &lt;code class=&quot;highlighter-rouge&quot;&gt;.EQU&lt;/code&gt; allows you to assign a constant value to a symbol — and so it cannot change its value after the declaration, &lt;code class=&quot;highlighter-rouge&quot;&gt;.VAR&lt;/code&gt; let’s you re-assign the initial value.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; supports the idea of lexical scopes. When you create the program, it starts with a global (outermost) lexical scope. Particular language elements, such a &lt;em&gt;statements&lt;/em&gt; create their own nested lexical scope. Labels and symbols are always created within the current lexical scope. Nonetheless, when resolving them, the assembler starts with the innermost scope and goes through all outers scopes until it manages to find the label declaration.
+This mechanism means that you can declare labels within a nested scope so that those hide labels and symbols in outer scopes.
+You can learn more about this topic in the &lt;strong&gt;Statements&lt;/strong&gt; section.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; also supports modules, which allow you to use namespace-like constructs (see the Modules section for details).&lt;/p&gt;
+
+&lt;h2 id=&quot;temporary-labels&quot;&gt;Temporary Labels&lt;/h2&gt;
+
+&lt;p&gt;The assembler considers labels that start with a backtick (`) character as temporary labels. Their scope is the area between the last persistent label preceding the temporary and the first persistent label following the temporary one.&lt;/p&gt;
+
+&lt;p&gt;This code snippet demonstrates this concept:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SetPixels:        ; Persistent label
+  ld hl, #4000
+  ld a,#AA
+  ld b,#20
+`loop:            ; Temporary label (scope #1)
+  ld (hl),a
+  inc hl
+  djnz `loop
+SetAttr:          ; Persistent label, scope #1 disposed here
+  ld hl,#5800
+  ld a,#32
+  ld b,#20
+`loop:            ; Temporary label (scope #2)
+  ld (hl),a
+  inc hl
+  djnz `loop
+  ret
+
+; scope #2 still lives here
+; ...
+Another: ; Persistent label, scope #2 disposed here
+  ld a,b
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you see, the two occurrences of &lt;strong&gt;`loop&lt;/strong&gt;  belong to two separate temporary scopes. The first scope is between from &lt;code class=&quot;highlighter-rouge&quot;&gt;SetPixels&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;SetAttr&lt;/code&gt;, the second one between &lt;code class=&quot;highlighter-rouge&quot;&gt;SetAttr&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Another&lt;/code&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">In Z80 assembly, you can define labels and symbols. Both constructs are syntactically the same, but there is some difference in their semantics. While we define labels to mark addresses (code points) in the program so that we can jump to those addresses, read or write their contents, symbols are not as specific, they just store values we intend to use. From now on, I will mention “label” for both constructs and will do otherwise only when the context requires. When you write a SpectNetIDE assembly instruction, you can start the line with a label:</summary></entry><entry><title type="html">Language structure</title><link href="http://localhost:4000/spectnetide/documents/language-structure" rel="alternate" type="text/html" title="Language structure" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/language-structure</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/language-structure">&lt;p&gt;Each line of the source code is a declaration unit and is parsed in its own context. Such a 
 source code line can be one of these constructs:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;A Z80 &lt;em&gt;instruction&lt;/em&gt;, which can be directly compiled to binary code (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;ld bc,#12AC&lt;/code&gt;)&lt;/li&gt;
@@ -903,17 +966,41 @@ ld hl,errNo
 
 &lt;h2 id=&quot;comments&quot;&gt;Comments&lt;/h2&gt;
 
-&lt;p&gt;Comments start with a semicolon (&lt;code class=&quot;highlighter-rouge&quot;&gt;;&lt;/code&gt;). The compiler takes the rest of the line into account as the body
+&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; support two types of comments: &lt;em&gt;end-of-line&lt;/em&gt; and &lt;em&gt;block&lt;/em&gt; comments.&lt;/p&gt;
+
+&lt;p&gt;En-of-line comments start with a semicolon (&lt;code class=&quot;highlighter-rouge&quot;&gt;;&lt;/code&gt;) or with a double forward slash (&lt;code class=&quot;highlighter-rouge&quot;&gt;//&lt;/code&gt;). The compiler takes the rest of the line into account as the body
 of the comment. This sample illustrates this concept:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; This line is comment-only line
-Wait:   ld b,8
-Wait1:  djnz Wait1 ; wait while the counter reaches zero
+Wait:   ld b,8     ; Set the counter
+Wait1:  djnz Wait1 // wait while the counter reaches zero
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Block comments can be put anywhere within an instruction line betwen &lt;code class=&quot;highlighter-rouge&quot;&gt;/*&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;*/&lt;/code&gt; tokens, until they do not break other tokens. Nonetheless, block comments cannot span multiple lines, they must start and end within the same source code line. All of the block comments in this code snippet are correct:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SetAttr:
+	ld b,32
+fill:
+  /* block */
+  /* b2 */ ld (hl),a
+  inc /* b3 */ hl
+  djnz /* b4 */ fill /* b5 */
+  ret
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, this will result in syntax error:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/* 
+  This block comment spans multiple lines,
+  and thus, it is invalid
+*/
+SetAttr:
+	ld b,32
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;If you need multi-line comments, you can add single-line comments after each other. 
-The Z80 assembly in &lt;strong&gt;spectnetide&lt;/strong&gt; does not have separate multi-line comment syntax.&lt;/p&gt;
+The Z80 assembly in &lt;strong&gt;SpectNetIDE&lt;/strong&gt; does not have separate multi-line comment syntax.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h2 id=&quot;literals&quot;&gt;Literals&lt;/h2&gt;
@@ -1812,7 +1899,284 @@ can be nested and provide local scope for labels, symbols, and variables.&lt;/li
 of arguments can replace entire instructions, operands, or parts of expressions. Moreover, through arguments,
 you can inject multiline instructions and statements into macro declarations.&lt;/li&gt;
   &lt;li&gt;&lt;strong&gt;Modules&lt;/strong&gt;. You can use modules to serve both as logical containers to separating partitions of the code and namespaces to create scopes for labels and symbols.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">The original goal of the SpectNetIde assembler was to have a simple tool that allows you to compile Z80 assembly code and inject it into the ZX Spectrum virtual machine. As the community has started using it, I’ve been receiving feature requests to add some useful capability to the Assembler.</summary></entry><entry><title type="html">Modules</title><link href="http://localhost:4000/spectnetide/documents/modules" rel="alternate" type="text/html" title="Modules" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/modules</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/modules">&lt;p&gt;&lt;em&gt;TBD&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">TBD</summary></entry><entry><title type="html">Pragmas</title><link href="http://localhost:4000/spectnetide/documents/pragmas" rel="alternate" type="text/html" title="Pragmas" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/pragmas</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/pragmas">&lt;p&gt;The compiler understands several pragmas that — thought they are not Z80 
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">The original goal of the SpectNetIde assembler was to have a simple tool that allows you to compile Z80 assembly code and inject it into the ZX Spectrum virtual machine. As the community has started using it, I’ve been receiving feature requests to add some useful capability to the Assembler.</summary></entry><entry><title type="html">Modules</title><link href="http://localhost:4000/spectnetide/documents/modules" rel="alternate" type="text/html" title="Modules" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/modules</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/modules">&lt;p&gt;As you have earlier learned, &lt;strong&gt;SpectNetIDE&lt;/strong&gt; uses nested scopes for labels and symbols. When it resolves them to their values, the engine starts from the innermost scope and traverses all outer scopes until it finds the symbol value, or goes through all scopes without success — and it declares the sought symbol undefined.
+This type of resolution does not allow an outer scope to reach a symbol within a nested scope.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; allows you to declare modules. A module is a logical scope for label and symbol resolution; it works entirely the same way as other scopes. However, a module offers something special: you can access labels and symbols declared within a module.
+Just as other lexical scopes, modules can be nested.&lt;/p&gt;
+
+&lt;h2 id=&quot;module-declarations&quot;&gt;Module Declarations&lt;/h2&gt;
+
+&lt;p&gt;A module is a section of code enclosed between the &lt;code class=&quot;highlighter-rouge&quot;&gt;.module&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;.endmodule&lt;/code&gt; statements. Each module needs to have a name. You have three options to define the name:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; #1: Label
+MyModule:
+  .module
+  ; ...
+  .endmodule
+
+; #2: Module ID
+  .module OtherModule
+  ; ...
+  .endmodule
+
+; #3: Label and ID
+Module3:
+  .module ThirdModule
+  ; ...
+  .endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can use either a label preceding the module declaration or an identifier after the &lt;code class=&quot;highlighter-rouge&quot;&gt;.module&lt;/code&gt; token, or even both. The identifier takes precedence over the name, so the names of the three modules in this sample are &lt;code class=&quot;highlighter-rouge&quot;&gt;MyModule&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;OtherModule&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;ThirdModule&lt;/code&gt;, respectively.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; offers syntax variations for &lt;code class=&quot;highlighter-rouge&quot;&gt;.module&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;.endmodule&lt;/code&gt;. You can use the following tokens instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;.module&lt;/code&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;module&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.scope&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;scope&lt;/code&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;.endmodule&lt;/code&gt; has other variants, too: &lt;code class=&quot;highlighter-rouge&quot;&gt;endmodule&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.endscope&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;endscope&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.moduleend&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;moduleend&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.scopeend&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;scopeend&lt;/code&gt;. You can write all these tokens with entirely lowercase or uppercase characters.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;names-and-labels&quot;&gt;Names and Labels&lt;/h2&gt;
+
+&lt;p&gt;When you define a module without a name, the assembler raises an error. So, this code is invalid because of the missing module name:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.module
+; ...
+.endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can’t use a temporary name for the module, so both of these declarations raise an issue:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;`TempModule:
+  .module
+  .endmodule
+
+Module4:
+  .module `Temp4
+  .endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Nonetheless, this construct is valid, as here the module uses its identifier for the name, and not its label:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;`Temp5:
+  .module Fifth
+  .endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you need to address the start point of a module, you need to declare it with a label (of course, it may have an ID, too). You can refer to this label as the start of the module. However, you cannot use the module identifier for this purpose:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyModule:
+  .module
+  ld hl,MyModule     ; OK, label name is used
+EndOfMod:
+  .endmodule
+
+  .module OtherModule
+  ld hl,OtherModule  ; Error, module name cannot be used as a label
+  .endmodule
+
+Module3:
+  .module ThirdModule
+  ld hl,Module3      ; OK, label name is used
+  ld de,ThirdModule  ; Error, module name cannot be used as a label
+  .endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The label preceding the &lt;code class=&quot;highlighter-rouge&quot;&gt;.endmodule&lt;/code&gt; statement belongs to the scope of the module.&lt;/p&gt;
+
+&lt;h2 id=&quot;nested-modules&quot;&gt;Nested Modules&lt;/h2&gt;
+
+&lt;p&gt;You can nest modules into each other:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.module Main
+  ; ...
+  .module Nested
+  .endmodule
+  ; ...
+  .module OtherNested
+  ; ...
+    .module DeeplyNested
+      ; ... 
+    .endmodule
+  ; ...
+  .endmodule
+  ; ...
+.endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The full name of modules reflects the hierarchy of their nesting. The modules in this sample have these full names in the order of their declaration:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Main
+Main.Nested
+Main.OtherNested
+Main.OtherNested.DeeplyNested
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The compiler does not allow two modules have the same full name. From this point of view, this naming is valid, even if we have two modules with the name &lt;code class=&quot;highlighter-rouge&quot;&gt;Nested&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.module Main
+  ; ...
+  .module Nested
+  .endmodule
+  ; ...
+  .module OtherNested
+	; ...
+	.module Nested ; OK!
+	.endmodule
+	; ...
+  .endmodule
+  ; ...
+.endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you see, the full names are unique:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Main.Nested
+Main.OtherNested
+Main.OtherNested.Nested
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;label-and-symbol-resolution&quot;&gt;Label and Symbol Resolution&lt;/h2&gt;
+
+&lt;p&gt;With &lt;em&gt;simple identifiers&lt;/em&gt;, the name resolution happens the way you already learned, from the innermost scope toward the outermost one. However, besides simple IDs, you can use &lt;em&gt;scoped identifiers&lt;/em&gt; that have multiple segments.&lt;/p&gt;
+
+&lt;p&gt;Scoped identifiers have this syntax:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt;&lt;/strong&gt;? &lt;em&gt;identifier&lt;/em&gt; (&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;identifier&lt;/em&gt;)*&lt;/p&gt;
+
+&lt;p&gt;When the compiler finds a scoped identifier, it uses a different resolution technique. Instead of starting from the innermost scope toward the outermost, it begins with the current module and traverses toward the nested modules:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.module Main
+  MyValue .equ 1
+  ld a,Main.MyValue        ; ld a,1
+  
+  .module Nested
+    MyValue .equ 11
+  .endmodule
+  
+  ld b,Nested.MyValue      ; ld b,11
+  ld c,Main.Nested.MyValue ; ld c,11
+  
+  .module OtherNested
+    MyValue .equ 12
+    ld d,Nested.MyValue    ; ld d,121
+  
+    .module Nested
+      MyValue .equ 121
+      ld e,Nested.MyValue  ; ld e,121
+      ld h,Main.MyValue    ; ld h,1
+    .endmodule
+
+    ld l,Nested.MyValue    ; ld l,121
+  .endmodule
+  
+.endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can use the same name for modules on different hierarchy levels, such as in this case:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.module Main
+  MyValue .equ 1
+  ld a,Main.MyValue         ; ld a,1
+  
+  .module Nested
+    MyValue .equ 11
+    ld b,Nested.MyValue     ; ld b,111
+	
+    .module Nested
+      MyValue .equ 111
+      ld c,Nested.MyValue   ; ld c,111
+    .endmodule
+
+  .endmodule
+
+.endmodule
+
+.module Nested
+  MyValue .equ 2
+.endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you see, the name &lt;code class=&quot;highlighter-rouge&quot;&gt;Nested&lt;/code&gt; is used in several modules:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Main
+Main.Nested
+Main.Nested.Nested
+Nested
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;With the standard name resolution, we cannot access the &lt;code class=&quot;highlighter-rouge&quot;&gt;MyValue&lt;/code&gt; symbol of the outer &lt;code class=&quot;highlighter-rouge&quot;&gt;Nested&lt;/code&gt; module from within &lt;code class=&quot;highlighter-rouge&quot;&gt;Main.Nested.Nested&lt;/code&gt;, as that module is in a different subtree. In such a situation we can use the global scope token, &lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt;, in front of the scoped identifier. This token instructs the assembler to start identifier resolution from the global module.&lt;/p&gt;
+
+&lt;p&gt;Now, we can access that &lt;code class=&quot;highlighter-rouge&quot;&gt;MyValue&lt;/code&gt; symbol:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.module Main
+  MyValue .equ 1
+  ld a,Main.MyValue         ; ld a,1
+  
+  .module Nested
+    MyValue .equ 11
+    ld b,Nested.MyValue     ; ld b,111
+	
+    .module Nested
+      MyValue .equ 111
+      ld c,Nested.MyValue   ; ld c,111
+      ld d,::Nested.MyValue ; ld d,2 -- !!!
+    .endmodule
+
+  .endmodule
+
+.endmodule
+
+.module Nested
+  MyValue .equ 2
+.endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;using-module-local-names&quot;&gt;Using Module-Local Names&lt;/h2&gt;
+
+&lt;p&gt;You can hide symbols within modules using the module-local identifier notation. Every label and symbol that starts with &lt;code class=&quot;highlighter-rouge&quot;&gt;@&lt;/code&gt; is a private symbol within its module. It means that the particular symbol is visible only within its containing module (and the ones nested in the containing module). In this code, every local identifier can be accessed:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.module Main
+  MyValue .equ 1
+  ld a,Main.MyValue         ; ld a,1
+  
+  .module Nested
+    @MyValue .equ 11
+    ld b,Nested.MyValue     ; ld b,111
+	
+    .module @Nested
+      MyValue .equ 111
+      ld c,@MyValue         ; ld c,11
+      ld d,::Nested.MyValue ; ld d,2
+    .endmodule
+
+    ld e,@MyValue           ; ld e,11
+    ld h,@Nested.MyValue    ; ld h,111
+  .endmodule
+
+.endmodule
+
+.module Nested
+  MyValue .equ 2
+.endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, module-local names cannot be used outside of their containing module, so this code snippet raises an error:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.module Main
+  MyValue .equ 1
+  ld a,Main.MyValue         
+  
+  .module Nested
+	@MyValue .equ 11
+	
+	.module @Nested
+	  MyValue .equ 111
+	  ld c,Nested.@MyValue    ; Error
+	.endmodule
+
+  .endmodule
+
+  ld d,Nested.@Nested.MyValue ; Error
+.endmodule
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">As you have earlier learned, SpectNetIDE uses nested scopes for labels and symbols. When it resolves them to their values, the engine starts from the innermost scope and traverses all outer scopes until it finds the symbol value, or goes through all scopes without success — and it declares the sought symbol undefined. This type of resolution does not allow an outer scope to reach a symbol within a nested scope.</summary></entry><entry><title type="html">Pragmas</title><link href="http://localhost:4000/spectnetide/documents/pragmas" rel="alternate" type="text/html" title="Pragmas" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/pragmas</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/pragmas">&lt;p&gt;The compiler understands several pragmas that — thought they are not Z80 
 instructions — they influence the emitted code. Each pragma has two alternative syntax,
 one with a dot prefix and another without it.&lt;/p&gt;
 
@@ -3039,4 +3403,4 @@ raises an error.&lt;/p&gt;
 &lt;blockquote&gt;
   &lt;p&gt;You cannot use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.continue&lt;/code&gt; statement outside of a loop construct. If you do so, the compiler 
 raises an error.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">Statements are SpectNetIDE specific control flow constructs — thanks again for the inspiration by Simon Brattel — that instruct the compiler about loop-like and conditional compilation.</summary></entry><entry><title type="html">Tool Commands</title><link href="http://localhost:4000/spectnetide/documents/tool-commands" rel="alternate" type="text/html" title="Tool Commands" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/tool-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/tool-commands">&lt;p&gt;Tool Command reference&lt;/p&gt;</content><author><name></name></author><summary type="html">Tool Command reference</summary></entry></feed>
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">Statements are SpectNetIDE specific control flow constructs — thanks again for the inspiration by Simon Brattel — that instruct the compiler about loop-like and conditional compilation.</summary></entry></feed>

@@ -1077,9 +1077,12 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitModuleStatement(Z80AsmParser.ModuleStatementContext context)
         {
-            return IsInvalidContext(context) 
-                ? null 
-                : AddLine(new ModuleStatement(context), context);
+            if (IsInvalidContext(context)) return null;
+            if (context.IDENTIFIER() != null)
+            {
+                AddIdentifier(context.IDENTIFIER());
+            }
+            return AddLine(new ModuleStatement(context), context);
         }
 
         /// <summary>

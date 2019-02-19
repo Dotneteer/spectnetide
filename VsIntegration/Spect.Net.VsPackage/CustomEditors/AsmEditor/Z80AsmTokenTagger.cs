@@ -85,6 +85,9 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 var currentLine = curSpan.Start.GetContainingLine();
                 var textOfLine = currentLine.GetText();
 
+                // --- Just to be sure...
+                if (textOfLine == null) yield break;
+
                 // --- Let's use the Z80 assembly parser to obtain tags
                 var inputStream = new AntlrInputStream(textOfLine);
                 var lexer = new Z80AsmLexer(inputStream);
@@ -93,7 +96,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 var context = parser.asmline();
                 var visitor = new Z80AsmVisitor();
                 visitor.Visit(context);
-                if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
 
                 // --- Check for a block comment
                 var lastStartIndex = 0;
@@ -108,6 +110,9 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     lastStartIndex = blockEndsPos + 2;
                     yield return CreateSpan(currentLine, new TextSpan(blockBeginsPos, blockEndsPos + 2), Z80AsmTokenType.Comment);
                 }
+
+                // --- No code line, no tagging
+                if (!(visitor.LastAsmLine is SourceLineBase asmline)) continue;
 
                 if (asmline is EmittingOperationBase && asmline.InstructionSpan != null)
                 {
@@ -129,29 +134,27 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 if (asmline.KeywordSpan != null)
                 {
                     var type = Z80AsmTokenType.Instruction;
-                    if (asmline is PragmaBase)
+                    switch (asmline)
                     {
-                        type = Z80AsmTokenType.Pragma;
-                    }
-                    else if (asmline is Directive)
-                    {
-                        type = Z80AsmTokenType.Directive;
-                    }
-                    else if (asmline is IncludeDirective)
-                    {
-                        type = Z80AsmTokenType.Include;
-                    }
-                    else if (asmline is MacroInvocation)
-                    {
-                        type = Z80AsmTokenType.MacroInvocation;
-                    }
-                    else if (asmline is ModuleStatement || asmline is ModuleEndStatement)
-                    {
-                        type = Z80AsmTokenType.ModuleKeyword;
-                    }
-                    else if (asmline is StatementBase)
-                    {
-                        type = Z80AsmTokenType.Statement;
+                        case PragmaBase _:
+                            type = Z80AsmTokenType.Pragma;
+                            break;
+                        case Directive _:
+                            type = Z80AsmTokenType.Directive;
+                            break;
+                        case IncludeDirective _:
+                            type = Z80AsmTokenType.Include;
+                            break;
+                        case MacroInvocation _:
+                            type = Z80AsmTokenType.MacroInvocation;
+                            break;
+                        case ModuleStatement _:
+                        case ModuleEndStatement _:
+                            type = Z80AsmTokenType.ModuleKeyword;
+                            break;
+                        case StatementBase _:
+                            type = Z80AsmTokenType.Statement;
+                            break;
                     }
 
                     // --- Retrieve a pragma/directive/instruction
