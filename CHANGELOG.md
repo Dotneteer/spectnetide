@@ -4,8 +4,8 @@ __FEATURE__: Z80 Assembler &mdash; Now you can define octal literals with the __
 or __`O`__ (letter, and not zero) suffix.  
 __FEATURE__: Z80 Assembler &mdash; Now, block comments (__`/*`__ ... __`*/`__) are supported.  
 __FEATURE__: Z80 Assembler &mdash; The set of characters that can be used in identifiers extended.  
-__FEATURE__: Z80 Assembler &mdash; New pragma, __`DEFC`__.  
-
+__FEATURE__: Z80 Assembler &mdash; New pragma, __`DEFC`__.
+__FEATURE__: Z80 Assembler now supports modules/scopes.
 
 ### Version 1.16.0
 __FIX__: Wrong ZX Spectrum keyboard labels fixed.  
