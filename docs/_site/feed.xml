@@ -1,890 +1,184 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-19T18:41:06+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Directives</title><link href="http://localhost:4000/spectnetide/documents/directives" rel="alternate" type="text/html" title="Directives" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/directives</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/directives">&lt;p&gt;The directives of the &lt;strong&gt;SpectNetIDE&lt;/strong&gt; Z80 Assembler representation are used for preprocessing
-— similarly as in the C and C++ programming languages — though their semantics are
-different.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-21T08:25:15+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Disassembly: Annotations</title><link href="http://localhost:4000/spectnetide/documents/annotation-commands" rel="alternate" type="text/html" title="Disassembly: Annotations" /><published>2019-02-01T00:00:00+01:00</published><updated>2019-02-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/annotation-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/annotation-commands">&lt;p&gt;Managing annotations is a unique feature of &lt;strong&gt;SpectNetIDE&lt;/strong&gt;. It is very useful when you re-engineer existing code, including a ZX Spectrum ROM. You can define labels, add end-of-instruction comments, prefix comments to disassembly instructions. Moreover, you can define identifiers for literal values and tell the disassembler to use them for particular instructions instead of the less meaningful numbers.&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;Although you can add comments to the end of directives, they may not have labels.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;These commands allow you to edit the code annotation (both for the ROM and the code in the RAM):&lt;/p&gt;
 
-&lt;h2 id=&quot;the-if-directive&quot;&gt;The #IF Directive&lt;/h2&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Command&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;number&lt;/code&gt;&lt;/em&gt; &lt;em&gt;[&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;]&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Adds a label with the given identifier for the specified address. If the identifier is omitted, removes the label from the address.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;C&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;number&lt;/code&gt;&lt;/em&gt; &lt;em&gt;[&lt;code class=&quot;highlighter-rouge&quot;&gt;text&lt;/code&gt;]&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Adds a tail comment with the given text to the instruction at the specified addres. If no text is specified, the comment is removed.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;P&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;number&lt;/code&gt;&lt;/em&gt; &lt;em&gt;[&lt;code class=&quot;highlighter-rouge&quot;&gt;text&lt;/code&gt;]&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Adds a prefix comment with the given text to the instruction at the specified addres. If no text is specified, the comment is removed.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-&lt;p&gt;You can use this directive for conditional compilation. The argument of the directive is a
-conditional expression, and it determines on which branch the compilation goes on. &lt;strong&gt;#IF&lt;/strong&gt;
-works in concert with &lt;strong&gt;#ELSE&lt;/strong&gt; and &lt;strong&gt;#ENDIF&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;With these commands you can create identifiers for literals, and replace literals with their corresponding identifiers.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Block #1
-#if 2 &amp;gt; 3
-    ld a,b
-#endif
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Command&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;D&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Replaces the literal value within the instruction that starts at the specified address with the given &lt;em&gt;identifier&lt;/em&gt;.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;D&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Removes the literal replacements from instruction that starts at the specified address.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;D&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;#&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Replaces the literal value within the instruction that starts at the specified address with the first available identifier in the symbol table that has the value of the literal.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-; Block #2;
-#if 2 &amp;lt; 3
-    nop
-#else
-    ld b,c
-#endif
+&lt;p&gt;The IDE saves the annotations you add with these commands into the annotations file of your project. The ZX Spectrum ROMs within SpectNetIDE ship with their predefined annotations, but you can change them, too.&lt;/p&gt;
 
-; Block #3
-#if $ &amp;gt; $+2
-    nop
-#else
-    ld b,c
-#endif
+&lt;p&gt;If your change regards to ROM addresses, the &lt;code class=&quot;highlighter-rouge&quot;&gt;.disann&lt;/code&gt; file of the specific ROM file is changed; otherwise, modifications go to your default annotation file (&lt;code class=&quot;highlighter-rouge&quot;&gt;Annotations.disann&lt;/code&gt; in a new project).&lt;/p&gt;</content><author><name></name></author><summary type="html">Managing annotations is a unique feature of SpectNetIDE. It is very useful when you re-engineer existing code, including a ZX Spectrum ROM. You can define labels, add end-of-instruction comments, prefix comments to disassembly instructions. Moreover, you can define identifiers for literal values and tell the disassembler to use them for particular instructions instead of the less meaningful numbers.</summary></entry><entry><title type="html">Overview</title><link href="http://localhost:4000/spectnetide/documents/tool-overview" rel="alternate" type="text/html" title="Overview" /><published>2019-02-01T00:00:00+01:00</published><updated>2019-02-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/tool-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/tool-overview">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; has several tool windows that provide a prompt to enter commands. Such windows are &lt;strong&gt;ZX Spectrum Memory&lt;/strong&gt;, &lt;strong&gt;Z80 Disassembly&lt;/strong&gt;, and &lt;strong&gt;Watch Memory&lt;/strong&gt;.
+Though each of them has different command sets that slightly overlap, they share a common syntax.
+Here, you can find an overview of that syntax.&lt;/p&gt;
+
+&lt;h2 id=&quot;syntax-basics&quot;&gt;Syntax Basics&lt;/h2&gt;
+
+&lt;p&gt;Each &lt;em&gt;command&lt;/em&gt; has a name, and zero, one or more &lt;em&gt;arguments&lt;/em&gt;. Command names are one or two characters, you can use both lowercase and uppercase letters. Commands may use literals, which can be hexadecimal numbers, decimal numbers or identifiers.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Hexadecimal numbers&lt;/em&gt; must use the 0 to 9 digits, or letters from &lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;F&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;f&lt;/code&gt;. If a hexadecimal number would start with a letter, you should add a &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; prefix so that the parser consider it as a number and not as an identifier.&lt;/p&gt;
+
+&lt;p&gt;Decimal numbers should start with a colon (&lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;) and followed by digits.&lt;/p&gt;
+
+&lt;p&gt;Identifiers should start with one a letter or an underscore (&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt;) and may continue with digits, letters, or underscore characters.&lt;/p&gt;
+
+&lt;p&gt;Here are a few examples of literals:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1234      (hexadecimal number!)
+0FA12     (hexadecimal number)
+FA12      (identifier: it starts with a letter!)
+:123      (decimal number)
+MySymbol  (identifier)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Here, &lt;strong&gt;Block #1&lt;/strong&gt; does not generate output, since the condition is false. &lt;strong&gt;Block #2&lt;/strong&gt; emits
-a &lt;code class=&quot;highlighter-rouge&quot;&gt;nop&lt;/code&gt;, as the condition is true. The fals condition value in &lt;strong&gt;Block #3&lt;/strong&gt; moves code
-parsing to the &lt;code class=&quot;highlighter-rouge&quot;&gt;#else&lt;/code&gt; branch, so it emits a &lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,c&lt;/code&gt; instruction.&lt;/p&gt;
-
-&lt;h2 id=&quot;the-ifdef-and-ifndef-directives&quot;&gt;The #IFDEF and #IFNDEF Directives&lt;/h2&gt;
-
-&lt;p&gt;These directives works similarly to #IF. However, these check if a particular symbol has 
-(&lt;strong&gt;#IFDEF&lt;/strong&gt;) or has not (&lt;strong&gt;#IFNDEF&lt;/strong&gt;) defined. So their single argument is an identifier name.&lt;/p&gt;
-
-&lt;h2 id=&quot;the-ifmod-and-ifnmod-directives&quot;&gt;The #IFMOD and #IFNMOD Directives&lt;/h2&gt;
-
-&lt;p&gt;These directives works similarly to #IF. However, these check if the code’s current model is the one 
-specified with the identifier following the &lt;strong&gt;#IFMOD&lt;/strong&gt; or &lt;strong&gt;#IFNMOD&lt;/strong&gt; pragma. Here is a short sample of
-using this directive:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    .model Spectrum48
-
-#ifmod Spectrum128
-    BorderColor: .equ 5
-    RetAddr: .equ #2604
-#else
-    BorderColor: .equ 4
-    RetAddr: .equ #12a2
-#endif
-
-
-Start:
-	.org #8000
-    ld a,BorderColor
-    out (#fe),a
-    jp RetAddr
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You can use only these identifiers with this pragma (case-insensitively): &lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUM48&lt;/code&gt;, 
-&lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUM128&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SPECTRUMP3&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;NEXT&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;the-define-and-undef-directives&quot;&gt;The #DEFINE and #UNDEF Directives&lt;/h2&gt;
-
-&lt;p&gt;With the &lt;strong&gt;#DEFINE&lt;/strong&gt; directive, you can explicitly define a symbol. Such a symbol has no concrete value, 
-just its existence. With &lt;strong&gt;#UNDEF&lt;/strong&gt; you may declare a symbol undefined.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#define SYMB
-
-; Block #1
-#ifdef SYMB
-    ld a,b
-#endif
-
-#undef SYMB
-
-; Block #2;
-#ifdef SYMB
-    nop
-#else
-    ld b,c
-#endif
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;According to this definition, the first block emits a &lt;code class=&quot;highlighter-rouge&quot;&gt;ld, a,b&lt;/code&gt; instruction, the second one a
-&lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,c&lt;/code&gt; instruction.&lt;/p&gt;
-
-&lt;h2 id=&quot;the-include-directive&quot;&gt;The #INCLUDE Directive&lt;/h2&gt;
-
-&lt;p&gt;You can use this directive to load and process a source file from within another source file.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;#INCLUDE&lt;/strong&gt; accepts a string that names a file with its extension. The file name may contain either
-an absolute or a relative path. When a relative path is provided, its strating point is always
-the source file that holds the &lt;strong&gt;#INCLUDE&lt;/strong&gt; directive.&lt;/p&gt;
-
-&lt;p&gt;Assume that this code is in the &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Work&lt;/code&gt; folder:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#include &quot;Symbol.z80Asm&quot;
-#include &quot;./MyRules.z80Asm&quot;
-#include &quot;/Common/scroll.z80Asm&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The compiler will check the &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Work&lt;/code&gt; folder for the first two include filem and
-&lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Work\Commmon&lt;/code&gt; for the third one.&lt;/p&gt;</content><author><name></name></author><summary type="html">The directives of the SpectNetIDE Z80 Assembler representation are used for preprocessing — similarly as in the C and C++ programming languages — though their semantics are different.</summary></entry><entry><title type="html">Expressions</title><link href="http://localhost:4000/spectnetide/documents/expressions" rel="alternate" type="text/html" title="Expressions" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/expressions</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/expressions">&lt;p&gt;The &lt;strong&gt;SpectNetIde&lt;/strong&gt; assembler has a rich syntax for evaluating expressions. You can use the very
-same syntax with the &lt;code class=&quot;highlighter-rouge&quot;&gt;#if&lt;/code&gt; directives, the Z80 instructions, and the compiler statements.&lt;/p&gt;
-
-&lt;p&gt;You can use operands and operators just like in most programming languages. Nevertheless, 
-the &lt;strong&gt;SpectNetIde&lt;/strong&gt; implementation has its particular way of evaluating expressions:&lt;/p&gt;
+&lt;p&gt;In the sections providing detailed command reference, you will meet these elements:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Expressions can be one of these types:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;em&gt;Booleans&lt;/em&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;)&lt;/li&gt;
-      &lt;li&gt;&lt;em&gt;integers&lt;/em&gt; (64-bit)&lt;/li&gt;
-      &lt;li&gt;&lt;em&gt;floating point numbers&lt;/em&gt; (64-bit precision)&lt;/li&gt;
-      &lt;li&gt;&lt;em&gt;strings&lt;/em&gt; (with 8-bit characters)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;The assembler applies implicit conversion whenever it’s possible.
-    &lt;ul&gt;
-      &lt;li&gt;Floating point numbers are truncated to integer values.&lt;/li&gt;
-      &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; Boolean literal is represented with the integer value &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;; &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;.&lt;/li&gt;
-      &lt;li&gt;When the assembler needs a Boolean value, &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; is taken into account as &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;, any other values as &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;.&lt;/li&gt;
-      &lt;li&gt;There is no implicit conversion between strings and any numeric values.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;When the compiler needs a 16-bit value (for example, &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,NNNN&lt;/code&gt;), it uses the rightmost 
-16 bits of an expression’s value.&lt;/li&gt;
-  &lt;li&gt;When a Z80 operation (for example, &lt;code class=&quot;highlighter-rouge&quot;&gt;ld a,NN&lt;/code&gt;) needs an 8-bit value, it utilizes the 
-rightmost 8 bits.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;number&lt;/em&gt;: hexadecimal or decimal number.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;identifier&lt;/em&gt;: an identifier, as specified earlier.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;literal&lt;/em&gt;: a hexadecimal number, a decimal number, or an identifier.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;text&lt;/em&gt;: a text that contains arbitrary characters, including spaces, punctuations, and so on.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;[optional]&lt;/em&gt;: the argument is optional.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;In the future, these compiler features may change by issuing a warning in case of
-arithmetic overflow.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;h2 id=&quot;identifier-resolution&quot;&gt;Identifier Resolution&lt;/h2&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;Besides the parentheses — &lt;code class=&quot;highlighter-rouge&quot;&gt;(&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;)&lt;/code&gt; — you can use square brackets 
-— &lt;code class=&quot;highlighter-rouge&quot;&gt;[&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;]&lt;/code&gt; — to group operations and change operator precedence.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; This is valid
-ld hl,(Offset+#20)*2+BaseAddr
-
-; Just like this
-ld hl,[Offset+#20]*2+BaseAddr
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;instant-and-late-expression-evaluation&quot;&gt;Instant and Late Expression Evaluation&lt;/h2&gt;
-
-&lt;p&gt;Depending on the context in which an expression is used, the compiler evaluates it instantly or
-decides to postpone the evaluation. For example, when you use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt; pragma, the compiler applies
-immediate evaluation. Let’s assume, this is your code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Start: .org #8000 + Later
-; code body (omitted)
-Later: .db #ff
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The value of &lt;code class=&quot;highlighter-rouge&quot;&gt;Later&lt;/code&gt; depends on the address in &lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt;, and the &lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt; address depends on &lt;code class=&quot;highlighter-rouge&quot;&gt;Later&lt;/code&gt;, 
-so this declaration could not be resolved properly, it’s like a deadlock. To avoid such situations, 
-the &lt;code class=&quot;highlighter-rouge&quot;&gt;.org&lt;/code&gt; pragma would raise an error, as the moment of its evaluation the &lt;code class=&quot;highlighter-rouge&quot;&gt;Later&lt;/code&gt; symbol’s value is 
-unknown.&lt;/p&gt;
-
-&lt;p&gt;For most Z80 instructions the compiler uses late evaluation:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Start: .org #6000
-    ld hl,(MyVar)
-    ; code body omitted
-    ret
-MyVar: .defs 2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;When the compiler reaches the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,(MyVar)&lt;/code&gt; instruction, it does not know the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;MyVar&lt;/code&gt;. Nonetheless,
-it does not stop with an error, but generates the machine code for &lt;code class=&quot;highlighter-rouge&quot;&gt;ld hl,(0)&lt;/code&gt;, namely #21, #00, and #00; 
-takes a note (it is called a &lt;em&gt;fixup&lt;/em&gt;) when &lt;code class=&quot;highlighter-rouge&quot;&gt;MyVal&lt;/code&gt; gets a value, the two #00 bytes generated at address #6001 
-should be updated accordingly.&lt;/p&gt;
-
-&lt;h2 id=&quot;operands&quot;&gt;Operands&lt;/h2&gt;
-&lt;p&gt;You can use the following operands in epressions:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Boolean, Decimal and hexadecimal literals&lt;/li&gt;
-  &lt;li&gt;Character literals&lt;/li&gt;
-  &lt;li&gt;Identifiers&lt;/li&gt;
-  &lt;li&gt;The current assembly address&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;String literals cannot be used as operands.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;operators&quot;&gt;Operators&lt;/h2&gt;
-
-&lt;p&gt;You can use about a dozen operators, including unary, binary and ternary ones. In this section
-you will learn about them. I will introduce them in descending order of their precendence.&lt;/p&gt;
-
-&lt;h3 id=&quot;conditional-operator&quot;&gt;Conditional Operator&lt;/h3&gt;
-
-&lt;p&gt;The assembler supports using only one ternary operator, the conditional operator:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;conditional-expression&lt;/em&gt; &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;true-value&lt;/em&gt; &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;false-value&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;This operation results in -1:&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;2 &amp;gt; 3 ? 2 : -1&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;When the &lt;em&gt;conditional-expression&lt;/em&gt; evaluates to true, the operation results 
-in &lt;em&gt;true-value&lt;/em&gt;; otherwise in &lt;em&gt;false-value&lt;/em&gt;.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Conditional expressions are evaluated from right to left, in contrast to binary operators,
-which use left-to-right evaluation.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;binary-bitwise-operators&quot;&gt;Binary Bitwise Operators&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;Bitwise OR&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;^&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;2&lt;/td&gt;
-      &lt;td&gt;Bitwise XOR&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;3&lt;/td&gt;
-      &lt;td&gt;Bitwise AND — string concatenation with new line&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; operator can be applied on two strings. If you do so, the compiler concatenates the two 
-strings and puts a &lt;code class=&quot;highlighter-rouge&quot;&gt;\r\n&lt;/code&gt; (next line) character pair between them.&lt;/p&gt;
-  &lt;h3 id=&quot;relational-operators&quot;&gt;Relational Operators&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;==&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;Equality&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;!=&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;Non-equality&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;Less than&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;Less than or equal&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;Greater than&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;=&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;Greater than or equal&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;shift-operators&quot;&gt;Shift Operators&lt;/h3&gt;
-
-&lt;p&gt;The bits of the left operand are shifted by the number of bits given by the right operand.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;6&lt;/td&gt;
-      &lt;td&gt;Shift left&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;6&lt;/td&gt;
-      &lt;td&gt;Shift right&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;basic-arithmetic-operators&quot;&gt;Basic Arithmetic Operators&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;7&lt;/td&gt;
-      &lt;td&gt;Addition — string concatenation&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;7&lt;/td&gt;
-      &lt;td&gt;Subtraction&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;8&lt;/td&gt;
-      &lt;td&gt;Multiplication&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;8&lt;/td&gt;
-      &lt;td&gt;Division&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;8&lt;/td&gt;
-      &lt;td&gt;Modulo calculation&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h1 id=&quot;min-max-operators&quot;&gt;Min-Max operators&lt;/h1&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;?&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;9&lt;/td&gt;
-      &lt;td&gt;Minimum of the left and right operand&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;?&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;9&lt;/td&gt;
-      &lt;td&gt;Maximum of the left and right operand&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;unary-operators&quot;&gt;Unary operators&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;10&lt;/td&gt;
-      &lt;td&gt;Unary plus&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;10&lt;/td&gt;
-      &lt;td&gt;Unary minus&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;~&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;10&lt;/td&gt;
-      &lt;td&gt;Unary bitwise NOT&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;!&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;10&lt;/td&gt;
-      &lt;td&gt;Unary logical NOT&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Do not forget, you can change the defult precendence with &lt;code class=&quot;highlighter-rouge&quot;&gt;(&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;)&lt;/code&gt;, or with &lt;code class=&quot;highlighter-rouge&quot;&gt;[&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;]&lt;/code&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;functions&quot;&gt;Functions&lt;/h2&gt;
-
-&lt;p&gt;The Z80 assembler provides a number of functions that can have zero, one, or more arguments. 
-Several functions (for example as &lt;code class=&quot;highlighter-rouge&quot;&gt;rnd()&lt;/code&gt;) have overloads with different signatures. Each 
-function has a name and a parameter list wrapped into parentheses, the parameters are separated
-by a comma. Of course, parameters can be expressions, and they may invoke other functions, too.
-Here are a few samples:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lenght(&quot;Hello&quot; + &quot; world&quot;)
-max(value1, value2)
-sin(pi()/2)
-sqrt(pear + 3.0)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The &lt;strong&gt;SpectNetIde&lt;/strong&gt; support these function signatures:&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Signature&lt;/th&gt;
-      &lt;th&gt;Value&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;abs(integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The absolute value of an &lt;em&gt;integer&lt;/em&gt; number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;abs(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The absolute value of a &lt;em&gt;float&lt;/em&gt; number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;acos(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The angle whose cosine is the specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;asin(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The angle whose sine is the specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;atan(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The angle whose tangent is the specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;atan2(float, float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The angle whose tangent is the quotient of two specified numbers.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;attr(integer, integer, boolean, boolean)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Retrieves the color attribute byte value defined by &lt;code class=&quot;highlighter-rouge&quot;&gt;ink&lt;/code&gt; (first argument, 0 to 7), &lt;code class=&quot;highlighter-rouge&quot;&gt;paper&lt;/code&gt; (second argument, 0 to 7), &lt;code class=&quot;highlighter-rouge&quot;&gt;bright&lt;/code&gt; (third argument, 0 - non-zero), and &lt;code class=&quot;highlighter-rouge&quot;&gt;flash&lt;/code&gt; (fourth argument, 0 - non-zero). The &lt;code class=&quot;highlighter-rouge&quot;&gt;bright&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;flash&lt;/code&gt; values are optional.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;attraddr(integer, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Returns the memory address of the byte specified screen attribute in the given line (first argument, from top to bottom, 0-192) and column (second argumment, from left to right, 0-255).&lt;code class=&quot;highlighter-rouge&quot;&gt;ceiling(float)&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;bright(boolean)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Retrieves the bright flag defined by the attribute (0 - non-zero). Can be ORed to create color attribute value.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ceiling(float&lt;/code&gt;)&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The smallest integral value that is greater than or equal to the specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cos(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The cosine of the specified angle.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cosh(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The hyperbolic cosine of the specified angle.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;exp(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;strong&gt;e&lt;/strong&gt; raised to the specified power.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;fill(string, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Creates a new string by concatenating the specified one with the given times.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;flash(boolean)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Retrieves the flash flag defined by the argument (0 - non-zero). Can be ORed to create color attribute value.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;floor(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The largest integer less than or equal to the specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;frac(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The fractional part of the specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;high(integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The leftmost 8 bits (MSB) of a 16-bit integer number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ink(integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Retrieves the three ink bits defined by the color argument (0 to 7). Can be ORed to create color attribute value.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;int(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The integer part of the specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lcase(string)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The lowercase version of the input string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;left(string, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Takes the leftmost characters of the string with the length specified.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;len(string)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The length of the specified string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;length(string)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The length of the specified string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;log(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The natural (base &lt;strong&gt;e&lt;/strong&gt;) logarithm of a specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;log(float, float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The logarithm of a specified number in a specified base.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;log10(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The base 10 logarithm of a specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;low(integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The rightmost 8 bits (LSB) of an integer number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lowercase(string)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The lowercase version of the input string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;max(integer, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The larger of two &lt;em&gt;integer&lt;/em&gt; numbers.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;max(float, float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The larger of two &lt;em&gt;float&lt;/em&gt; numbers.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;min(integer, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The smaller of two &lt;em&gt;integer&lt;/em&gt; numbers.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;min(float, float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The smaller of two &lt;em&gt;float&lt;/em&gt; numbers.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;nat()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Represents the natural logarithmic base, specified by the constant, &lt;strong&gt;e&lt;/strong&gt;.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;paper(integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;retrieves the three paper bits defined by the argument (0 to 7). Can be ORed to create color attribute value.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pi()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Represents the ratio of the circumference of a circle to its diameter, specified by the constant, &lt;strong&gt;π&lt;/strong&gt;.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pow(float, float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The specified number raised to the specified power.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;right(string, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Takes the rightmost characters of the string with the length specified.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;round(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Rounds a &lt;em&gt;float&lt;/em&gt; value to the nearest integral value.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;round(float, int)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Rounds a &lt;em&gt;float&lt;/em&gt; value to a specified number of fractional digits.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rnd()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Returns a random 32-bit number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rnd(integer, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Returns a random 32-bit integer between the first and second number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;scraddr(integer, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Retrieves the memory address of the screen pixel byte in the specified line (first argument, from top to bottom, 0-192) and in the specified column (second argument, from left to right, 0-255).&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sign(integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Returns an integer that indicates the sign of an &lt;em&gt;integer&lt;/em&gt; number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sign(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Returns an integer that indicates the sign of a &lt;em&gt;float&lt;/em&gt; number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sin(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The sine of the specified angle.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sinh(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The hyperbolic sine of the specified angle.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqrt(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The square root of a specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;str(bool)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Convert the input value to a string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;str(integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Convert the input value to a string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;str(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Convert the input value to a string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;substr(string, integer, integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Takes a substring of the specified string from the given position (zero-based) and length.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tan(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The tangent of the specified angle.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tanh(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The hyperbolic tangent of the specified angle.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;truncate(float)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Calculates the integral part of a specified number.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ucase(string)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The uppercase version of the input string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;uppercase(string)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The uppercase version of the input string.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;word(integer)&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;The rightmost 16 bits of an integer number.&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;Functions have the same precedence as the unary operators (such as the unary &lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;).&lt;/p&gt;
-
-&lt;h2 id=&quot;parse-time-functions&quot;&gt;Parse Time Functions&lt;/h2&gt;
-
-&lt;p&gt;The compiler provides a construct, &lt;em&gt;parse time functions&lt;/em&gt;. These functions can receive a Z80 assembly language token
-and transform them into other language constructs. As the name suggests, these function run in the parsing phase, before
-the compiler emits code.&lt;/p&gt;
-
-&lt;h3 id=&quot;the-lreg-and-hreg-parse-time-functions&quot;&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;lreg()&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;hreg()&lt;/code&gt; Parse Time Functions&lt;/h3&gt;
-
-&lt;p&gt;These functions accept a 16-bit register pair token (&lt;strong&gt;BC&lt;/strong&gt;, &lt;strong&gt;DE&lt;/strong&gt;, &lt;strong&gt;HL&lt;/strong&gt;, &lt;strong&gt;IX&lt;/strong&gt;, or &lt;strong&gt;IY&lt;/strong&gt;), and retrieve the lower
-or higher 8-bit register half of their input. Here is a sample code snippet:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld a,lreg(bc)
-ld c,hreg(hl)
-ld a,lreg(ix)
-ld l,hreg(de)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The compiler sees as if you wrote this:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ld a,c
-ld c,h
-ld a,ixl
-ld l,d
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;the-textof-parse-time-function&quot;&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;textof()&lt;/code&gt; Parse Time Function&lt;/h3&gt;
-
-&lt;p&gt;You can use &lt;code class=&quot;highlighter-rouge&quot;&gt;textof()&lt;/code&gt;, which accepts these kinds of tokens: mnemonic, register, register indirection, C port, 
-or condition. This function translates these tokens into uppercase string constants that represent them.
-Here is a sample:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.dm textof(ldir)
-.dm textof(bc)
-.dm textof((de))
-.dm textof((c))
-.dm textof(nz)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The compiler sees as if you wrote this code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.dm &quot;LDIR&quot;
-.dm &quot;BC&quot;
-.dm &quot;(DE)&quot;
-.dm &quot;(C)&quot;
-.dm &quot;NZ&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">The SpectNetIde assembler has a rich syntax for evaluating expressions. You can use the very same syntax with the #if directives, the Z80 instructions, and the compiler statements.</summary></entry><entry><title type="html">How the assembler works</title><link href="http://localhost:4000/spectnetide/documents/how-assembler-works" rel="alternate" type="text/html" title="How the assembler works" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/how-assembler-works</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/how-assembler-works">&lt;p&gt;The assembler compiles the code in three phases:&lt;/p&gt;
+&lt;p&gt;When executing a command, identifiers are translated into addresses. During the resolution process, the command parsing engine resolves identifiers in these steps:&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;It takes the source code and runs a preprocessor that parses the entire code, and applies the
-&lt;em&gt;directives&lt;/em&gt; in the code. You can easily recognize directives, as they start with &lt;code class=&quot;highlighter-rouge&quot;&gt;#&lt;/code&gt;, such as
-&lt;code class=&quot;highlighter-rouge&quot;&gt;#ifdef&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#endif&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#define&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#include&lt;/code&gt; and others. During the preprocessing phase,
-the assembler detects the syntax errors, loads and processes the included files. The result is 
-a &lt;em&gt;digested syntax tree&lt;/em&gt; that does not contain directives anymore, only &lt;em&gt;instructions&lt;/em&gt;, &lt;em&gt;pragmas&lt;/em&gt;,
-and &lt;em&gt;statements&lt;/em&gt;.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The assembler collects macro definitions and stores their syntax tree so that later it can use them when macros are invoked with their actual parameters.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The assembler goes through the digested syntax tree and emits code. During this operation, it needs
-to evaluate expressions, resolve symbols and identifiers to their actual values. Because the assembler 
-progresses from the first line to the last, it may happen that it cannot get the value of an identifier
-which is defined somewhere later in the code. When the assembler detects such a situation, it makes 
-a note of it — it creates a &lt;em&gt;fixup&lt;/em&gt; entry.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The assembler goes through all fixup entries and resolves symbols that were not defined in
-the previous phase. Of course, it might find unknows symbols. If this happens, the assembler reports
-an error.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
+  &lt;li&gt;Checks the output of the last compilation. If the identifier is found, its value is taken from the Assembler’s symbol table.&lt;/li&gt;
+  &lt;li&gt;Checks the labels and symbols in the user annotations (by default stored in the Annotations.disann file). If the identifier is found, its value is taken from the symbol table of the annotation.&lt;/li&gt;
+  &lt;li&gt;Checks the labels and symbols in the current ROM’s annotations. If the identifier is found, its value is taken from the symbol table of the ROM annotation.&lt;/li&gt;
+  &lt;li&gt;The identifier cannot be resolved, the command parsing engine signs an error.&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">SpectNetIDE has several tool windows that provide a prompt to enter commands. Such windows are ZX Spectrum Memory, Z80 Disassembly, and Watch Memory. Though each of them has different command sets that slightly overlap, they share a common syntax. Here, you can find an overview of that syntax.</summary></entry><entry><title type="html">Disassembly: Memory Sections</title><link href="http://localhost:4000/spectnetide/documents/memory-section-commands" rel="alternate" type="text/html" title="Disassembly: Memory Sections" /><published>2019-02-01T00:00:00+01:00</published><updated>2019-02-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/memory-section-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/memory-section-commands">&lt;p&gt;These commands instructs the disassembly tool how to map a certain memory section into disassembly
+output. The &lt;em&gt;literal1&lt;/em&gt; and &lt;em&gt;literal2&lt;/em&gt; values specify the memory range. Be aware, &lt;em&gt;literal1&lt;/em&gt; is inclusive, 
+but &lt;em&gt;literal2&lt;/em&gt; is exclusive.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Command&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MD&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Creates a disassembly section — this section of memory is represented as a flow id Z80 instructions.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MB&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Creates a byte section. The contents of this memory area is displayed as bytes with the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.defb&lt;/code&gt;&lt;/strong&gt; pragma.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MW&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Creates a word section. The contents of this memory area is displayed as bytes with the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.defw&lt;/code&gt;&lt;/strong&gt; pragma.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MS&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Skip section — the view displays a simple &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.skip&lt;/code&gt;&lt;/strong&gt; pragma for the section.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MC&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Calculator section. The disassembler takes these bytes into account as the byte code of the ZX Spectrum’s RST #28 calculator.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The IDE saves the memory map you set up with these commands into the annotations file of your project. The ZX Spectrum ROMs within SpectNetIDE ship with their memory map set, but you can change them, too.&lt;/p&gt;
+
+&lt;p&gt;If your change regards to ROM addresses, the &lt;code class=&quot;highlighter-rouge&quot;&gt;.disann&lt;/code&gt; file of the specific ROM file is changed; otherwise, memory map modifications go to your default annotation file (&lt;code class=&quot;highlighter-rouge&quot;&gt;Annotations.disann&lt;/code&gt; in a new project).&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;Several pragmas and statements intend to evaluate an expression in phase 3. If they find an
-unresolved symbol during that phase, they do not create a fixup entry but immediately report an error.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">The assembler compiles the code in three phases:</summary></entry><entry><title type="html">Labels and Symbols</title><link href="http://localhost:4000/spectnetide/documents/labels-and-symbols" rel="alternate" type="text/html" title="Labels and Symbols" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/labels-and-symbols</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/labels-and-symbols">&lt;p&gt;In Z80 assembly, you can define labels and symbols. Both constructs are syntactically the same, but there is some difference in their semantics. While we define labels to mark addresses (code points) in the program so that we can jump to those addresses, read or write their contents, symbols are not as specific, they just store values we intend to use.
-From now on, I will mention “label” for both constructs and will do otherwise only when the context requires.
-When you write a &lt;strong&gt;SpectNetIDE&lt;/strong&gt; assembly instruction, you can start the line with a label:&lt;/p&gt;
+  &lt;p&gt;&lt;strong&gt;Hint&lt;/strong&gt;: When you define memory maps, avoid those that overlap the ROM/RAM boundary.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">These commands instructs the disassembly tool how to map a certain memory section into disassembly output. The literal1 and literal2 values specify the memory range. Be aware, literal1 is inclusive, but literal2 is exclusive.</summary></entry><entry><title type="html">Navigation and View Commands</title><link href="http://localhost:4000/spectnetide/documents/memory-commands" rel="alternate" type="text/html" title="Navigation and View Commands" /><published>2019-02-01T00:00:00+01:00</published><updated>2019-02-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/memory-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/memory-commands">&lt;p&gt;This section describes the navigation and view commands you can use in the &lt;strong&gt;ZX Spectrum Memory&lt;/strong&gt;, and &lt;strong&gt;Z80 Disassembly&lt;/strong&gt; tool windows.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyStart: ld hl,0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;navigation-command&quot;&gt;Navigation Command&lt;/h2&gt;
 
-&lt;p&gt;Here, in this sample, &lt;code class=&quot;highlighter-rouge&quot;&gt;MyStart&lt;/code&gt; is a label. The assembler allows you to omit the colon after the label name, so this line is valid:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;G&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyStart ld hl,0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Sets the top position of the ZX Spectrum tool window to the specified address. &lt;em&gt;Note:&lt;/em&gt; The tool window displays 
+the memory contents in 8-byte sections, so the given address is aligned to the closest segment.&lt;/p&gt;
 
-&lt;p&gt;Some developers like to put a label in a separate line from the instruction it belongs. You can use the same hanging label style within &lt;strong&gt;SpectNetIDE&lt;/strong&gt;. In this case, the label should go &lt;em&gt;before&lt;/em&gt; its instruction. Take a look at this code snippet:&lt;/p&gt;
+&lt;h2 id=&quot;banking-commands&quot;&gt;Banking Commands&lt;/h2&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyStart:
-  ld hl,0
-MyNext
-  ; Use B as a counter
-  ld b,32
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;em&gt;Note:&lt;/em&gt; This commands are available with the Spectrum 128K, Spectrum +3E, and Spectrum Next models only.&lt;/p&gt;
 
-&lt;p&gt;This code is entirely correct. Note, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ld b,32&lt;/code&gt; instruction belongs to the &lt;code class=&quot;highlighter-rouge&quot;&gt;MyNext&lt;/code&gt; label. As you see from the sample, the colon character is optional for hanging labels, too. You can have multiple line breaks between a label and its instruction, and the space can include comments.&lt;/p&gt;
+&lt;h3 id=&quot;select-rom-page&quot;&gt;Select ROM Page&lt;/h3&gt;
 
-&lt;h2 id=&quot;label-and-symbol-declarations&quot;&gt;Label and Symbol Declarations&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;R&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;number&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
 
-&lt;p&gt;As you will learn later, you can define symbols with the &lt;code class=&quot;highlighter-rouge&quot;&gt;.EQU&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.VAR&lt;/code&gt; pragmas. While &lt;code class=&quot;highlighter-rouge&quot;&gt;.EQU&lt;/code&gt; allows you to assign a constant value to a symbol — and so it cannot change its value after the declaration, &lt;code class=&quot;highlighter-rouge&quot;&gt;.VAR&lt;/code&gt; let’s you re-assign the initial value.&lt;/p&gt;
+&lt;p&gt;Displays the ROM with the specified index. When showing the memory contents, the addresses between &lt;code class=&quot;highlighter-rouge&quot;&gt;#0000&lt;/code&gt; 
+and &lt;code class=&quot;highlighter-rouge&quot;&gt;#3fff&lt;/code&gt; display the contents of this ROM. With a Spectrum 128K, you can use indexes &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;, as this model has two ROMs.
+With a Spectrum +3E model, you can use indexes from &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;3&lt;/code&gt;, supporting the four ROMs of such a model.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; supports the idea of lexical scopes. When you create the program, it starts with a global (outermost) lexical scope. Particular language elements, such a &lt;em&gt;statements&lt;/em&gt; create their own nested lexical scope. Labels and symbols are always created within the current lexical scope. Nonetheless, when resolving them, the assembler starts with the innermost scope and goes through all outers scopes until it manages to find the label declaration.
-This mechanism means that you can declare labels within a nested scope so that those hide labels and symbols in outer scopes.
-You can learn more about this topic in the &lt;strong&gt;Statements&lt;/strong&gt; section.&lt;/p&gt;
+&lt;p&gt;In this mode, the tool window displays only the contents of the selected ROM, and no other parts of the memory.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; also supports modules, which allow you to use namespace-like constructs (see the Modules section for details).&lt;/p&gt;
+&lt;h3 id=&quot;select-memory-bank&quot;&gt;Select Memory Bank&lt;/h3&gt;
 
-&lt;h2 id=&quot;temporary-labels&quot;&gt;Temporary Labels&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;B&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;number&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
 
-&lt;p&gt;The assembler considers labels that start with a backtick (`) character as temporary labels. Their scope is the area between the last persistent label preceding the temporary and the first persistent label following the temporary one.&lt;/p&gt;
+&lt;p&gt;Displays the RAM bank with the specified index. When displaying the memory contents, the addresses between &lt;code class=&quot;highlighter-rouge&quot;&gt;#0000&lt;/code&gt; 
+and &lt;code class=&quot;highlighter-rouge&quot;&gt;#3fff&lt;/code&gt; display the contents of this RAM bank. Indexes can be between &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;7&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;This code snippet demonstrates this concept:&lt;/p&gt;
+&lt;p&gt;In this mode, the tool window displays only the contents of the selected RAM bank, and no other parts of the memory.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SetPixels:        ; Persistent label
-  ld hl, #4000
-  ld a,#AA
-  ld b,#20
-`loop:            ; Temporary label (scope #1)
-  ld (hl),a
-  inc hl
-  djnz `loop
-SetAttr:          ; Persistent label, scope #1 disposed here
-  ld hl,#5800
-  ld a,#32
-  ld b,#20
-`loop:            ; Temporary label (scope #2)
-  ld (hl),a
-  inc hl
-  djnz `loop
-  ret
+&lt;h3 id=&quot;select-full-memory-mode&quot;&gt;Select Full Memory Mode&lt;/h3&gt;
 
-; scope #2 still lives here
-; ...
-Another: ; Persistent label, scope #2 disposed here
-  ld a,b
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;M&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;As you see, the two occurrences of &lt;strong&gt;`loop&lt;/strong&gt;  belong to two separate temporary scopes. The first scope is between from &lt;code class=&quot;highlighter-rouge&quot;&gt;SetPixels&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;SetAttr&lt;/code&gt;, the second one between &lt;code class=&quot;highlighter-rouge&quot;&gt;SetAttr&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Another&lt;/code&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">In Z80 assembly, you can define labels and symbols. Both constructs are syntactically the same, but there is some difference in their semantics. While we define labels to mark addresses (code points) in the program so that we can jump to those addresses, read or write their contents, symbols are not as specific, they just store values we intend to use. From now on, I will mention “label” for both constructs and will do otherwise only when the context requires. When you write a SpectNetIDE assembly instruction, you can start the line with a label:</summary></entry><entry><title type="html">Language structure</title><link href="http://localhost:4000/spectnetide/documents/language-structure" rel="alternate" type="text/html" title="Language structure" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/language-structure</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/language-structure">&lt;p&gt;Each line of the source code is a declaration unit and is parsed in its own context. Such a 
+&lt;p&gt;Displays the entire addressable (64K) memory, exactly as the Z80 CPU sees it. Displays the currently selected RAM
+in the &lt;code class=&quot;highlighter-rouge&quot;&gt;#0000&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;#3FFF&lt;/code&gt; address range, Bank 5 in the &lt;code class=&quot;highlighter-rouge&quot;&gt;#4000&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;#7FFF&lt;/code&gt; range, Bank 2 between &lt;code class=&quot;highlighter-rouge&quot;&gt;#8000&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;#BFFF&lt;/code&gt;.
+Uses the currently paged bank for the &lt;code class=&quot;highlighter-rouge&quot;&gt;#C000&lt;/code&gt;..&lt;code class=&quot;highlighter-rouge&quot;&gt;#FFFF&lt;/code&gt; range.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Right now, these views cannot handle the special banking modes available in the Spectrum +3E model (through the &lt;code class=&quot;highlighter-rouge&quot;&gt;#1ffd&lt;/code&gt; port).
+This feature will be implemented later.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">This section describes the navigation and view commands you can use in the ZX Spectrum Memory, and Z80 Disassembly tool windows.</summary></entry><entry><title type="html">Language structure</title><link href="http://localhost:4000/spectnetide/documents/language-structure" rel="alternate" type="text/html" title="Language structure" /><published>2019-01-01T00:00:00+01:00</published><updated>2019-01-01T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/language-structure</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/language-structure">&lt;p&gt;Each line of the source code is a declaration unit and is parsed in its own context. Such a 
 source code line can be one of these constructs:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;A Z80 &lt;em&gt;instruction&lt;/em&gt;, which can be directly compiled to binary code (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;ld bc,#12AC&lt;/code&gt;)&lt;/li&gt;
