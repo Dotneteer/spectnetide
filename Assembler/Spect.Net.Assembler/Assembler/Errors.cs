@@ -100,6 +100,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0428 = "Z0428";
         public const string Z0429 = "Z0429";
         public const string Z0430 = "Z0430";
+        public const string Z0431 = "Z0431";
 
         public const string Z0500 = "Z0500";
 
@@ -193,6 +194,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0428, "You cannot define a module without a name." },
             { Z0429, "Module with name '{0}' already exists." },
             { Z0430, "You cannot define a module with a temporary name ({0})." },
+            { Z0431, "Only one HDISP prgama can be used within a code segment." },
             { Z0500, "ERROR: {0}" },
         };
 

@@ -264,6 +264,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitDispPragma([NotNull] Z80AsmParser.DispPragmaContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.hdispPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHdispPragma([NotNull] Z80AsmParser.HdispPragmaContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.equPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

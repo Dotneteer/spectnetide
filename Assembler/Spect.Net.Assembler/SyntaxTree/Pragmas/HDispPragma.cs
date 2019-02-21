@@ -5,12 +5,12 @@ using Spect.Net.Assembler.SyntaxTree.Expressions;
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
-    /// This class represents the DISP pragma
+    /// This class represents the HDISP pragma
     /// </summary>
-    public sealed class DispPragma : PragmaBase
+    public sealed class HDispPragma : PragmaBase
     {
         /// <summary>
-        /// The DISP parameter
+        /// The HDISP parameter
         /// </summary>
         public ExpressionNode Expr { get; set; }
     }

@@ -223,6 +223,59 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void HDispPragmaWorksAsExpected1()
+        {
+            // --- Act
+            var visitor = Parse(".hdisp 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as HDispPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void HDispPragmaWorksAsExpected2()
+        {
+            // --- Act
+            var visitor = Parse(".HDISP 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as HDispPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void HDispPragmaWorksAsExpected3()
+        {
+            // --- Act
+            var visitor = Parse("hdisp 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as HDispPragma;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void HDispPragmaWorksAsExpected4()
+        {
+            // --- Act
+            var visitor = Parse("displacement HDISP 8000H");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as HDispPragma;
+            line.ShouldNotBeNull();
+            line.Label.ShouldBe("DISPLACEMENT");
+            line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
         public void EquPragmaWorksAsExpected1()
         {
             // --- Act

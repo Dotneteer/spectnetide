@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -416,6 +417,57 @@ namespace Spect.Net.VsPackage.Z80Programs
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Saves the output to Intel HEX file format
+        /// </summary>
+        /// <param name="filename">Filename</param>
+        /// <param name="output">Assembly output to save</param>
+        public string SaveIntelHexFile(string filename, AssemblerOutput output)
+        {
+            const int ROW_LEN = 0x80;
+            var hexOut = new StringBuilder(4096);
+            foreach (var segment in output.Segments)
+            {
+                var offset = 0;
+                while (offset + ROW_LEN < segment.EmittedCode.Count)
+                {
+                    // --- Write an entire data row
+                    WriteDataRecord(segment, offset, ROW_LEN);
+                    offset += ROW_LEN;
+                }
+                // --- Write the left of the data row
+                var leftBytes = segment.EmittedCode.Count - offset;
+                WriteDataRecord(segment, offset, leftBytes);
+            }
+            // --- Write End-Of-File record
+            hexOut.AppendLine(":00000001FF");
+
+            // --- Save the data to a file
+            var intelHexString = hexOut.ToString();
+            if (filename != null)
+            {
+                File.WriteAllText(filename, intelHexString);
+            }
+            return intelHexString;
+
+            void WriteDataRecord(BinarySegment segment, int offset, int bytesCount)
+            {
+                if (bytesCount == 0) return;
+                var addr = (ushort)(segment.StartAddress + offset + (segment.HDisplacement ?? 0));
+                hexOut.Append($":{bytesCount:X2}{addr:X4}00"); // --- Data record header
+                var checksum = bytesCount + (addr >> 8) + (addr & 0xFF);
+                for (var i = offset; i < offset + bytesCount; i++)
+                {
+                    var data = segment.EmittedCode[i];
+                    checksum += data;
+                    hexOut.Append($"{data:X2}");
+                }
+                var chk = (byte) (256 - (checksum & 0xff));
+                hexOut.Append($"{chk:X2}");
+                hexOut.AppendLine();
+            }
         }
 
         /// <summary>

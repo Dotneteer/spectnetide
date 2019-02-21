@@ -236,15 +236,113 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Act
             var output = compiler.Compile(@"
                 .org #6400
-                .disp #1000
+                .disp 0
                 ld a,b");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
-            output.Segments[0].Displacement.Value.ShouldBe((ushort)0x1000);
+            output.Segments[0].Displacement.Value.ShouldBe((ushort)0x000);
             output.Segments[0].EmittedCode.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void HDispPragmaWorksWithNegativeDisplacement()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                .hdisp -100
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
+            output.Segments[0].HDisplacement.Value.ShouldBe((ushort)(0x10000 - 100));
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void HDispPragmaWorksWithPositiveDisplacement()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                .hdisp #1000
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
+            output.Segments[0].HDisplacement.Value.ShouldBe((ushort)0x1000);
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void HDispPragmaWorksWithZeroDisplacement()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                .hdisp 0
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
+            output.Segments[0].HDisplacement.Value.ShouldBe((ushort)0x0000);
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void MultipleHDispPragmaInASegmentRaisesError()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                .hdisp 0
+                ld a,b
+                .hdisp #1000
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0431);
+        }
+
+        [TestMethod]
+        public void MultipleHDispPragmaInSeparateSegmentsWork()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .org #6400
+                .hdisp 0
+                ld a,b
+                .org #6600
+                .hdisp #1000
+                ld a,b");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
         }
 
         [TestMethod]

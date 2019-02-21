@@ -1,3 +1,8 @@
+### Version 1.18.0
+__FEATURE__: Z80 Assembler supports the `.hdisp` pragma to set the displacement for Intel HEX export.  
+__FEATURE__: The __Export Z80 Program__ supports the Intel HEX format.  
+
+
 ### Version 1.17.0
 __FEATURE__: Z80 Assembler &mdash; Now you can define binary literals with the __`b`__ or __`B`__ suffix.  
 __FEATURE__: Z80 Assembler &mdash; Now you can define octal literals with the __`q`__, __`Q`__, __`o`__,

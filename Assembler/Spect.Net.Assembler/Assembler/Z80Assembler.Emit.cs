@@ -1606,6 +1606,9 @@ namespace Spect.Net.Assembler.Assembler
                 case DispPragma dispPragma:
                     ProcessDispPragma(dispPragma);
                     return;
+                case HDispPragma hdispPragma:
+                    ProcessHDispPragma(hdispPragma);
+                    return;
                 case EquPragma equPragma:
                     ProcessEquPragma(equPragma, label);
                     return;
@@ -1749,6 +1752,24 @@ namespace Spect.Net.Assembler.Assembler
 
             EnsureCodeSegment();
             CurrentSegment.Displacement = value.Value;
+        }
+
+        /// <summary>
+        /// Processes the HDISP pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DISP pragma</param>
+        private void ProcessHDispPragma(HDispPragma pragma)
+        {
+            var value = EvalImmediate(pragma, pragma.Expr);
+            if (!value.IsValid) return;
+
+            EnsureCodeSegment();
+            if (CurrentSegment.CurrentOffset != 0 && CurrentSegment.HDisplacement.HasValue)
+            {
+                ReportError(Errors.Z0431, pragma);
+                return;
+            }
+            CurrentSegment.HDisplacement = value.Value;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.Wpf.Mvvm;
 
@@ -22,6 +23,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         private string _screenFile;
         private bool _addPause0;
         private string _border;
+        private bool _enableTapeFileArgs;
 
         /// <summary>
         /// Gets or sets the tape format of the export
@@ -31,11 +33,42 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
             get => _format;
             set
             {
-                if (Set(ref _format, value))
+                if (!Set(ref _format, value)) return;
+                string ext;
+                switch (_format)
                 {
-                    Filename = Path.ChangeExtension(Filename,
-                        _format == ExportFormat.Tzx ? ".tzx" : ".tap");
+                    case ExportFormat.Tzx:
+                        EnableTapeFileArgs = true;
+                        ext = ".tzx";
+                        break;
+                    case ExportFormat.Tap:
+                        EnableTapeFileArgs = true;
+                        ext = ".tap";
+                        break;
+                    case ExportFormat.IntelHex:
+                        EnableTapeFileArgs = false;
+                        ext = ".hex";
+                        break;
+                    default:
+                        EnableTapeFileArgs = false;
+                        ext = ".txt";
+                        break;
                 }
+                Filename = Path.ChangeExtension(Filename, ext);
+            }
+        }
+
+        /// <summary>
+        /// Indicates if tape file-related arguments are enabled
+        /// </summary>
+        public bool EnableTapeFileArgs
+        {
+            get => _enableTapeFileArgs;
+            set
+            {
+                Set(ref _enableTapeFileArgs, value);
+                // ReSharper disable once ExplicitCallerInfoArgument
+                RaisePropertyChanged("AutoStartEnabled");
             }
         }
 
@@ -71,8 +104,18 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         public bool AutoStart
         {
             get => _autoStart;
-            set => Set(ref _autoStart, value);
+            set
+            {
+                Set(ref _autoStart, value);
+                // ReSharper disable once ExplicitCallerInfoArgument
+                RaisePropertyChanged("AutoStartEnabled");
+            }
         }
+
+        /// <summary>
+        /// Indicates that the AutoStart option is enabled
+        /// </summary>
+        public bool AutoStartEnabled => AutoStart && EnableTapeFileArgs;
 
         /// <summary>
         /// Indicates if a clear commands should be applied in
@@ -103,7 +146,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         }
 
         /**
-         * Indicates if a "PAUSE 0" shoudl be added before running the code
+         * Indicates if a "PAUSE 0" should be added before running the code
          */
         public bool AddPause0
         {
@@ -117,7 +160,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         public bool IsValid => 
             !string.IsNullOrWhiteSpace(Name) 
                 && !string.IsNullOrWhiteSpace(Filename)
-                && (Format == ExportFormat.Tzx || Format == ExportFormat.Tap);
+                && (Format == ExportFormat.Tzx 
+                    || Format == ExportFormat.Tap 
+                    || Format == ExportFormat.IntelHex);
 
         /// <summary>
         /// Start address of the code

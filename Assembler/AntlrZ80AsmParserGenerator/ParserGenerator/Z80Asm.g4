@@ -29,6 +29,7 @@ pragma
 	|	entPragma
 	|	xentPragma
 	|	dispPragma
+	|	hdispPragma
 	|	equPragma
 	|	varPragma
 	|	defbPragma
@@ -111,6 +112,7 @@ orgPragma	: ORGPRAG expr ;
 entPragma	: ENTPRAG expr ;
 xentPragma	: XENTPRAG expr ;
 dispPragma	: DISPRAG expr ;
+hdispPragma	: HDISPR expr ;
 equPragma	: EQUPRAG expr ;
 varPragma	: (VARPRAG | ASSIGN) expr ;
 defbPragma	: DBPRAG expr (COMMA expr)* ;
@@ -590,6 +592,7 @@ XENTPRAG: '.xent' | '.XENT' | 'xent' | 'XENT' ;
 EQUPRAG	: '.equ' | '.EQU' | 'equ' | 'EQU' ;
 VARPRAG	: '.var' | '.VAR' | 'var' | 'VAR' | ':=' ;
 DISPRAG	: '.disp' | '.DISP' | 'disp' | 'DISP' ;
+HDISPR	: '.hdisp' | '.HDISP' | 'hdisp' | 'HDISP' ;
 DBPRAG	: '.defb' | '.DEFB' | 'defb' | 'DEFB' | 'db' | '.db' | 'DB' | '.DB' ;
 DWPRAG	: '.defw' | '.DEFW' | 'defw' | 'DEFW' | 'dw' | '.dw' | 'DW' | '.DW' ;
 DMPRAG	: '.defm' | '.DEFM' | 'defm' | 'DEFM' | 'dm' | '.dm' | 'DM' | '.DM' ;

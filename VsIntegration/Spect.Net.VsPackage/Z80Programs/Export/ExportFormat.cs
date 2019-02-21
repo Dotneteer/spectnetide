@@ -6,6 +6,7 @@
     public enum ExportFormat
     {
         Tap,
-        Tzx
+        Tzx,
+        IntelHex
     }
 }

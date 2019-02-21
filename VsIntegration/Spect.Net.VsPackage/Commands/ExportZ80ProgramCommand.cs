@@ -54,6 +54,12 @@ namespace Spect.Net.VsPackage.Commands
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (DisplayExportParameterDialog(out var vm)) return;
 
+            if (vm.Format == ExportFormat.IntelHex)
+            {
+                Package.CodeManager.SaveIntelHexFile(vm.Filename, Output);
+                return;
+            }
+
             // --- Step #3: Check screen file again
             var useScreenFile = !string.IsNullOrEmpty(vm.ScreenFile) && vm.ScreenFile.Trim().Length > 0;
             if (useScreenFile && !CommonTapeFilePlayer.CheckScreenFile(vm.ScreenFile))

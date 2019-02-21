@@ -150,6 +150,7 @@
     <Compile Include="SyntaxTree\Pragmas\ExternPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\FillbPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\FillwPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\HDispPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\IncludeBinPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\ModelPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\OrgPragma.cs" />
