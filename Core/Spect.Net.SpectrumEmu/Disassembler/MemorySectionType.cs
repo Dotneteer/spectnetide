@@ -27,8 +27,28 @@
         WordArray,
 
         /// <summary>
-        /// Create an RST 28 bytecode memory section
+        /// Create an RST 28 byte code memory section
         /// </summary>
-        Rst28Calculator
+        Rst28Calculator,
+
+        /// <summary>
+        /// Create a .DEFG array for the memory section with 1 byte in a row
+        /// </summary>
+        GraphArray,
+
+        /// <summary>
+        /// Create a .DEFG array for the memory section with 2 bytes in a row
+        /// </summary>
+        GraphArray2,
+
+        /// <summary>
+        /// Create a .DEFG array for the memory section with 3 bytes in a row
+        /// </summary>
+        GraphArray3,
+
+        /// <summary>
+        /// Create a .DEFG array for the memory section with 4 bytes in a row
+        /// </summary>
+        GraphArray4
     }
 }

@@ -24,10 +24,10 @@ namespace Spect.Net.CommandParser.Test
             var lexer = new CommandToolLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new CommandToolParser(tokenStream);
-            var context = parser.toolCommand();
+            var context = parser.compileUnit();
             var visitor = new CommandToolVisitor();
             parser.SyntaxErrors.Count.ShouldBe(expectedErrors);
-            return (ToolCommandNode)visitor.VisitToolCommand(context);
+            return (ToolCommandNode)visitor.VisitToolCommand(context.toolCommand());
         }
 
 

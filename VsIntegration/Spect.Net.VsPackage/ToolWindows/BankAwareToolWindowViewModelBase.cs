@@ -353,11 +353,11 @@ namespace Spect.Net.VsPackage.ToolWindows
             var lexer = new CommandToolLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new CommandToolParser(tokenStream);
-            var context = parser.toolCommand();
+            var context = parser.compileUnit();
             var visitor = new CommandToolVisitor();
-            return parser.SyntaxErrors.Count > 0
+            return parser.SyntaxErrors.Count > 0 || context.toolCommand() == null
                 ? null
-                : (ToolCommandNode)visitor.VisitToolCommand(context);
+                : (ToolCommandNode)visitor.VisitToolCommand(context.toolCommand());
         }
 
         /// <summary>

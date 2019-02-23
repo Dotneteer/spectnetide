@@ -133,6 +133,22 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     case MemorySectionType.Rst28Calculator:
                         GenerateRst28ByteCodeOutput(toDisassemble);
                         break;
+
+                    case MemorySectionType.GraphArray:
+                        GenerateDefgArray(toDisassemble, 1);
+                        break;
+
+                    case MemorySectionType.GraphArray2:
+                        GenerateDefgArray(toDisassemble, 2);
+                        break;
+
+                    case MemorySectionType.GraphArray3:
+                        GenerateDefgArray(toDisassemble, 3);
+                        break;
+
+                    case MemorySectionType.GraphArray4:
+                        GenerateDefgArray(toDisassemble, 4);
+                        break;
                 }
             }
             return _output;
@@ -246,6 +262,59 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                 Instruction = $".skip {section.EndAddress - section.StartAddress + 1:X4}H"
             };
             _output.AddItem(item);
+        }
+
+        /// <summary>
+        /// Generates byte array output for the specified section
+        /// </summary>
+        /// <param name="section">Section information</param>
+        /// <param name="rowBytes">Number of bytes to add to a .DEFG row</param>
+        private void GenerateDefgArray(MemorySection section, int rowBytes)
+        {
+            var length = section.EndAddress - section.StartAddress + 1;
+            var sb = new StringBuilder(200);
+            var opCodes = new StringBuilder();
+            var byteInRow = 0;
+            var startAddr = section.StartAddress;
+            for (var i = 0; i < length; i++)
+            {
+                if (byteInRow == 0)
+                {
+                    sb.Append(".defg");
+                }
+
+                var content = MemoryContents[section.StartAddress + i];
+                opCodes.Append($"{content:X2} ");
+                sb.Append(" ");
+                for (var j = 0; j < 8; j++)
+                {
+                    sb.Append((content & 0x80) == 0 ? "." : "X");
+                    content <<= 1;
+                }
+
+                byteInRow++;
+                if (byteInRow >= rowBytes)
+                {
+                    byteInRow = 0;
+                    var item = new DisassemblyItem(startAddr)
+                    {
+                        Instruction = sb.ToString(),
+                        OpCodes = opCodes.ToString()
+                    };
+                    _output.AddItem(item);
+                    startAddr = (ushort) (section.StartAddress + i + 1);
+                    sb.Clear();
+                    opCodes.Clear();
+                }
+            }
+
+            if (byteInRow == 0) return;
+            var lastItem = new DisassemblyItem(startAddr)
+            {
+                Instruction = sb.ToString(),
+                OpCodes = opCodes.ToString()
+            };
+            _output.AddItem(lastItem);
         }
 
         /// <summary>

@@ -793,6 +793,19 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 case "C":
                     type = MemorySectionType.Rst28Calculator;
                     break;
+                case "G":
+                case "G1":
+                    type = MemorySectionType.GraphArray;
+                    break;
+                case "G2":
+                    type = MemorySectionType.GraphArray2;
+                    break;
+                case "G3":
+                    type = MemorySectionType.GraphArray3;
+                    break;
+                case "G4":
+                    type = MemorySectionType.GraphArray4;
+                    break;
                 default:
                     type = MemorySectionType.Disassemble;
                     break;
@@ -821,7 +834,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             }
 
             validationMessage = null;
-            if ((RomViewMode || RamBankViewMode) && addr >= 0x4000)
+            if ((RomViewMode || RamBankViewMode) && addr > 0x4000)
             {
                 validationMessage = $"Address #{addr:X4} out of range";
                 return false;
