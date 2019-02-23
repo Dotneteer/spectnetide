@@ -223,53 +223,53 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        public void HDispPragmaWorksAsExpected1()
+        public void XorgPragmaWorksAsExpected1()
         {
             // --- Act
-            var visitor = Parse(".hdisp 8000H");
+            var visitor = Parse(".xorg 8000H");
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as HDispPragma;
+            var line = visitor.Compilation.Lines[0] as XorgPragma;
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
 
         [TestMethod]
-        public void HDispPragmaWorksAsExpected2()
+        public void XorgPragmaWorksAsExpected2()
         {
             // --- Act
-            var visitor = Parse(".HDISP 8000H");
+            var visitor = Parse(".XORG 8000H");
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as HDispPragma;
+            var line = visitor.Compilation.Lines[0] as XorgPragma;
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
 
         [TestMethod]
-        public void HDispPragmaWorksAsExpected3()
+        public void XorgPragmaWorksAsExpected3()
         {
             // --- Act
-            var visitor = Parse("hdisp 8000H");
+            var visitor = Parse("xorg 8000H");
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as HDispPragma;
+            var line = visitor.Compilation.Lines[0] as XorgPragma;
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
         }
 
         [TestMethod]
-        public void HDispPragmaWorksAsExpected4()
+        public void XorgPragmaWorksAsExpected4()
         {
             // --- Act
-            var visitor = Parse("displacement HDISP 8000H");
+            var visitor = Parse("displacement XORG 8000H");
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as HDispPragma;
+            var line = visitor.Compilation.Lines[0] as XorgPragma;
             line.ShouldNotBeNull();
             line.Label.ShouldBe("DISPLACEMENT");
             line.Expr.ShouldBeOfType<LiteralNode>();

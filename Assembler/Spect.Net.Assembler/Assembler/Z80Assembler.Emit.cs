@@ -1597,6 +1597,10 @@ namespace Spect.Net.Assembler.Assembler
                 case OrgPragma orgPragma:
                     ProcessOrgPragma(orgPragma, label);
                     return;
+                case XorgPragma xorgPragma:
+                    ProcessXorgPragma(xorgPragma);
+                    return;
+
                 case EntPragma entPragma:
                     ProcessEntPragma(entPragma);
                     return;
@@ -1605,9 +1609,6 @@ namespace Spect.Net.Assembler.Assembler
                     return;
                 case DispPragma dispPragma:
                     ProcessDispPragma(dispPragma);
-                    return;
-                case HDispPragma hdispPragma:
-                    ProcessHDispPragma(hdispPragma);
                     return;
                 case EquPragma equPragma:
                     ProcessEquPragma(equPragma, label);
@@ -1755,21 +1756,21 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
-        /// Processes the HDISP pragma
+        /// Processes the XORG pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DISP pragma</param>
-        private void ProcessHDispPragma(HDispPragma pragma)
+        private void ProcessXorgPragma(XorgPragma pragma)
         {
             var value = EvalImmediate(pragma, pragma.Expr);
             if (!value.IsValid) return;
 
             EnsureCodeSegment();
-            if (CurrentSegment.CurrentOffset != 0 && CurrentSegment.HDisplacement.HasValue)
+            if (CurrentSegment.CurrentOffset != 0 && CurrentSegment.XorgValue.HasValue)
             {
                 ReportError(Errors.Z0431, pragma);
                 return;
             }
-            CurrentSegment.HDisplacement = value.Value;
+            CurrentSegment.XorgValue = value.Value;
         }
 
         /// <summary>

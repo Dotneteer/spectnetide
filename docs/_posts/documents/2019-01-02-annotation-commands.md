@@ -30,3 +30,13 @@ __`D`__ *`literal`* __`#`__  | Replaces the literal value within the instruction
 The IDE saves the annotations you add with these commands into the annotations file of your project. The ZX Spectrum ROMs within SpectNetIDE ship with their predefined annotations, but you can change them, too.
 
 If your change regards to ROM addresses, the `.disann` file of the specific ROM file is changed; otherwise, modifications go to your default annotation file (`Annotations.disann` in a new project).
+
+With the following commands, you can retrieve the already placed annotations of a particular address:
+
+Command | Description
+--------|------------
+__`RL`__ *`literal`* | Retrieves the label of the specified address.
+__`RC`__ *`literal`* | Retrieves the comment of the specified address.
+__`RP`__ *`literal`* | Retrieves the prefix comment of the specified address.
+
+When the specified address has an annotation, the Disassembly commands above prepare a new command line you can modify and change the label, comment, or prefix comment, respectively. However, if there is no annotation associated with the particular address, the command line remains empty.

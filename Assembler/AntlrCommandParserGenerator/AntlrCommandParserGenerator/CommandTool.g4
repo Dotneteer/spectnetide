@@ -108,6 +108,6 @@ RETRIEVE: R (L|C|P) ;
 SECTION: M (B|D|W|S|C) ;
 
 LITERAL: COLON? LITCH+	;
-LITCH	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+LITCH: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 OTHER: . ;

@@ -51,8 +51,8 @@ public partial class Z80AsmParser : Parser {
 		TEST=141, NEXTREG=142, OUTINB=143, LDIX=144, LDIRX=145, LDDX=146, LDDRX=147, 
 		PIXELDN=148, PIXELAD=149, SETAE=150, LDPIRX=151, LDIRSCALE=152, IFDEF=153, 
 		IFNDEF=154, ENDIF=155, ELSE=156, DEFINE=157, UNDEF=158, INCLUDE=159, IF=160, 
-		IFMOD=161, IFNMOD=162, ORGPRAG=163, ENTPRAG=164, XENTPRAG=165, EQUPRAG=166, 
-		VARPRAG=167, DISPRAG=168, HDISPR=169, DBPRAG=170, DWPRAG=171, DMPRAG=172, 
+		IFMOD=161, IFNMOD=162, ORGPRAG=163, XORGPR=164, ENTPRAG=165, XENTPRAG=166, 
+		EQUPRAG=167, VARPRAG=168, DISPRAG=169, DBPRAG=170, DWPRAG=171, DMPRAG=172, 
 		DNPRAG=173, DHPRAG=174, DGXPRAG=175, DGPRAG=176, DCPRAG=177, SKIPRAG=178, 
 		EXTPRAG=179, DSPRAG=180, FBPRAG=181, FWPRAG=182, MODPRAG=183, ALGPRAG=184, 
 		TRACE=185, TRACEHEX=186, RNDSEED=187, ERRORPR=188, INCBIN=189, MACRO=190, 
@@ -76,8 +76,8 @@ public partial class Z80AsmParser : Parser {
 		RULE_endifStatement = 20, RULE_forStatement = 21, RULE_nextStatement = 22, 
 		RULE_breakStatement = 23, RULE_continueStatement = 24, RULE_moduleStatement = 25, 
 		RULE_moduleEndMarker = 26, RULE_macroInvocation = 27, RULE_macroArgument = 28, 
-		RULE_orgPragma = 29, RULE_entPragma = 30, RULE_xentPragma = 31, RULE_dispPragma = 32, 
-		RULE_hdispPragma = 33, RULE_equPragma = 34, RULE_varPragma = 35, RULE_defbPragma = 36, 
+		RULE_orgPragma = 29, RULE_xorgPragma = 30, RULE_entPragma = 31, RULE_xentPragma = 32, 
+		RULE_dispPragma = 33, RULE_equPragma = 34, RULE_varPragma = 35, RULE_defbPragma = 36, 
 		RULE_defwPragma = 37, RULE_defcPragma = 38, RULE_defmPragma = 39, RULE_defnPragma = 40, 
 		RULE_defhPragma = 41, RULE_skipPragma = 42, RULE_externPragma = 43, RULE_defsPragma = 44, 
 		RULE_fillbPragma = 45, RULE_fillwPragma = 46, RULE_modelPragma = 47, RULE_alignPragma = 48, 
@@ -100,7 +100,7 @@ public partial class Z80AsmParser : Parser {
 		"whileStatement", "whileEndMarker", "ifStatement", "elifStatement", "elseStatement", 
 		"endifStatement", "forStatement", "nextStatement", "breakStatement", "continueStatement", 
 		"moduleStatement", "moduleEndMarker", "macroInvocation", "macroArgument", 
-		"orgPragma", "entPragma", "xentPragma", "dispPragma", "hdispPragma", "equPragma", 
+		"orgPragma", "xorgPragma", "entPragma", "xentPragma", "dispPragma", "equPragma", 
 		"varPragma", "defbPragma", "defwPragma", "defcPragma", "defmPragma", "defnPragma", 
 		"defhPragma", "skipPragma", "externPragma", "defsPragma", "fillbPragma", 
 		"fillwPragma", "modelPragma", "alignPragma", "tracePragma", "rndSeedPragma", 
@@ -155,7 +155,7 @@ public partial class Z80AsmParser : Parser {
 		"MIRROR", "TEST", "NEXTREG", "OUTINB", "LDIX", "LDIRX", "LDDX", "LDDRX", 
 		"PIXELDN", "PIXELAD", "SETAE", "LDPIRX", "LDIRSCALE", "IFDEF", "IFNDEF", 
 		"ENDIF", "ELSE", "DEFINE", "UNDEF", "INCLUDE", "IF", "IFMOD", "IFNMOD", 
-		"ORGPRAG", "ENTPRAG", "XENTPRAG", "EQUPRAG", "VARPRAG", "DISPRAG", "HDISPR", 
+		"ORGPRAG", "XORGPR", "ENTPRAG", "XENTPRAG", "EQUPRAG", "VARPRAG", "DISPRAG", 
 		"DBPRAG", "DWPRAG", "DMPRAG", "DNPRAG", "DHPRAG", "DGXPRAG", "DGPRAG", 
 		"DCPRAG", "SKIPRAG", "EXTPRAG", "DSPRAG", "FBPRAG", "FWPRAG", "MODPRAG", 
 		"ALGPRAG", "TRACE", "TRACEHEX", "RNDSEED", "ERRORPR", "INCBIN", "MACRO", 
@@ -365,12 +365,12 @@ public partial class Z80AsmParser : Parser {
 			case IFMOD:
 			case IFNMOD:
 			case ORGPRAG:
+			case XORGPR:
 			case ENTPRAG:
 			case XENTPRAG:
 			case EQUPRAG:
 			case VARPRAG:
 			case DISPRAG:
-			case HDISPR:
 			case DBPRAG:
 			case DWPRAG:
 			case DMPRAG:
@@ -559,12 +559,12 @@ public partial class Z80AsmParser : Parser {
 				switch (_input.La(1)) {
 				case ASSIGN:
 				case ORGPRAG:
+				case XORGPR:
 				case ENTPRAG:
 				case XENTPRAG:
 				case EQUPRAG:
 				case VARPRAG:
 				case DISPRAG:
-				case HDISPR:
 				case DBPRAG:
 				case DWPRAG:
 				case DMPRAG:
@@ -878,6 +878,9 @@ public partial class Z80AsmParser : Parser {
 		public OrgPragmaContext orgPragma() {
 			return GetRuleContext<OrgPragmaContext>(0);
 		}
+		public XorgPragmaContext xorgPragma() {
+			return GetRuleContext<XorgPragmaContext>(0);
+		}
 		public EntPragmaContext entPragma() {
 			return GetRuleContext<EntPragmaContext>(0);
 		}
@@ -886,9 +889,6 @@ public partial class Z80AsmParser : Parser {
 		}
 		public DispPragmaContext dispPragma() {
 			return GetRuleContext<DispPragmaContext>(0);
-		}
-		public HdispPragmaContext hdispPragma() {
-			return GetRuleContext<HdispPragmaContext>(0);
 		}
 		public EquPragmaContext equPragma() {
 			return GetRuleContext<EquPragmaContext>(0);
@@ -987,28 +987,28 @@ public partial class Z80AsmParser : Parser {
 				State = 241; orgPragma();
 				}
 				break;
-			case ENTPRAG:
+			case XORGPR:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 242; entPragma();
+				State = 242; xorgPragma();
+				}
+				break;
+			case ENTPRAG:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 243; entPragma();
 				}
 				break;
 			case XENTPRAG:
-				EnterOuterAlt(_localctx, 3);
+				EnterOuterAlt(_localctx, 4);
 				{
-				State = 243; xentPragma();
+				State = 244; xentPragma();
 				}
 				break;
 			case DISPRAG:
-				EnterOuterAlt(_localctx, 4);
-				{
-				State = 244; dispPragma();
-				}
-				break;
-			case HDISPR:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 245; hdispPragma();
+				State = 245; dispPragma();
 				}
 				break;
 			case EQUPRAG:
@@ -2640,6 +2640,53 @@ public partial class Z80AsmParser : Parser {
 		return _localctx;
 	}
 
+	public partial class XorgPragmaContext : ParserRuleContext {
+		public ITerminalNode XORGPR() { return GetToken(Z80AsmParser.XORGPR, 0); }
+		public ExprContext expr() {
+			return GetRuleContext<ExprContext>(0);
+		}
+		public XorgPragmaContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_xorgPragma; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IZ80AsmListener typedListener = listener as IZ80AsmListener;
+			if (typedListener != null) typedListener.EnterXorgPragma(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IZ80AsmListener typedListener = listener as IZ80AsmListener;
+			if (typedListener != null) typedListener.ExitXorgPragma(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IZ80AsmVisitor<TResult> typedVisitor = visitor as IZ80AsmVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitXorgPragma(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public XorgPragmaContext xorgPragma() {
+		XorgPragmaContext _localctx = new XorgPragmaContext(_ctx, State);
+		EnterRule(_localctx, 60, RULE_xorgPragma);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 386; Match(XORGPR);
+			State = 387; expr();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
 	public partial class EntPragmaContext : ParserRuleContext {
 		public ITerminalNode ENTPRAG() { return GetToken(Z80AsmParser.ENTPRAG, 0); }
 		public ExprContext expr() {
@@ -2668,12 +2715,12 @@ public partial class Z80AsmParser : Parser {
 	[RuleVersion(0)]
 	public EntPragmaContext entPragma() {
 		EntPragmaContext _localctx = new EntPragmaContext(_ctx, State);
-		EnterRule(_localctx, 60, RULE_entPragma);
+		EnterRule(_localctx, 62, RULE_entPragma);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 386; Match(ENTPRAG);
-			State = 387; expr();
+			State = 389; Match(ENTPRAG);
+			State = 390; expr();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2715,12 +2762,12 @@ public partial class Z80AsmParser : Parser {
 	[RuleVersion(0)]
 	public XentPragmaContext xentPragma() {
 		XentPragmaContext _localctx = new XentPragmaContext(_ctx, State);
-		EnterRule(_localctx, 62, RULE_xentPragma);
+		EnterRule(_localctx, 64, RULE_xentPragma);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 389; Match(XENTPRAG);
-			State = 390; expr();
+			State = 392; Match(XENTPRAG);
+			State = 393; expr();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2762,58 +2809,11 @@ public partial class Z80AsmParser : Parser {
 	[RuleVersion(0)]
 	public DispPragmaContext dispPragma() {
 		DispPragmaContext _localctx = new DispPragmaContext(_ctx, State);
-		EnterRule(_localctx, 64, RULE_dispPragma);
+		EnterRule(_localctx, 66, RULE_dispPragma);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 392; Match(DISPRAG);
-			State = 393; expr();
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class HdispPragmaContext : ParserRuleContext {
-		public ITerminalNode HDISPR() { return GetToken(Z80AsmParser.HDISPR, 0); }
-		public ExprContext expr() {
-			return GetRuleContext<ExprContext>(0);
-		}
-		public HdispPragmaContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_hdispPragma; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IZ80AsmListener typedListener = listener as IZ80AsmListener;
-			if (typedListener != null) typedListener.EnterHdispPragma(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IZ80AsmListener typedListener = listener as IZ80AsmListener;
-			if (typedListener != null) typedListener.ExitHdispPragma(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IZ80AsmVisitor<TResult> typedVisitor = visitor as IZ80AsmVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitHdispPragma(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public HdispPragmaContext hdispPragma() {
-		HdispPragmaContext _localctx = new HdispPragmaContext(_ctx, State);
-		EnterRule(_localctx, 66, RULE_hdispPragma);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 395; Match(HDISPR);
+			State = 395; Match(DISPRAG);
 			State = 396; expr();
 			}
 		}
@@ -7845,7 +7845,7 @@ public partial class Z80AsmParser : Parser {
 		"\x2\x88\x2\x8A\x2\x8C\x2\x8E\x2\x90\x2\x92\x2\x94\x2\x96\x2\x98\x2\x9A"+
 		"\x2\x9C\x2\x9E\x2\xA0\x2\xA2\x2\xA4\x2\xA6\x2\xA8\x2\xAA\x2\xAC\x2\xAE"+
 		"\x2\xB0\x2\xB2\x2\xB4\x2\xB6\x2\x2\x1C\x5\x2\x9B\x9C\x9F\xA0\xA3\xA4\x3"+
-		"\x2\xEF\xF0\x3\x2\xD1\xD2\x4\x2\f\f\xA9\xA9\x4\x2\xD2\xD2\xF4\xF4\x3\x2"+
+		"\x2\xEF\xF0\x3\x2\xD1\xD2\x4\x2\f\f\xAA\xAA\x4\x2\xD2\xD2\xF4\xF4\x3\x2"+
 		"\xBB\xBC\x4\x2GPRi\x4\x2\x8B\x8C\x91\x9A\x3\x2\xD9\xDA\x3\x2+\x31\x3\x2"+
 		"\x34\x37\x3\x2\x32\x33\x3\x2\x38;\x3\x2<=\x4\x2\x38:<=\x3\x2>?\x3\x2\x12"+
 		"\x13\x4\x2--@\x46\x3\x2\x17\x1A\x3\x2\x1B\x1E\x3\x2\x1F \x3\x2!%\x3\x2"+
@@ -7958,9 +7958,9 @@ public partial class Z80AsmParser : Parser {
 		"\x17F\x17E\x3\x2\x2\x2\x17F\x180\x3\x2\x2\x2\x180;\x3\x2\x2\x2\x181\x182"+
 		"\a\xA5\x2\x2\x182\x183\x5\x92J\x2\x183=\x3\x2\x2\x2\x184\x185\a\xA6\x2"+
 		"\x2\x185\x186\x5\x92J\x2\x186?\x3\x2\x2\x2\x187\x188\a\xA7\x2\x2\x188"+
-		"\x189\x5\x92J\x2\x189\x41\x3\x2\x2\x2\x18A\x18B\a\xAA\x2\x2\x18B\x18C"+
+		"\x189\x5\x92J\x2\x189\x41\x3\x2\x2\x2\x18A\x18B\a\xA8\x2\x2\x18B\x18C"+
 		"\x5\x92J\x2\x18C\x43\x3\x2\x2\x2\x18D\x18E\a\xAB\x2\x2\x18E\x18F\x5\x92"+
-		"J\x2\x18F\x45\x3\x2\x2\x2\x190\x191\a\xA8\x2\x2\x191\x192\x5\x92J\x2\x192"+
+		"J\x2\x18F\x45\x3\x2\x2\x2\x190\x191\a\xA9\x2\x2\x191\x192\x5\x92J\x2\x192"+
 		"G\x3\x2\x2\x2\x193\x194\t\x5\x2\x2\x194\x195\x5\x92J\x2\x195I\x3\x2\x2"+
 		"\x2\x196\x197\a\xAC\x2\x2\x197\x19C\x5\x92J\x2\x198\x199\a\v\x2\x2\x199"+
 		"\x19B\x5\x92J\x2\x19A\x198\x3\x2\x2\x2\x19B\x19E\x3\x2\x2\x2\x19C\x19A"+

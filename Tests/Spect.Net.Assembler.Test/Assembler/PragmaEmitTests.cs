@@ -248,7 +248,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void HDispPragmaWorksWithNegativeDisplacement()
+        public void XorgPragmaWorksWithNegativeValue()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -256,19 +256,19 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Act
             var output = compiler.Compile(@"
                 .org #6400
-                .hdisp -100
+                .xorg -100
                 ld a,b");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
-            output.Segments[0].HDisplacement.Value.ShouldBe((ushort)(0x10000 - 100));
+            output.Segments[0].XorgValue.Value.ShouldBe((ushort)(0x10000 - 100));
             output.Segments[0].EmittedCode.Count.ShouldBe(1);
         }
 
         [TestMethod]
-        public void HDispPragmaWorksWithPositiveDisplacement()
+        public void XorgPragmaWorksWithPositiveValue()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -276,19 +276,19 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Act
             var output = compiler.Compile(@"
                 .org #6400
-                .hdisp #1000
+                .xorg #1000
                 ld a,b");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
-            output.Segments[0].HDisplacement.Value.ShouldBe((ushort)0x1000);
+            output.Segments[0].XorgValue.Value.ShouldBe((ushort)0x1000);
             output.Segments[0].EmittedCode.Count.ShouldBe(1);
         }
 
         [TestMethod]
-        public void HDispPragmaWorksWithZeroDisplacement()
+        public void XorgPragmaWorksWithZeroValue()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -296,19 +296,19 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Act
             var output = compiler.Compile(@"
                 .org #6400
-                .hdisp 0
+                .xorg 0
                 ld a,b");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);
             output.Segments.Count.ShouldBe(1);
             output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
-            output.Segments[0].HDisplacement.Value.ShouldBe((ushort)0x0000);
+            output.Segments[0].XorgValue.Value.ShouldBe((ushort)0x0000);
             output.Segments[0].EmittedCode.Count.ShouldBe(1);
         }
 
         [TestMethod]
-        public void MultipleHDispPragmaInASegmentRaisesError()
+        public void MultipleXorgPragmaInASegmentRaisesError()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -316,9 +316,9 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Act
             var output = compiler.Compile(@"
                 .org #6400
-                .hdisp 0
+                .xorg 0
                 ld a,b
-                .hdisp #1000
+                .xorg #1000
                 ld a,b");
 
             // --- Assert
@@ -327,7 +327,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void MultipleHDispPragmaInSeparateSegmentsWork()
+        public void MultipleXorgPragmaInSeparateSegmentsWork()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -335,10 +335,10 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Act
             var output = compiler.Compile(@"
                 .org #6400
-                .hdisp 0
+                .xorg 0
                 ld a,b
                 .org #6600
-                .hdisp #1000
+                .xorg #1000
                 ld a,b");
 
             // --- Assert

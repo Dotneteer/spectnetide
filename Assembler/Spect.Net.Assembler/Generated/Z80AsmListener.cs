@@ -362,6 +362,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitOrgPragma([NotNull] Z80AsmParser.OrgPragmaContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.xorgPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterXorgPragma([NotNull] Z80AsmParser.XorgPragmaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.xorgPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitXorgPragma([NotNull] Z80AsmParser.XorgPragmaContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.entPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -393,17 +404,6 @@ public interface IZ80AsmListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitDispPragma([NotNull] Z80AsmParser.DispPragmaContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.hdispPragma"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterHdispPragma([NotNull] Z80AsmParser.HdispPragmaContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.hdispPragma"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitHdispPragma([NotNull] Z80AsmParser.HdispPragmaContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.equPragma"/>.

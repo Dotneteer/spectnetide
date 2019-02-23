@@ -1,5 +1,5 @@
 ### Version 1.18.0
-__FEATURE__: Z80 Assembler supports the `.hdisp` pragma to set the displacement for Intel HEX export.  
+__FEATURE__: Z80 Assembler supports the `.xorg` pragma to set the segment start address for Intel HEX export.  
 __FEATURE__: The __Export Z80 Program__ supports the Intel HEX format.  
 
 

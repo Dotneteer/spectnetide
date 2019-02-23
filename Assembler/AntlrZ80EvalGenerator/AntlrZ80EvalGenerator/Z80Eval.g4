@@ -192,8 +192,8 @@ CHAR	: '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' ;
 
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
-IDSTART	: '_' | 'A'..'Z' | 'a'..'z'	;
-IDCONT	: '_' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+IDSTART	: '_' | '@' | 'A'..'Z' | 'a'..'z'	;
+IDCONT	: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
 
 // --- Format specifiers
 BOOLF	: ':f' | ':F' ;

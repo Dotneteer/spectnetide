@@ -56,12 +56,13 @@
         </StackPanel>
         <TextBlock Grid.Row="2" Grid.Column="0" 
                    Text="Program name: " 
-                   Style="{DynamicResource DialogLabelText}"/>
+                   Style="{DynamicResource DialogLabelText}"
+                   Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <TextBox Grid.Row="2" Grid.Column="1"
                  HorizontalAlignment="Left"
                  Width="140"
                  Style="{DynamicResource DialogTextBox}" 
-                 IsEnabled="{Binding EnableTapeFileArgs}"
+                 Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                  MaxLength="10" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock Grid.Row="3" Grid.Column="0" 
                    Text="Filename: " 
@@ -71,54 +72,61 @@
                  MaxLength="1024" Text="{Binding Filename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock Grid.Row="4" Grid.Column="0" 
                    Text="Export options: " 
+                   Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Style="{DynamicResource DialogLabelText}"/>
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Vertical" Margin="0,4">
             <CheckBox Content="Create autostart program block" 
                       Style="{DynamicResource DialogCheckBox}" 
-                      IsEnabled="{Binding EnableTapeFileArgs}"
+                      Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                       IsChecked="{Binding AutoStart, Mode=TwoWay}"/>
             <CheckBox Content="Add CLEAR statement to autostart block" 
                       Style="{DynamicResource DialogCheckBox}" 
-                      IsChecked="{Binding ApplyClear, Mode=TwoWay}" 
+                      IsChecked="{Binding ApplyClear, Mode=TwoWay}"
+                      Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                       IsEnabled="{Binding AutoStartEnabled, Mode=OneWay}"/>
             <CheckBox Content="Merge code segments into a single CODE block" 
                       Style="{DynamicResource DialogCheckBox}" 
-                      IsEnabled="{Binding EnableTapeFileArgs}"
+                      Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                       IsChecked="{Binding SingleBlock, Mode=TwoWay}"/>
             <CheckBox Content="Add the exported tape file to the project" 
                       Style="{DynamicResource DialogCheckBox}" 
-                      IsEnabled="{Binding EnableTapeFileArgs}"
+                      Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                       IsChecked="{Binding AddToProject, Mode=TwoWay}"/>
             <CheckBox Content="Add 'PAUSE 0' before starting the code" 
                       Style="{DynamicResource DialogCheckBox}" 
-                      IsEnabled="{Binding EnableTapeFileArgs}"
+                      Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                       IsChecked="{Binding AddPause0, Mode=TwoWay}"/>
         </StackPanel>
         <TextBlock Grid.Row="5" Grid.Column="0" 
-                   Text="Start Address: " 
+                   Text="Start Address: "
+                   Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Style="{DynamicResource DialogLabelText}"/>
         <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
             <TextBox HorizontalAlignment="Left"
                      Width="60"
                      Style="{DynamicResource DialogTextBox}"
-                     IsEnabled="{Binding EnableTapeFileArgs}"
+                     Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                      MaxLength="5" Text="{Binding StartAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="PreviewDigitOnlyTextInput"/>
-            <TextBlock Text="{Binding StartAddressHex}" Style="{DynamicResource DialogLabelText}"/>
+            <TextBlock Text="{Binding StartAddressHex}"
+                     Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
+                     Style="{DynamicResource DialogLabelText}"/>
         </StackPanel>
         <TextBlock Grid.Row="6" Grid.Column="0" 
-                   Text="Border color:" 
+                   Text="Border color:"
+                   Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Style="{DynamicResource DialogLabelText}"/>
         <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Vertical" Margin="0,4">
             <TextBox HorizontalAlignment="Left"
                      Width="28"
                      Style="{DynamicResource DialogTextBox}" 
-                     IsEnabled="{Binding EnableTapeFileArgs}"
+                     Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                      MaxLength="1" Text="{Binding Border, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      PreviewTextInput="UIElement_OnPreviewTextInput">
             </TextBox>
         </StackPanel>
         <TextBlock Grid.Row="7" Grid.Column="0" 
-                   Text="Screen file: " 
+                   Text="Screen file: "
+                   Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Style="{DynamicResource DialogLabelText}"/>
         <Grid Grid.Row="7" Grid.Column="1" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
@@ -127,11 +135,11 @@
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0"
                      Style="{DynamicResource DialogTextBox}" HorizontalAlignment="Stretch"
-                     IsEnabled="{Binding EnableTapeFileArgs}"
+                     Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                      MaxLength="1024" Text="{Binding ScreenFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="12,4,4,4"/>
             <Button Grid.Column="1" Content="..." Margin="0,4,12,4"
                     Style="{DynamicResource SmallDialogButton}"
-                    IsEnabled="{Binding EnableTapeFileArgs}"
+                    Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Template="{DynamicResource DialogButtonTemplate}" Click="OnSelectScreenFileClick" />
         </Grid>
         <Border Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"

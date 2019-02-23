@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.Wpf.Mvvm;
 
@@ -24,6 +23,14 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
         private bool _addPause0;
         private string _border;
         private bool _enableTapeFileArgs;
+
+        public ExportZ80ProgramViewModel()
+        {
+            if (IsInDesignMode)
+            {
+                EnableTapeFileArgs = true;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the tape format of the export
@@ -177,7 +184,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Export
                     StartAddressHex = int.TryParse(value, out var intVal) 
                         ? $"#{intVal:X4}" 
                         : "#????";
-                };
+                }
             }
         }
 

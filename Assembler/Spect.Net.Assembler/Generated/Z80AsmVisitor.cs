@@ -243,6 +243,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitOrgPragma([NotNull] Z80AsmParser.OrgPragmaContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.xorgPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitXorgPragma([NotNull] Z80AsmParser.XorgPragmaContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.entPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -262,13 +269,6 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDispPragma([NotNull] Z80AsmParser.DispPragmaContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80AsmParser.hdispPragma"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitHdispPragma([NotNull] Z80AsmParser.HdispPragmaContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.equPragma"/>.

@@ -23,14 +23,9 @@ namespace Spect.Net.Assembler.Assembler
         public bool IsDisplaced => Displacement.HasValue;
 
         /// <summary>
-        /// HEX Displacement of the this segment
+        /// Intel HEX start address of the this segment
         /// </summary>
-        public ushort? HDisplacement { get; set; }
-
-        /// <summary>
-        /// Indicates if this segment is HEX displaced
-        /// </summary>
-        public bool IsHDisplaced => HDisplacement.HasValue;
+        public ushort? XorgValue { get; set; }
 
         /// <summary>
         /// Emitted Z80 binary code

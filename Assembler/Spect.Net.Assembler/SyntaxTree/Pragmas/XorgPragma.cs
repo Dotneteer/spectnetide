@@ -1,16 +1,14 @@
 using Spect.Net.Assembler.SyntaxTree.Expressions;
-// ReSharper disable CommentTypo
-// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
-    /// This class represents the HDISP pragma
+    /// This class represents the XORG pragma
     /// </summary>
-    public sealed class HDispPragma : PragmaBase
+    public sealed class XorgPragma : PragmaBase
     {
         /// <summary>
-        /// The HDISP parameter
+        /// The XORG parameter
         /// </summary>
         public ExpressionNode Expr { get; set; }
     }

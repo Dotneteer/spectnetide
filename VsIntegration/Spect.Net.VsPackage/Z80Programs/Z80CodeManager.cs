@@ -12,6 +12,7 @@ using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
+// ReSharper disable IdentifierTypo
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 // ReSharper disable SuspiciousTypeConversion.Global
@@ -320,7 +321,7 @@ namespace Spect.Net.VsPackage.Z80Programs
 
             // --- Step #2: Now, complete the data block
             // --- Allocate extra 6 bytes: 1 byte - header, 2 byte - line number
-            // --- 2 byte - line lenght, 1 byte - checksum
+            // --- 2 byte - line length, 1 byte - checksum
             var dataBlock = new byte[codeLine.Count + 6];
             codeLine.CopyTo(dataBlock, 5);
             dataBlock[0] = 0xff;
@@ -396,7 +397,7 @@ namespace Spect.Net.VsPackage.Z80Programs
                 {
                     var answer = VsxDialogs.Show("Are you sure, you want to restart " +
                                                  "the ZX Spectrum virtual machine?",
-                        "The ZX Spectum virtual machine is running",
+                        "The ZX Spectrum virtual machine is running",
                         MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
                     if (answer == VsxDialogResult.No)
                     {
@@ -426,7 +427,7 @@ namespace Spect.Net.VsPackage.Z80Programs
         /// <param name="output">Assembly output to save</param>
         public string SaveIntelHexFile(string filename, AssemblerOutput output)
         {
-            const int ROW_LEN = 0x80;
+            const int ROW_LEN = 0x10;
             var hexOut = new StringBuilder(4096);
             foreach (var segment in output.Segments)
             {
@@ -455,7 +456,7 @@ namespace Spect.Net.VsPackage.Z80Programs
             void WriteDataRecord(BinarySegment segment, int offset, int bytesCount)
             {
                 if (bytesCount == 0) return;
-                var addr = (ushort)(segment.StartAddress + offset + (segment.HDisplacement ?? 0));
+                var addr = (ushort)((segment.XorgValue ?? segment.StartAddress) + offset);
                 hexOut.Append($":{bytesCount:X2}{addr:X4}00"); // --- Data record header
                 var checksum = bytesCount + (addr >> 8) + (addr & 0xFF);
                 for (var i = offset; i < offset + bytesCount; i++)
