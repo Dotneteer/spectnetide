@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
+// ReSharper disable StringLiteralTypo
+// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.Assembler.Test.Assembler
 {
@@ -61,6 +63,24 @@ namespace Spect.Net.Assembler.Test.Assembler
             def.Section.FirstLine.ShouldBe(0);
             def.Section.LastLine.ShouldBe(1);
             def.MacroName.ShouldBe("MYMACRO");
+        }
+
+        [TestMethod]
+        public void MacroWithExistingLabelFails()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyMacro: nop
+                MyMacro: .macro()
+                    .endm
+                ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0402);
         }
 
         [TestMethod]

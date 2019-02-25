@@ -101,6 +101,12 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0429 = "Z0429";
         public const string Z0430 = "Z0430";
         public const string Z0431 = "Z0431";
+        public const string Z0432 = "Z0432";
+        public const string Z0433 = "Z0433";
+        public const string Z0434 = "Z0434";
+        public const string Z0435 = "Z0435";
+        public const string Z0436 = "Z0436";
+        public const string Z0437 = "Z0437";
 
         public const string Z0500 = "Z0500";
 
@@ -165,7 +171,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0308, "An integral value is expected." },
             { Z0400, "You cannot define a macro without a name." },
             { Z0401, "Missing {0} statement." },
-            { Z0402, "Macro with name '{0}' has already been declared." },
+            { Z0402, "Macro name '{0}' has already been declared." },
             { Z0403, "Unknown macro argument is used '{0}' macro definition." },
             { Z0404, "Macro definition cannot be nested into another macro definition." },
             { Z0405, "Orphan '{0}' statement found without a corresponding '{1}' statement." },
@@ -195,6 +201,12 @@ namespace Spect.Net.Assembler.Assembler
             { Z0429, "Module with name '{0}' already exists." },
             { Z0430, "You cannot define a module with a temporary name ({0})." },
             { Z0431, "Only one XORG pragma can be used within a code segment." },
+            { Z0432, "You cannot define a struct without a name." },
+            { Z0433, "You cannot define a struct with a temporary name ({0})." },
+            { Z0434, "Structure name '{0}' has already been declared." },
+            { Z0435, "Structures can use only pragmas that emit bytes, words, strings, or reserve space." },
+            { Z0436, "The ENDS statement cannot have a label." },
+            { Z0437, "Too many errors withing a .struct definition." },
             { Z0500, "ERROR: {0}" },
         };
 

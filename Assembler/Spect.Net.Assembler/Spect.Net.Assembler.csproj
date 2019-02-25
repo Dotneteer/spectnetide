@@ -55,6 +55,7 @@
     <Compile Include="Assembler\AssemblerOutput.cs" />
     <Compile Include="Assembler\AssemblerTaskInfo.cs" />
     <Compile Include="Assembler\AssemblyModule.cs" />
+    <Compile Include="Assembler\StructDefinition.cs" />
     <Compile Include="Assembler\AssemblySymbolInfo.cs" />
     <Compile Include="Assembler\SymbolType.cs" />
     <Compile Include="Assembler\BinarySegment.cs" />
@@ -180,6 +181,8 @@
     <Compile Include="SyntaxTree\Statements\ProcEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\ProcStatement.cs" />
     <Compile Include="SyntaxTree\Statements\RepeatStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\StructEndStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\StructStatement.cs" />
     <Compile Include="SyntaxTree\Statements\UntilStatement.cs" />
     <Compile Include="SyntaxTree\Statements\WhileEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\WhileStatement.cs" />

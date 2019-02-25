@@ -1021,7 +1021,7 @@ namespace Spect.Net.Assembler
         /// </summary>
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
-        public override object VisitMacroInvocation(Z80AsmParser.MacroInvocationContext context)
+        public override object VisitMacroOrStructInvocation(Z80AsmParser.MacroOrStructInvocationContext context)
         {
             if (IsInvalidContext(context)) return null;
             var macroOps = new List<Operand>();
@@ -1083,6 +1083,38 @@ namespace Spect.Net.Assembler
             return IsInvalidContext(context) 
                 ? null 
                 : AddLine(new MacroEndStatement(), context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.structStatement"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitStructStatement(Z80AsmParser.StructStatementContext context)
+        {
+            return IsInvalidContext(context) 
+                ? null 
+                : AddLine(new StructStatement(), context);
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.structEndMarker"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitStructEndMarker(Z80AsmParser.StructEndMarkerContext context)
+        {
+            return IsInvalidContext(context)
+                ? null
+                : AddLine(new StructEndStatement(), context);
         }
 
         /// <summary>

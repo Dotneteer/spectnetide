@@ -34,6 +34,13 @@ namespace Spect.Net.Assembler.Assembler
             new Dictionary<string, AssemblySymbolInfo>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
+        /// The table of structures
+        /// </summary>
+        public Dictionary<string, StructDefinition> Structs { get; } =
+            new Dictionary<string, StructDefinition>(StringComparer.InvariantCultureIgnoreCase);
+
+
+        /// <summary>
         /// The list of fixups to carry out as the last phase of the compilation
         /// </summary>
         public List<FixupEntry> Fixups { get; } = new List<FixupEntry>();

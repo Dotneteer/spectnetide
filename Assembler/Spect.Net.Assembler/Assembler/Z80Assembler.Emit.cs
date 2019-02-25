@@ -29,6 +29,23 @@ namespace Spect.Net.Assembler.Assembler
         public static readonly Regex MacroParamRegex = new Regex(@"{{\s*([_a-zA-Z][_a-zA-Z0-9]*)\s*}}");
 
         /// <summary>
+        /// A structure body can contain only these instruction types
+        /// </summary>
+        public static readonly HashSet<Type> StructBodyStatementTypes = new HashSet<Type>
+        {
+            typeof(NoInstructionLine),
+            typeof(DefbPragma),
+            typeof(DefwPragma),
+            typeof(DefmnPragma),
+            typeof(DefhPragma),
+            typeof(DefsPragma),
+            typeof(FillbPragma),
+            typeof(FillwPragma),
+            typeof(DefgxPragma),
+            typeof(DefgPragma)
+        };
+
+        /// <summary>
         /// The current output segment of the emitted code
         /// </summary>
         public BinarySegment CurrentSegment { get; private set; }
@@ -292,6 +309,14 @@ namespace Spect.Net.Assembler.Assembler
                     ReportError(Errors.Z0405, macroEndStmt, "ENDM/MEND", "MACRO");
                     break;
 
+                case StructStatement structStmt:
+                    CollectStructDefinition(structStmt, label, allLines, ref currentLineIndex);
+                    break;
+
+                case StructEndStatement structEndStmt:
+                    ReportError(Errors.Z0405, structEndStmt, "ENDS", "STRUCT");
+                    break;
+
                 case ProcStatement procStatement:
                     ProcessProcStatement(procStatement, allLines, scopeLines, ref currentLineIndex);
                     break;
@@ -395,7 +420,10 @@ namespace Spect.Net.Assembler.Assembler
                 errorFound = true;
                 ReportError(Errors.Z0427, macro, label);
             }
-            else if (CurrentModule.Macros.ContainsKey(label))
+            else if (CurrentModule.Macros.ContainsKey(label) 
+                || CurrentModule.Symbols.ContainsKey(label)
+                || CurrentModule.NestedModules.ContainsKey(label)
+                || CurrentModule.Structs.ContainsKey(label)) 
             {
                 errorFound = true;
                 ReportError(Errors.Z0402, macro, label);
@@ -444,6 +472,70 @@ namespace Spect.Net.Assembler.Assembler
             if (!errorFound)
             {
                 CurrentModule.Macros[label] = macroDef;
+            }
+        }
+
+        /// <summary>
+        /// Checks and collects the current structure definition
+        /// </summary>
+        /// <param name="structStmt">Statement for the structure</param>
+        /// <param name="label">Label of the structure</param>
+        /// <param name="allLines">All parsed lines</param>
+        /// <param name="currentLineIndex">Index of the macro definition line</param>
+        private void CollectStructDefinition(StructStatement structStmt, string label, 
+            List<SourceLineBase> allLines, ref int currentLineIndex)
+        {
+            var errorFound = false;
+
+            if (label == null)
+            {
+                errorFound = true;
+                ReportError(Errors.Z0432, structStmt);
+            }
+            else if (label.StartsWith("`"))
+            {
+                errorFound = true;
+                ReportError(Errors.Z0433, structStmt, label);
+            }
+            else if (CurrentModule.Macros.ContainsKey(label)
+                     || CurrentModule.Symbols.ContainsKey(label)
+                     || CurrentModule.NestedModules.ContainsKey(label)
+                     || CurrentModule.Structs.ContainsKey(label))
+            {
+                errorFound = true;
+                ReportError(Errors.Z0434, structStmt, label);
+            }
+
+            // --- Search for the end of the struct
+            var firstLine = currentLineIndex;
+            if (!structStmt.SearchForEnd(this, allLines, ref currentLineIndex, out var endLabel)) return;
+
+            if (endLabel != null)
+            {
+                errorFound = true;
+                ReportError(Errors.Z0436, structStmt);
+            }
+
+            // --- Check each macro line for valid instruction type
+            var structErrors = 0;
+            for (var i = firstLine + 1; i < currentLineIndex; i++)
+            {
+                var structLine = allLines[i];
+
+                if (StructBodyStatementTypes.Contains(structLine.GetType())) continue;
+                ReportError(Errors.Z0435, structLine);
+                errorFound = true;
+                structErrors++;
+                if (structErrors > 16) break;
+            }
+
+            // --- Create structure definition
+            var strcutDef = new StructDefinition(label, firstLine, currentLineIndex);
+
+            // --- If macro is OK, store it
+            if (!errorFound)
+            {
+                CurrentModule.Structs[label] = strcutDef;
             }
         }
 

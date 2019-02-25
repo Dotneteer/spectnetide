@@ -387,17 +387,43 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitModuleEndMarker([NotNull] Z80AsmParser.ModuleEndMarkerContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.structStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterMacroInvocation([NotNull] Z80AsmParser.MacroInvocationContext context) { }
+	public virtual void EnterStructStatement([NotNull] Z80AsmParser.StructStatementContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.structStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitMacroInvocation([NotNull] Z80AsmParser.MacroInvocationContext context) { }
+	public virtual void ExitStructStatement([NotNull] Z80AsmParser.StructStatementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.structEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStructEndMarker([NotNull] Z80AsmParser.StructEndMarkerContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.structEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStructEndMarker([NotNull] Z80AsmParser.StructEndMarkerContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroOrStructInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMacroOrStructInvocation([NotNull] Z80AsmParser.MacroOrStructInvocationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.macroOrStructInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMacroOrStructInvocation([NotNull] Z80AsmParser.MacroOrStructInvocationContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroArgument"/>.
@@ -411,6 +437,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMacroArgument([NotNull] Z80AsmParser.MacroArgumentContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.fieldAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFieldAssignment([NotNull] Z80AsmParser.FieldAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.fieldAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFieldAssignment([NotNull] Z80AsmParser.FieldAssignmentContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.orgPragma"/>.

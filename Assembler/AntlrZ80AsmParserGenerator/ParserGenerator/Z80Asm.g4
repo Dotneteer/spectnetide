@@ -10,7 +10,14 @@ compileUnit
 	;
 
 asmline
-	:	label? (pragma | operation | macroParam | statement | macroInvocation) comment?
+	:	label? (
+			pragma 
+		| operation 
+		| macroParam 
+		| statement 
+		| macroOrStructInvocation 
+		| fieldAssignment
+		) comment?
 	|	directive comment?
 	|	comment
 	|   label comment?
@@ -82,6 +89,8 @@ statement
 	|	continueStatement
 	|	moduleStatement
 	|	moduleEndMarker
+	|	structStatement
+	|	structEndMarker
 	;
 
 macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
@@ -104,9 +113,15 @@ breakStatement: BREAK ;
 continueStatement: CONTINUE ;
 moduleStatement: MODULE IDENTIFIER? ;
 moduleEndMarker: ENDMOD ;
+structStatement: STRUCT ;
+structEndMarker: ENDST ;
 
-macroInvocation: IDENTIFIER LPAR macroArgument (COMMA macroArgument)* RPAR	;
+macroOrStructInvocation: IDENTIFIER LPAR macroArgument (COMMA macroArgument)* RPAR	;
 macroArgument: operand? ;
+
+fieldAssignment: IDENTIFIER GOESTO (defbPragma | defwPragma | defcPragma 
+	| defmPragma | defnPragma | defhPragma | defsPragma 
+	| fillbPragma | fillwPragma | defgxPragma | defgPragma) ;
 
 orgPragma	: ORGPRAG expr ;
 xorgPragma	: XORGPR expr ;
@@ -451,6 +466,7 @@ LDBRAC	: '{{' ;
 RDBRAC	: '}}' ;
 EXCLM	: '!' ;
 DOT		: '.' ;
+GOESTO	: '->' ;
 
 // --- Register and flag tokens
 A	: 'a'|'A' ;
@@ -642,6 +658,8 @@ ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE'
 		  | '.endscope' | '.ENDSCOPE' | 'endscope' | 'ENDSCOPE'
 		  | '.moduleend' | '.MODULEEND' | 'moduleend' | 'MODULEEND'
 		  | '.scopeend' | '.SCOPEEND' | 'scopeend' | 'SCOPEEND' ;
+STRUCT	: '.struct' | '.STRUCT' | 'struct' | 'STRUCT' ;
+ENDST	: '.ends' | '.ENDS' | 'ends' | 'ENDS' ;
 
 // --- Built-in function names
 TEXTOF	: 'textof' | 'TEXTOF' ;

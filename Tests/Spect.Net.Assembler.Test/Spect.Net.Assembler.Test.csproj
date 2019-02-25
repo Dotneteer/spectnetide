@@ -74,6 +74,7 @@
     <Compile Include="Assembler\ShiftRotateOperationEmitTests.cs" />
     <Compile Include="Assembler\SourceLineBaseTests.cs" />
     <Compile Include="Assembler\StackOperationEmitTests.cs" />
+    <Compile Include="Assembler\StructEmitTests.cs" />
     <Compile Include="Assembler\TrivialOperationEmitTests.cs" />
     <Compile Include="Assembler\SourceFileItemTest.cs" />
     <Compile Include="Assembler\IncludeDirectiveTests.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Parser\PreprocessorTests.cs" />
     <Compile Include="Parser\ProcTests.cs" />
     <Compile Include="Parser\StackOperationTests.cs" />
+    <Compile Include="Parser\StructTests.cs" />
     <Compile Include="Parser\TextSpanTests.cs" />
     <Compile Include="Parser\TrivialOperationTests.cs" />
     <Compile Include="Parser\SpectrumStringTests.cs" />
