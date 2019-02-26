@@ -516,27 +516,98 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0436, structStmt);
             }
 
+            // --- Create structure definition
+            var structDef = new StructDefinition(label, firstLine, currentLineIndex);
+
             // --- Check each macro line for valid instruction type
             var structErrors = 0;
+            var structOffset = 0;
             for (var i = firstLine + 1; i < currentLineIndex; i++)
             {
                 var structLine = allLines[i];
+                if (!StructBodyStatementTypes.Contains(structLine.GetType()))
+                {
+                    ReportError(Errors.Z0435, structLine);
+                    errorFound = true;
+                    structErrors++;
+                    if (structErrors > 16) break;
+                }
 
-                if (StructBodyStatementTypes.Contains(structLine.GetType())) continue;
-                ReportError(Errors.Z0435, structLine);
-                errorFound = true;
-                structErrors++;
-                if (structErrors > 16) break;
+                // --- We use this local function to emit structure contents values
+                void EmitAction(byte value)
+                {
+                    structDef.DefaultContents.Add(value);
+                    structOffset++;
+                }
+
+                // --- We use this local function to create fixups
+                void FixupAction(ExpressionNode expr, FixupType type)
+                {
+                    structDef.Fixups.Add(new StructFixup(structOffset, type, expr));
+                }
+
+                // --- Check for field definition
+                if (structLine.Label != null)
+                {
+                    var fieldLabel = structLine.Label;
+                    if (structDef.Fields.ContainsKey(fieldLabel))
+                    {
+                        ReportError(Errors.Z0438, structLine, fieldLabel);
+                        errorFound = true;
+                    }
+                    else
+                    {
+                        structDef.Fields.Add(fieldLabel, (ushort)structOffset);
+                    }
+                }
+
+                // --- Determine default contents
+                switch (structLine)
+                {
+                    case DefbPragma defbPragma:
+                        ProcessDefbPragma(defbPragma, EmitAction, expr => FixupAction(expr, FixupType.Bit8));
+                        break;
+
+                    case DefwPragma defwPragma:
+                        ProcessDefwPragma(defwPragma, EmitAction, expr => FixupAction(expr, FixupType.Bit16));
+                        break;
+
+                    case DefmnPragma defmnPragma:
+                        ProcessDefmnPragma(defmnPragma, EmitAction);
+                        break;
+
+                    case DefhPragma defhPragma:
+                        ProcessDefhPragma(defhPragma, EmitAction);
+                        break;
+
+                    case DefsPragma defsPragma:
+                        ProcessDefsPragma(defsPragma, EmitAction);
+                        break;
+
+                    case FillbPragma fillbPragma:
+                        ProcessFillbPragma(fillbPragma, EmitAction);
+                        break;
+
+                    case FillwPragma fillwPragma:
+                        ProcessFillwPragma(fillwPragma, EmitAction);
+                        break;
+
+                    case DefgPragma defgPragma:
+                        ProcessDefgPragma(defgPragma, EmitAction);
+                        break;
+
+                    case DefgxPragma defgxPragma:
+                        ProcessDefgxPragma(defgxPragma, EmitAction);
+                        break;
+                }
             }
 
-            // --- Create structure definition
-            var strcutDef = new StructDefinition(label, firstLine, currentLineIndex);
+            // -- Stop, if error found
+            if (errorFound) return;
 
-            // --- If macro is OK, store it
-            if (!errorFound)
-            {
-                CurrentModule.Structs[label] = strcutDef;
-            }
+            // --- Register the structure and the structure symbol
+            CurrentModule.Structs[label] = structDef;
+            CurrentModule.Symbols[label] = AssemblySymbolInfo.CreateLabel(label, new ExpressionValue(structOffset));
         }
 
         /// <summary>
@@ -1971,7 +2042,10 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the DEFB pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DEFB pragma</param>
-        private void ProcessDefbPragma(DefbPragma pragma)
+        /// <param name="emitAction">Action to emit a code byte</param>
+        /// <param name="fixupAction">Action to create fixup</param>
+        private void ProcessDefbPragma(DefbPragma pragma, Action<byte> emitAction = null, 
+            Action<ExpressionNode> fixupAction = null)
         {
             foreach (var expr in pragma.Exprs)
             {
@@ -1983,12 +2057,32 @@ namespace Spect.Net.Assembler.Assembler
                         ReportError(Errors.Z0305, pragma);
                         return;
                     }
-                    EmitByte((byte) value.Value);
+                    Emit((byte)value.Value);
                 }
                 else if (value.IsNonEvaluated)
                 {
-                    RecordFixup(pragma, FixupType.Bit8, expr);
-                    EmitByte(0x00);
+                    if (fixupAction != null)
+                    {
+                        fixupAction(expr);
+                    }
+                    else
+                    {
+                        RecordFixup(pragma, FixupType.Bit8, expr);
+                    }
+                    Emit(0x00);
+                }
+            }
+
+            // --- Emits a byte
+            void Emit(byte value)
+            {
+                if (emitAction != null)
+                {
+                    emitAction(value);
+                }
+                else
+                {
+                    EmitByte(value);
                 }
             }
         }
@@ -1997,7 +2091,10 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the DEFW pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DEFW pragma</param>
-        private void ProcessDefwPragma(DefwPragma pragma)
+        /// <param name="emitAction">Action to emit a code byte</param>
+        /// <param name="fixupAction">Action to create fixup</param>
+        private void ProcessDefwPragma(DefwPragma pragma, Action<byte> emitAction = null,
+            Action<ExpressionNode> fixupAction = null)
         {
             foreach (var expr in pragma.Exprs)
             {
@@ -2009,12 +2106,33 @@ namespace Spect.Net.Assembler.Assembler
                         ReportError(Errors.Z0305, pragma);
                         return;
                     }
-                    EmitWord(value.Value);
+                    Emit(value.Value);
                 }
                 else if (value.IsNonEvaluated)
                 {
-                    RecordFixup(pragma, FixupType.Bit16, expr);
-                    EmitWord(0x0000);
+                    if (fixupAction != null)
+                    {
+                        fixupAction(expr);
+                    }
+                    else
+                    {
+                        RecordFixup(pragma, FixupType.Bit16, expr);
+                    }
+                    Emit(0x0000);
+                }
+            }
+
+            // --- Emits a word
+            void Emit(ushort value)
+            {
+                if (emitAction != null)
+                {
+                    emitAction((byte)value);
+                    emitAction((byte)(value >> 8));
+                }
+                else
+                {
+                    EmitWord(value);
                 }
             }
         }
@@ -2023,10 +2141,11 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the DEFN pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DEFN pragma</param>
+        /// <param name="emitAction">Action to emit a code byte</param>
         // ReSharper disable once UnusedParameter.Local
-        private void ProcessDefmnPragma(DefmnPragma pragma)
+        private void ProcessDefmnPragma(DefmnPragma pragma, Action<byte> emitAction = null)
         {
-            var message = Eval(pragma, pragma.Message);
+            var message = EvalImmediate(pragma, pragma.Message);
             if (message.IsValid && message.Type != ExpressionValueType.String)
             {
                 ReportError(Errors.Z0091, pragma);
@@ -2036,14 +2155,27 @@ namespace Spect.Net.Assembler.Assembler
             {
                 for (var i = 0; i < bytes.Count - 1; i++)
                 {
-                    EmitByte(bytes[i]);
+                    Emit(bytes[i]);
                 }
             }
             var lastByte = (byte)(bytes[bytes.Count - 1] | (pragma.Bit7Terminator ? 0x80 : 0x00));
-            EmitByte(lastByte);
+            Emit(lastByte);
             if (pragma.NullTerminator)
             {
-                EmitByte(0x00);
+                Emit(0x00);
+            }
+
+            // --- Emits a byte
+            void Emit(byte value)
+            {
+                if (emitAction != null)
+                {
+                    emitAction(value);
+                }
+                else
+                {
+                    EmitByte(value);
+                }
             }
         }
 
@@ -2051,10 +2183,11 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the DEFH pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DEFH pragma</param>
+        /// <param name="emitAction">Action to emit a code byte</param>
         // ReSharper disable once UnusedParameter.Local
-        private void ProcessDefhPragma(DefhPragma pragma)
+        private void ProcessDefhPragma(DefhPragma pragma, Action<byte> emitAction = null)
         {
-            var byteVector = Eval(pragma, pragma.ByteVector);
+            var byteVector = EvalImmediate(pragma, pragma.ByteVector);
             if (byteVector.IsValid && byteVector.Type != ExpressionValueType.String)
             {
                 ReportError(Errors.Z0093, pragma);
@@ -2078,12 +2211,25 @@ namespace Spect.Net.Assembler.Assembler
                     .ToArray();
                 foreach (var msgByte in bytes)
                 {
-                    EmitByte(msgByte);
+                    Emit(msgByte);
                 }
             }
             catch (Exception)
             {
                 ReportError(Errors.Z0094, pragma);
+            }
+
+            // --- Emits a byte
+            void Emit(byte value)
+            {
+                if (emitAction != null)
+                {
+                    emitAction(value);
+                }
+                else
+                {
+                    EmitByte(value);
+                }
             }
         }
 
@@ -2091,7 +2237,8 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the DEFS pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DEFS pragma</param>
-        private void ProcessDefsPragma(DefsPragma pragma)
+        /// <param name="emitAction">Action to emit a code byte</param>
+        private void ProcessDefsPragma(DefsPragma pragma, Action<byte> emitAction = null)
         {
             var count = Eval(pragma, pragma.Expression);
             if (!count.IsValid)
@@ -2101,7 +2248,14 @@ namespace Spect.Net.Assembler.Assembler
             }
             for (var i = 0; i < count.Value; i++)
             {
-                EmitByte(0x00);
+                if (emitAction != null)
+                {
+                    emitAction(0x00);
+                }
+                else
+                {
+                    EmitByte(0x00);
+                }
             }
         }
 
@@ -2109,7 +2263,8 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the FILLB pragma
         /// </summary>
         /// <param name="pragma">Assembly line of FILLB pragma</param>
-        private void ProcessFillbPragma(FillbPragma pragma)
+        /// <param name="emitAction">Action to emit a code byte</param>
+        private void ProcessFillbPragma(FillbPragma pragma, Action<byte> emitAction = null)
         {
             var count = Eval(pragma, pragma.Count);
             if (!count.IsValid)
@@ -2128,7 +2283,14 @@ namespace Spect.Net.Assembler.Assembler
 
             for (var i = 0; i < count.Value; i++)
             {
-                EmitByte(value.AsByte());
+                if (emitAction != null)
+                {
+                    emitAction(value.AsByte());
+                }
+                else
+                {
+                    EmitByte(value.AsByte());
+                }
             }
         }
 
@@ -2136,7 +2298,8 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the FILLW pragma
         /// </summary>
         /// <param name="pragma">Assembly line of FILLW pragma</param>
-        private void ProcessFillwPragma(FillwPragma pragma)
+        /// <param name="emitAction">Action to emit a code byte</param>
+        private void ProcessFillwPragma(FillwPragma pragma, Action<byte> emitAction = null)
         {
             var count = Eval(pragma, pragma.Count);
             var value = Eval(pragma, pragma.Expression);
@@ -2148,7 +2311,16 @@ namespace Spect.Net.Assembler.Assembler
 
             for (var i = 0; i < count.Value; i++)
             {
-                EmitWord(value.AsWord());
+                var word = value.AsWord();
+                if (emitAction != null)
+                {
+                    emitAction((byte)word);
+                    emitAction((byte)(word >> 8));
+                }
+                else
+                {
+                    EmitWord(word);
+                }
             }
         }
 
@@ -2289,18 +2461,20 @@ namespace Spect.Net.Assembler.Assembler
         /// Processes the DEFG pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DEFG pragma</param>
-        private void ProcessDefgPragma(DefgPragma pragma)
+        /// <param name="emitAction">Action to emit a code byte</param>
+        private void ProcessDefgPragma(DefgPragma pragma, Action<byte> emitAction = null)
         {
             // --- Obtain and check the DEFG pattern expression
             var pattern = pragma.Pattern;
-            EmitDefgBytes(pragma, pattern, false);
+            EmitDefgBytes(pragma, pattern, false, emitAction);
         }
 
         /// <summary>
         /// Processes the DEFG pragma
         /// </summary>
         /// <param name="pragma">Assembly line of DEFG pragma</param>
-        private void ProcessDefgxPragma(DefgxPragma pragma)
+        /// <param name="emitAction">Action to emit a code byte</param>
+        private void ProcessDefgxPragma(DefgxPragma pragma, Action<byte> emitAction = null)
         {
             // --- Obtain and check the DEFG pattern expression
             var value = EvalImmediate(pragma, pragma.Expr);
@@ -2313,7 +2487,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             var pattern = value.AsString().Trim();
-            EmitDefgBytes(pragma, pattern);
+            EmitDefgBytes(pragma, pattern, true, emitAction);
         }
 
         /// <summary>
@@ -2322,7 +2496,9 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Pragma instance</param>
         /// <param name="pattern">Pattern to emit</param>
         /// <param name="allowAlign">Signs if alignment indicators are allowed or not.</param>
-        private void EmitDefgBytes(PragmaBase pragma, string pattern, bool allowAlign = true)
+        /// <param name="emitAction">Action to emit a code byte</param>
+        private void EmitDefgBytes(SourceLineBase pragma, string pattern, 
+            bool allowAlign = true, Action<byte> emitAction = null)
         {
             if (string.IsNullOrEmpty(pattern))
             {
@@ -2370,7 +2546,14 @@ namespace Spect.Net.Assembler.Assembler
                 if ((i + 1) % 8 != 0) continue;
 
                 // --- Emit a full byte
-                EmitByte((byte)bitPattern);
+                if (emitAction != null)
+                {
+                    emitAction((byte)bitPattern);
+                }
+                else
+                {
+                    EmitByte((byte)bitPattern);
+                }
                 bitPattern = 0x00;
             }
         }

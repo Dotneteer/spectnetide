@@ -46,7 +46,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>Evaluated expression value</returns>
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
-            var idExpr = evalContext.GetSymbolValue(SymbolName,ScopeSymbolNames, StartFromGlobal);
+            var idExpr = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal);
             if (idExpr != null)
             {
                 return idExpr;

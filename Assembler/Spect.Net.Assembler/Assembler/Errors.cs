@@ -107,6 +107,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0435 = "Z0435";
         public const string Z0436 = "Z0436";
         public const string Z0437 = "Z0437";
+        public const string Z0438 = "Z0438";
 
         public const string Z0500 = "Z0500";
 
@@ -207,6 +208,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0435, "Structures can use only pragmas that emit bytes, words, strings, or reserve space." },
             { Z0436, "The ENDS statement cannot have a label." },
             { Z0437, "Too many errors withing a .struct definition." },
+            { Z0438, "Duplicated field label {0} in a .struct definition." },
             { Z0500, "ERROR: {0}" },
         };
 

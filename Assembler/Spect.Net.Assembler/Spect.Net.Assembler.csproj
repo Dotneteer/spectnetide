@@ -57,6 +57,7 @@
     <Compile Include="Assembler\AssemblyModule.cs" />
     <Compile Include="Assembler\StructDefinition.cs" />
     <Compile Include="Assembler\AssemblySymbolInfo.cs" />
+    <Compile Include="Assembler\StructFixup.cs" />
     <Compile Include="Assembler\SymbolType.cs" />
     <Compile Include="Assembler\BinarySegment.cs" />
     <Compile Include="Assembler\CompoundOperationDescriptor.cs" />

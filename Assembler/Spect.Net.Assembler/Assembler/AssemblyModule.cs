@@ -116,6 +116,7 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Determine the module to start from
             var module = startFromGlobal ? RootModule : this;
+            StructDefinition structFound = null;
 
             // --- Iterate through segments
             for (var i = 0; i < symbolSegments.Count; i++)
@@ -128,14 +129,29 @@ namespace Spect.Net.Assembler.Assembler
                     return null;
                 }
 
-                if (i == symbolSegments.Count - 1)
+                if (i == symbolSegments.Count - 2)
+                {
+                    // --- This is the segment before the last, it may be
+                    // --- either a module or a struct.
+                    module.Structs.TryGetValue(segment, out structFound);
+                }
+                else if (i == symbolSegments.Count - 1)
                 {
                     // --- This is the last segment, it should be a symbol
-                    // --- in the currently reached module.
+                    // --- in the currently reached module, or a field in a structure.
+                    if (structFound != null)
+                    {
+                        // --- Check the structure for its fields
+                        return structFound.Fields.TryGetValue(segment, out var fieldOffset)
+                            ? new ExpressionValue(fieldOffset)
+                            : null;
+                    }
                     return module.Symbols.TryGetValue(segment, out var symbolInfo)
                         ? symbolInfo.Value
                         : null;
                 }
+
+                if (structFound != null) continue;
 
                 // --- This is a module name within the currently reached module.
                 if (!module.NestedModules.TryGetValue(segment, out var subModule))

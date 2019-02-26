@@ -1013,7 +1013,7 @@ namespace Spect.Net.Assembler
         }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroInvocation"/>.
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroOrStructInvocation"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
         /// on <paramref name="context"/>.

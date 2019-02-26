@@ -74,7 +74,7 @@
     <Compile Include="Assembler\ShiftRotateOperationEmitTests.cs" />
     <Compile Include="Assembler\SourceLineBaseTests.cs" />
     <Compile Include="Assembler\StackOperationEmitTests.cs" />
-    <Compile Include="Assembler\StructEmitTests.cs" />
+    <Compile Include="Assembler\StructDefinitionTests.cs" />
     <Compile Include="Assembler\TrivialOperationEmitTests.cs" />
     <Compile Include="Assembler\SourceFileItemTest.cs" />
     <Compile Include="Assembler\IncludeDirectiveTests.cs" />
