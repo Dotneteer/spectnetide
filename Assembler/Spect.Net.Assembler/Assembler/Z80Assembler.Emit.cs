@@ -117,6 +117,11 @@ namespace Spect.Net.Assembler.Assembler
         private bool IsInStructInvocation => _currentStructInvocation != null;
 
         /// <summary>
+        /// Signs that the compiler is currently cloning a structure byte pattern
+        /// </summary>
+        private bool _isInStructCloning;
+
+        /// <summary>
         /// Emits the code after processing the directives
         /// </summary>
         /// <returns></returns>
@@ -213,10 +218,14 @@ namespace Spect.Net.Assembler.Assembler
                         // --- No current label, use the hanging label
                         currentLabel = OverflowLabelLine.Label;
                     }
-                    else
+                    else 
                     {
                         // --- Create a point for the hanging label, and use the current label
-                        CreateCurrentPointLabel(OverflowLabelLine);
+                        if (!(_isInStructCloning
+                              || asmLine is ISupportsFieldAssignment && IsInStructInvocation))
+                        {
+                            CreateCurrentPointLabel(OverflowLabelLine);
+                        }
                         currentLabel = asmLine.Label;
                         OverflowLabelLine = null;
                     }
@@ -230,6 +239,7 @@ namespace Spect.Net.Assembler.Assembler
 
                     // --- Create the label unless the current pragma does it
                     if (!(asmLine is ILabelSetter 
+                        || _isInStructCloning
                         || asmLine is ISupportsFieldAssignment && IsInStructInvocation))
                     {
                         if (!currentLabel.StartsWith("`")
@@ -1862,12 +1872,19 @@ namespace Spect.Net.Assembler.Assembler
             _currentStructStartOffset = (ushort)CurrentSegment.CurrentOffset;
 
             // --- Emit the default pattern of the structure (including fixups)
-            // --- Create a local scope for the loop body
-            for (var lineIndex = structDef.Section.FirstLine + 1; lineIndex < structDef.Section.LastLine; lineIndex++)
+            try
             {
-                var structLineIndex = lineIndex;
-                var curLine = allLines[lineIndex];
-                EmitSingleLine(allLines, allLines, curLine, ref structLineIndex);
+                _isInStructCloning = true;
+                for (var lineIndex = structDef.Section.FirstLine + 1; lineIndex < structDef.Section.LastLine; lineIndex++)
+                {
+                    var structLineIndex = lineIndex;
+                    var curLine = allLines[lineIndex];
+                    EmitSingleLine(allLines, allLines, curLine, ref structLineIndex);
+                }
+            }
+            finally
+            {
+                _isInStructCloning = false;
             }
 
             // --- Sign that we are inside a struct invocation

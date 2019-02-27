@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
 using Spect.Net.Assembler.Assembler;
 // ReSharper disable StringLiteralTypo
 
@@ -1691,6 +1692,61 @@ namespace Spect.Net.Assembler.Test.Assembler
                 ";
             // --- Act/Assert
             CodeRaisesError(SOURCE, Errors.Z0442);
+        }
+
+        [TestMethod]
+        public void FieldInvocationDoesNotRedefineLabels()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                Object2D: .struct
+                    X: .defw 0
+                    Y: .defw 0
+                    DX: .defb 1
+                    DY: .defb 1
+                .ends
+
+                Object2d()
+
+                Apple: Object2D()
+                    X -> .defw 100
+                    Y -> .defw 100
+                ";
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(SOURCE);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void StructAllowsMultipleNamedFields()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                Object2D: .struct
+                    XCoord:
+                    X: .defw 0
+                    Y: .defw 0
+                    DX: .defb 1
+                    DY: .defb 1
+                .ends
+
+                Object2d()
+
+                Apple: Object2D()
+                    X -> .defw 100
+                    Y -> .defw 100
+                ";
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(SOURCE);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
         }
     }
 }

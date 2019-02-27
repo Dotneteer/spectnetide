@@ -230,7 +230,7 @@ namespace Spect.Net.VsPackage.ToolWindows.CompilerOutput
                     fu.Resolved, 
                     fu.Type == FixupType.Equ
                         ? fu.Label
-                        : fu.Expression.SourceText
+                        : fu.Expression?.SourceText
                     ));
             Fixups = new ObservableCollection<FixupInfo>(fixupInfo);
         }
