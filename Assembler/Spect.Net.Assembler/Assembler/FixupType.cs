@@ -21,6 +21,15 @@
         Ent,
 
         /// <summary>XENT pragma value</summary>
-        Xent
+        Xent,
+
+        /// <summary>Structure byte array</summary>
+        Struct,
+
+        /// <summary>8-bit field value</summary>
+        FieldBit8,
+
+        /// <summary>16-bit field value</summary>
+        FieldBit16
     }
 }

@@ -119,7 +119,7 @@ structEndMarker: ENDST ;
 macroOrStructInvocation: IDENTIFIER LPAR macroArgument (COMMA macroArgument)* RPAR	;
 macroArgument: operand? ;
 
-fieldAssignment: IDENTIFIER GOESTO (defbPragma | defwPragma | defcPragma 
+fieldAssignment: GOESTO (defbPragma | defwPragma | defcPragma 
 	| defmPragma | defnPragma | defhPragma | defsPragma 
 	| fillbPragma | fillwPragma | defgxPragma | defgPragma) ;
 

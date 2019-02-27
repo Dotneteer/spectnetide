@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.Assembler.Assembler;
-using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 // ReSharper disable StringLiteralTypo
 
@@ -250,9 +249,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(2);
-            def.DefaultContents[0].ShouldBe((byte)0x13);
-            def.DefaultContents[1].ShouldBe((byte)0x15);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -267,6 +263,8 @@ namespace Spect.Net.Assembler.Test.Assembler
                     .struct
                         .defb 0x13, Symb1, 0x15, Sym1*Symb2
                     .ends
+                Symb1: .equ 1
+                Symb2: .equ 2
                 ");
 
             // --- Assert
@@ -275,17 +273,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(4);
-            def.DefaultContents[0].ShouldBe((byte)0x13);
-            def.DefaultContents[1].ShouldBe((byte)0x00);
-            def.DefaultContents[2].ShouldBe((byte)0x15);
-            def.DefaultContents[3].ShouldBe((byte)0x00);
-            def.Fixups.Count.ShouldBe(2);
-            def.Fixups[0].Offset.ShouldBe(1);
-            def.Fixups[0].Type.ShouldBe(FixupType.Bit8);
-            def.Fixups[0].Expression.ShouldBeOfType<IdentifierNode>();
-            def.Fixups[1].Offset.ShouldBe(3);
-            def.Fixups[1].Type.ShouldBe(FixupType.Bit8);
-            def.Fixups[1].Expression.ShouldBeOfType<MultiplyOperationNode>();
         }
 
         [TestMethod]
@@ -308,11 +295,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(4);
-            def.DefaultContents[0].ShouldBe((byte)0xA5);
-            def.DefaultContents[1].ShouldBe((byte)0x13);
-            def.DefaultContents[2].ShouldBe((byte)0xA6);
-            def.DefaultContents[3].ShouldBe((byte)0x15);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -335,21 +317,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(8);
-            def.DefaultContents[0].ShouldBe((byte)0xA5);
-            def.DefaultContents[1].ShouldBe((byte)0x13);
-            def.DefaultContents[2].ShouldBe((byte)0x00);
-            def.DefaultContents[3].ShouldBe((byte)0x00);
-            def.DefaultContents[4].ShouldBe((byte)0xA6);
-            def.DefaultContents[5].ShouldBe((byte)0x15);
-            def.DefaultContents[6].ShouldBe((byte)0x00);
-            def.DefaultContents[7].ShouldBe((byte)0x00);
-            def.Fixups.Count.ShouldBe(2);
-            def.Fixups[0].Offset.ShouldBe(2);
-            def.Fixups[0].Type.ShouldBe(FixupType.Bit16);
-            def.Fixups[0].Expression.ShouldBeOfType<IdentifierNode>();
-            def.Fixups[1].Offset.ShouldBe(6);
-            def.Fixups[1].Type.ShouldBe(FixupType.Bit16);
-            def.Fixups[1].Expression.ShouldBeOfType<MultiplyOperationNode>();
         }
 
         [TestMethod]
@@ -372,11 +339,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(4);
-            def.DefaultContents[0].ShouldBe((byte)'A');
-            def.DefaultContents[1].ShouldBe((byte)'B');
-            def.DefaultContents[2].ShouldBe((byte)'C');
-            def.DefaultContents[3].ShouldBe((byte)'D');
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -399,12 +361,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(5);
-            def.DefaultContents[0].ShouldBe((byte)'A');
-            def.DefaultContents[1].ShouldBe((byte)'B');
-            def.DefaultContents[2].ShouldBe((byte)'C');
-            def.DefaultContents[3].ShouldBe((byte)'D');
-            def.DefaultContents[4].ShouldBe((byte)0x00);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -427,11 +383,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(4);
-            def.DefaultContents[0].ShouldBe((byte)'A');
-            def.DefaultContents[1].ShouldBe((byte)'B');
-            def.DefaultContents[2].ShouldBe((byte)'C');
-            def.DefaultContents[3].ShouldBe((byte)('D' | 0x80));
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -454,11 +405,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(4);
-            def.DefaultContents[0].ShouldBe((byte)0x12);
-            def.DefaultContents[1].ShouldBe((byte)0xAB);
-            def.DefaultContents[2].ShouldBe((byte)0x23);
-            def.DefaultContents[3].ShouldBe((byte)0xCD);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -481,10 +427,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(3);
-            def.DefaultContents[0].ShouldBe((byte)0x00);
-            def.DefaultContents[1].ShouldBe((byte)0x00);
-            def.DefaultContents[2].ShouldBe((byte)0x00);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -507,10 +449,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(3);
-            def.DefaultContents[0].ShouldBe((byte)0xA5);
-            def.DefaultContents[1].ShouldBe((byte)0xA5);
-            def.DefaultContents[2].ShouldBe((byte)0xA5);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -533,11 +471,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(4);
-            def.DefaultContents[0].ShouldBe((byte)0x47);
-            def.DefaultContents[1].ShouldBe((byte)0xA5);
-            def.DefaultContents[2].ShouldBe((byte)0x47);
-            def.DefaultContents[3].ShouldBe((byte)0xA5);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -560,9 +493,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(2);
-            def.DefaultContents[0].ShouldBe((byte)0x0F);
-            def.DefaultContents[1].ShouldBe((byte)0xF0);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -585,9 +515,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(2);
-            def.DefaultContents[0].ShouldBe((byte)0x0F);
-            def.DefaultContents[1].ShouldBe((byte)0xF0);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]
@@ -614,17 +541,6 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Size.ShouldBe(10);
-            def.DefaultContents[0].ShouldBe((byte)0x12);
-            def.DefaultContents[1].ShouldBe((byte)0x13);
-            def.DefaultContents[2].ShouldBe((byte)0x0F);
-            def.DefaultContents[3].ShouldBe((byte)0xF0);
-            def.DefaultContents[4].ShouldBe((byte)0xA3);
-            def.DefaultContents[5].ShouldBe((byte)0x12);
-            def.DefaultContents[6].ShouldBe((byte)0xA3);
-            def.DefaultContents[7].ShouldBe((byte)0x12);
-            def.DefaultContents[8].ShouldBe((byte)0xDC);
-            def.DefaultContents[9].ShouldBe((byte)0xFE);
-            def.Fixups.Count.ShouldBe(0);
         }
 
         [TestMethod]

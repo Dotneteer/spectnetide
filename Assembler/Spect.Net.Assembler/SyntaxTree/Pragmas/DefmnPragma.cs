@@ -5,7 +5,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
     /// <summary>
     /// This class represents the DEFN pragma
     /// </summary>
-    public sealed class DefmnPragma : PragmaBase
+    public sealed class DefmnPragma : PragmaBase, ISupportsFieldAssignment
     {
         /// <summary>
         /// The message to define
@@ -21,5 +21,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
         /// Should the message have the last byte's bit 7 set?
         /// </summary>
         public bool Bit7Terminator { get; set; }
+
+        /// <summary>
+        /// True indicates that this node is used within a field assignment
+        /// </summary>
+        public bool IsFieldAssignment { get; set; }
     }
 }

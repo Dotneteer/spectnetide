@@ -3,9 +3,9 @@
 namespace Spect.Net.Assembler.SyntaxTree.Operations
 {
     /// <summary>
-    /// This class represents a macro invocation statement
+    /// This class represents a macro or struct invocation statement
     /// </summary>
-    public class MacroInvocation : StatementBase
+    public class MacroOrStructInvocation : StatementBase
     {
         /// <summary>
         /// Name of the macro to invoke
@@ -17,7 +17,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Operations
         /// </summary>
         public List<Operand> Parameters { get; }
 
-        public MacroInvocation(string name, List<Operand> parameters)
+        public MacroOrStructInvocation(string name, List<Operand> parameters)
         {
             Name = name;
             Parameters = parameters;

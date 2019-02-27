@@ -24,19 +24,9 @@ namespace Spect.Net.Assembler.Assembler
         public Dictionary<string, ushort> Fields { get; }
 
         /// <summary>
-        /// The default contents of the structure
-        /// </summary>
-        public List<byte> DefaultContents { get; }
-
-        /// <summary>
         /// Get the structure size
         /// </summary>
-        public int Size => DefaultContents.Count;
-
-        /// <summary>
-        /// Fixups to resolve
-        /// </summary>
-        public List<StructFixup> Fixups { get; }
+        public int Size { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -46,8 +36,6 @@ namespace Spect.Net.Assembler.Assembler
             StructName = structName;
             Section = new DefinitionSection(macroDefLine, macroEndLine);
             Fields = new Dictionary<string, ushort>(StringComparer.InvariantCultureIgnoreCase);
-            DefaultContents = new List<byte>();
-            Fixups = new List<StructFixup>();
         }
     }
 }

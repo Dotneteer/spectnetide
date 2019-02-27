@@ -33,6 +33,7 @@ namespace Spect.Net.Assembler
         private string _label;
         private string _comment;
         private string _emitIssue;
+        private bool _isFieldAssignment;
         private List<string> _macroParamNames;
         private TextSpan _labelSpan;
         private TextSpan _keywordSpan;
@@ -77,6 +78,7 @@ namespace Spect.Net.Assembler
             _keywordSpan = null;
             _commentSpan = null;
             _emitIssue = null;
+            _isFieldAssignment = false;
             _numbers = null;
             _identifiers = null;
             _strings = null;
@@ -705,6 +707,25 @@ namespace Spect.Net.Assembler
 
         #endregion
 
+        #region Field assignment
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.fieldAssignment"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitFieldAssignment(Z80AsmParser.FieldAssignmentContext context)
+        {
+            _isFieldAssignment = true;
+            return base.VisitFieldAssignment(context);
+        }
+
+        #endregion
+
         #region Operations
 
         /// <summary>
@@ -1045,7 +1066,7 @@ namespace Spect.Net.Assembler
             }
 
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
-            return AddLine(new MacroInvocation(context.IDENTIFIER().NormalizeToken(), macroOps),
+            return AddLine(new MacroOrStructInvocation(context.IDENTIFIER().NormalizeToken(), macroOps),
                     context);
         }
 
@@ -2266,6 +2287,10 @@ namespace Spect.Net.Assembler
                 : new TextSpan(_firstColumn, _lastPos);
             Compilation.Lines.Add(line);
             LastAsmLine = line;
+            if (line is ISupportsFieldAssignment fieldAssignment)
+            {
+                fieldAssignment.IsFieldAssignment = _isFieldAssignment;
+            }
             return line;
         }
 

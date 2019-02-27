@@ -145,7 +145,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                         case IncludeDirective _:
                             type = Z80AsmTokenType.Include;
                             break;
-                        case MacroInvocation _:
+                        case MacroOrStructInvocation _:
                             type = Z80AsmTokenType.MacroInvocation;
                             break;
                         case ModuleStatement _:

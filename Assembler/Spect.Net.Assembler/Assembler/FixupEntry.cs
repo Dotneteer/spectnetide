@@ -46,6 +46,11 @@ namespace Spect.Net.Assembler.Assembler
         public ExpressionNode Expression { get; }
 
         /// <summary>
+        /// Structure bytes to emit
+        /// </summary>
+        public Dictionary<ushort, byte> StructBytes { get; }
+
+        /// <summary>
         /// Signs if the fixup is resolved
         /// </summary>
         public bool Resolved { get; set; }
@@ -60,7 +65,8 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public FixupEntry(IEvaluationContext parentContext, AssemblyModule module,
             SourceLineBase sourceLine, FixupType type, 
-            int segmentIndex, int offset, ExpressionNode expression, string label = null)
+            int segmentIndex, int offset, ExpressionNode expression, string label = null,
+            Dictionary<ushort, byte> structBytes = null)
         {
             ParentContext = parentContext;
             Module = module;
@@ -71,6 +77,7 @@ namespace Spect.Net.Assembler.Assembler
             Expression = expression;
             Resolved = false;
             Label = label;
+            StructBytes = structBytes;
         }
 
         /// <summary>

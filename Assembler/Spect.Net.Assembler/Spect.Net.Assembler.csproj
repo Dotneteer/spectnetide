@@ -57,7 +57,6 @@
     <Compile Include="Assembler\AssemblyModule.cs" />
     <Compile Include="Assembler\StructDefinition.cs" />
     <Compile Include="Assembler\AssemblySymbolInfo.cs" />
-    <Compile Include="Assembler\StructFixup.cs" />
     <Compile Include="Assembler\SymbolType.cs" />
     <Compile Include="Assembler\BinarySegment.cs" />
     <Compile Include="Assembler\CompoundOperationDescriptor.cs" />
@@ -124,6 +123,7 @@
     <Compile Include="SyntaxTree\ILabelSetter.cs" />
     <Compile Include="SyntaxTree\IncludeDirective.cs" />
     <Compile Include="SyntaxTree\IndexedAddress.cs" />
+    <Compile Include="SyntaxTree\ISupportsFieldAssignment.cs" />
     <Compile Include="SyntaxTree\MacroParamLine.cs" />
     <Compile Include="SyntaxTree\NoInstructionLine.cs" />
     <Compile Include="SyntaxTree\LabelSetterPragmaBase.cs" />
@@ -132,7 +132,7 @@
     <Compile Include="SyntaxTree\OperationBase.cs" />
     <Compile Include="SyntaxTree\Operations\CompoundOperation.cs" />
     <Compile Include="SyntaxTree\Operations\EmittingOperationBase.cs" />
-    <Compile Include="SyntaxTree\Operations\MacroInvocation.cs" />
+    <Compile Include="SyntaxTree\Operations\MacroOrStructInvocation.cs" />
     <Compile Include="SyntaxTree\Operations\TrivialNextOperation.cs" />
     <Compile Include="SyntaxTree\Operations\TrivialOperation.cs" />
     <Compile Include="SyntaxTree\ParserErrorLine.cs" />

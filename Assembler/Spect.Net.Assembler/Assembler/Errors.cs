@@ -108,6 +108,10 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0436 = "Z0436";
         public const string Z0437 = "Z0437";
         public const string Z0438 = "Z0438";
+        public const string Z0439 = "Z0439";
+        public const string Z0440 = "Z0440";
+        public const string Z0441 = "Z0441";
+        public const string Z0442 = "Z0442";
 
         public const string Z0500 = "Z0500";
 
@@ -209,6 +213,10 @@ namespace Spect.Net.Assembler.Assembler
             { Z0436, "The ENDS statement cannot have a label." },
             { Z0437, "Too many errors withing a .struct definition." },
             { Z0438, "Duplicated field label {0} in a .struct definition." },
+            { Z0439, "A .struct invocation ({0}) cannot have arguments." },
+            { Z0440, "Field assignment instruction cannot be used outside of .struct invocation." },
+            { Z0441, "The .struct definition of {0} does not have a field named {1}." },
+            { Z0442, "The .struct size of {0} is {1} byte(s). The invocation want to emit {2} bytes." },
             { Z0500, "ERROR: {0}" },
         };
 

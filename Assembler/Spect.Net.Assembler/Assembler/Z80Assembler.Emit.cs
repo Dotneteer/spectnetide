@@ -87,6 +87,26 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
+        /// Signs if the compiler is in struct invocation mode
+        /// </summary>
+        private StructDefinition _currentStructInvocation;
+
+        /// <summary>
+        /// The current bytes to emit for the structure being invoked
+        /// </summary>
+        private List<byte> _currentStructBytes;
+
+        /// <summary>
+        /// Offset of the current strcuture invocation
+        /// </summary>
+        private int _currentStructOffset;
+
+        /// <summary>
+        /// Checks if the compiler is in structure invocation mode
+        /// </summary>
+        private bool IsInStructInvocation => _currentStructInvocation != null;
+
+        /// <summary>
         /// Emits the code after processing the directives
         /// </summary>
         /// <returns></returns>
@@ -185,7 +205,8 @@ namespace Spect.Net.Assembler.Assembler
                     OverflowLabelLine = null;
 
                     // --- Create the label unless the current pragma does it
-                    if (!(asmLine is ILabelSetter))
+                    if (!(asmLine is ILabelSetter 
+                        || asmLine is ISupportsFieldAssignment && IsInStructInvocation))
                     {
                         if (!currentLabel.StartsWith("`")
                             && CurrentModule.LocalScopes.Count > 0)
@@ -236,6 +257,58 @@ namespace Spect.Net.Assembler.Assembler
                     return;
                 }
 
+                // --- Handle field assignment statement
+                var isFieldAssignment = asmLine is ISupportsFieldAssignment fieldAsgn
+                    && fieldAsgn.IsFieldAssignment;
+                if (IsInStructInvocation)
+                {
+                    // --- We are in a .struct invocation...
+                    if (!isFieldAssignment)
+                    {
+                        // --- ...and just left the invocation scope.
+                        // --- Check for structure size
+                        if (_currentStructOffset > _currentStructInvocation.Size)
+                        {
+                            ReportError(Errors.Z0442, asmLine, _currentStructInvocation.StructName,
+                                _currentStructInvocation.Size, _currentStructOffset);
+                            return;
+                        }
+
+                        // --- Complete emitting the structure
+                        foreach (var toEmit in _currentStructBytes)
+                        {
+                            EmitByte(toEmit);
+                        }
+                        _currentStructInvocation = null;
+                    }
+                    else
+                    {
+                        if (currentLabel != null)
+                        {
+                            // --- If there's a label that should be a field
+                            if (!_currentStructInvocation.Fields.TryGetValue(currentLabel, out var fieldOffset))
+                            {
+                                ReportError(Errors.Z0441, asmLine, _currentStructInvocation.StructName, currentLabel);
+                                return;
+                            }
+
+                            // --- Use the field offset as the current one for the subsequent emits
+                            _currentStructOffset = fieldOffset;
+                        }
+                    }
+                }
+                else
+                {
+                    // --- We are outside of a .struct invocation...
+                    if (isFieldAssignment)
+                    {
+                        // --- ... so field assignment is ivalid here.
+                        ReportError(Errors.Z0440, asmLine);
+                        return;
+                    }
+                }
+
+                // --- Now, it's time to deal with the assembly line
                 if (asmLine is PragmaBase pragmaLine)
                 {
                     // --- Process a pragma
@@ -381,8 +454,8 @@ namespace Spect.Net.Assembler.Assembler
                     ProcessContinueStatement(continueStmt);
                     break;
 
-                case MacroInvocation macroInvokeStmt:
-                    ProcessMacroInvocation(macroInvokeStmt, allLines);
+                case MacroOrStructInvocation macroInvokeStmt:
+                    ProcessMacroOrStructInvocation(macroInvokeStmt, allLines);
                     break;
             }
         }
@@ -533,19 +606,6 @@ namespace Spect.Net.Assembler.Assembler
                     if (structErrors > 16) break;
                 }
 
-                // --- We use this local function to emit structure contents values
-                void EmitAction(byte value)
-                {
-                    structDef.DefaultContents.Add(value);
-                    structOffset++;
-                }
-
-                // --- We use this local function to create fixups
-                void FixupAction(ExpressionNode expr, FixupType type)
-                {
-                    structDef.Fixups.Add(new StructFixup(structOffset, type, expr));
-                }
-
                 // --- Check for field definition
                 if (structLine.Label != null)
                 {
@@ -561,15 +621,22 @@ namespace Spect.Net.Assembler.Assembler
                     }
                 }
 
-                // --- Determine default contents
+                // --- We use this fuction to emit a byte
+                void EmitAction(byte data)
+                {
+                    // ReSharper disable once AccessToModifiedClosure
+                    structOffset++;
+                }
+
+                // --- Determine structure size
                 switch (structLine)
                 {
                     case DefbPragma defbPragma:
-                        ProcessDefbPragma(defbPragma, EmitAction, expr => FixupAction(expr, FixupType.Bit8));
+                        structOffset += defbPragma.Exprs.Count;
                         break;
 
                     case DefwPragma defwPragma:
-                        ProcessDefwPragma(defwPragma, EmitAction, expr => FixupAction(expr, FixupType.Bit16));
+                        structOffset += defwPragma.Exprs.Count * 2;
                         break;
 
                     case DefmnPragma defmnPragma:
@@ -601,6 +668,9 @@ namespace Spect.Net.Assembler.Assembler
                         break;
                 }
             }
+
+            // --- Store the structure size
+            structDef.Size = structOffset;
 
             // -- Stop, if error found
             if (errorFound) return;
@@ -1510,22 +1580,29 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Handles the invocation of a MACRO
         /// </summary>
-        /// <param name="macroStmt">MACRO invocation statement</param>
+        /// <param name="macroOrStructStmt">MACRO invocation statement</param>
         /// <param name="allLines">All parsed lines</param>
-        private void ProcessMacroInvocation(MacroInvocation macroStmt,
+        private void ProcessMacroOrStructInvocation(MacroOrStructInvocation macroOrStructStmt,
             List<SourceLineBase> allLines)
         {
-            // --- Check if macro definition exists
-            if (!CurrentModule.Macros.TryGetValue(macroStmt.Name, out var macroDef))
+            // --- Check for structure invocation
+            if (CurrentModule.Structs.TryGetValue(macroOrStructStmt.Name, out var structDef))
             {
-                ReportError(Errors.Z0418, macroStmt, macroStmt.Name);
+                ProcessStructInvocation(macroOrStructStmt, structDef, allLines);
+                return;
+            }
+            
+            // --- Check if macro definition exists
+            if (!CurrentModule.Macros.TryGetValue(macroOrStructStmt.Name, out var macroDef))
+            {
+                ReportError(Errors.Z0418, macroOrStructStmt, macroOrStructStmt.Name);
                 return;
             }
 
             // --- Match parameters
-            if (macroDef.ArgumentNames.Count < macroStmt.Parameters.Count)
+            if (macroDef.ArgumentNames.Count < macroOrStructStmt.Parameters.Count)
             {
-                ReportError(Errors.Z0419, macroStmt, macroDef.MacroName, macroDef.ArgumentNames.Count, macroStmt.Parameters.Count);
+                ReportError(Errors.Z0419, macroOrStructStmt, macroDef.MacroName, macroDef.ArgumentNames.Count, macroOrStructStmt.Parameters.Count);
                 return;
             }
 
@@ -1535,12 +1612,12 @@ namespace Spect.Net.Assembler.Assembler
             var emptyArgValue = new ExpressionValue("$<none>$");
             for (var i = 0; i < macroDef.ArgumentNames.Count; i++)
             {
-                if (i >= macroStmt.Parameters.Count)
+                if (i >= macroOrStructStmt.Parameters.Count)
                 {
                     arguments.Add(macroDef.ArgumentNames[i], emptyArgValue);
                     continue;
                 }
-                var op = macroStmt.Parameters[i];
+                var op = macroOrStructStmt.Parameters[i];
                 ExpressionValue argValue;
                 switch (op.Type)
                 {
@@ -1554,11 +1631,11 @@ namespace Spect.Net.Assembler.Assembler
                         argValue = new ExpressionValue(op.Register);
                         break;
                     case OperandType.Expr:
-                        argValue = EvalImmediate(macroStmt, op.Expression);
+                        argValue = EvalImmediate(macroOrStructStmt, op.Expression);
                         if (!argValue.IsValid) errorFound = true;
                         break;
                     case OperandType.MemIndirect:
-                        argValue = EvalImmediate(macroStmt, op.Expression);
+                        argValue = EvalImmediate(macroOrStructStmt, op.Expression);
                         if (!argValue.IsValid) errorFound = true;
                         else
                         {
@@ -1575,7 +1652,7 @@ namespace Spect.Net.Assembler.Assembler
                         }
                         else
                         {
-                            argValue = EvalImmediate(macroStmt, op.Expression);
+                            argValue = EvalImmediate(macroOrStructStmt, op.Expression);
                             if (!argValue.IsValid) errorFound = true;
                             else
                             {
@@ -1612,8 +1689,8 @@ namespace Spect.Net.Assembler.Assembler
 
             // --- Create source info for the macro invocation
             var currentAddress = GetCurrentAssemblyAddress();
-            Output.AddToAddressMap(macroStmt.FileIndex, macroStmt.SourceLine, currentAddress);
-            Output.SourceMap[currentAddress] = (macroStmt.FileIndex, macroStmt.SourceLine);
+            Output.AddToAddressMap(macroOrStructStmt.FileIndex, macroOrStructStmt.SourceLine, currentAddress);
+            Output.SourceMap[currentAddress] = (macroOrStructStmt.FileIndex, macroOrStructStmt.SourceLine);
 
             // --- We store the original source file information to
             // --- assign it later with the re-parsed macro code
@@ -1744,6 +1821,35 @@ namespace Spect.Net.Assembler.Assembler
             CurrentModule.LocalScopes.Pop();
         }
 
+        /// <summary>
+        /// Handles the invocation of a STRUCT
+        /// </summary>
+        /// <param name="structStmt">STRUCT invocation statement</param>
+        /// <param name="structDef">Structure definition</param>
+        /// <param name="allLines">All parsed lines</param>
+        private void ProcessStructInvocation(MacroOrStructInvocation structStmt, StructDefinition structDef,
+            List<SourceLineBase> allLines)
+        {
+            if (structStmt.Parameters.Count > 0)
+            {
+                ReportError(Errors.Z0439, structStmt, structStmt.Name);
+            }
+
+            // --- Sign that we are inside a struct invocation
+            _currentStructInvocation = structDef;
+            _currentStructBytes = new List<byte>(structDef.Size);
+            _currentStructOffset = 0;
+
+            // --- Emit the default pattern of the structure (including fixups)
+            // --- Create a local scope for the loop body
+            for (var lineIndex = structDef.Section.FirstLine + 1; lineIndex < structDef.Section.LastLine; lineIndex++)
+            {
+                var structLineIndex = lineIndex;
+                var curLine = allLines[lineIndex];
+                EmitSingleLine(allLines, allLines, curLine, ref structLineIndex);
+            }
+        }
+
         #endregion
 
         #region Pragma processing
@@ -1760,6 +1866,7 @@ namespace Spect.Net.Assembler.Assembler
                 case OrgPragma orgPragma:
                     ProcessOrgPragma(orgPragma, label);
                     return;
+
                 case XorgPragma xorgPragma:
                     ProcessXorgPragma(xorgPragma);
                     return;
@@ -1767,63 +1874,105 @@ namespace Spect.Net.Assembler.Assembler
                 case EntPragma entPragma:
                     ProcessEntPragma(entPragma);
                     return;
+
                 case XentPragma xentPragma:
                     ProcessXentPragma(xentPragma);
                     return;
+
                 case DispPragma dispPragma:
                     ProcessDispPragma(dispPragma);
                     return;
+
                 case EquPragma equPragma:
                     ProcessEquPragma(equPragma, label);
                     return;
+
                 case VarPragma varPragma:
                     ProcessVarPragma(varPragma, label);
                     return;
+
                 case SkipPragma skipPragma:
                     ProcessSkipPragma(skipPragma);
                     return;
+
                 case DefbPragma defbPragma:
-                    ProcessDefbPragma(defbPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessDefbPragma(defbPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessDefbPragma(defbPragma);
+                    }
                     return;
+
                 case DefwPragma defwPragma:
                     ProcessDefwPragma(defwPragma);
                     return;
+
                 case DefmnPragma defmnPragma:
                     ProcessDefmnPragma(defmnPragma);
                     break;
+
                 case DefhPragma defhPragma:
                     ProcessDefhPragma(defhPragma);
                     break;
+
                 case DefsPragma defsPragma:
                     ProcessDefsPragma(defsPragma);
                     break;
+
                 case FillbPragma fillbPragma:
                     ProcessFillbPragma(fillbPragma);
                     break;
                 case FillwPragma fillwPragma:
                     ProcessFillwPragma(fillwPragma);
                     break;
+
                 case AlignPragma alignPragma:
                     ProcessAlignPragma(alignPragma);
                     break;
+
                 case TracePragma tracePragma:
                     ProcessTracePragma(tracePragma);
                     break;
+
                 case RndSeedPragma rndSeedPragma:
                     ProcessRndSeedPragma(rndSeedPragma);
                     break;
+
                 case DefgPragma defgPragma:
                     ProcessDefgPragma(defgPragma);
                     break;
+
                 case DefgxPragma defgxPragma:
                     ProcessDefgxPragma(defgxPragma);
                     break;
+
                 case ErrorPragma errorPragma:
                     ProcessErrorPragma(errorPragma);
                     break;
+
                 case IncludeBinPragma incBinPragma:
                     ProcessIncBinPragma(incBinPragma);
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Emits a new byte for a structure
+        /// </summary>
+        /// <param name="data"></param>
+        private void EmitStructByte(byte data)
+        {
+            if (_currentStructOffset < _currentStructBytes.Count)
+            {
+                _currentStructBytes[_currentStructOffset++] = data;
+            }
+            else
+            {
+                _currentStructBytes.Add(data);
+                _currentStructOffset++;
             }
         }
 
@@ -2043,9 +2192,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="pragma">Assembly line of DEFB pragma</param>
         /// <param name="emitAction">Action to emit a code byte</param>
-        /// <param name="fixupAction">Action to create fixup</param>
-        private void ProcessDefbPragma(DefbPragma pragma, Action<byte> emitAction = null, 
-            Action<ExpressionNode> fixupAction = null)
+        private void ProcessDefbPragma(DefbPragma pragma, Action<byte> emitAction = null)
         {
             foreach (var expr in pragma.Exprs)
             {
@@ -2061,14 +2208,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else if (value.IsNonEvaluated)
                 {
-                    if (fixupAction != null)
-                    {
-                        fixupAction(expr);
-                    }
-                    else
-                    {
-                        RecordFixup(pragma, FixupType.Bit8, expr);
-                    }
+                    RecordFixup(pragma, FixupType.Bit8, expr);
                     Emit(0x00);
                 }
             }
@@ -2092,9 +2232,7 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         /// <param name="pragma">Assembly line of DEFW pragma</param>
         /// <param name="emitAction">Action to emit a code byte</param>
-        /// <param name="fixupAction">Action to create fixup</param>
-        private void ProcessDefwPragma(DefwPragma pragma, Action<byte> emitAction = null,
-            Action<ExpressionNode> fixupAction = null)
+        private void ProcessDefwPragma(DefwPragma pragma, Action<byte> emitAction = null)
         {
             foreach (var expr in pragma.Exprs)
             {
@@ -2110,14 +2248,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else if (value.IsNonEvaluated)
                 {
-                    if (fixupAction != null)
-                    {
-                        fixupAction(expr);
-                    }
-                    else
-                    {
-                        RecordFixup(pragma, FixupType.Bit16, expr);
-                    }
+                    RecordFixup(pragma, FixupType.Bit16, expr);
                     Emit(0x0000);
                 }
             }

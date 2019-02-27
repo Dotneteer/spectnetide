@@ -277,10 +277,12 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="type">Fixup type</param>
         /// <param name="expression">Fixup expression</param>
         /// <param name="label">Optional EQU label</param>
-        private void RecordFixup(SourceLineBase opLine, FixupType type, ExpressionNode expression, string label = null)
+        /// <param name="structeBytes">Optional structure bytes</param>
+        private void RecordFixup(SourceLineBase opLine, FixupType type, ExpressionNode expression, 
+            string label = null, Dictionary<ushort, byte> structeBytes = null)
         {
             var fixup = new FixupEntry(this, CurrentModule, opLine, type, Output.Segments.Count - 1,
-                CurrentSegment.CurrentOffset, expression, label);
+                CurrentSegment.CurrentOffset, expression, label, structeBytes);
 
             // --- Record fixups in every local scope up to the root
             foreach (var scope in CurrentModule.LocalScopes)
@@ -324,9 +326,11 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="symbols">Symbols in the scope</param>
         /// <param name="signNotEvaluable">Raise error if the symbol is not evaluable</param>
         /// <returns></returns>
-        private bool FixupSymbols(List<FixupEntry> fixups, Dictionary<string, AssemblySymbolInfo> symbols, bool signNotEvaluable)
+        private bool FixupSymbols(IReadOnlyCollection<FixupEntry> fixups, 
+            IDictionary<string, AssemblySymbolInfo> symbols, 
+            bool signNotEvaluable)
         {
-            // --- First, fix the .equ values
+            // --- #1: fix the .equ values
             var success = true;
             foreach (var equ in fixups.Where(f => f.Type == FixupType.Equ && !f.Resolved))
             {
@@ -347,8 +351,10 @@ namespace Spect.Net.Assembler.Assembler
                 }
             }
 
-            // --- Second, fix all the other values
-            foreach (var fixup in fixups.Where(f => f.Type != FixupType.Equ && !f.Resolved))
+            // --- #2: fix Bit8, Bit16, Jr, Ent, Xent
+            foreach (var fixup in fixups.Where(f => !f.Resolved && 
+                (f.Type == FixupType.Bit8 || f.Type == FixupType.Bit16 || f.Type == FixupType.Jr
+                 || f.Type == FixupType.Ent || f.Type == FixupType.Xent)))
             {
                 if (EvaluateFixupExpression(fixup, true, signNotEvaluable, out var value))
                 {
@@ -386,6 +392,38 @@ namespace Spect.Net.Assembler.Assembler
 
                         case FixupType.Xent:
                             Output.ExportEntryAddress = value.AsWord();
+                            break;
+                    }
+                }
+                else
+                {
+                    success = false;
+                }
+            }
+
+            // --- #3: fix Struct
+            foreach (var fixup in fixups.Where(f => !f.Resolved && f.Type == FixupType.Struct))
+            {
+                // TODO: Fix Structs
+            }
+
+            // --- #4: fix FieldBit8, and FieldBit16
+            foreach (var fixup in fixups.Where(f => !f.Resolved 
+                && (f.Type == FixupType.FieldBit8 || f.Type == FixupType.FieldBit16)))
+            {
+                if (EvaluateFixupExpression(fixup, true, signNotEvaluable, out var value))
+                {
+                    var segment = Output.Segments[fixup.SegmentIndex];
+                    var emittedCode = segment.EmittedCode;
+                    switch (fixup.Type)
+                    {
+                        case FixupType.FieldBit8:
+                            emittedCode[fixup.Offset] = value.AsByte();
+                            break;
+
+                        case FixupType.FieldBit16:
+                            emittedCode[fixup.Offset] = value.AsByte();
+                            emittedCode[fixup.Offset + 1] = (byte)(value.AsWord() >> 8);
                             break;
                     }
                 }
