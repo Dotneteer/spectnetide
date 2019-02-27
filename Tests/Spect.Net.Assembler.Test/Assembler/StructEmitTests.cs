@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 // ReSharper disable StringLiteralTypo
 
 namespace Spect.Net.Assembler.Test.Assembler
@@ -239,5 +240,134 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(SOURCE, 0x0F, 0xF0);
         }
 
+        [TestMethod]
+        public void SimpleStructInvocationWorksWithDefbFixup1()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                MyStruct
+                    .struct
+                        .defb MyAddr
+                    .ends
+
+                    MyStruct()
+                MyAddr
+                    ld a,b
+                ";
+            // --- Act/Assert
+            CodeEmitWorks(SOURCE, 0x01, 0x78);
+        }
+
+        [TestMethod]
+        public void SimpleStructInvocationWorksWithDefbFixup2()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                MyStruct
+                    .struct
+                        .defb #a4, MyAddr
+                    .ends
+
+                    MyStruct()
+                MyAddr
+                    ld a,b
+                ";
+            // --- Act/Assert
+            CodeEmitWorks(SOURCE, 0xA4, 0x02, 0x78);
+        }
+
+        [TestMethod]
+        public void SimpleStructInvocationWorksWithDefbFixup3()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                MyStruct
+                    .struct
+                        .defb MyAddr, #A4
+                    .ends
+
+                    MyStruct()
+                MyAddr
+                    ld a,b
+                ";
+            // --- Act/Assert
+            CodeEmitWorks(SOURCE, 0x02, 0xA4, 0x78);
+        }
+
+        [TestMethod]
+        public void SimpleStructInvocationWorksWithDefwFixup1()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                MyStruct
+                    .struct
+                        .defw MyAddr
+                    .ends
+
+                    MyStruct()
+                MyAddr
+                    ld a,b
+                ";
+            // --- Act/Assert
+            CodeEmitWorks(SOURCE, 0x02, 0x80, 0x78);
+        }
+
+        [TestMethod]
+        public void SimpleStructInvocationWorksWithDefwFixup2()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                MyStruct
+                    .struct
+                        .defw #1234, MyAddr
+                    .ends
+
+                    MyStruct()
+                MyAddr
+                    ld a,b
+                ";
+            // --- Act/Assert
+            CodeEmitWorks(SOURCE, 0x34, 0x12, 0x04, 0x80, 0x78);
+        }
+
+        [TestMethod]
+        public void SimpleStructInvocationWorksWithDefwFixup3()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                MyStruct
+                    .struct
+                        .defw MyAddr, #1234
+                    .ends
+
+                    MyStruct()
+                MyAddr
+                    ld a,b
+                ";
+            // --- Act/Assert
+            CodeEmitWorks(SOURCE, 0x04, 0x80, 0x34, 0x12, 0x78);
+        }
+
+        [TestMethod]
+        public void SimpleStructInvocationWorksWithMultipleFixups()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                MyStruct
+                    .struct
+                        .defw MyAddr, #1234
+                        .defb 0xe4, MyAddr1
+                        .defn ""ABCD""
+                    .ends
+
+                    MyStruct()
+                MyAddr
+                    ld a,b
+                MyAddr1
+                    ld a,b
+                ";
+            // --- Act/Assert
+            CodeEmitWorks(SOURCE, 0x0B, 0x80, 0x34, 0x12, 0xE4, 0x0C, (byte)'A', (byte)'B', (byte)'C', (byte)'D', 0x00, 0x78, 0x78);
+        }
     }
 }

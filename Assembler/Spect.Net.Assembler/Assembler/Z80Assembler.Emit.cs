@@ -92,9 +92,19 @@ namespace Spect.Net.Assembler.Assembler
         private StructDefinition _currentStructInvocation;
 
         /// <summary>
+        /// The current line that invokes the struct
+        /// </summary>
+        private MacroOrStructInvocation _currentStructLine;
+
+        /// <summary>
         /// The current bytes to emit for the structure being invoked
         /// </summary>
-        private List<byte> _currentStructBytes;
+        private Dictionary<ushort, byte> _currentStructBytes;
+
+        /// <summary>
+        /// Start offset of the current struct invocation
+        /// </summary>
+        private ushort _currentStructStartOffset;
 
         /// <summary>
         /// Offset of the current strcuture invocation
@@ -134,6 +144,20 @@ namespace Spect.Net.Assembler.Assembler
                 OverflowLabelLine = null;
             }
 
+            // --- Handle unclosed field definitions
+            if (IsInStructInvocation)
+            {
+                // --- Check for structure size
+                if (_currentStructOffset > _currentStructInvocation.Size)
+                {
+                    ReportError(Errors.Z0442, _currentStructLine, _currentStructInvocation.StructName,
+                        _currentStructInvocation.Size, _currentStructOffset);
+                    return false;
+                }
+                RecordFixup(_currentStructLine, FixupType.Struct, null, null, 
+                    _currentStructBytes, _currentStructStartOffset);
+            }
+
             // --- Ok, it's time to return with the result
             return Output.ErrorCount == 0;
         }
@@ -147,7 +171,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="currentLineIndex">The index of the line to emit</param>
         /// <param name="fromMacroEmit">Is the method called during macro emit?</param>
         /// <returns></returns>
-        private void EmitSingleLine(List<SourceLineBase> allLines, List<SourceLineBase> scopeLines, SourceLineBase asmLine, ref int currentLineIndex, 
+        private void EmitSingleLine(List<SourceLineBase> allLines, List<SourceLineBase> scopeLines, 
+            SourceLineBase asmLine, ref int currentLineIndex, 
             bool fromMacroEmit = false)
         {
             CurrentSourceLine = asmLine;
@@ -162,17 +187,16 @@ namespace Spect.Net.Assembler.Assembler
             // --- No parse-time issue, process the line
             if (asmLine is NoInstructionLine noInstrLine)
             {
-                if (noInstrLine.Label != null)
-                {
-                    // --- This is a label-only line
-                    if (OverflowLabelLine != null)
-                    {
-                        // --- Create a label point for the previous label
-                        CreateCurrentPointLabel(OverflowLabelLine);
-                    }
+                if (noInstrLine.Label == null) return;
 
-                    OverflowLabelLine = noInstrLine;
+                // --- This is a label-only line
+                if (OverflowLabelLine != null)
+                {
+                    // --- Create a label point for the previous label
+                    CreateCurrentPointLabel(OverflowLabelLine);
                 }
+
+                OverflowLabelLine = noInstrLine;
             }
             else
             {
@@ -275,10 +299,8 @@ namespace Spect.Net.Assembler.Assembler
                         }
 
                         // --- Complete emitting the structure
-                        foreach (var toEmit in _currentStructBytes)
-                        {
-                            EmitByte(toEmit);
-                        }
+                        RecordFixup(_currentStructLine, FixupType.Struct, null, null, 
+                            _currentStructBytes, _currentStructStartOffset);
                         _currentStructInvocation = null;
                     }
                     else
@@ -1835,10 +1857,9 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0439, structStmt, structStmt.Name);
             }
 
-            // --- Sign that we are inside a struct invocation
-            _currentStructInvocation = structDef;
-            _currentStructBytes = new List<byte>(structDef.Size);
-            _currentStructOffset = 0;
+            // --- Store the structure start offset so that we can use it later for fixup.
+            EnsureCodeSegment();
+            _currentStructStartOffset = (ushort)CurrentSegment.CurrentOffset;
 
             // --- Emit the default pattern of the structure (including fixups)
             // --- Create a local scope for the loop body
@@ -1848,6 +1869,12 @@ namespace Spect.Net.Assembler.Assembler
                 var curLine = allLines[lineIndex];
                 EmitSingleLine(allLines, allLines, curLine, ref structLineIndex);
             }
+
+            // --- Sign that we are inside a struct invocation
+            _currentStructInvocation = structDef;
+            _currentStructLine = structStmt;
+            _currentStructBytes = new Dictionary<ushort, byte>();
+            _currentStructOffset = 0;
         }
 
         #endregion
@@ -1907,7 +1934,14 @@ namespace Spect.Net.Assembler.Assembler
                     return;
 
                 case DefwPragma defwPragma:
-                    ProcessDefwPragma(defwPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessDefwPragma(defwPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessDefwPragma(defwPragma);
+                    }
                     return;
 
                 case DefmnPragma defmnPragma:
@@ -1965,15 +1999,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="data"></param>
         private void EmitStructByte(byte data)
         {
-            if (_currentStructOffset < _currentStructBytes.Count)
-            {
-                _currentStructBytes[_currentStructOffset++] = data;
-            }
-            else
-            {
-                _currentStructBytes.Add(data);
-                _currentStructOffset++;
-            }
+            _currentStructBytes[(ushort)_currentStructOffset++] = data;
         }
 
         /// <summary>

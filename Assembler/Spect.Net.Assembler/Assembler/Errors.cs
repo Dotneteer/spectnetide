@@ -216,7 +216,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0439, "A .struct invocation ({0}) cannot have arguments." },
             { Z0440, "Field assignment instruction cannot be used outside of .struct invocation." },
             { Z0441, "The .struct definition of {0} does not have a field named {1}." },
-            { Z0442, "The .struct size of {0} is {1} byte(s). The invocation want to emit {2} bytes." },
+            { Z0442, "The .struct size of {0} is {1} byte(s). The invocation wants to emit {2} bytes." },
             { Z0500, "ERROR: {0}" },
         };
 

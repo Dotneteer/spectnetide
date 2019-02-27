@@ -278,11 +278,31 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="expression">Fixup expression</param>
         /// <param name="label">Optional EQU label</param>
         /// <param name="structeBytes">Optional structure bytes</param>
+        /// <param name="offset">Fixup offset, if not the current position</param>
         private void RecordFixup(SourceLineBase opLine, FixupType type, ExpressionNode expression, 
-            string label = null, Dictionary<ushort, byte> structeBytes = null)
+            string label = null, Dictionary<ushort, byte> structeBytes = null, ushort? offset = null)
         {
+            var fixupOffset = CurrentSegment.CurrentOffset;
+
+            // --- Translate field invocation fixups so that field-related fixups will be
+            // --- processed only after other fixups.
+            if (IsInStructInvocation)
+            {
+                fixupOffset = _currentStructStartOffset + _currentStructOffset;
+                if (type == FixupType.Bit8)
+                {
+                    type = FixupType.FieldBit8;
+                }
+                else if (type == FixupType.Bit16)
+                {
+                    type = FixupType.FieldBit16;
+                }
+            }
+
+            // --- Create to fixup entry to resolve
             var fixup = new FixupEntry(this, CurrentModule, opLine, type, Output.Segments.Count - 1,
-                CurrentSegment.CurrentOffset, expression, label, structeBytes);
+                offset ?? fixupOffset,
+                expression, label, structeBytes);
 
             // --- Record fixups in every local scope up to the root
             foreach (var scope in CurrentModule.LocalScopes)
@@ -312,7 +332,7 @@ namespace Spect.Net.Assembler.Assembler
                 if (FixupSymbols(scope.Fixups, scope.Symbols, false))
                 {
                     // --- Successful fixup in the local scope
-                    return true;
+                    break;
                 }
             }
 
@@ -404,7 +424,15 @@ namespace Spect.Net.Assembler.Assembler
             // --- #3: fix Struct
             foreach (var fixup in fixups.Where(f => !f.Resolved && f.Type == FixupType.Struct))
             {
-                // TODO: Fix Structs
+                var segment = Output.Segments[fixup.SegmentIndex];
+                var emittedCode = segment.EmittedCode;
+
+                // --- Override structure bytes
+                foreach (var entry in fixup.StructBytes)
+                {
+                    var offset = (ushort)(fixup.Offset + entry.Key);
+                    emittedCode[offset] = entry.Value;
+                }
             }
 
             // --- #4: fix FieldBit8, and FieldBit16
@@ -415,6 +443,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     var segment = Output.Segments[fixup.SegmentIndex];
                     var emittedCode = segment.EmittedCode;
+
                     switch (fixup.Type)
                     {
                         case FixupType.FieldBit8:

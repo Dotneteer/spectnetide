@@ -94,6 +94,7 @@
     <Compile Include="Assembler\IncludeBinPragmaTests.cs" />
     <Compile Include="Assembler\ModuleTests.cs" />
     <Compile Include="Assembler\StructEmitTests.cs" />
+    <Compile Include="Assembler\StructFieldEmitTests.cs" />
     <Compile Include="Assembler\WhileEmitTests.cs" />
     <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />
