@@ -1945,22 +1945,58 @@ namespace Spect.Net.Assembler.Assembler
                     return;
 
                 case DefmnPragma defmnPragma:
-                    ProcessDefmnPragma(defmnPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessDefmnPragma(defmnPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessDefmnPragma(defmnPragma);
+                    }
                     break;
 
                 case DefhPragma defhPragma:
-                    ProcessDefhPragma(defhPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessDefhPragma(defhPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessDefhPragma(defhPragma);
+                    }
                     break;
 
                 case DefsPragma defsPragma:
-                    ProcessDefsPragma(defsPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessDefsPragma(defsPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessDefsPragma(defsPragma);
+                    }
                     break;
 
                 case FillbPragma fillbPragma:
-                    ProcessFillbPragma(fillbPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessFillbPragma(fillbPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessFillbPragma(fillbPragma);
+                    }
                     break;
+
                 case FillwPragma fillwPragma:
-                    ProcessFillwPragma(fillwPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessFillwPragma(fillwPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessFillwPragma(fillwPragma);
+                    }
                     break;
 
                 case AlignPragma alignPragma:
@@ -1976,11 +2012,25 @@ namespace Spect.Net.Assembler.Assembler
                     break;
 
                 case DefgPragma defgPragma:
-                    ProcessDefgPragma(defgPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessDefgPragma(defgPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessDefgPragma(defgPragma);
+                    }
                     break;
 
                 case DefgxPragma defgxPragma:
-                    ProcessDefgxPragma(defgxPragma);
+                    if (IsInStructInvocation)
+                    {
+                        ProcessDefgxPragma(defgxPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessDefgxPragma(defgxPragma);
+                    }
                     break;
 
                 case ErrorPragma errorPragma:
