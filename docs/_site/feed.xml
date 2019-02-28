@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-27T19:00:29+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Watch Commands</title><link href="http://localhost:4000/spectnetide/documents/watch-commands" rel="alternate" type="text/html" title="Watch Commands" /><published>2019-01-03T00:00:00+01:00</published><updated>2019-01-03T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/watch-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/watch-commands">&lt;p&gt;With these commands, you can manage the list of items in the &lt;strong&gt;Watch Memory&lt;/strong&gt; tool window:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-28T08:13:14+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Watch Commands</title><link href="http://localhost:4000/spectnetide/documents/watch-commands" rel="alternate" type="text/html" title="Watch Commands" /><published>2019-01-03T00:00:00+01:00</published><updated>2019-01-03T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/watch-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/watch-commands">&lt;p&gt;With these commands, you can manage the list of items in the &lt;strong&gt;Watch Memory&lt;/strong&gt; tool window:&lt;/p&gt;
 
 &lt;h2 id=&quot;add-a-new-watch-item-command&quot;&gt;Add a New Watch Item Command&lt;/h2&gt;
 
@@ -812,6 +812,26 @@ but &lt;em&gt;literal2&lt;/em&gt; is exclusive.&lt;/p&gt;
     &lt;tr&gt;
       &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MC&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
       &lt;td&gt;Calculator section. The disassembler takes these bytes into account as the byte code of the ZX Spectrum’s RST #28 calculator.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MG&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Creates a &lt;code class=&quot;highlighter-rouge&quot;&gt;.defg&lt;/code&gt; section. The contents of this memory area is displayed as single bytes with the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.defg&lt;/code&gt;&lt;/strong&gt; pragma.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MG1&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;The same as &lt;code class=&quot;highlighter-rouge&quot;&gt;MG&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MG2&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Creates a &lt;code class=&quot;highlighter-rouge&quot;&gt;.defg&lt;/code&gt; section. The contents of this memory area is displayed with the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.defg&lt;/code&gt;&lt;/strong&gt; pragma as a group of two bytes.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MG3&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Creates a &lt;code class=&quot;highlighter-rouge&quot;&gt;.defg&lt;/code&gt; section. The contents of this memory area is displayed with the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.defg&lt;/code&gt;&lt;/strong&gt; pragma as a group of three bytes.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MG4&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal1&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;literal2&lt;/code&gt;&lt;/em&gt;&lt;/td&gt;
+      &lt;td&gt;Creates a &lt;code class=&quot;highlighter-rouge&quot;&gt;.defg&lt;/code&gt; section. The contents of this memory area is displayed with the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.defg&lt;/code&gt;&lt;/strong&gt; pragma as a group of four bytes.&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;

@@ -670,6 +670,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitIncBinPragma([NotNull] Z80AsmParser.IncBinPragmaContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.byteEmPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterByteEmPragma([NotNull] Z80AsmParser.ByteEmPragmaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.byteEmPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitByteEmPragma([NotNull] Z80AsmParser.ByteEmPragmaContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.operation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

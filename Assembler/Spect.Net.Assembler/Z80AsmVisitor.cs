@@ -217,6 +217,23 @@ namespace Spect.Net.Assembler
         }
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.byteEmPragma"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitByteEmPragma(Z80AsmParser.ByteEmPragmaContext context)
+        {
+            if (IsInvalidContext(context)) return null;
+
+            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            return base.VisitByteEmPragma(context);
+        }
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.orgPragma"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>

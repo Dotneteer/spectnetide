@@ -1,6 +1,13 @@
 ### Version 1.18.0
 __FEATURE__: Z80 Assembler supports the `.xorg` pragma to set the segment start address for Intel HEX export.  
 __FEATURE__: The __Export Z80 Program__ supports the Intel HEX format.  
+__FEATURE__: The Z80 Disassembly tool window now can disassembly to `.DEFG` pragma with the `MG`, `MG1`, 
+`MG2`, `MG3`, and `MG4` commands.  
+__FEATURE__: The Z80 Assembler handles structure definitions and initializations.  
+__FIX__: Retrieve annotation commands are documented.  
+__FIX__: The command parser now understands extra identifier characters, such as `!`, `?`, `@`, and `#`.  
+__CHANGE__: Tool window command documentation has been moved to the project's GitHub pages, links has been
+updated accordingly.  
 
 
 ### Version 1.17.0

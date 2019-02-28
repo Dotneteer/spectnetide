@@ -119,9 +119,7 @@ structEndMarker: ENDST ;
 macroOrStructInvocation: IDENTIFIER LPAR macroArgument (COMMA macroArgument)* RPAR	;
 macroArgument: operand? ;
 
-fieldAssignment: GOESTO (defbPragma | defwPragma | defcPragma 
-	| defmPragma | defnPragma | defhPragma | defsPragma 
-	| fillbPragma | fillwPragma | defgxPragma | defgPragma) ;
+fieldAssignment: GOESTO byteEmPragma ;
 
 orgPragma	: ORGPRAG expr ;
 xorgPragma	: XORGPR expr ;
@@ -149,6 +147,20 @@ defgxPragma	: DGXPRAG expr ;
 defgPragma	: DGPRAG ;
 errorPragma : ERRORPR expr ;
 incBinPragma: INCBIN expr ( ',' expr ( ',' expr)? )? ;
+byteEmPragma
+	:  defbPragma 
+	| defwPragma 
+	| defcPragma 
+	| defmPragma
+	| defnPragma
+	| defhPragma
+    | defsPragma
+	| fillbPragma
+	| fillwPragma
+	| defgxPragma
+    | defgPragma
+	;
+
 
 operation
 	:	trivialOperation
