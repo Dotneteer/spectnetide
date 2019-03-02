@@ -21,7 +21,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// The fields of the structure
         /// </summary>
-        public Dictionary<string, ushort> Fields { get; }
+        public Dictionary<string, FieldDefinition> Fields { get; }
 
         /// <summary>
         /// Get the structure size
@@ -35,7 +35,7 @@ namespace Spect.Net.Assembler.Assembler
         {
             StructName = structName;
             Section = new DefinitionSection(macroDefLine, macroEndLine);
-            Fields = new Dictionary<string, ushort>(StringComparer.InvariantCultureIgnoreCase);
+            Fields = new Dictionary<string, FieldDefinition>(StringComparer.InvariantCultureIgnoreCase);
         }
     }
 }

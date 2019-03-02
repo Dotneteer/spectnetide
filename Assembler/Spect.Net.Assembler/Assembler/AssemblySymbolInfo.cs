@@ -5,7 +5,7 @@ namespace Spect.Net.Assembler.Assembler
     /// <summary>
     /// This class represents and assembly symbol
     /// </summary>
-    public class AssemblySymbolInfo
+    public class AssemblySymbolInfo: IHasUsageInfo
     {
         /// <summary>
         /// Name of the symbol
@@ -32,6 +32,11 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public bool IsShortTerm { get; }
 
+        /// <summary>
+        /// Signs if the symbol has been used
+        /// </summary>
+        public bool IsUsed { get; set; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         private AssemblySymbolInfo(string name, SymbolType type, ExpressionValue value)
         {
@@ -40,6 +45,7 @@ namespace Spect.Net.Assembler.Assembler
             Value = value;
             IsModuleLocal = name != null && name.StartsWith("@");
             IsShortTerm = name != null && name.StartsWith("`");
+            IsUsed = false;
         }
 
         /// <summary>

@@ -19,13 +19,41 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         public override string EndStatementName => "ENDIF";
 
         /// <summary>
-        /// IF expression
+        /// Type of IF condition
+        /// </summary>
+        public IfStatementType Type { get;  }
+
+        /// <summary>
+        /// IF expression condition expression
         /// </summary>
         public ExpressionNode Expr { get; }
 
+        /// <summary>
+        /// IFUSED/IFNUSED symbol
+        /// </summary>
+        public IdentifierNode Symbol { get; }
+
         public IfStatement(ExpressionNode expr)
         {
+            Type = IfStatementType.If;
             Expr = expr;
         }
+
+        public IfStatement(IdentifierNode symbol, bool isIfused)
+        {
+            Type = isIfused ? IfStatementType.IfUsed : IfStatementType.IfNotUsed;
+            Symbol = symbol;
+        }
+    }
+
+    /// <summary>
+    /// This enumeration represents the type of the IF statement
+    /// </summary>
+    public enum IfStatementType
+    {
+        If,
+        IfUsed,
+        IfNotUsed
     }
 }
+

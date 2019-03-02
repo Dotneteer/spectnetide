@@ -68,24 +68,25 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        public ExpressionValue ResolveSimpleSymbol(string symbol)
+        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) ResolveSimpleSymbol(string symbol)
         {
             // --- Checks the specified module for a symbol
-            ExpressionValue ResolveInModule(AssemblyModule module, string symb)
+            (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) ResolveInModule(AssemblyModule module,
+                string symb)
             {
                 // --- Check the local scope in stack order
                 foreach (var scope in module.LocalScopes)
                 {
                     if (scope.Symbols.TryGetValue(symb, out var localSymbolValue))
                     {
-                        return localSymbolValue.Value;
+                        return (localSymbolValue.Value, localSymbolValue);
                     }
                 }
 
                 // --- Check the global scope
-                return module.Symbols.TryGetValue(symb, out var symbolValue)
-                    ? symbolValue.Value
-                    : null;
+                return module.Symbols.TryGetValue(symb, out var symbolValue) 
+                    ? (symbolValue.Value, symbolValue) 
+                    : (null, null);
             }
 
             // --- Iterate through all modules from the innermost to the outermost
@@ -93,12 +94,12 @@ namespace Spect.Net.Assembler.Assembler
             while (currentModule != null)
             {
                 var valueFound = ResolveInModule(currentModule, symbol);
-                if (valueFound != null) return valueFound;
+                if (valueFound.ExprValue != null) return valueFound;
                 currentModule = currentModule.ParentModule;
             }
 
             // --- The symbol has not been found
-            return null;
+            return (null, null);
         }
 
         /// <summary>
@@ -108,7 +109,8 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="scopeSymbolNames">Last segment of the symbol</param>
         /// <param name="startFromGlobal">Should resolution start from global scope?</param>
         /// <returns></returns>
-        public ExpressionValue ResolveCompoundSymbol(string symbol, IEnumerable<string> scopeSymbolNames,
+        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) ResolveCompoundSymbol(string symbol, 
+            IEnumerable<string> scopeSymbolNames,
             bool startFromGlobal)
         {
             var symbolSegments = new List<string> { symbol };
@@ -126,7 +128,7 @@ namespace Spect.Net.Assembler.Assembler
                 // --- Do not search for module-local variables
                 if (segment.StartsWith("@") && i > 0)
                 {
-                    return null;
+                    return (null, null);
                 }
 
                 if (i == symbolSegments.Count - 2)
@@ -142,13 +144,14 @@ namespace Spect.Net.Assembler.Assembler
                     if (structFound != null)
                     {
                         // --- Check the structure for its fields
-                        return structFound.Fields.TryGetValue(segment, out var fieldOffset)
-                            ? new ExpressionValue(fieldOffset)
-                            : null;
+                        return structFound.Fields.TryGetValue(segment, out var fieldDefinition) 
+                            ? (new ExpressionValue(fieldDefinition.Offset), fieldDefinition) 
+                            : (null, null);
                     }
-                    return module.Symbols.TryGetValue(segment, out var symbolInfo)
-                        ? symbolInfo.Value
-                        : null;
+
+                    return module.Symbols.TryGetValue(segment, out var symbolInfo) 
+                        ? (symbolInfo.Value, symbolInfo) 
+                        : (null, null);
                 }
 
                 if (structFound != null) continue;
@@ -157,11 +160,11 @@ namespace Spect.Net.Assembler.Assembler
                 if (!module.NestedModules.TryGetValue(segment, out var subModule))
                 {
                     // --- Module does not exist
-                    return null;
+                    return (null, null);
                 }
                 module = subModule;
             }
-            return null;
+            return (null, null);
         }
     }
 }

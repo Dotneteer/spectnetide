@@ -55,6 +55,8 @@
     <Compile Include="Assembler\AssemblerOutput.cs" />
     <Compile Include="Assembler\AssemblerTaskInfo.cs" />
     <Compile Include="Assembler\AssemblyModule.cs" />
+    <Compile Include="Assembler\FieldDefinition.cs" />
+    <Compile Include="Assembler\IHasUsageInfo.cs" />
     <Compile Include="Assembler\StructDefinition.cs" />
     <Compile Include="Assembler\AssemblySymbolInfo.cs" />
     <Compile Include="Assembler\SymbolType.cs" />

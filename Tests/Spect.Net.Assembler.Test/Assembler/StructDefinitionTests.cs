@@ -567,9 +567,9 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Fields.Count.ShouldBe(3);
-            def.Fields["field1"].ShouldBe((ushort)0);
-            def.Fields["field2"].ShouldBe((ushort)2);
-            def.Fields["field4"].ShouldBe((ushort)4);
+            def.Fields["field1"].Offset.ShouldBe((ushort)0);
+            def.Fields["field2"].Offset.ShouldBe((ushort)2);
+            def.Fields["field4"].Offset.ShouldBe((ushort)4);
             output.Symbols["MyStruct"].Value.AsWord().ShouldBe((ushort)10);
         }
 
@@ -597,10 +597,10 @@ namespace Spect.Net.Assembler.Test.Assembler
             var def = output.Structs["MyStruct"];
             def.ShouldNotBeNull();
             def.Fields.Count.ShouldBe(4);
-            def.Fields["field1"].ShouldBe((ushort)0);
-            def.Fields["field2"].ShouldBe((ushort)2);
-            def.Fields["field3"].ShouldBe((ushort)2);
-            def.Fields["field4"].ShouldBe((ushort)4);
+            def.Fields["field1"].Offset.ShouldBe((ushort)0);
+            def.Fields["field2"].Offset.ShouldBe((ushort)2);
+            def.Fields["field3"].Offset.ShouldBe((ushort)2);
+            def.Fields["field4"].Offset.ShouldBe((ushort)4);
             output.Symbols["MyStruct"].Value.AsWord().ShouldBe((ushort)10);
         }
 
@@ -794,6 +794,28 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             // --- Act/Assert
             CodeEmitWorks(SOURCE, 0x00, 0x02, 0x02, 0x04);
+        }
+
+        [TestMethod]
+        public void StructCanBeResolvedWithinModule()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                MyModule: .module
+                MyStruct: 
+                    .struct
+                        field1: .defb 0x12, 0x13
+                        field2: ; This is a comment
+                        field3: .defgx ""----OOOO OOOO----""
+                        field4: .fillw 2, #12A3
+                        .defw #FEDC
+                    .ends
+                .defb ::MyModule.MyStruct
+                .endmodule
+                ";
+
+            // --- Act/Assert
+            CodeEmitWorks(SOURCE, 0x0A);
         }
     }
 }

@@ -318,14 +318,14 @@ namespace Spect.Net.Assembler.Assembler
                         if (currentLabel != null)
                         {
                             // --- If there's a label that should be a field
-                            if (!_currentStructInvocation.Fields.TryGetValue(currentLabel, out var fieldOffset))
+                            if (!_currentStructInvocation.Fields.TryGetValue(currentLabel, out var fieldDefinition))
                             {
                                 ReportError(Errors.Z0441, asmLine, _currentStructInvocation.StructName, currentLabel);
                                 return;
                             }
 
                             // --- Use the field offset as the current one for the subsequent emits
-                            _currentStructOffset = fieldOffset;
+                            _currentStructOffset = fieldDefinition.Offset;
                         }
                     }
                 }
@@ -649,7 +649,7 @@ namespace Spect.Net.Assembler.Assembler
                     }
                     else
                     {
-                        structDef.Fields.Add(fieldLabel, (ushort)structOffset);
+                        structDef.Fields.Add(fieldLabel, new FieldDefinition((ushort)structOffset));
                     }
                 }
 
@@ -1433,21 +1433,45 @@ namespace Spect.Net.Assembler.Assembler
             foreach (var ifSection in ifDef.IfSections)
             {
                 // --- Evaluate the condition
-                var expr = ifSection.IfStatement is ElifStatement elifStmt 
-                    ? elifStmt.Expr 
-                    : ifStmt.Expr;
-                var exprValue = EvalImmediate(ifSection.IfStatement, expr);
+                ExpressionValue conditionValue;
+                if (ifSection.IfStatement is ElifStatement elifStmt)
+                {
+                    conditionValue = EvalImmediate(ifSection.IfStatement, elifStmt.Expr);
+                }
+                else
+                {
+                    switch (ifStmt.Type)
+                    {
+                        case IfStatementType.If:
+                            conditionValue = EvalImmediate(ifSection.IfStatement, ifStmt.Expr);
+                            break;
+                        case IfStatementType.IfUsed:
+                        case IfStatementType.IfNotUsed:
+                            //var idExpr = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal);
+                            //if (idExpr != null)
+                            //{
+                            //    return idExpr;
+                            //}
+                            //AddError(FullSymbolName);
+                            //return ExpressionValue.NonEvaluated;
+                            conditionValue = new ExpressionValue(true);
+                            break;
+                        default:
+                            conditionValue = new ExpressionValue(false);
+                            break;
+                    }
+                }
 
                 // --- Handle evaluation errors
-                if (!exprValue.IsValid) continue;
-                if (exprValue.Type == ExpressionValueType.String)
+                if (!conditionValue.IsValid) continue;
+                if (conditionValue.Type == ExpressionValueType.String)
                 {
                     ReportError(Errors.Z0305, ifSection.IfStatement);
                     continue;
                 }
 
                 // --- Check the condition
-                if (exprValue.AsBool())
+                if (conditionValue.AsBool())
                 {
                     sectionToCompile = ifSection;
                 }

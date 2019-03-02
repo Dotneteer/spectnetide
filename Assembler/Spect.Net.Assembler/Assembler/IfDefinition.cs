@@ -25,7 +25,7 @@ namespace Spect.Net.Assembler.Assembler
     }
 
     /// <summary>
-    /// Respresents a section of the If definition
+    /// Represents a section of the If definition
     /// </summary>
     public class IfSection
     {

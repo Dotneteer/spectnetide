@@ -53,6 +53,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as IfStatement;
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
+            line.Type.ShouldBe(IfStatementType.If);
         }
 
         [TestMethod]
@@ -70,6 +71,44 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as ElifStatement;
             line.ShouldNotBeNull();
             line.Expr.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        [DataRow(".ifused id")]
+        [DataRow(".IFUSED ::MyId")]
+        [DataRow("ifused MyStruct.Field")]
+        [DataRow("IFUSED MyModule.MyNested.MyId")]
+        public void IfUsedParsingWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as IfStatement;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeNull();
+            line.Symbol.ShouldNotBeNull();
+            line.Type.ShouldBe(IfStatementType.IfUsed);
+        }
+
+        [TestMethod]
+        [DataRow(".ifnused id")]
+        [DataRow(".IFNUSED ::MyId")]
+        [DataRow("ifnused MyStruct.Field")]
+        [DataRow("IFNUSED MyModule.MyNested.MyId")]
+        public void IfNUsedParsingWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as IfStatement;
+            line.ShouldNotBeNull();
+            line.Expr.ShouldBeNull();
+            line.Symbol.ShouldNotBeNull();
+            line.Type.ShouldBe(IfStatementType.IfNotUsed);
         }
     }
 }

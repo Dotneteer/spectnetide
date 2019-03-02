@@ -96,10 +96,10 @@ namespace Spect.Net.Assembler.Assembler
         /// </returns>
         public ExpressionValue GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false)
         {
-            var value = (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
+            var (exprValue, _) = (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
                 ? Module.ResolveSimpleSymbol(symbol)
                 : Module.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal);
-            return value ?? ParentContext.GetSymbolValue(symbol, scopeSymbolNames, startFromGlobal);
+            return exprValue ?? ParentContext.GetSymbolValue(symbol, scopeSymbolNames, startFromGlobal);
         }
 
         /// <summary>

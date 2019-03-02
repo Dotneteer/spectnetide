@@ -1331,7 +1331,14 @@ namespace Spect.Net.Assembler
         public override object VisitIfStatement(Z80AsmParser.IfStatementContext context)
         {
             if (IsInvalidContext(context)) return null;
-            return AddLine(new IfStatement((ExpressionNode)VisitExpr(context.expr())),
+            if (context.IFSTMT() != null)
+            {
+                return AddLine(new IfStatement((ExpressionNode)VisitExpr(context.expr())),
+                    context);
+            }
+
+            var isIfUsed = context.IFUSED() != null;
+            return AddLine(new IfStatement((IdentifierNode)VisitSymbolExpr(context.symbolExpr()), isIfUsed),
                 context);
         }
 
