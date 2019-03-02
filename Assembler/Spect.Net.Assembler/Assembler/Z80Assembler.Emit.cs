@@ -1447,16 +1447,14 @@ namespace Spect.Net.Assembler.Assembler
                             break;
                         case IfStatementType.IfUsed:
                         case IfStatementType.IfNotUsed:
-                            //var idExpr = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal);
-                            //if (idExpr != null)
-                            //{
-                            //    return idExpr;
-                            //}
-                            //AddError(FullSymbolName);
-                            //return ExpressionValue.NonEvaluated;
-                            conditionValue = new ExpressionValue(true);
+                            var idSymbol = ifStmt.Symbol;
+                            var (expressionValue, usageInfo) = GetSymbolValue(idSymbol.SymbolName, idSymbol.ScopeSymbolNames, 
+                                idSymbol.StartFromGlobal);
+                            var isUsed = expressionValue != null && usageInfo != null && usageInfo.IsUsed;
+                            conditionValue = new ExpressionValue(ifStmt.Type == IfStatementType.IfUsed ? isUsed : !isUsed);
                             break;
                         default:
+                            // --- Just for the sake of completeness
                             conditionValue = new ExpressionValue(false);
                             break;
                     }

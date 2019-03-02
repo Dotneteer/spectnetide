@@ -28,11 +28,11 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        public ExpressionValue GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false)
+        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false)
         {
-            return (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal 
-                ? CurrentModule.ResolveSimpleSymbol(symbol).ExprValue 
-                : CurrentModule.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal).ExprValue;
+            return (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
+                ? CurrentModule.ResolveSimpleSymbol(symbol)
+                : CurrentModule.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal);
         }
 
         /// <summary>

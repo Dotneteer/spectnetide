@@ -31,7 +31,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>True, if the expression is ready; otherwise, false</returns>
         public override bool ReadyToEvaluate(IEvaluationContext evalContext)
         {
-            var result = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal) != null;
+            var result = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal).ExprValue != null;
             if (!result)
             {
                 AddError(FullSymbolName);
@@ -46,10 +46,14 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>Evaluated expression value</returns>
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
-            var idExpr = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal);
-            if (idExpr != null)
+            var (exprValue, usageInfo) = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal);
+            if (exprValue != null)
             {
-                return idExpr;
+                if (usageInfo != null)
+                {
+                    usageInfo.IsUsed = true;
+                }
+                return exprValue;
             }
             AddError(FullSymbolName);
             return ExpressionValue.NonEvaluated;

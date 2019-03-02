@@ -94,12 +94,14 @@ namespace Spect.Net.Assembler.Assembler
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        public ExpressionValue GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false)
+        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) GetSymbolValue(string symbol, 
+            List<string> scopeSymbolNames = null, 
+            bool startFromGlobal = false)
         {
-            var (exprValue, _) = (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
+            var result = (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
                 ? Module.ResolveSimpleSymbol(symbol)
                 : Module.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal);
-            return exprValue ?? ParentContext.GetSymbolValue(symbol, scopeSymbolNames, startFromGlobal);
+            return result.ExprValue != null ? result : ParentContext.GetSymbolValue(symbol, scopeSymbolNames, startFromGlobal);
         }
 
         /// <summary>

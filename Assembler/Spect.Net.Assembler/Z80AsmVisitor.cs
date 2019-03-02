@@ -1959,6 +1959,7 @@ namespace Spect.Net.Assembler
         public override object VisitSymbolExpr(Z80AsmParser.SymbolExprContext context)
         {
             if (IsInvalidContext(context)) return null;
+            if (context.ChildCount == 0 || context.IDENTIFIER().Length == 0) return null;
 
             AddIdentifier(context);
             return new IdentifierNode

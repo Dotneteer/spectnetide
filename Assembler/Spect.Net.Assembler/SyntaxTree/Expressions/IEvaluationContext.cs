@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -22,7 +23,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        ExpressionValue GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false);
+        (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false);
 
         /// <summary>
         /// Gets the current loop counter value

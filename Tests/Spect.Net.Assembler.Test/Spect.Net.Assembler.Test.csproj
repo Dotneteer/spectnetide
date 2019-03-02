@@ -65,6 +65,8 @@
     <Compile Include="Assembler\ExchangeOperationEmitTests.cs" />
     <Compile Include="Assembler\ExpressionEvaluationTests.cs" />
     <Compile Include="Assembler\FixupTests.cs" />
+    <Compile Include="Assembler\IfNusedEmitTests.cs" />
+    <Compile Include="Assembler\IfUsedEmitTests.cs" />
     <Compile Include="Assembler\ImOperationEmitTests.cs" />
     <Compile Include="Assembler\IncDecOperationEmitTests.cs" />
     <Compile Include="Assembler\IoOperationEmitTests.cs" />
