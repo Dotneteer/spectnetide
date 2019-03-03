@@ -729,5 +729,21 @@ namespace Spect.Net.Assembler.Test.Assembler
 
             CodeRaisesError(SOURCE, Errors.Z0201);
         }
+
+        [TestMethod]
+        public void IfUsedWithInstructionEmitsCodeWithTrueCondition()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                cond = 3
+                ld a,cond
+                .ifused cond
+                    nop
+                .endif
+                ";
+
+            CodeEmitWorks(SOURCE, 0x3E, 0x03, 0x00);
+        }
+
     }
 }

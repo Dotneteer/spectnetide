@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-02-28T08:13:14+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Watch Commands</title><link href="http://localhost:4000/spectnetide/documents/watch-commands" rel="alternate" type="text/html" title="Watch Commands" /><published>2019-01-03T00:00:00+01:00</published><updated>2019-01-03T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/watch-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/watch-commands">&lt;p&gt;With these commands, you can manage the list of items in the &lt;strong&gt;Watch Memory&lt;/strong&gt; tool window:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-03-03T11:02:23+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Watch Commands</title><link href="http://localhost:4000/spectnetide/documents/watch-commands" rel="alternate" type="text/html" title="Watch Commands" /><published>2019-01-03T00:00:00+01:00</published><updated>2019-01-03T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/watch-commands</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/watch-commands">&lt;p&gt;With these commands, you can manage the list of items in the &lt;strong&gt;Watch Memory&lt;/strong&gt; tool window:&lt;/p&gt;
 
 &lt;h2 id=&quot;add-a-new-watch-item-command&quot;&gt;Add a New Watch Item Command&lt;/h2&gt;
 
@@ -1774,6 +1774,95 @@ col = 2
   .endif
 .endif
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;the-ifusedifnused-statements&quot;&gt;The IFUSED/IFNUSED Statements&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; offers a similar construct to IF..ELIF..ELSE..ENDIF, using the IFUSED or IFNUSED statement instead of IF. These new statements are specialized forms of IF. You can use these statements to emit code depending on whether a symbol (label, &lt;code class=&quot;highlighter-rouge&quot;&gt;.EQU&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.VAR&lt;/code&gt;, structure, or structure field) exists and has already been used by the code preceding the IFUSED/IFNUSED statement.&lt;/p&gt;
+
+&lt;p&gt;Here are a few examples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyProc:
+  ld hl,#5800
+  ld (hl),a
+  ret
+  ; some other code
+
+  .ifused MyProc
+    MyMsg: .defn &quot;MyProc is used&quot;
+  .else
+    MyMsg: .defn &quot;MyProc is not used&quot;
+  .endif
+
+Main:
+  ld hl,MyMsg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, the &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; statement will set the string the &lt;code class=&quot;highlighter-rouge&quot;&gt;MyMsg&lt;/code&gt; label point to according to whether the &lt;code class=&quot;highlighter-rouge&quot;&gt;MyProc&lt;/code&gt; label is used, or not. As in this case &lt;code class=&quot;highlighter-rouge&quot;&gt;MyProc&lt;/code&gt; is defined but not invoked before the &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; statement, &lt;strong&gt;HL&lt;/strong&gt; will point to the “MyProc is not used” message.&lt;/p&gt;
+
+&lt;p&gt;Should you call &lt;code class=&quot;highlighter-rouge&quot;&gt;MyProc&lt;/code&gt; before &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt;, &lt;strong&gt;HL&lt;/strong&gt; would point to the other message, “MyProc is used”:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyProc:
+  ld hl,#5800
+  ld (hl),a
+  ret
+  ; some other code
+  call MyProc
+  ; some other code
+
+  .ifused MyProc
+    MyMsg: .defn &quot;MyProc is used&quot;
+  .else
+    MyMsg: .defn &quot;MyProc is not used&quot;
+  .endif
+
+Main:
+  ld hl,MyMsg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; statement is the complement of &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt;. It is evaluated to a true condition value only if the symbol following &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; is not defined, or, if defined, is not used.&lt;/p&gt;
+
+&lt;h3 id=&quot;ifusedifnused-syntax&quot;&gt;IFUSED/IFNUSED Syntax&lt;/h3&gt;
+
+&lt;p&gt;You need to specify a symbol after the &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt;  or &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; keywords. These symbols must follow the syntax of identifiers. They can be compound names used for modules and structures. So, all of these symbol names are correct:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyLabel
+MyStruct
+MyStruct.FieldX
+MyModule.Main
+::NestedModule.Start.MyProc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: You can use these aliases for &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;.IFUSED&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;ifused&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;IFUSED&lt;/code&gt;. Similarly, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; accept alternative tokens: &lt;code class=&quot;highlighter-rouge&quot;&gt;.IFNUSED&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;ifnused&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;IFNUSED&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;ifusedifnused-semantics&quot;&gt;IFUSED/IFNUSED Semantics&lt;/h3&gt;
+
+&lt;p&gt;The &lt;strong&gt;SpectNetIDE&lt;/strong&gt; compiler accepts any &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; statements until they are syntactically correct. When the assembler tests their condition, it works this way:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;If the specified symbol does not exists, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; evaluates to false, while &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; evaluates to true.&lt;/li&gt;
+  &lt;li&gt;If the particular symbol exists and it is used in the code section preceding the &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; statement, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; evaluates to true, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; to false.&lt;/li&gt;
+  &lt;li&gt;If the particular symbol exists and it is &lt;em&gt;not&lt;/em&gt; used in the code section preceding the &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; statement, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; evaluates to false, &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifnused&lt;/code&gt; to true.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These statements do not support look-ahead in the code. This behavior could lead to paradox situations, like in this example:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyFlag = true
+MyValue: .equ #1234
+  ; some other code that does not use MyValue
+
+  .ifused MyValue
+    MyFlag = false;
+  .endif
+
+  ; some other code that does not change MyFlag
+
+  .if MyFlag
+    ld a,MyValue
+  .endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Should &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; work with look-ahead, this code would make the compiler scratch its virtual head. Because &lt;code class=&quot;highlighter-rouge&quot;&gt;MyFlag&lt;/code&gt; is set to true, the &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt; statement at the bottom of the code would emit an &lt;code class=&quot;highlighter-rouge&quot;&gt;ld a,MyValue&lt;/code&gt; instruction. Knowing this fact, the compiler would say that &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused MyValue&lt;/code&gt; should be evaluated to true. However, in this case, the body &lt;code class=&quot;highlighter-rouge&quot;&gt;.ifused&lt;/code&gt; would set &lt;code class=&quot;highlighter-rouge&quot;&gt;MyFlag&lt;/code&gt; to true, and that would prevent the bottom &lt;code class=&quot;highlighter-rouge&quot;&gt;.if&lt;/code&gt; to emit &lt;code class=&quot;highlighter-rouge&quot;&gt;ld a,MyValue&lt;/code&gt;, and then &lt;code class=&quot;highlighter-rouge&quot;&gt;MyValue&lt;/code&gt; would not be used at all.&lt;/p&gt;
 
 &lt;h2 id=&quot;block-statements-without-a-closing-statement&quot;&gt;Block Statements without a Closing Statement&lt;/h2&gt;
 

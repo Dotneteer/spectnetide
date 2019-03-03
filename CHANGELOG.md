@@ -1,3 +1,7 @@
+### Version 1.18.1
+__FEATURE__: The Z80 Assembler has a two new statements, `.ifused`, and `.ifnused`, respectively.
+
+
 ### Version 1.18.0
 __FEATURE__: Z80 Assembler supports the `.xorg` pragma to set the segment start address for Intel HEX export.  
 __FEATURE__: The __Export Z80 Program__ supports the Intel HEX format.  

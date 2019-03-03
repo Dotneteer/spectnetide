@@ -706,6 +706,95 @@ col = 2
 .endif
 ```
 
+## The IFUSED/IFNUSED Statements
+
+__SpectNetIDE__ offers a similar construct to IF..ELIF..ELSE..ENDIF, using the IFUSED or IFNUSED statement instead of IF. These new statements are specialized forms of IF. You can use these statements to emit code depending on whether a symbol (label, `.EQU`, `.VAR`, structure, or structure field) exists and has already been used by the code preceding the IFUSED/IFNUSED statement.
+
+Here are a few examples:
+
+```
+MyProc:
+  ld hl,#5800
+  ld (hl),a
+  ret
+  ; some other code
+
+  .ifused MyProc
+    MyMsg: .defn "MyProc is used"
+  .else
+    MyMsg: .defn "MyProc is not used"
+  .endif
+
+Main:
+  ld hl,MyMsg
+```
+
+Here, the `.ifused` statement will set the string the `MyMsg` label point to according to whether the `MyProc` label is used, or not. As in this case `MyProc` is defined but not invoked before the `.ifused` statement, __HL__ will point to the "MyProc is not used" message.
+
+Should you call `MyProc` before `.ifused`, __HL__ would point to the other message, "MyProc is used":
+
+```
+MyProc:
+  ld hl,#5800
+  ld (hl),a
+  ret
+  ; some other code
+  call MyProc
+  ; some other code
+
+  .ifused MyProc
+    MyMsg: .defn "MyProc is used"
+  .else
+    MyMsg: .defn "MyProc is not used"
+  .endif
+
+Main:
+  ld hl,MyMsg
+```
+
+The `.ifnused` statement is the complement of `.ifused`. It is evaluated to a true condition value only if the symbol following `.ifnused` is not defined, or, if defined, is not used.
+
+### IFUSED/IFNUSED Syntax
+
+You need to specify a symbol after the `.ifused`  or `.ifnused` keywords. These symbols must follow the syntax of identifiers. They can be compound names used for modules and structures. So, all of these symbol names are correct:
+
+```
+MyLabel
+MyStruct
+MyStruct.FieldX
+MyModule.Main
+::NestedModule.Start.MyProc
+```
+
+> __Note__: You can use these aliases for `.ifused`: `.IFUSED`, `ifused`, `IFUSED`. Similarly, `.ifnused` accept alternative tokens: `.IFNUSED`, `ifnused`, `IFNUSED`.
+
+### IFUSED/IFNUSED Semantics
+
+The __SpectNetIDE__ compiler accepts any `.ifused` and `.ifnused` statements until they are syntactically correct. When the assembler tests their condition, it works this way:
+- If the specified symbol does not exists, `.ifused` evaluates to false, while `.ifnused` evaluates to true.
+- If the particular symbol exists and it is used in the code section preceding the `.ifused` or `.ifnused` statement, `.ifused` evaluates to true, `.ifnused` to false.
+- If the particular symbol exists and it is _not_ used in the code section preceding the `.ifused` or `.ifnused` statement, `.ifused` evaluates to false, `.ifnused` to true.
+
+These statements do not support look-ahead in the code. This behavior could lead to paradox situations, like in this example:
+
+```
+MyFlag = true
+MyValue: .equ #1234
+  ; some other code that does not use MyValue
+
+  .ifused MyValue
+    MyFlag = false;
+  .endif
+
+  ; some other code that does not change MyFlag
+
+  .if MyFlag
+    ld a,MyValue
+  .endif
+```
+
+Should `.ifused` work with look-ahead, this code would make the compiler scratch its virtual head. Because `MyFlag` is set to true, the `.if` statement at the bottom of the code would emit an `ld a,MyValue` instruction. Knowing this fact, the compiler would say that `.ifused MyValue` should be evaluated to true. However, in this case, the body `.ifused` would set `MyFlag` to true, and that would prevent the bottom `.if` to emit `ld a,MyValue`, and then `MyValue` would not be used at all.
+
 ## Block Statements without a Closing Statement
 
 The compiler automatically recognizes if a block does not have a closing statement, and provides an
