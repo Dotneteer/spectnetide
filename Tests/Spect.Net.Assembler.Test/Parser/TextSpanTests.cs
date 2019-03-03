@@ -185,7 +185,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0];
             line.ShouldNotBeNull();
             line.InstructionSpan.Start.ShouldBe(0);
-            line.InstructionSpan.End.ShouldBe(9);
+            line.InstructionSpan.End.ShouldBe(0);
         }
 
         [TestMethod]

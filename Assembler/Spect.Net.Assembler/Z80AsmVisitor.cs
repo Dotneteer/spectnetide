@@ -70,8 +70,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitAsmline(Z80AsmParser.AsmlineContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             _label = null;
             _comment = null;
             _labelSpan = null;
@@ -90,65 +88,71 @@ namespace Spect.Net.Assembler
             _statements = null;
             _operands = null;
             _mnemonics = null;
+
+            if (context?.Start == null || context.Stop == null)
+            {
+                return null;
+            }
+
             _sourceLine = context.Start.Line;
             _firstColumn = context.Start.Column;
             _firstIndex = context.Start.StartIndex;
             _lastIndex = context.Stop.StopIndex;
 
-            // --- Obtain comments
-            var firstChild = context.GetChild(0);
-            var lastChild = context.GetChild(context.ChildCount - 1);
-            _lastPos = context.Stop.StopIndex + 1;
-            if (lastChild is Z80AsmParser.LabelContext labelContext)
+            object mainInstructionPart = null;
+
+            // --- Obtain label
+            var labelCtx = context.label();
+            if (labelCtx != null)
             {
-                // --- Handle label-only lines
-                VisitLabel(labelContext);
-                return AddLine(new NoInstructionLine(), context);
+                _label = labelCtx.GetChild(0).NormalizeToken();
+                _labelSpan = new TextSpan(labelCtx.Start.StartIndex, labelCtx.Start.StopIndex + 1);
             }
 
-            if (lastChild is Z80AsmParser.CommentContext commentContext)
+            // --- Obtain line body/directive
+            var lineBodyCtx = context.lineBody();
+            if (lineBodyCtx != null)
             {
-                _comment = commentContext.GetText();
-                if (context.ChildCount == 1)
+                // --- Special case, when a macro parameters is used as the main line
+                _lastPos = lineBodyCtx.Stop.StopIndex;
+                var macroParamCtx = lineBodyCtx.macroParam();
+                if (macroParamCtx != null)
                 {
-                    _lastPos = commentContext.Start.StartIndex;
+                    VisitMacroParam(macroParamCtx);
+                    mainInstructionPart = new MacroParamLine(macroParamCtx.IDENTIFIER()?.NormalizeToken());
                 }
                 else
                 {
-                    var lastContext = context.GetChild(context.ChildCount - 2) as ParserRuleContext;
-                    _lastPos = lastContext?.Stop.StopIndex + 1
-                               ?? commentContext.Start.StartIndex;
-                }
-
-                _commentSpan = new TextSpan(_lastPos,
-                    commentContext.Start.StopIndex + 1);
-
-                if (context.ChildCount == 1)
-                {
-                    // --- Handle comment-only lines
-                    return AddLine(new NoInstructionLine(), context);
-                }
-
-                if (context.ChildCount == 2 && firstChild is Z80AsmParser.LabelContext label2Context)
-                {
-                    // --- Handle label + comment lines
-                    VisitLabel(label2Context);
-                    return AddLine(new NoInstructionLine(), context);
+                    mainInstructionPart = VisitLineBody(context.lineBody());
                 }
             }
-
-            var line = base.VisitAsmline(context);
-
-            if (context.macroParam() != null)
+            else if (context.directive() != null)
             {
-                // --- This line is a macro parameter
-                return AddLine(new MacroParamLine(context.macroParam().IDENTIFIER()?.NormalizeToken()), context);
+                mainInstructionPart = VisitDirective(context.directive());
             }
 
-            // --- Let's save lines with parsing errors, too.
-            return context.exception != null
-                ? AddLine(new ParserErrorLine(), context)
-                : line;
+            // --- Obtain comment
+            if (context.comment() != null)
+            {
+                var commentCtx = context.comment(); 
+                _comment = commentCtx.GetText();
+                _commentSpan = new TextSpan(commentCtx.Start.StartIndex, commentCtx.Stop.StopIndex + 1);
+            }
+
+            // --- Now, we have evary part of the line, and create some special main instruction part
+            if (context.exception != null)
+            {
+                mainInstructionPart = new ParserErrorLine();
+            }
+            else if (mainInstructionPart == null && (_label != null || _comment != null))
+            {
+                // --- Either a label only or a comment only line
+                mainInstructionPart = new NoInstructionLine();
+            }
+
+            return mainInstructionPart is SourceLineBase sourceLine
+                ? AddLine(sourceLine, context)
+                : mainInstructionPart;
         }
 
         /// <summary>
@@ -158,10 +162,24 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitLabel(Z80AsmParser.LabelContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             _label = context.GetChild(0).NormalizeToken();
             _labelSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            return context;
+        }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.comment"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitComment(Z80AsmParser.CommentContext context)
+        {
+            _comment = context.GetText();
+            _commentSpan = new TextSpan(context.Start.StartIndex, context.Stop.StopIndex);
             return context;
         }
 
@@ -174,20 +192,18 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDirective(Z80AsmParser.DirectiveContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             var mnemonic = context.GetChild(0).NormalizeToken();
             if (mnemonic == "#INCLUDE")
             {
                 if (context.STRING() != null) AddString(context.STRING());
-                return AddLine(new IncludeDirective
+                return new IncludeDirective
                 {
                     Mnemonic = mnemonic,
                     Filename = context.GetChild(1).NormalizeString()
-                }, context);
+                };
             }
-            return AddLine(new Directive
+            return new Directive
             {
                 Mnemonic = mnemonic,
                 Identifier = context.ChildCount > 1
@@ -196,7 +212,7 @@ namespace Spect.Net.Assembler
                 Expr = context.GetChild(1) is Z80AsmParser.ExprContext
                     ? (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
                     : null
-            }, context);
+            };
         }
 
         #endregion
@@ -210,8 +226,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitPragma(Z80AsmParser.PragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitPragma(context);
         }
@@ -227,8 +241,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitByteEmPragma(Z80AsmParser.ByteEmPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitByteEmPragma(context);
         }
@@ -240,12 +252,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitOrgPragma(Z80AsmParser.OrgPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new OrgPragma
+            return new OrgPragma
             {
                 Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -259,12 +269,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitXorgPragma(Z80AsmParser.XorgPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new XorgPragma
+            return new XorgPragma
             {
                 Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -274,12 +282,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitEntPragma(Z80AsmParser.EntPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new EntPragma
+            return new EntPragma
             {
                 Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -289,12 +295,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitXentPragma(Z80AsmParser.XentPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new XentPragma
+            return new XentPragma
             {
                 Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -304,12 +308,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDispPragma(Z80AsmParser.DispPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new DispPragma
+            return new DispPragma
             {
                 Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -319,12 +321,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitEquPragma(Z80AsmParser.EquPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new EquPragma
+            return new EquPragma
             {
                 Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -338,12 +338,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitVarPragma(Z80AsmParser.VarPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new VarPragma
+            return new VarPragma
             {
                 Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -353,15 +351,13 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitSkipPragma(Z80AsmParser.SkipPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new SkipPragma
+            return new SkipPragma
             {
                 Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
                 Fill = context.ChildCount > 3
                     ? (ExpressionNode) VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
                     : null
-            }, context);
+            };
         }
 
         /// <summary>
@@ -371,17 +367,15 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefbPragma(Z80AsmParser.DefbPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var exprs = new List<ExpressionNode>();
             for (var i = 1; i < context.ChildCount; i += 2)
             {
                 exprs.Add((ExpressionNode) VisitExpr(context.GetChild(i) as Z80AsmParser.ExprContext));
             }
-            return AddLine(new DefbPragma
+            return new DefbPragma
             {
                 Exprs = exprs
-            }, context);
+            };
         }
 
         /// <summary>
@@ -391,17 +385,15 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefwPragma(Z80AsmParser.DefwPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var exprs = new List<ExpressionNode>();
             for (var i = 1; i < context.ChildCount; i += 2)
             {
                 exprs.Add((ExpressionNode)VisitExpr(context.GetChild(i) as Z80AsmParser.ExprContext));
             }
-            return AddLine(new DefwPragma
+            return new DefwPragma
             {
                 Exprs = exprs
-            }, context);
+            };
         }
 
         /// <summary>
@@ -411,13 +403,11 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefmPragma(Z80AsmParser.DefmPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new DefmnPragma()
+            return new DefmnPragma()
             {
                 Message = (ExpressionNode)VisitExpr(context.expr()),
                 NullTerminator = false
-            }, context);
+            };
         }
 
         /// <summary>
@@ -431,13 +421,11 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefnPragma(Z80AsmParser.DefnPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new DefmnPragma
+            return new DefmnPragma
             {
                 Message = (ExpressionNode)VisitExpr(context.expr()),
                 NullTerminator = true
-            }, context);
+            };
         }
 
         /// <summary>
@@ -451,13 +439,11 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefcPragma(Z80AsmParser.DefcPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new DefmnPragma
+            return new DefmnPragma
             {
                 Message = (ExpressionNode)VisitExpr(context.expr()),
                 Bit7Terminator = true
-            }, context);
+            };
         }
 
         /// <summary>
@@ -471,12 +457,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefhPragma(Z80AsmParser.DefhPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new DefhPragma
+            return new DefhPragma
             {
                 ByteVector = (ExpressionNode)VisitExpr(context.expr())
-            }, context);
+            };
         }
 
         /// <summary>
@@ -486,9 +470,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitExternPragma(Z80AsmParser.ExternPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new ExternPragma(), context);
+            return new ExternPragma();
         }
 
         /// <summary>
@@ -498,12 +480,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefsPragma(Z80AsmParser.DefsPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new DefsPragma
+            return new DefsPragma
             {
                 Expression = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -513,13 +493,11 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitFillbPragma(Z80AsmParser.FillbPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new FillbPragma
+            return new FillbPragma
             {
                 Count = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
                 Expression = (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -529,13 +507,11 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitFillwPragma(Z80AsmParser.FillwPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new FillwPragma
+            return new FillwPragma
             {
                 Count = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
                 Expression = (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
-            }, context);
+            };
         }
 
         /// <summary>
@@ -549,8 +525,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitModelPragma(Z80AsmParser.ModelPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             string id = null;
             if (context.IDENTIFIER() != null)
             {
@@ -560,10 +534,10 @@ namespace Spect.Net.Assembler
             {
                 id = context.NEXT().NormalizeToken();
             }
-            return AddLine(new ModelPragma
+            return new ModelPragma
             {
                 Model = id
-            }, context);
+            };
         }
 
         /// <summary>
@@ -577,12 +551,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitAlignPragma(Z80AsmParser.AlignPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new AlignPragma(
+            return new AlignPragma(
                 context.expr() != null
                     ? (ExpressionNode)VisitExpr(context.expr())
-                    : null), 
-                context);
+                    : null);
         }
 
         /// <summary>
@@ -596,11 +568,9 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitTracePragma(Z80AsmParser.TracePragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new TracePragma(
+            return new TracePragma(
                 context.TRACEHEX() != null,
-                context.expr().Select(ex => (ExpressionNode)VisitExpr(ex)).ToList()),
-                context);
+                context.expr().Select(ex => (ExpressionNode)VisitExpr(ex)).ToList());
         }
 
         /// <summary>
@@ -614,12 +584,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitRndSeedPragma(Z80AsmParser.RndSeedPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new RndSeedPragma(
+            return new RndSeedPragma(
                     context.expr() != null
                         ? (ExpressionNode)VisitExpr(context.expr())
-                        : null),
-                context);
+                        : null);
         }
 
         /// <summary>
@@ -633,7 +601,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefgPragma(Z80AsmParser.DefgPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
             var text = context.DGPRAG().GetText();
             // --- Cut off the pragma token
             var firstSpace = text.IndexOf("\u0020", StringComparison.Ordinal);
@@ -655,7 +622,7 @@ namespace Spect.Net.Assembler
                 text = text.Substring(0, commentIndex);
             }
             var pattern = text.Substring(firstSpace + 1).TrimStart();
-            return AddLine(new DefgPragma(pattern), context);
+            return new DefgPragma(pattern);
         }
 
         /// <summary>
@@ -669,12 +636,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitDefgxPragma(Z80AsmParser.DefgxPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new DefgxPragma(
+            return new DefgxPragma(
                     context.expr() != null
                         ? (ExpressionNode)VisitExpr(context.expr())
-                        : null),
-                context);
+                        : null);
         }
 
         /// <summary>
@@ -688,12 +653,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitErrorPragma(Z80AsmParser.ErrorPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new ErrorPragma(
+            return new ErrorPragma(
                     context.expr() != null
                         ? (ExpressionNode)VisitExpr(context.expr())
-                        : null),
-                context);
+                        : null);
         }
 
 
@@ -708,7 +671,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitIncBinPragma(Z80AsmParser.IncBinPragmaContext context)
         {
-            if (IsInvalidContext(context)) return null;
             var filenameExpr = context.expr().Length > 0
                 ? (ExpressionNode) VisitExpr(context.expr()[0])
                 : null;
@@ -718,8 +680,7 @@ namespace Spect.Net.Assembler
             var lengthExpr = context.expr().Length > 2
                 ? (ExpressionNode)VisitExpr(context.expr()[2])
                 : null;
-            return AddLine(new IncludeBinPragma(filenameExpr, offsetExpr, lengthExpr), 
-                context);
+            return new IncludeBinPragma(filenameExpr, offsetExpr, lengthExpr);
         }
 
         #endregion
@@ -752,8 +713,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitOperation(Z80AsmParser.OperationContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitOperation(context);
         }
@@ -765,12 +724,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitTrivialOperation(Z80AsmParser.TrivialOperationContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new TrivialOperation
+            return new TrivialOperation
             {
                 Mnemonic = context.GetChild(0).NormalizeToken()
-            }, context);
+            };
         }
 
         /// <summary>
@@ -784,12 +741,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitTrivialNextOperation(Z80AsmParser.TrivialNextOperationContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
-            return AddLine(new TrivialNextOperation
+            return new TrivialNextOperation
             {
                 Mnemonic = context.GetChild(0).NormalizeToken()
-            }, context);
+            };
         }
 
         /// <summary>
@@ -799,8 +754,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitCompoundOperation(Z80AsmParser.CompoundOperationContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var op = new CompoundOperation
             {
                 Mnemonic = context.GetChild(0).NormalizeToken()
@@ -826,7 +779,7 @@ namespace Spect.Net.Assembler
                     operandCount = 2;
                 }
             }
-            return AddLine(op, context);
+            return op;
         }
 
         /// <summary>
@@ -836,8 +789,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitOperand(Z80AsmParser.OperandContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             // --- The context has exactly one child
             var op = new Operand();
             ParserRuleContext regContext = null;
@@ -1025,7 +976,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitStatement(Z80AsmParser.StatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitStatement(context);
         }
@@ -1041,7 +991,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitMacroParam(Z80AsmParser.MacroParamContext context)
         {
-            if (IsInvalidContext(context)) return null;
             AddMacroParam(context);
             if (context.IDENTIFIER() != null)
             {
@@ -1061,7 +1010,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitMacroOrStructInvocation(Z80AsmParser.MacroOrStructInvocationContext context)
         {
-            if (IsInvalidContext(context)) return null;
             var macroOps = new List<Operand>();
             if (context.macroArgument().Length > 1 
                 || context.macroArgument().Length > 0 && context.macroArgument()[0].operand() != null)
@@ -1083,8 +1031,7 @@ namespace Spect.Net.Assembler
             }
 
             _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
-            return AddLine(new MacroOrStructInvocation(context.IDENTIFIER().NormalizeToken(), macroOps),
-                    context);
+            return new MacroOrStructInvocation(context.IDENTIFIER().NormalizeToken(), macroOps);
         }
 
         /// <summary>
@@ -1098,13 +1045,11 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitMacroStatement(Z80AsmParser.MacroStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
             foreach (var id in context.IDENTIFIER())
             {
                 AddIdentifier(id);
             }
-            return AddLine(new MacroStatement(context.IDENTIFIER().Select(id => id.NormalizeToken()).ToList()),
-                    context);
+            return new MacroStatement(context.IDENTIFIER().Select(id => id.NormalizeToken()).ToList());
         }
 
         /// <summary>
@@ -1118,9 +1063,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitMacroEndMarker(Z80AsmParser.MacroEndMarkerContext context)
         {
-            return IsInvalidContext(context) 
-                ? null 
-                : AddLine(new MacroEndStatement(), context);
+            return new MacroEndStatement();
         }
 
         /// <summary>
@@ -1134,9 +1077,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitStructStatement(Z80AsmParser.StructStatementContext context)
         {
-            return IsInvalidContext(context) 
-                ? null 
-                : AddLine(new StructStatement(), context);
+            return new StructStatement();
         }
 
         /// <summary>
@@ -1150,9 +1091,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitStructEndMarker(Z80AsmParser.StructEndMarkerContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new StructEndStatement(), context);
+            return new StructEndStatement();
         }
 
         /// <summary>
@@ -1166,12 +1105,11 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitModuleStatement(Z80AsmParser.ModuleStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
             if (context.IDENTIFIER() != null)
             {
                 AddIdentifier(context.IDENTIFIER());
             }
-            return AddLine(new ModuleStatement(context), context);
+            return new ModuleStatement(context);
         }
 
         /// <summary>
@@ -1185,9 +1123,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitModuleEndMarker(Z80AsmParser.ModuleEndMarkerContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new ModuleEndStatement(), context);
+            return new ModuleEndStatement();
         }
 
         /// <summary>
@@ -1201,9 +1137,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitLoopStatement(Z80AsmParser.LoopStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new LoopStatement((ExpressionNode)VisitExpr(context.expr())), 
-                context);
+            return new LoopStatement((ExpressionNode)VisitExpr(context.expr()));
         }
 
         /// <summary>
@@ -1217,9 +1151,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitLoopEndMarker(Z80AsmParser.LoopEndMarkerContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new LoopEndStatement(), context);
+            return new LoopEndStatement();
         }
 
         /// <summary>
@@ -1233,9 +1165,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitProcStatement(Z80AsmParser.ProcStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new ProcStatement(),
-                context);
+            return new ProcStatement();
         }
 
         /// <summary>
@@ -1249,9 +1179,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitProcEndMarker(Z80AsmParser.ProcEndMarkerContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new ProcEndStatement(), context);
+            return new ProcEndStatement();
         }
 
         /// <summary>
@@ -1265,9 +1193,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitRepeatStatement(Z80AsmParser.RepeatStatementContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new RepeatStatement(), context);
+            return new RepeatStatement();
         }
 
         /// <summary>
@@ -1281,9 +1207,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitUntilStatement(Z80AsmParser.UntilStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new UntilStatement((ExpressionNode)VisitExpr(context.expr())),
-                context);
+            return new UntilStatement((ExpressionNode)VisitExpr(context.expr()));
         }
 
         /// <summary>
@@ -1297,9 +1221,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitWhileStatement(Z80AsmParser.WhileStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new WhileStatement((ExpressionNode)VisitExpr(context.expr())),
-                context);
+            return new WhileStatement((ExpressionNode)VisitExpr(context.expr()));
         }
 
         /// <summary>
@@ -1313,9 +1235,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitWhileEndMarker(Z80AsmParser.WhileEndMarkerContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new WhileEndStatement(), context);
+            return new WhileEndStatement();
         }
 
 
@@ -1330,16 +1250,13 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitIfStatement(Z80AsmParser.IfStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
             if (context.IFSTMT() != null)
             {
-                return AddLine(new IfStatement((ExpressionNode)VisitExpr(context.expr())),
-                    context);
+                return new IfStatement((ExpressionNode)VisitExpr(context.expr()));
             }
 
             var isIfUsed = context.IFUSED() != null;
-            return AddLine(new IfStatement((IdentifierNode)VisitSymbolExpr(context.symbolExpr()), isIfUsed),
-                context);
+            return new IfStatement((IdentifierNode)VisitSymbolExpr(context.symbolExpr()), isIfUsed);
         }
 
         /// <summary>
@@ -1353,9 +1270,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitElifStatement(Z80AsmParser.ElifStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
-            return AddLine(new ElifStatement((ExpressionNode)VisitExpr(context.expr())), 
-                context);
+            return new ElifStatement((ExpressionNode)VisitExpr(context.expr()));
         }
 
         /// <summary>
@@ -1369,9 +1284,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitElseStatement(Z80AsmParser.ElseStatementContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new ElseStatement(), context);
+            return new ElseStatement();
         }
 
         /// <summary>
@@ -1385,9 +1298,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitEndifStatement(Z80AsmParser.EndifStatementContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new IfEndStatement(), context);
+            return new IfEndStatement();
         }
 
         /// <summary>
@@ -1401,7 +1312,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitForStatement(Z80AsmParser.ForStatementContext context)
         {
-            if (IsInvalidContext(context)) return null;
             if (context.IDENTIFIER() != null) AddIdentifier(context.IDENTIFIER());
             if (context.TO() != null) AddStatement(context.TO());
             if (context.STEP() != null) AddStatement(context.STEP());
@@ -1410,8 +1320,7 @@ namespace Spect.Net.Assembler
             var fromExpr = context.expr().Length > 0 ? (ExpressionNode) VisitExpr(context.expr()[0]) : null;
             var toExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
             var stepExpr = context.expr().Length > 2 ? (ExpressionNode)VisitExpr(context.expr()[2]) : null;
-            return AddLine(new ForStatement(id, fromExpr, toExpr, stepExpr),
-                context);
+            return new ForStatement(id, fromExpr, toExpr, stepExpr);
         }
 
         /// <summary>
@@ -1425,9 +1334,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitNextStatement(Z80AsmParser.NextStatementContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new NextStatement(), context);
+            return new NextStatement();
         }
 
         /// <summary>
@@ -1441,9 +1348,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitBreakStatement(Z80AsmParser.BreakStatementContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new BreakStatement(), context);
+            return new BreakStatement();
         }
 
         /// <summary>
@@ -1457,9 +1362,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitContinueStatement(Z80AsmParser.ContinueStatementContext context)
         {
-            return IsInvalidContext(context)
-                ? null
-                : AddLine(new ContinueStatement(), context);
+            return new ContinueStatement();
         }
 
         #endregion
@@ -1473,8 +1376,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitExpr(Z80AsmParser.ExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             // --- Extract the expression text
             var sb = new StringBuilder(400);
             for (var i = 0; i < context.ChildCount; i++)
@@ -1509,8 +1410,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitOrExpr(Z80AsmParser.OrExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = VisitXorExpr(context.GetChild(0)
                 as Z80AsmParser.XorExprContext);
             var nextChildIndex = 2;
@@ -1535,8 +1434,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitXorExpr(Z80AsmParser.XorExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = VisitAndExpr(context.GetChild(0)
                 as Z80AsmParser.AndExprContext);
             var nextChildIndex = 2;
@@ -1561,8 +1458,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitAndExpr(Z80AsmParser.AndExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = VisitEquExpr(context.GetChild(0)
                 as Z80AsmParser.EquExprContext);
             var nextChildIndex = 2;
@@ -1587,8 +1482,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitEquExpr(Z80AsmParser.EquExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = (ExpressionNode)VisitRelExpr(context.GetChild(0) as Z80AsmParser.RelExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
@@ -1628,8 +1521,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitRelExpr(Z80AsmParser.RelExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = (ExpressionNode)VisitShiftExpr(context.GetChild(0) as Z80AsmParser.ShiftExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
@@ -1660,8 +1551,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitShiftExpr(Z80AsmParser.ShiftExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = (ExpressionNode)VisitAddExpr(context.GetChild(0) as Z80AsmParser.AddExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
@@ -1688,8 +1577,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitAddExpr(Z80AsmParser.AddExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = (ExpressionNode)VisitMultExpr(context.GetChild(0) as Z80AsmParser.MultExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
@@ -1716,8 +1603,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitMultExpr(Z80AsmParser.MultExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = (ExpressionNode)VisitMinMaxExpr(context.GetChild(0) as Z80AsmParser.MinMaxExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
@@ -1750,8 +1635,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitMinMaxExpr(Z80AsmParser.MinMaxExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var expr = (ExpressionNode)VisitUnaryExpr(context.GetChild(0) as Z80AsmParser.UnaryExprContext);
             var nextChildIndex = 2;
             while (nextChildIndex < context.ChildCount)
@@ -1778,8 +1661,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitUnaryExpr(Z80AsmParser.UnaryExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var child0 = context.GetChild(0);
             if (child0 == null) return null;
 
@@ -1850,8 +1731,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitLiteralExpr(Z80AsmParser.LiteralExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var token = context.NormalizeToken();
             if (context.CURADDR() != null || context.MULOP() != null || context.DOT() != null)
             {
@@ -1958,7 +1837,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitSymbolExpr(Z80AsmParser.SymbolExprContext context)
         {
-            if (IsInvalidContext(context)) return null;
             if (context.ChildCount == 0 || context.IDENTIFIER().Length == 0) return null;
 
             AddIdentifier(context);
@@ -1981,8 +1859,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitFunctionInvocation(Z80AsmParser.FunctionInvocationContext context)
         {
-            if (IsInvalidContext(context)) return null;
-
             var funcName = context.IDENTIFIER()?.GetText()?.ToLower();
             if (funcName != null)
             {
@@ -2003,7 +1879,6 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitBuiltinFunctionInvocation(Z80AsmParser.BuiltinFunctionInvocationContext context)
         {
-            if (IsInvalidContext(context)) return null;
             AddFunction(context);
             string token = null;
             if (context.TEXTOF() != null || context.LTEXTOF() != null)
@@ -2156,12 +2031,6 @@ namespace Spect.Net.Assembler
         #region Helper methods
 
         /// <summary>
-        /// Checks if the current context is invalid for further visiting
-        /// </summary>
-        /// <param name="context"></param>
-        private bool IsInvalidContext(ITree context) => context == null || context.ChildCount == 0;
-
-        /// <summary>
         /// Adds a new number text span
         /// </summary>
         private void AddNumber(ParserRuleContext context)
@@ -2308,8 +2177,8 @@ namespace Spect.Net.Assembler
             line.CommentSpan = _commentSpan;
             line.EmitIssue = _emitIssue;
             line.InstructionSpan = _keywordSpan != null 
-                ? new TextSpan(_keywordSpan.Start, _lastPos) 
-                : new TextSpan(_firstColumn, _lastPos);
+                ? new TextSpan(_keywordSpan.Start, _lastPos + 1) 
+                : new TextSpan(_firstColumn, _firstColumn);
             Compilation.Lines.Add(line);
             LastAsmLine = line;
             if (line is ISupportsFieldAssignment fieldAssignment)

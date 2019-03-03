@@ -10,17 +10,17 @@ compileUnit
 	;
 
 asmline
-	:	label? (
-			pragma 
-		| operation 
-		| macroParam 
-		| statement 
-		| macroOrStructInvocation 
-		| fieldAssignment
-		) comment?
+	:	label? lineBody? comment?
 	|	directive comment?
-	|	comment
-	|   label comment?
+	;
+
+lineBody
+	:	pragma 
+	|	operation 
+	|	macroParam 
+	|	statement 
+	|	macroOrStructInvocation 
+	|	fieldAssignment
 	;
 
 label
