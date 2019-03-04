@@ -12,41 +12,254 @@ using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Spect.Net.Assembler.SyntaxTree.Statements;
-// ReSharper disable IdentifierTypo
-// ReSharper disable CommentTypo
-
-// ReSharper disable PossibleNullReferenceException
-// ReSharper disable UsePatternMatching
 
 namespace Spect.Net.Assembler
 {
     /// <summary>
     /// This visitor class processes the elements of the AST parsed by ANTLR
     /// </summary>
-    public class Z80AsmVisitor: Z80AsmBaseVisitor<object>
+    public class Z80AsmVisitor : Z80AsmBaseVisitor<object>, IZ80AsmVisitorContext
     {
-        private int _sourceLine;
-        private int _firstColumn;
-        private int _lastPos;
-        private int _firstIndex;
-        private int _lastIndex;
-        private string _label;
-        private string _comment;
-        private string _emitIssue;
-        private bool _isFieldAssignment;
-        private List<string> _macroParamNames;
-        private TextSpan _labelSpan;
-        private TextSpan _keywordSpan;
-        private TextSpan _commentSpan;
-        private List<TextSpan> _numbers;
-        private List<TextSpan> _identifiers;
-        private List<TextSpan> _strings;
-        private List<TextSpan> _semiVars;
-        private List<TextSpan> _functions;
-        private List<TextSpan> _macroParams;
-        private List<TextSpan> _statements;
-        private List<TextSpan> _operands;
-        private List<TextSpan> _mnemonics;
+        #region IZ80AsmVisitorState implementation
+
+        /// <summary>
+        /// Source line number
+        /// </summary>
+        public int CurrentSourceLine { get; set; }
+
+        /// <summary>
+        /// Source index of the first column
+        /// </summary>
+        public int FirstColumn { get; set; }
+
+        /// <summary>
+        /// Last position of the processed instruction
+        /// </summary>
+        public int LastInstructionPos { get; set; }
+
+        /// <summary>
+        /// Source index of the beginning of the current line
+        /// </summary>
+        public int FirstPosition { get; set; }
+
+        /// <summary>
+        /// Source index of the beginning of the current line
+        /// </summary>
+        public int LastPosition { get; set; }
+
+        /// <summary>
+        /// The current label
+        /// </summary>
+        public string CurrentLabel { get; set; }
+
+        /// <summary>
+        /// The current comment
+        /// </summary>
+        public string CurrentComment { get; set; }
+
+        /// <summary>
+        /// The issue to emit when the line has been visited
+        /// </summary>
+        public string IssueToEmit { get; set; }
+
+        /// <summary>
+        /// Indicates if the current pragma is in a field assignment
+        /// </summary>
+        public bool IsFieldAssignment { get; set; }
+
+        /// <summary>
+        /// The macro parameter names within the current line
+        /// </summary>
+        public List<string> MacroParamNames { get; set; }
+
+        /// <summary>
+        /// The text span of the current label
+        /// </summary>
+        public TextSpan LabelSpan { get; set; }
+
+        /// <summary>
+        /// The text span of the current keyword
+        /// </summary>
+        public TextSpan KeywordSpan { get; set; }
+
+        /// <summary>
+        /// The text span of the current comment
+        /// </summary>
+        public TextSpan CommentSpan { get; set; }
+
+        /// <summary>
+        /// Number text spans in the current line
+        /// </summary>
+        public List<TextSpan> NumberSpans { get; set; }
+
+        /// <summary>
+        /// Identifier text spans in the current line
+        /// </summary>
+        public List<TextSpan> IdentifierSpans { get; set; }
+
+        /// <summary>
+        /// String text spans in the current line
+        /// </summary>
+        public List<TextSpan> StringSpans { get; set; }
+
+        /// <summary>
+        /// Semi variable text spans in the current line
+        /// </summary>
+        public List<TextSpan> SemiVarSpans { get; set; }
+
+        /// <summary>
+        /// Function text spans in the current line
+        /// </summary>
+        public List<TextSpan> FunctionSpans { get; set; }
+
+        /// <summary>
+        /// Macro parameter text spans in the current line
+        /// </summary>
+        public List<TextSpan> MacroParamSpans { get; set; }
+
+        /// <summary>
+        /// Statement text spans in the current line
+        /// </summary>
+        public List<TextSpan> StatementSpans { get; set; }
+
+        /// <summary>
+        /// Operand text spans in the current line
+        /// </summary>
+        public List<TextSpan> OperandSpans { get; set; }
+
+        /// <summary>
+        /// Mnemonic text spans in the current line
+        /// </summary>
+        public List<TextSpan> MnemonicSpans { get; set; }
+
+        /// <summary>
+        /// Adds a new number text span
+        /// </summary>
+        public void AddNumber(ParserRuleContext context)
+        {
+            if (NumberSpans == null) NumberSpans = new List<TextSpan>();
+            NumberSpans.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new string text span
+        /// </summary>
+        public void AddString(ParserRuleContext context)
+        {
+            if (StringSpans == null) StringSpans = new List<TextSpan>();
+            StringSpans.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new string text span
+        /// </summary>
+        public void AddString(ITerminalNode node)
+        {
+            if (StringSpans == null) StringSpans = new List<TextSpan>();
+            StringSpans.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new identifier text span
+        /// </summary>
+        public void AddIdentifier(ParserRuleContext context)
+        {
+            if (IdentifierSpans == null) IdentifierSpans = new List<TextSpan>();
+            IdentifierSpans.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new identifier text span
+        /// </summary>
+        public void AddIdentifier(ITerminalNode node)
+        {
+            if (IdentifierSpans == null) IdentifierSpans = new List<TextSpan>();
+            IdentifierSpans.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new statement text span
+        /// </summary>
+        public void AddStatement(ITerminalNode node)
+        {
+            if (StatementSpans == null) StatementSpans = new List<TextSpan>();
+            StatementSpans.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new function text span
+        /// </summary>
+        public void AddFunction(ParserRuleContext context)
+        {
+            if (FunctionSpans == null) FunctionSpans = new List<TextSpan>();
+            FunctionSpans.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new semi-variable text span
+        /// </summary>
+        public void AddSemiVar(ParserRuleContext context)
+        {
+            if (SemiVarSpans == null) SemiVarSpans = new List<TextSpan>();
+            SemiVarSpans.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new semi-variable text span
+        /// </summary>
+        public void AddMacroParam(ParserRuleContext context)
+        {
+            if (MacroParamSpans == null) MacroParamSpans = new List<TextSpan>();
+            MacroParamSpans.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new semi-variable text span
+        /// </summary>
+        public void AddMacroParamName(string name)
+        {
+            if (MacroParamNames == null) MacroParamNames = new List<string>();
+            MacroParamNames.Add(name);
+        }
+
+        /// <summary>
+        /// Adds a new operand text span
+        /// </summary>
+        public void AddOperand(ParserRuleContext context)
+        {
+            if (OperandSpans == null) OperandSpans = new List<TextSpan>();
+            OperandSpans.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new operand text span
+        /// </summary>
+        public void AddOperand(ITerminalNode node)
+        {
+            if (OperandSpans == null) OperandSpans = new List<TextSpan>();
+            OperandSpans.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Adds a new operand text span
+        /// </summary>
+        public void AddMnemonics(ParserRuleContext context)
+        {
+            if (MnemonicSpans == null) MnemonicSpans = new List<TextSpan>();
+            MnemonicSpans.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
+        }
+
+        /// <summary>
+        /// Gets an expression from the specified context
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ExpressionNode GetExpression(IParseTree context)
+        {
+            return (ExpressionNode) VisitExpr(context as Z80AsmParser.ExprContext);
+        }
+
+        #endregion
 
         /// <summary>
         /// Access the compilation results through this object
@@ -63,41 +276,38 @@ namespace Spect.Net.Assembler
         /// </summary>
         public bool MacroParsingPhase { get; set; }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.asmline"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
+        #region Z80 Assembly line
+
         public override object VisitAsmline(Z80AsmParser.AsmlineContext context)
         {
-            _label = null;
-            _comment = null;
-            _labelSpan = null;
-            _keywordSpan = null;
-            _commentSpan = null;
-            _emitIssue = null;
-            _isFieldAssignment = false;
-            _numbers = null;
-            _identifiers = null;
-            _strings = null;
-            _functions = null;
-            _semiVars = null;
-            _macroParams = null;
-            _macroParamNames = null;
-            _semiVars = null;
-            _statements = null;
-            _operands = null;
-            _mnemonics = null;
+            CurrentLabel = null;
+            CurrentComment = null;
+            LabelSpan = null;
+            KeywordSpan = null;
+            CommentSpan = null;
+            IssueToEmit = null;
+            IsFieldAssignment = false;
+            NumberSpans = null;
+            IdentifierSpans = null;
+            StringSpans = null;
+            FunctionSpans = null;
+            SemiVarSpans = null;
+            MacroParamSpans = null;
+            MacroParamNames = null;
+            SemiVarSpans = null;
+            StatementSpans = null;
+            OperandSpans = null;
+            MnemonicSpans = null;
 
             if (context?.Start == null || context.Stop == null)
             {
                 return null;
             }
 
-            _sourceLine = context.Start.Line;
-            _firstColumn = context.Start.Column;
-            _firstIndex = context.Start.StartIndex;
-            _lastIndex = context.Stop.StopIndex;
+            CurrentSourceLine = context.Start.Line;
+            FirstColumn = context.Start.Column;
+            FirstPosition = context.Start.StartIndex;
+            LastPosition = context.Stop.StopIndex;
 
             object mainInstructionPart = null;
 
@@ -105,8 +315,8 @@ namespace Spect.Net.Assembler
             var labelCtx = context.label();
             if (labelCtx != null)
             {
-                _label = labelCtx.GetChild(0).NormalizeToken();
-                _labelSpan = new TextSpan(labelCtx.Start.StartIndex, labelCtx.Start.StopIndex + 1);
+                CurrentLabel = labelCtx.GetChild(0).NormalizeToken();
+                LabelSpan = new TextSpan(labelCtx.Start.StartIndex, labelCtx.Start.StopIndex + 1);
             }
 
             // --- Obtain line body/directive
@@ -114,7 +324,7 @@ namespace Spect.Net.Assembler
             if (lineBodyCtx != null)
             {
                 // --- Special case, when a macro parameters is used as the main line
-                _lastPos = lineBodyCtx.Stop.StopIndex;
+                LastInstructionPos = lineBodyCtx.Stop.StopIndex;
                 var macroParamCtx = lineBodyCtx.macroParam();
                 if (macroParamCtx != null)
                 {
@@ -135,16 +345,16 @@ namespace Spect.Net.Assembler
             if (context.comment() != null)
             {
                 var commentCtx = context.comment(); 
-                _comment = commentCtx.GetText();
-                _commentSpan = new TextSpan(commentCtx.Start.StartIndex, commentCtx.Stop.StopIndex + 1);
+                CurrentComment = commentCtx.GetText();
+                CommentSpan = new TextSpan(commentCtx.Start.StartIndex, commentCtx.Stop.StopIndex + 1);
             }
 
-            // --- Now, we have evary part of the line, and create some special main instruction part
+            // --- Now, we have every part of the line, and create some special main instruction part
             if (context.exception != null)
             {
                 mainInstructionPart = new ParserErrorLine();
             }
-            else if (mainInstructionPart == null && (_label != null || _comment != null))
+            else if (mainInstructionPart == null && (CurrentLabel != null || CurrentComment != null))
             {
                 // --- Either a label only or a comment only line
                 mainInstructionPart = new NoInstructionLine();
@@ -155,533 +365,112 @@ namespace Spect.Net.Assembler
                 : mainInstructionPart;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.label"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitLabel(Z80AsmParser.LabelContext context)
-        {
-            _label = context.GetChild(0).NormalizeToken();
-            _labelSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
-            return context;
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.comment"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitComment(Z80AsmParser.CommentContext context)
-        {
-            _comment = context.GetText();
-            _commentSpan = new TextSpan(context.Start.StartIndex, context.Stop.StopIndex);
-            return context;
-        }
+        #endregion
 
         #region Preprocessor directives
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.directive"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitDirective(Z80AsmParser.DirectiveContext context)
         {
-            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             var mnemonic = context.GetChild(0).NormalizeToken();
-            if (mnemonic == "#INCLUDE")
-            {
-                if (context.STRING() != null) AddString(context.STRING());
-                return new IncludeDirective
-                {
-                    Mnemonic = mnemonic,
-                    Filename = context.GetChild(1).NormalizeString()
-                };
-            }
-            return new Directive
-            {
-                Mnemonic = mnemonic,
-                Identifier = context.ChildCount > 1
-                    ? context.GetChild(1).NormalizeToken()
-                    : null,
-                Expr = context.GetChild(1) is Z80AsmParser.ExprContext
-                    ? (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-                    : null
-            };
+            return mnemonic == "#INCLUDE" 
+                ? (object) new IncludeDirective(this, context) 
+                : new Directive(this, context);
         }
 
         #endregion
 
         #region Pragma handling
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.pragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitPragma(Z80AsmParser.PragmaContext context)
         {
-            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitPragma(context);
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.byteEmPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitByteEmPragma(Z80AsmParser.ByteEmPragmaContext context)
         {
-            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitByteEmPragma(context);
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.orgPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitOrgPragma(Z80AsmParser.OrgPragmaContext context)
-        {
-            return new OrgPragma
-            {
-                Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            };
-        }
+        public override object VisitOrgPragma(Z80AsmParser.OrgPragmaContext context) 
+            => new OrgPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.xorgPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitXorgPragma(Z80AsmParser.XorgPragmaContext context)
-        {
-            return new XorgPragma
-            {
-                Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            };
-        }
+            => new XorgPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.entPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitEntPragma(Z80AsmParser.EntPragmaContext context)
-        {
-            return new EntPragma
-            {
-                Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            };
-        }
+        public override object VisitEntPragma(Z80AsmParser.EntPragmaContext context) 
+            => new EntPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.xentPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitXentPragma(Z80AsmParser.XentPragmaContext context)
-        {
-            return new XentPragma
-            {
-                Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            };
-        }
+        public override object VisitXentPragma(Z80AsmParser.XentPragmaContext context) 
+            => new XentPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.dispPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitDispPragma(Z80AsmParser.DispPragmaContext context)
-        {
-            return new DispPragma
-            {
-                Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            };
-        }
+            => new DispPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.equPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitEquPragma(Z80AsmParser.EquPragmaContext context)
-        {
-            return new EquPragma
-            {
-                Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            };
-        }
+            => new EquPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.varPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitVarPragma(Z80AsmParser.VarPragmaContext context)
-        {
-            return new VarPragma
-            {
-                Expr = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            };
-        }
+        public override object VisitVarPragma(Z80AsmParser.VarPragmaContext context) 
+            => new VarPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.skipPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitSkipPragma(Z80AsmParser.SkipPragmaContext context)
-        {
-            return new SkipPragma
-            {
-                Expr = (ExpressionNode) VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
-                Fill = context.ChildCount > 3
-                    ? (ExpressionNode) VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
-                    : null
-            };
-        }
+        public override object VisitSkipPragma(Z80AsmParser.SkipPragmaContext context) 
+            => new SkipPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.defbPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitDefbPragma(Z80AsmParser.DefbPragmaContext context)
-        {
-            var exprs = new List<ExpressionNode>();
-            for (var i = 1; i < context.ChildCount; i += 2)
-            {
-                exprs.Add((ExpressionNode) VisitExpr(context.GetChild(i) as Z80AsmParser.ExprContext));
-            }
-            return new DefbPragma
-            {
-                Exprs = exprs
-            };
-        }
+        public override object VisitDefbPragma(Z80AsmParser.DefbPragmaContext context) 
+            => new DefbPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.defwPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitDefwPragma(Z80AsmParser.DefwPragmaContext context)
-        {
-            var exprs = new List<ExpressionNode>();
-            for (var i = 1; i < context.ChildCount; i += 2)
-            {
-                exprs.Add((ExpressionNode)VisitExpr(context.GetChild(i) as Z80AsmParser.ExprContext));
-            }
-            return new DefwPragma
-            {
-                Exprs = exprs
-            };
-        }
+        public override object VisitDefwPragma(Z80AsmParser.DefwPragmaContext context) 
+            => new DefwPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.defmPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitDefmPragma(Z80AsmParser.DefmPragmaContext context)
-        {
-            return new DefmnPragma()
-            {
-                Message = (ExpressionNode)VisitExpr(context.expr()),
-                NullTerminator = false
-            };
-        }
+        public override object VisitDefmPragma(Z80AsmParser.DefmPragmaContext context) 
+            => new DefmnPragma(this, context, false, false);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.defnPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitDefnPragma(Z80AsmParser.DefnPragmaContext context)
-        {
-            return new DefmnPragma
-            {
-                Message = (ExpressionNode)VisitExpr(context.expr()),
-                NullTerminator = true
-            };
-        }
+            => new DefmnPragma(this, context, true, false);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.defcPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitDefcPragma(Z80AsmParser.DefcPragmaContext context)
-        {
-            return new DefmnPragma
-            {
-                Message = (ExpressionNode)VisitExpr(context.expr()),
-                Bit7Terminator = true
-            };
-        }
+            => new DefmnPragma(this, context, false, true);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.defhPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitDefhPragma(Z80AsmParser.DefhPragmaContext context)
-        {
-            return new DefhPragma
-            {
-                ByteVector = (ExpressionNode)VisitExpr(context.expr())
-            };
-        }
+        public override object VisitDefhPragma(Z80AsmParser.DefhPragmaContext context) 
+            => new DefhPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.externPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitExternPragma(Z80AsmParser.ExternPragmaContext context)
-        {
-            return new ExternPragma();
-        }
+        public override object VisitExternPragma(Z80AsmParser.ExternPragmaContext context) 
+            => new ExternPragma();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.defsPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitDefsPragma(Z80AsmParser.DefsPragmaContext context)
-        {
-            return new DefsPragma
-            {
-                Expression = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext)
-            };
-        }
+        public override object VisitDefsPragma(Z80AsmParser.DefsPragmaContext context) 
+            => new DefsPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.fillbPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitFillbPragma(Z80AsmParser.FillbPragmaContext context)
-        {
-            return new FillbPragma
-            {
-                Count = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
-                Expression = (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
-            };
-        }
+        public override object VisitFillbPragma(Z80AsmParser.FillbPragmaContext context) 
+            => new FillbPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.fillwPragma"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitFillwPragma(Z80AsmParser.FillwPragmaContext context)
-        {
-            return new FillwPragma
-            {
-                Count = (ExpressionNode)VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext),
-                Expression = (ExpressionNode)VisitExpr(context.GetChild(3) as Z80AsmParser.ExprContext)
-            };
-        }
+        public override object VisitFillwPragma(Z80AsmParser.FillwPragmaContext context) 
+            => new FillwPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.modelPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitModelPragma(Z80AsmParser.ModelPragmaContext context)
-        {
-            string id = null;
-            if (context.IDENTIFIER() != null)
-            {
-                id = context.IDENTIFIER().NormalizeToken();
-            }
-            else if (context.NEXT() != null)
-            {
-                id = context.NEXT().NormalizeToken();
-            }
-            return new ModelPragma
-            {
-                Model = id
-            };
-        }
+        public override object VisitModelPragma(Z80AsmParser.ModelPragmaContext context) 
+            => new ModelPragma(context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.alignPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitAlignPragma(Z80AsmParser.AlignPragmaContext context)
-        {
-            return new AlignPragma(
-                context.expr() != null
-                    ? (ExpressionNode)VisitExpr(context.expr())
-                    : null);
-        }
+        public override object VisitAlignPragma(Z80AsmParser.AlignPragmaContext context) 
+            => new AlignPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.tracePragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitTracePragma(Z80AsmParser.TracePragmaContext context)
-        {
-            return new TracePragma(
-                context.TRACEHEX() != null,
-                context.expr().Select(ex => (ExpressionNode)VisitExpr(ex)).ToList());
-        }
+        public override object VisitTracePragma(Z80AsmParser.TracePragmaContext context) 
+            => new TracePragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.rndSeedPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitRndSeedPragma(Z80AsmParser.RndSeedPragmaContext context)
-        {
-            return new RndSeedPragma(
-                    context.expr() != null
-                        ? (ExpressionNode)VisitExpr(context.expr())
-                        : null);
-        }
+        public override object VisitRndSeedPragma(Z80AsmParser.RndSeedPragmaContext context) 
+            => new RndSeedPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.defgPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitDefgPragma(Z80AsmParser.DefgPragmaContext context)
-        {
-            var text = context.DGPRAG().GetText();
-            // --- Cut off the pragma token
-            var firstSpace = text.IndexOf("\u0020", StringComparison.Ordinal);
-            var firstTab = text.IndexOf("\t", StringComparison.Ordinal);
-            if (firstSpace < 0 && firstTab < 0)
-            {
-                // --- This should not happen according to the grammar definition of DGPRAG
-                return null;
-            }
-            if (firstTab > 0 && firstTab < firstSpace)
-            {
-                firstSpace = firstTab;
-            }
+        public override object VisitDefgPragma(Z80AsmParser.DefgPragmaContext context) 
+            => new DefgPragma(context);
 
-            // --- Cut off the comment
-            var commentIndex = text.IndexOf(";", StringComparison.Ordinal);
-            if (commentIndex > 0)
-            {
-                text = text.Substring(0, commentIndex);
-            }
-            var pattern = text.Substring(firstSpace + 1).TrimStart();
-            return new DefgPragma(pattern);
-        }
+        public override object VisitDefgxPragma(Z80AsmParser.DefgxPragmaContext context) 
+            => new DefgxPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.defgxPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitDefgxPragma(Z80AsmParser.DefgxPragmaContext context)
-        {
-            return new DefgxPragma(
-                    context.expr() != null
-                        ? (ExpressionNode)VisitExpr(context.expr())
-                        : null);
-        }
+        public override object VisitErrorPragma(Z80AsmParser.ErrorPragmaContext context) 
+            => new ErrorPragma(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.errorPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitErrorPragma(Z80AsmParser.ErrorPragmaContext context)
-        {
-            return new ErrorPragma(
-                    context.expr() != null
-                        ? (ExpressionNode)VisitExpr(context.expr())
-                        : null);
-        }
-
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.incBinPragma"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitIncBinPragma(Z80AsmParser.IncBinPragmaContext context)
-        {
-            var filenameExpr = context.expr().Length > 0
-                ? (ExpressionNode) VisitExpr(context.expr()[0])
-                : null;
-            var offsetExpr = context.expr().Length > 1
-                ? (ExpressionNode)VisitExpr(context.expr()[1])
-                : null;
-            var lengthExpr = context.expr().Length > 2
-                ? (ExpressionNode)VisitExpr(context.expr()[2])
-                : null;
-            return new IncludeBinPragma(filenameExpr, offsetExpr, lengthExpr);
-        }
+        public override object VisitIncBinPragma(Z80AsmParser.IncBinPragmaContext context) 
+            => new IncludeBinPragma(this, context);
 
         #endregion
 
@@ -698,7 +487,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitFieldAssignment(Z80AsmParser.FieldAssignmentContext context)
         {
-            _isFieldAssignment = true;
+            IsFieldAssignment = true;
             return base.VisitFieldAssignment(context);
         }
 
@@ -713,7 +502,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitOperation(Z80AsmParser.OperationContext context)
         {
-            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitOperation(context);
         }
 
@@ -976,7 +765,7 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitStatement(Z80AsmParser.StatementContext context)
         {
-            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitStatement(context);
         }
 
@@ -1030,7 +819,7 @@ namespace Spect.Net.Assembler
                 }
             }
 
-            _keywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return new MacroOrStructInvocation(context.IDENTIFIER().NormalizeToken(), macroOps);
         }
 
@@ -2022,7 +1811,7 @@ namespace Spect.Net.Assembler
             if (!MacroParsingPhase && (op.Type != OperandType.Expr || !(op.Expression is MacroParamNode)))
             {
                 // --- Built in function can use only macro parameters during the collection phase
-                _emitIssue = Errors.Z0421;
+                IssueToEmit = Errors.Z0421;
             }
         }
 
@@ -2031,159 +1820,42 @@ namespace Spect.Net.Assembler
         #region Helper methods
 
         /// <summary>
-        /// Adds a new number text span
-        /// </summary>
-        private void AddNumber(ParserRuleContext context)
-        {
-            if (_numbers == null) _numbers = new List<TextSpan>();
-            _numbers.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new string text span
-        /// </summary>
-        private void AddString(ParserRuleContext context)
-        {
-            if (_strings == null) _strings = new List<TextSpan>();
-            _strings.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new string text span
-        /// </summary>
-        private void AddString(ITerminalNode node)
-        {
-            if (_strings == null) _strings = new List<TextSpan>();
-            _strings.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new identifier text span
-        /// </summary>
-        private void AddIdentifier(ParserRuleContext context)
-        {
-            if (_identifiers == null) _identifiers = new List<TextSpan>();
-            _identifiers.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new identifier text span
-        /// </summary>
-        private void AddIdentifier(ITerminalNode node)
-        {
-            if (_identifiers == null) _identifiers = new List<TextSpan>();
-            _identifiers.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new statement text span
-        /// </summary>
-        private void AddStatement(ITerminalNode node)
-        {
-            if (_statements == null) _statements = new List<TextSpan>();
-            _statements.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new function text span
-        /// </summary>
-        private void AddFunction(ParserRuleContext context)
-        {
-            if (_functions == null) _functions = new List<TextSpan>();
-            _functions.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new semi-variable text span
-        /// </summary>
-        private void AddSemiVar(ParserRuleContext context)
-        {
-            if (_semiVars == null) _semiVars = new List<TextSpan>();
-            _semiVars.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new semi-variable text span
-        /// </summary>
-        private void AddMacroParam(ParserRuleContext context)
-        {
-            if (_macroParams == null) _macroParams = new List<TextSpan>();
-            _macroParams.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new semi-variable text span
-        /// </summary>
-        private void AddMacroParamName(string name)
-        {
-            if (_macroParamNames == null) _macroParamNames = new List<string>();
-            _macroParamNames.Add(name);
-        }
-
-        /// <summary>
-        /// Adds a new operand text span
-        /// </summary>
-        private void AddOperand(ParserRuleContext context)
-        {
-            if (_operands == null) _operands = new List<TextSpan>();
-            _operands.Add(new TextSpan(context.Start.StartIndex, context.Stop.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new operand text span
-        /// </summary>
-        private void AddOperand(ITerminalNode node)
-        {
-            if (_operands == null) _operands = new List<TextSpan>();
-            _operands.Add(new TextSpan(node.Symbol.StartIndex, node.Symbol.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds a new operand text span
-        /// </summary>
-        private void AddMnemonics(ParserRuleContext context)
-        {
-            if (_mnemonics == null) _mnemonics = new List<TextSpan>();
-            _mnemonics.Add(new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1));
-        }
-
-        /// <summary>
-        /// Adds an assebmbly line to the compilation
+        /// Adds an assembly line to the compilation
         /// </summary>
         /// <param name="line">Line to add</param>
         /// <param name="context">The context that generates this line</param>
         /// <returns>The newly added line</returns>
         private SourceLineBase AddLine(SourceLineBase line, ParserRuleContext context)
         {
-            line.SourceLine = _sourceLine;
-            line.FirstColumn = _firstColumn;
-            line.FirstPosition = _firstIndex;
-            line.LastPosition = _lastIndex;
+            line.SourceLine = CurrentSourceLine;
+            line.FirstColumn = FirstColumn;
+            line.FirstPosition = FirstPosition;
+            line.LastPosition = LastPosition;
             line.ParserException = context.exception;
-            line.Label = _label;
-            line.LabelSpan = _labelSpan;
-            line.KeywordSpan = _keywordSpan;
-            line.Numbers = _numbers;
-            line.Strings = _strings;
-            line.Functions = _functions;
-            line.SemiVars = _semiVars;
-            line.MacroParams = _macroParams;
-            line.MacroParamNames = _macroParamNames;
-            line.Identifiers = _identifiers;
-            line.Statements = _statements;
-            line.Operands = _operands;
-            line.Mnemonics = _mnemonics;
-            line.Comment = _comment;
-            line.CommentSpan = _commentSpan;
-            line.EmitIssue = _emitIssue;
-            line.InstructionSpan = _keywordSpan != null 
-                ? new TextSpan(_keywordSpan.Start, _lastPos + 1) 
-                : new TextSpan(_firstColumn, _firstColumn);
+            line.Label = CurrentLabel;
+            line.LabelSpan = LabelSpan;
+            line.KeywordSpan = KeywordSpan;
+            line.NumberSpans = NumberSpans;
+            line.StringSpans = StringSpans;
+            line.FunctionSpans = FunctionSpans;
+            line.SemiVarSpans = SemiVarSpans;
+            line.MacroParamSpans = MacroParamSpans;
+            line.MacroParamNames = MacroParamNames;
+            line.IdentifierSpans = IdentifierSpans;
+            line.StatementSpans = StatementSpans;
+            line.OperandSpans = OperandSpans;
+            line.MnemonicSpans = MnemonicSpans;
+            line.Comment = CurrentComment;
+            line.CommentSpan = CommentSpan;
+            line.IssueToEmit = IssueToEmit;
+            line.InstructionSpan = KeywordSpan != null 
+                ? new TextSpan(KeywordSpan.Start, LastInstructionPos + 1) 
+                : new TextSpan(FirstColumn, FirstColumn);
             Compilation.Lines.Add(line);
             LastAsmLine = line;
             if (line is ISupportsFieldAssignment fieldAssignment)
             {
-                fieldAssignment.IsFieldAssignment = _isFieldAssignment;
+                fieldAssignment.IsFieldAssignment = IsFieldAssignment;
             }
             return line;
         }

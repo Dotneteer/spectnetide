@@ -58,27 +58,27 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// <summary>
         /// Number spans
         /// </summary>
-        public List<TextSpan> Numbers;
+        public List<TextSpan> NumberSpans;
 
         /// <summary>
         /// String spans
         /// </summary>
-        public List<TextSpan> Strings;
+        public List<TextSpan> StringSpans;
 
         /// <summary>
         /// Identifier spans
         /// </summary>
-        public List<TextSpan> Identifiers;
+        public List<TextSpan> IdentifierSpans;
 
         /// <summary>
         /// Function spans
         /// </summary>
-        public List<TextSpan> Functions;
+        public List<TextSpan> FunctionSpans;
 
         /// <summary>
         /// Macro parameters in the source line
         /// </summary>
-        public List<TextSpan> MacroParams;
+        public List<TextSpan> MacroParamSpans;
 
         /// <summary>
         /// Macro parameter names in the source line
@@ -88,22 +88,22 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// <summary>
         /// Semi-variables spans
         /// </summary>
-        public List<TextSpan> SemiVars;
+        public List<TextSpan> SemiVarSpans;
 
         /// <summary>
         /// Statement spans
         /// </summary>
-        public List<TextSpan> Statements;
+        public List<TextSpan> StatementSpans;
 
         /// <summary>
         /// Operand spans
         /// </summary>
-        public List<TextSpan> Operands;
+        public List<TextSpan> OperandSpans;
 
         /// <summary>
         /// Mnemonic spans
         /// </summary>
-        public List<TextSpan> Mnemonics;
+        public List<TextSpan> MnemonicSpans;
 
         /// <summary>
         /// Comment information
@@ -131,7 +131,7 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// <summary>
         /// Set this value to an error code to emit that issue
         /// </summary>
-        public string EmitIssue;
+        public string IssueToEmit;
 
         /// <summary>
         /// Gets a value indicating whether this line creates a task.

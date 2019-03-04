@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
@@ -18,10 +20,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
         /// </summary>
         public List<ExpressionNode> Exprs { get;  }
 
-        public TracePragma(bool isHex, List<ExpressionNode> exprs)
+        public TracePragma(IZ80AsmVisitorContext visitorContext, Z80AsmParser.TracePragmaContext context)
         {
-            IsHex = isHex;
-            Exprs = exprs;
+            IsHex = context.TRACEHEX() != null;
+            Exprs = context.expr() != null 
+                ? context.expr().Select(visitorContext.GetExpression).ToList() 
+                : new List<ExpressionNode>();
         }
     }
 }

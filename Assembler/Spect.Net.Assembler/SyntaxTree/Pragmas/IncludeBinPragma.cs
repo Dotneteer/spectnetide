@@ -1,3 +1,4 @@
+using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
@@ -22,11 +23,22 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
         /// </summary>
         public ExpressionNode LengthExpr { get; }
 
-        public IncludeBinPragma(ExpressionNode fileExpr, ExpressionNode offsetExpr, ExpressionNode lengthExpr)
+        public IncludeBinPragma(IZ80AsmVisitorContext visitorContext, Z80AsmParser.IncBinPragmaContext context)
         {
-            FileExpr = fileExpr;
-            OffsetExpr = offsetExpr;
-            LengthExpr = lengthExpr;
+            if (context.expr() == null) return;
+
+            if (context.expr().Length > 0)
+            {
+                FileExpr = visitorContext.GetExpression(context.expr()[0]);
+            }
+            if (context.expr().Length > 1)
+            {
+                OffsetExpr = visitorContext.GetExpression(context.expr()[1]);
+            }
+            if (context.expr().Length > 2)
+            {
+                LengthExpr = visitorContext.GetExpression(context.expr()[2]);
+            }
         }
     }
 }

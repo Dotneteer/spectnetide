@@ -1,3 +1,4 @@
+using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
@@ -16,5 +17,13 @@ namespace Spect.Net.Assembler.SyntaxTree.Pragmas
         /// True indicates that this node is used within a field assignment
         /// </summary>
         public bool IsFieldAssignment { get; set; }
+
+        public DefhPragma(IZ80AsmVisitorContext visitorContext, Z80AsmParser.DefhPragmaContext context)
+        {
+            if (context.expr() != null)
+            {
+                ByteVector = visitorContext.GetExpression(context.expr());
+            }
+        }
     }
 }

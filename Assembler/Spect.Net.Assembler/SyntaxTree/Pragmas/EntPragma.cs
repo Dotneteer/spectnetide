@@ -1,15 +1,15 @@
-using Spect.Net.Assembler.SyntaxTree.Expressions;
+using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
     /// This class represents the ENT pragma
     /// </summary>
-    public sealed class EntPragma : PragmaBase
+    public sealed class EntPragma : ExpressionPragmaBase
     {
-        /// <summary>
-        /// The ENT parameter
-        /// </summary>
-        public ExpressionNode Expr { get; set; }
+        public EntPragma(IZ80AsmVisitorContext visitorContext, IParseTree context)
+            : base(visitorContext, context)
+        {
+        }
     }
 }

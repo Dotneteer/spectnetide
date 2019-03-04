@@ -82,6 +82,7 @@
     <Compile Include="Generated\Z80AsmListener.cs" />
     <Compile Include="Generated\Z80AsmParser.cs" />
     <Compile Include="Generated\Z80AsmVisitor.cs" />
+    <Compile Include="IZ80AsmVisitorContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxTree\CompilationUnit.cs" />
     <Compile Include="SyntaxTree\Directive.cs" />
@@ -128,7 +129,6 @@
     <Compile Include="SyntaxTree\ISupportsFieldAssignment.cs" />
     <Compile Include="SyntaxTree\MacroParamLine.cs" />
     <Compile Include="SyntaxTree\NoInstructionLine.cs" />
-    <Compile Include="SyntaxTree\LabelSetterPragmaBase.cs" />
     <Compile Include="SyntaxTree\Operand.cs" />
     <Compile Include="SyntaxTree\OperandType.cs" />
     <Compile Include="SyntaxTree\OperationBase.cs" />
@@ -151,6 +151,7 @@
     <Compile Include="SyntaxTree\Pragmas\EntPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\EquPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\ErrorPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\ExpressionPragmaBase.cs" />
     <Compile Include="SyntaxTree\Pragmas\ExternPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\FillbPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\FillwPragma.cs" />
