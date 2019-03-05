@@ -1,15 +1,15 @@
-using Spect.Net.Assembler.SyntaxTree.Expressions;
+using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
     /// This class represents the EQU pragma
     /// </summary>
-    public sealed class EquPragma : LabelSetterPragmaBase
+    public sealed class EquPragma : ExpressionPragmaBase, ILabelSetter
     {
-        /// <summary>
-        /// The EQU parameter
-        /// </summary>
-        public ExpressionNode Expr { get; set; }
+        public EquPragma(IZ80AsmVisitorContext visitorContext, IParseTree context)
+            : base(visitorContext, context)
+        {
+        }
     }
 }

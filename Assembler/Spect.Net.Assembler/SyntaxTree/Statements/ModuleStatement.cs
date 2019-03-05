@@ -25,12 +25,11 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public override string EndStatementName => "MODULEEND";
 
-        public ModuleStatement(Z80AsmParser.ModuleStatementContext context)
+        public ModuleStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.ModuleStatementContext context)
         {
-            if (context.IDENTIFIER() != null)
-            {
-                Name = context.IDENTIFIER().GetText().ToUpper();
-            }
+            if (context.IDENTIFIER() == null) return;
+            Name = context.IDENTIFIER().GetText().ToUpper();
+            visitorContext.AddIdentifier(context.IDENTIFIER());
         }
     }
 }

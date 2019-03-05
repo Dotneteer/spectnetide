@@ -1,20 +1,15 @@
-using Spect.Net.Assembler.SyntaxTree.Expressions;
+using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
     /// This class represents the ERROR pragma
     /// </summary>
-    public sealed class ErrorPragma : PragmaBase
+    public sealed class ErrorPragma : ExpressionPragmaBase
     {
-        /// <summary>
-        /// The error string value
-        /// </summary>
-        public ExpressionNode Expr { get; }
-
-        public ErrorPragma(ExpressionNode expr)
+        public ErrorPragma(IZ80AsmVisitorContext visitorContext, IParseTree context)
+            : base(visitorContext, context)
         {
-            Expr = expr;
         }
     }
 }

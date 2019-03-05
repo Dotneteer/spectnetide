@@ -1,4 +1,5 @@
 ﻿using System;
+using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Statements
@@ -23,9 +24,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public ExpressionNode Expr { get; }
 
-        public WhileStatement(ExpressionNode expr)
+        public WhileStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.WhileStatementContext context)
         {
-            Expr = expr;
+            Expr = visitorContext.GetExpression(context.expr());
         }
     }
 }

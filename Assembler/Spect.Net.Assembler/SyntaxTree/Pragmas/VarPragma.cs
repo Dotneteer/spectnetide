@@ -1,15 +1,15 @@
-using Spect.Net.Assembler.SyntaxTree.Expressions;
+using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
     /// This class represents the VAR pragma
     /// </summary>
-    public sealed class VarPragma : LabelSetterPragmaBase
+    public sealed class VarPragma : ExpressionPragmaBase, ILabelSetter
     {
-        /// <summary>
-        /// The VAR parameter
-        /// </summary>
-        public ExpressionNode Expr { get; set; }
+        public VarPragma(IZ80AsmVisitorContext visitorContext, IParseTree context)
+            : base(visitorContext, context)
+        {
+        }
     }
 }

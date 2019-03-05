@@ -45,5 +45,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     return ExpressionValue.Error;
             }
         }
+
+        public BitwiseOrOperationNode(object leftOperand = null, object rightOperand = null)
+            : base(leftOperand, rightOperand)
+        {
+        }
     }
 }

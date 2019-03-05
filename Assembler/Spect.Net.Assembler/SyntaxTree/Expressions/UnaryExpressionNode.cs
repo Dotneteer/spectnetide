@@ -8,7 +8,7 @@
         /// <summary>
         /// Operand of the unary operation
         /// </summary>
-        public ExpressionNode Operand { get; set; }
+        public ExpressionNode Operand { get; }
 
         /// <summary>
         /// This property signs if an expression is ready to be evaluated,
@@ -18,5 +18,10 @@
         /// <returns>True, if the expression is ready; otherwise, false</returns>
         public override bool ReadyToEvaluate(IEvaluationContext evalContext)
             => Operand.ReadyToEvaluate(evalContext);
+
+        protected UnaryExpressionNode(object operand)
+        {
+            Operand = operand as ExpressionNode;
+        }
     }
 }

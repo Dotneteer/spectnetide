@@ -1,20 +1,15 @@
-using Spect.Net.Assembler.SyntaxTree.Expressions;
+using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
     /// This class represents the RNDSEED pragma
     /// </summary>
-    public sealed class RndSeedPragma : PragmaBase
+    public sealed class RndSeedPragma : ExpressionPragmaBase
     {
-        /// <summary>
-        /// The optional seed value
-        /// </summary>
-        public ExpressionNode Expr { get; }
-
-        public RndSeedPragma(ExpressionNode expr)
+        public RndSeedPragma(IZ80AsmVisitorContext visitorContext, IParseTree context)
+            : base(visitorContext, context)
         {
-            Expr = expr;
         }
     }
 }

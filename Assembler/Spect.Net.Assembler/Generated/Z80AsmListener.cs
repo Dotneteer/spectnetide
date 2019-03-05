@@ -54,6 +54,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitAsmline([NotNull] Z80AsmParser.AsmlineContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.lineBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLineBody([NotNull] Z80AsmParser.LineBodyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.lineBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLineBody([NotNull] Z80AsmParser.LineBodyContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.label"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

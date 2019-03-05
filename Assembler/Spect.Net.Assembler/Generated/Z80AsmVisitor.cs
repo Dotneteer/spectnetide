@@ -47,6 +47,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAsmline([NotNull] Z80AsmParser.AsmlineContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.lineBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLineBody([NotNull] Z80AsmParser.LineBodyContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.label"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

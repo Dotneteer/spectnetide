@@ -37,5 +37,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public UnaryMinusNode(object operand) : base(operand)
+        {
+        }
     }
 }

@@ -93,9 +93,9 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
             line.ShouldNotBeNull();
-            line.Numbers.Count.ShouldBe(1);
-            line.Numbers[0].Start.ShouldBe(4);
-            line.Numbers[0].End.ShouldBe(5);
+            line.NumberSpans.Count.ShouldBe(1);
+            line.NumberSpans[0].Start.ShouldBe(4);
+            line.NumberSpans[0].End.ShouldBe(5);
         }
 
         [TestMethod]
@@ -108,13 +108,13 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
             line.ShouldNotBeNull();
-            line.Numbers.Count.ShouldBe(3);
-            line.Numbers[0].Start.ShouldBe(6);
-            line.Numbers[0].End.ShouldBe(11);
-            line.Numbers[1].Start.ShouldBe(12);
-            line.Numbers[1].End.ShouldBe(16);
-            line.Numbers[2].Start.ShouldBe(17);
-            line.Numbers[2].End.ShouldBe(18);
+            line.NumberSpans.Count.ShouldBe(3);
+            line.NumberSpans[0].Start.ShouldBe(6);
+            line.NumberSpans[0].End.ShouldBe(11);
+            line.NumberSpans[1].Start.ShouldBe(12);
+            line.NumberSpans[1].End.ShouldBe(16);
+            line.NumberSpans[2].Start.ShouldBe(17);
+            line.NumberSpans[2].End.ShouldBe(18);
         }
 
         [TestMethod]
@@ -127,9 +127,9 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
             line.ShouldNotBeNull();
-            line.Identifiers.Count.ShouldBe(1);
-            line.Identifiers[0].Start.ShouldBe(5);
-            line.Identifiers[0].End.ShouldBe(12);
+            line.IdentifierSpans.Count.ShouldBe(1);
+            line.IdentifierSpans[0].Start.ShouldBe(5);
+            line.IdentifierSpans[0].End.ShouldBe(12);
         }
 
         [TestMethod]
@@ -142,11 +142,11 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
             line.ShouldNotBeNull();
-            line.Identifiers.Count.ShouldBe(2);
-            line.Identifiers[0].Start.ShouldBe(6);
-            line.Identifiers[0].End.ShouldBe(12);
-            line.Identifiers[1].Start.ShouldBe(13);
-            line.Identifiers[1].End.ShouldBe(23);
+            line.IdentifierSpans.Count.ShouldBe(2);
+            line.IdentifierSpans[0].Start.ShouldBe(6);
+            line.IdentifierSpans[0].End.ShouldBe(12);
+            line.IdentifierSpans[1].Start.ShouldBe(13);
+            line.IdentifierSpans[1].End.ShouldBe(23);
         }
 
         [TestMethod]
@@ -185,7 +185,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0];
             line.ShouldNotBeNull();
             line.InstructionSpan.Start.ShouldBe(0);
-            line.InstructionSpan.End.ShouldBe(9);
+            line.InstructionSpan.End.ShouldBe(0);
         }
 
         [TestMethod]

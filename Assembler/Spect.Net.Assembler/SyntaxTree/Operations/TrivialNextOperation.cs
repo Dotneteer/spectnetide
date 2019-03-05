@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Operations
+﻿using Antlr4.Runtime.Tree;
+
+namespace Spect.Net.Assembler.SyntaxTree.Operations
 {
     /// <summary>
     /// This class represents a trivial Spectrum Next instruction that contains a 
@@ -6,5 +8,8 @@
     /// </summary>
     public class TrivialNextOperation : TrivialOperation
     {
+        public TrivialNextOperation(IParseTree context) : base(context)
+        {
+        }
     }
 }

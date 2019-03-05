@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Expressions
+﻿using Spect.Net.Assembler.Generated;
+
+namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
     /// This class represents a conditional (?:) operation
@@ -71,5 +73,22 @@
             => (Condition?.HasMacroParameter ?? false)
                || (TrueExpression?.HasMacroParameter ?? false)
                || (FalseExpression?.HasMacroParameter ?? false);
+
+        public ConditionalExpressionNode(IZ80AsmVisitorContext visitorContext,
+            Z80AsmParser.ExprContext context,
+            string sourceText,
+            ExpressionNode condition)
+        {
+            SourceText = sourceText;
+            Condition = condition;
+            if (context.expr().Length > 0)
+            {
+                TrueExpression = visitorContext.GetExpression(context.expr()[0]);
+            }
+            if (context.expr().Length > 1)
+            {
+                FalseExpression = visitorContext.GetExpression(context.expr()[1]);
+            }
+        }
     }
 }

@@ -1,25 +1,15 @@
-using Spect.Net.Assembler.SyntaxTree.Expressions;
+using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.Assembler.SyntaxTree.Pragmas
 {
     /// <summary>
-    /// This class represents the FILLB pragma
+    /// This class represents the FILLW pragma
     /// </summary>
-    public sealed class FillwPragma : PragmaBase, ISupportsFieldAssignment
+    public sealed class FillwPragma : FillbPragma
     {
-        /// <summary>
-        /// The bytes to define
-        /// </summary>
-        public ExpressionNode Count { get; set; }
-
-        /// <summary>
-        /// The bytes to define
-        /// </summary>
-        public ExpressionNode Expression { get; set; }
-
-        /// <summary>
-        /// True indicates that this node is used within a field assignment
-        /// </summary>
-        public bool IsFieldAssignment { get; set; }
+        public FillwPragma(IZ80AsmVisitorContext visitorContext, IParseTree context)
+            : base(visitorContext, context)
+        {
+        }
     }
 }

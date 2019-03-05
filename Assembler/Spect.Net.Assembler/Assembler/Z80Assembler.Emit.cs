@@ -183,9 +183,9 @@ namespace Spect.Net.Assembler.Assembler
             CurrentSourceLine = asmLine;
 
             // --- Report any parse-time function issue
-            if (asmLine.EmitIssue != null)
+            if (asmLine.IssueToEmit != null)
             {
-                ReportError(asmLine.EmitIssue, asmLine);
+                ReportError(asmLine.IssueToEmit, asmLine);
                 return;
             }
 
@@ -265,7 +265,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Let's handle assembly lines with macro parameters
-                if (asmLine.MacroParams != null && asmLine.MacroParams.Count > 0)
+                if (asmLine.MacroParamSpans != null && asmLine.MacroParamSpans.Count > 0)
                 {
                     if (fromMacroEmit)
                     {
@@ -547,9 +547,9 @@ namespace Spect.Net.Assembler.Assembler
             for (var i = firstLine + 1; i < currentLineIndex; i++)
             {
                 var macroLine = allLines[i];
-                if (macroLine.EmitIssue != null)
+                if (macroLine.IssueToEmit != null)
                 {
-                    ReportError(macroLine.EmitIssue, macroLine);
+                    ReportError(macroLine.IssueToEmit, macroLine);
                     errorFound = true;
                     continue;
                 }
@@ -683,12 +683,12 @@ namespace Spect.Net.Assembler.Assembler
                         ProcessDefsPragma(defsPragma, EmitAction);
                         break;
 
-                    case FillbPragma fillbPragma:
-                        ProcessFillbPragma(fillbPragma, EmitAction);
-                        break;
-
                     case FillwPragma fillwPragma:
                         ProcessFillwPragma(fillwPragma, EmitAction);
+                        break;
+
+                    case FillbPragma fillbPragma:
+                        ProcessFillbPragma(fillbPragma, EmitAction);
                         break;
 
                     case DefgPragma defgPragma:
@@ -730,7 +730,7 @@ namespace Spect.Net.Assembler.Assembler
             var lastLine = currentLineIndex;
 
             // --- Now, we can process the loop
-            var loopCounter = EvalImmediate(loop, loop.Expr);
+            var loopCounter = EvalImmediate(loop, loop.Expression);
             if (!loopCounter.IsValid) return;
             if (loopCounter.Type == ExpressionValueType.String)
             {
@@ -1056,7 +1056,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Evaluate the loop expression
-                var loopExitCondition = EvalImmediate(untilStmt, untilStmt?.Expr);
+                var loopExitCondition = EvalImmediate(untilStmt, untilStmt?.Expression);
                 if (!loopExitCondition.IsValid) return;
                 if (loopExitCondition.Type == ExpressionValueType.String)
                 {
@@ -1436,7 +1436,7 @@ namespace Spect.Net.Assembler.Assembler
                 ExpressionValue conditionValue;
                 if (ifSection.IfStatement is ElifStatement elifStmt)
                 {
-                    conditionValue = EvalImmediate(ifSection.IfStatement, elifStmt.Expr);
+                    conditionValue = EvalImmediate(ifSection.IfStatement, elifStmt.Expression);
                 }
                 else
                 {
@@ -2016,17 +2016,6 @@ namespace Spect.Net.Assembler.Assembler
                     }
                     break;
 
-                case FillbPragma fillbPragma:
-                    if (IsInStructInvocation)
-                    {
-                        ProcessFillbPragma(fillbPragma, EmitStructByte);
-                    }
-                    else
-                    {
-                        ProcessFillbPragma(fillbPragma);
-                    }
-                    break;
-
                 case FillwPragma fillwPragma:
                     if (IsInStructInvocation)
                     {
@@ -2035,6 +2024,17 @@ namespace Spect.Net.Assembler.Assembler
                     else
                     {
                         ProcessFillwPragma(fillwPragma);
+                    }
+                    break;
+
+                case FillbPragma fillbPragma:
+                    if (IsInStructInvocation)
+                    {
+                        ProcessFillbPragma(fillbPragma, EmitStructByte);
+                    }
+                    else
+                    {
+                        ProcessFillbPragma(fillbPragma);
                     }
                     break;
 
@@ -2098,7 +2098,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="label">Label to use</param>
         private void ProcessOrgPragma(OrgPragma pragma, string label)
         {
-            var value = EvalImmediate(pragma, pragma.Expr);
+            var value = EvalImmediate(pragma, pragma.Expression);
             if (!value.IsValid) return;
 
             EnsureCodeSegment();
@@ -2141,10 +2141,10 @@ namespace Spect.Net.Assembler.Assembler
             {
                 ReportError(Errors.Z0407, pragma, "ENT");
             }
-            var value = Eval(pragma, pragma.Expr);
+            var value = Eval(pragma, pragma.Expression);
             if (value.IsNonEvaluated)
             {
-                RecordFixup(pragma, FixupType.Ent, pragma.Expr);
+                RecordFixup(pragma, FixupType.Ent, pragma.Expression);
                 return;
             }
             Output.EntryAddress = value.Value;
@@ -2160,10 +2160,10 @@ namespace Spect.Net.Assembler.Assembler
             {
                 ReportError(Errors.Z0407, pragma, "XENT");
             }
-            var value = Eval(pragma, pragma.Expr);
+            var value = Eval(pragma, pragma.Expression);
             if (value.IsNonEvaluated)
             {
-                RecordFixup(pragma, FixupType.Xent, pragma.Expr);
+                RecordFixup(pragma, FixupType.Xent, pragma.Expression);
                 return;
             }
             Output.ExportEntryAddress = value.Value;
@@ -2175,7 +2175,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of DISP pragma</param>
         private void ProcessDispPragma(DispPragma pragma)
         {
-            var value = EvalImmediate(pragma, pragma.Expr);
+            var value = EvalImmediate(pragma, pragma.Expression);
             if (!value.IsValid) return;
 
             EnsureCodeSegment();
@@ -2188,7 +2188,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of DISP pragma</param>
         private void ProcessXorgPragma(XorgPragma pragma)
         {
-            var value = EvalImmediate(pragma, pragma.Expr);
+            var value = EvalImmediate(pragma, pragma.Expression);
             if (!value.IsValid) return;
 
             EnsureCodeSegment();
@@ -2223,10 +2223,10 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Evaluate EQU value
-            var value = Eval(pragma, pragma.Expr);
+            var value = Eval(pragma, pragma.Expression);
             if (value.IsNonEvaluated)
             {
-                RecordFixup(pragma, FixupType.Equ, pragma.Expr, label);
+                RecordFixup(pragma, FixupType.Equ, pragma.Expression, label);
             }
             else
             {
@@ -2260,7 +2260,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             FixupTemporaryScope();
 
-            var value = EvalImmediate(pragma, pragma.Expr);
+            var value = EvalImmediate(pragma, pragma.Expression);
             if (!value.IsValid) return;
 
             // --- Allow reusing a symbol already declared
@@ -2278,7 +2278,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of SKIP pragma</param>
         private void ProcessSkipPragma(SkipPragma pragma)
         {
-            var skipAddr = EvalImmediate(pragma, pragma.Expr);
+            var skipAddr = EvalImmediate(pragma, pragma.Expression);
             if (!skipAddr.IsValid) return;
 
             var currentAddr = GetCurrentAssemblyAddress();
@@ -2612,9 +2612,9 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessAlignPragma(AlignPragma pragma)
         {
             var alignment = 0x0100;
-            if (pragma.Expr != null)
+            if (pragma.Expression != null)
             {
-                var alignValue = EvalImmediate(pragma, pragma.Expr);
+                var alignValue = EvalImmediate(pragma, pragma.Expression);
                 if (!alignValue.IsValid) return;
                 alignment = alignValue.Value;
                 if (alignment < 1 || alignment > 0x4000)
@@ -2693,13 +2693,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of RNDSEED pragma</param>
         private void ProcessRndSeedPragma(RndSeedPragma pragma)
         {
-            if (pragma.Expr == null)
+            if (pragma.Expression == null)
             {
                 FunctionInvocationNode.SetRandomSeed(null);
                 return;
             }
 
-            var seedValue = EvalImmediate(pragma, pragma.Expr);
+            var seedValue = EvalImmediate(pragma, pragma.Expression);
             FunctionInvocationNode.SetRandomSeed(seedValue);
         }
 
@@ -2723,7 +2723,7 @@ namespace Spect.Net.Assembler.Assembler
         private void ProcessDefgxPragma(DefgxPragma pragma, Action<byte> emitAction = null)
         {
             // --- Obtain and check the DEFG pattern expression
-            var value = EvalImmediate(pragma, pragma.Expr);
+            var value = EvalImmediate(pragma, pragma.Expression);
             if (!value.IsValid) return;
 
             if (value.Type != ExpressionValueType.String)
@@ -2810,7 +2810,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="pragma">Assembly line of DEFG pragma</param>
         private void ProcessErrorPragma(ErrorPragma pragma)
         {
-            var errorValue = EvalImmediate(pragma, pragma.Expr);
+            var errorValue = EvalImmediate(pragma, pragma.Expression);
             if (!errorValue.IsValid) return;
             ReportError(Errors.Z0500, pragma, errorValue.AsString());
         }

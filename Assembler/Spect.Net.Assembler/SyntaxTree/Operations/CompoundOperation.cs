@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Operations
+﻿using Spect.Net.Assembler.Generated;
+
+namespace Spect.Net.Assembler.SyntaxTree.Operations
 {
     /// <summary>
     /// This class represents a compound instruction that contains 
@@ -20,5 +22,28 @@
         /// First operands
         /// </summary>
         public Operand Operand3 { get; set; }
+
+        public CompoundOperation(IZ80AsmVisitorContext visitorContext, Z80AsmParser.CompoundOperationContext context) : base(context)
+        {
+            var operands = context.operand();
+            if (operands == null) return;
+            for (var i = 0; i < operands.Length; i++)
+            {
+                // --- Collect operands
+                var operandCtx = operands[i];
+                switch (i)
+                {
+                    case 0:
+                        Operand = visitorContext.GetOperand(operandCtx);
+                        break;
+                    case 1:
+                        Operand2 = visitorContext.GetOperand(operandCtx);
+                        break;
+                    default:
+                        Operand3 = visitorContext.GetOperand(operandCtx);
+                        break;
+                }
+            }
+        }
     }
 }

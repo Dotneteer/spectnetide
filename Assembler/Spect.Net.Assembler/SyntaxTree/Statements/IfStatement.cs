@@ -1,4 +1,5 @@
 ﻿using System;
+using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Statements
@@ -33,27 +34,18 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public IdentifierNode Symbol { get; }
 
-        public IfStatement(ExpressionNode expr)
+        public IfStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.IfStatementContext context)
         {
-            Type = IfStatementType.If;
-            Expr = expr;
-        }
+            if (context.IFSTMT() != null)
+            {
+                Expr = visitorContext.GetExpression(context.expr());
+                Type = IfStatementType.If;
+                return;
+            }
 
-        public IfStatement(IdentifierNode symbol, bool isIfused)
-        {
-            Type = isIfused ? IfStatementType.IfUsed : IfStatementType.IfNotUsed;
-            Symbol = symbol;
+            Type = context.IFUSED() != null ? IfStatementType.IfUsed : IfStatementType.IfNotUsed;
+            Symbol = visitorContext.GetSymbol(context.symbolExpr());
         }
-    }
-
-    /// <summary>
-    /// This enumeration represents the type of the IF statement
-    /// </summary>
-    public enum IfStatementType
-    {
-        If,
-        IfUsed,
-        IfNotUsed
     }
 }
 

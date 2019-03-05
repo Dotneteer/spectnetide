@@ -64,5 +64,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     return ExpressionValue.Error;
             }
         }
+
+        public AddOperationNode(object leftOperand, object rightOperand)
+            : base(leftOperand, rightOperand)
+        {
+        }
     }
 }

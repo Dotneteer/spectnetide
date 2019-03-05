@@ -1,4 +1,5 @@
 ﻿using System;
+using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Statements
@@ -21,11 +22,11 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// <summary>
         /// Loop expression
         /// </summary>
-        public ExpressionNode Expr { get; }
+        public ExpressionNode Expression { get; }
 
-        public LoopStatement(ExpressionNode expr)
+        public LoopStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.LoopStatementContext context)
         {
-            Expr = expr;
+            Expression = visitorContext.GetExpression(context.expr());
         }
     }
 }
