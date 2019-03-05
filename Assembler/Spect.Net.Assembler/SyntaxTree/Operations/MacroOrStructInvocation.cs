@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Operations
 {
@@ -17,10 +19,20 @@ namespace Spect.Net.Assembler.SyntaxTree.Operations
         /// </summary>
         public List<Operand> Parameters { get; }
 
-        public MacroOrStructInvocation(string name, List<Operand> parameters)
+        public MacroOrStructInvocation(IZ80AsmVisitorContext visitorContext, Z80AsmParser.MacroOrStructInvocationContext context)
         {
-            Name = name;
-            Parameters = parameters;
+            Parameters = new List<Operand>();
+            if (context.macroArgument().Length > 1
+                || context.macroArgument().Length > 0 && context.macroArgument()[0].operand() != null)
+            {
+                Parameters.AddRange(context.macroArgument()
+                    .Select(arg => arg.operand() != null
+                        ? visitorContext.GetOperand(arg.operand())
+                        : new Operand()));
+            }
+
+            KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+            Name = context.IDENTIFIER().NormalizeToken();
         }
     }
 }

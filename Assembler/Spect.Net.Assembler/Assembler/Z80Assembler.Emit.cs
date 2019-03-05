@@ -730,7 +730,7 @@ namespace Spect.Net.Assembler.Assembler
             var lastLine = currentLineIndex;
 
             // --- Now, we can process the loop
-            var loopCounter = EvalImmediate(loop, loop.Expr);
+            var loopCounter = EvalImmediate(loop, loop.Expression);
             if (!loopCounter.IsValid) return;
             if (loopCounter.Type == ExpressionValueType.String)
             {
@@ -1056,7 +1056,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Evaluate the loop expression
-                var loopExitCondition = EvalImmediate(untilStmt, untilStmt?.Expr);
+                var loopExitCondition = EvalImmediate(untilStmt, untilStmt?.Expression);
                 if (!loopExitCondition.IsValid) return;
                 if (loopExitCondition.Type == ExpressionValueType.String)
                 {
@@ -1436,7 +1436,7 @@ namespace Spect.Net.Assembler.Assembler
                 ExpressionValue conditionValue;
                 if (ifSection.IfStatement is ElifStatement elifStmt)
                 {
-                    conditionValue = EvalImmediate(ifSection.IfStatement, elifStmt.Expr);
+                    conditionValue = EvalImmediate(ifSection.IfStatement, elifStmt.Expression);
                 }
                 else
                 {

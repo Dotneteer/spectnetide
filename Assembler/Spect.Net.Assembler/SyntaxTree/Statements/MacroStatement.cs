@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Statements
 {
@@ -27,5 +28,15 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// Gets the name of the end statement
         /// </summary>
         public override string EndStatementName => "MEND";
+
+        public MacroStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.MacroStatementContext context)
+        {
+            Arguments = new List<string>();
+            foreach (var id in context.IDENTIFIER())
+            {
+                visitorContext.AddIdentifier(id);
+                Arguments.Add(id.NormalizeToken());
+            }
+        }
     }
 }

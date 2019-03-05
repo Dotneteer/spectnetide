@@ -1,4 +1,5 @@
 ﻿using System;
+using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Statements
@@ -38,12 +39,26 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public ExpressionNode Step { get; }
 
-        public ForStatement(string forVariable, ExpressionNode from, ExpressionNode to, ExpressionNode step)
+        public ForStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.ForStatementContext context)
         {
-            ForVariable = forVariable;
-            From = from;
-            To = to;
-            Step = step;
+            if (context.IDENTIFIER() != null)
+            {
+                visitorContext.AddIdentifier(context.IDENTIFIER());
+                ForVariable = context.IDENTIFIER()?.NormalizeToken();
+            }
+            if (context.TO() != null)
+            {
+                visitorContext.AddStatement(context.TO());
+            }
+
+            if (context.STEP() != null)
+            {
+                visitorContext.AddStatement(context.STEP());
+            }
+
+            From = context.expr().Length > 0 ? visitorContext.GetExpression(context.expr()[0]) : null;
+            To = context.expr().Length > 1 ? visitorContext.GetExpression(context.expr()[1]) : null;
+            Step = context.expr().Length > 2 ? visitorContext.GetExpression(context.expr()[2]) : null;
         }
     }
 }

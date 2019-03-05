@@ -41,7 +41,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as LoopStatement;
             line.ShouldNotBeNull();
-            line.Expr.ShouldBeOfType<LiteralNode>();
+            line.Expression.ShouldBeOfType<LiteralNode>();
         }
 
         [TestMethod]

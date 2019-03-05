@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Operations
+﻿using Antlr4.Runtime.Tree;
+
+namespace Spect.Net.Assembler.SyntaxTree.Operations
 {
     /// <summary>
     /// This class represents a trivial instruction that contains a single mnemonic
@@ -6,5 +8,8 @@
     /// </summary>
     public class TrivialOperation : EmittingOperationBase
     {
+        public TrivialOperation(IParseTree context) : base(context)
+        {
+        }
     }
 }

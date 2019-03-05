@@ -175,6 +175,7 @@
     <Compile Include="SyntaxTree\Statements\ForStatement.cs" />
     <Compile Include="SyntaxTree\Statements\IfEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\IfStatement.cs" />
+    <Compile Include="SyntaxTree\Statements\IfStatementType.cs" />
     <Compile Include="SyntaxTree\Statements\LoopEndStatement.cs" />
     <Compile Include="SyntaxTree\Statements\LoopStatement.cs" />
     <Compile Include="SyntaxTree\Statements\MacroEndStatement.cs" />

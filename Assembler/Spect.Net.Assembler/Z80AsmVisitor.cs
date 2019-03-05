@@ -252,11 +252,31 @@ namespace Spect.Net.Assembler
         /// <summary>
         /// Gets an expression from the specified context
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
+        /// <param name="context">Context to get the expression from</param>
+        /// <returns>Node that represents the expression</returns>
         public ExpressionNode GetExpression(IParseTree context)
         {
             return (ExpressionNode) VisitExpr(context as Z80AsmParser.ExprContext);
+        }
+
+        /// <summary>
+        /// Gets an operand from the specified context
+        /// </summary>
+        /// <param name="context">Context to get the operand from</param>
+        /// <returns>Node that represents the operand</returns>
+        public Operand GetOperand(Z80AsmParser.OperandContext context)
+        {
+            return (Operand) VisitOperand(context);
+        }
+
+        /// <summary>
+        /// Gets a symbol from the specified context
+        /// </summary>
+        /// <param name="context">Context to get the symbol from</param>
+        /// <returns>Node that represents the symbol</returns>
+        public IdentifierNode GetSymbol(Z80AsmParser.SymbolExprContext context)
+        {
+            return (IdentifierNode) VisitSymbolExpr(context);
         }
 
         #endregion
@@ -495,289 +515,34 @@ namespace Spect.Net.Assembler
 
         #region Operations
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.operation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitOperation(Z80AsmParser.OperationContext context)
         {
             KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitOperation(context);
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.trivialOperation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitTrivialOperation(Z80AsmParser.TrivialOperationContext context)
-        {
-            return new TrivialOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken()
-            };
-        }
+        public override object VisitTrivialOperation(Z80AsmParser.TrivialOperationContext context) 
+            => new TrivialOperation(context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.trivialNextOperation"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitTrivialNextOperation(Z80AsmParser.TrivialNextOperationContext context)
-        {
-            return new TrivialNextOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken()
-            };
-        }
+            => new TrivialNextOperation(context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.compoundOperation"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitCompoundOperation(Z80AsmParser.CompoundOperationContext context)
-        {
-            var op = new CompoundOperation
-            {
-                Mnemonic = context.GetChild(0).NormalizeToken()
-            };
+            => new CompoundOperation(this, context);
 
-            var operandCount = 0;
-            foreach (var child in context.operand())
-            {
-                // --- Collect operands
-                if (operandCount == 0)
-                {
-                    op.Operand = (Operand)VisitOperand(child);
-                    operandCount = 1;
-                }
-                else if (operandCount == 1)
-                {
-                    op.Operand2 = (Operand)VisitOperand(child);
-                    operandCount = 2;
-                }
-                else
-                {
-                    op.Operand3 = (Operand)VisitOperand(child);
-                    operandCount = 2;
-                }
-            }
-            return op;
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.operand"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitOperand(Z80AsmParser.OperandContext context)
-        {
-            // --- The context has exactly one child
-            var op = new Operand();
-            ParserRuleContext regContext = null;
-            if (context.reg8() != null)
-            {
-                op.Type = OperandType.Reg8;
-                op.Register = context.reg8().NormalizeToken();
-                regContext = context.reg8();
-            }
-            else if (context.reg8Idx() != null)
-            {
-                op.Type = OperandType.Reg8Idx;
-                op.Register = context.reg8Idx().NormalizeToken();
-                regContext = context.reg8Idx();
-            }
-            else if (context.reg8Spec() != null)
-            {
-                op.Type = OperandType.Reg8Spec;
-                op.Register = context.reg8Spec().NormalizeToken();
-                regContext = context.reg8Spec();
-            }
-            else if (context.reg16() != null)
-            {
-                op.Type = OperandType.Reg16;
-                op.Register = context.reg16().NormalizeToken();
-                regContext = context.reg16();
-            }
-            else if (context.reg16Idx() != null)
-            {
-                op.Type = OperandType.Reg16Idx;
-                op.Register = context.reg16Idx().NormalizeToken();
-                regContext = context.reg16Idx();
-            }
-            else if (context.reg16Spec() != null)
-            {
-                op.Type = OperandType.Reg16Spec;
-                op.Register = context.reg16Spec().NormalizeToken();
-                regContext = context.reg16Spec();
-            }
-            else if (context.memIndirect() != null)
-            {
-                var miContext = context.memIndirect();
-                var expContext = miContext.expr();
-                op.Type = OperandType.MemIndirect;
-                op.Expression = (ExpressionNode)VisitExpr(expContext);
-                if (miContext.LPAR() != null) AddOperand(miContext.LPAR());
-                if (miContext.RPAR() != null) AddOperand(miContext.RPAR());
-            }
-            else if (context.regIndirect() != null)
-            {
-                op.Type = OperandType.RegIndirect;
-                op.Register = context.regIndirect().NormalizeToken();
-                regContext = context.regIndirect();
-            }
-            else if (context.cPort() != null)
-            {
-                op.Type = OperandType.CPort;
-                regContext = context.cPort();
-            }
-            else if (context.indexedAddr() != null)
-            {
-                op.Type = OperandType.IndexedAddress;
-                var idContext = context.indexedAddr();
-                regContext = idContext.reg16Idx();
-                if (idContext.ChildCount > 3)
-                {
-                    op.Expression = (ExpressionNode)VisitExpr(idContext.expr());
-                }
-                op.Register = idContext.reg16Idx().NormalizeToken();
-                op.Sign = idContext.ChildCount > 3
-                    ? idContext.GetChild(2).NormalizeToken()
-                    : null;
-                if (idContext.LPAR() != null) AddOperand(idContext.LPAR());
-                if (idContext.RPAR() != null) AddOperand(idContext.RPAR());
-            }
-            else if (context.expr() != null)
-            {
-                op.Type = OperandType.Expr;
-                op.Expression = (ExpressionNode)VisitExpr(context.expr());
-            }
-            else if (context.condition() != null)
-            {
-                op.Type = OperandType.Condition;
-                op.Condition = context.condition().NormalizeToken();
-                regContext = context.condition();
-            }
-            else if (context.macroParam() != null)
-            {
-                // --- LREG or HREG with macro parameter
-                AddFunction(context);
-                AddMacroParam(context.macroParam());
-                if (context.macroParam().IDENTIFIER() != null)
-                {
-                    AddMacroParamName(context.macroParam().IDENTIFIER().NormalizeToken());
-                }
-            }
-            else if (context.reg16Std() != null)
-            {
-                // --- LREG or HREG with 16-bit register
-                AddFunction(context);
-                op.Type = OperandType.Reg8;
-                op.Register = string.Empty;
-
-                if (context.HREG() != null)
-                {
-                    regContext = context.reg16Std();
-                    switch (context.reg16Std().NormalizeToken())
-                    {
-                        case "BC":
-                            op.Register = "B";
-                            break;
-                        case "DE":
-                            op.Register = "D";
-                            break;
-                        case "HL":
-                            op.Register = "H";
-                            break;
-                        case "IX":
-                            op.Register = "IXH";
-                            op.Type = OperandType.Reg8Idx;
-                            break;
-                        case "IY":
-                            op.Register = "IYH";
-                            op.Type = OperandType.Reg8Idx;
-                            break;
-                        default:
-                            regContext = null;
-                            break;
-                    }
-                }
-                else
-                {
-                    regContext = context.reg16Std();
-                    switch (context.reg16Std().NormalizeToken())
-                    {
-                        case "BC":
-                            op.Register = "C";
-                            break;
-                        case "DE":
-                            op.Register = "E";
-                            break;
-                        case "HL":
-                            op.Register = "L";
-                            break;
-                        case "IX":
-                            op.Register = "IXL";
-                            op.Type = OperandType.Reg8Idx;
-                            break;
-                        case "IY":
-                            op.Register = "IYL";
-                            op.Type = OperandType.Reg8Idx;
-                            break;
-                        default:
-                            regContext = null;
-                            break;
-                    }
-                }
-            }
-            else if (context.NONEARG() != null)
-            {
-                // --- This can happen only as the result of a macro substitution
-                op.Type = OperandType.None;
-            }
-
-            if (regContext != null)
-            {
-                AddOperand(regContext);
-            }
-
-            return op;
-        }
+        public override object VisitOperand(Z80AsmParser.OperandContext context) 
+            => new Operand(this, context);
 
         #endregion
 
         #region Statement handling
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.statement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitStatement(Z80AsmParser.StatementContext context)
         {
             KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             return base.VisitStatement(context);
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroParam"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitMacroParam(Z80AsmParser.MacroParamContext context)
         {
             AddMacroParam(context);
@@ -788,371 +553,74 @@ namespace Spect.Net.Assembler
             return null;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroOrStructInvocation"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitMacroOrStructInvocation(Z80AsmParser.MacroOrStructInvocationContext context)
-        {
-            var macroOps = new List<Operand>();
-            if (context.macroArgument().Length > 1 
-                || context.macroArgument().Length > 0 && context.macroArgument()[0].operand() != null)
-            {
-                foreach (var arg in context.macroArgument())
-                {
-                    if (arg.operand() != null)
-                    {
-                        macroOps.Add((Operand)VisitOperand(arg.operand()));
-                    }
-                    else
-                    {
-                        macroOps.Add(new Operand
-                        {
-                            Type = OperandType.None
-                        });
-                    }
-                }
-            }
+        public override object VisitMacroOrStructInvocation(Z80AsmParser.MacroOrStructInvocationContext context) 
+            => new MacroOrStructInvocation(this, context);
 
-            KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
-            return new MacroOrStructInvocation(context.IDENTIFIER().NormalizeToken(), macroOps);
-        }
+        public override object VisitMacroStatement(Z80AsmParser.MacroStatementContext context) 
+            => new MacroStatement(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitMacroStatement(Z80AsmParser.MacroStatementContext context)
-        {
-            foreach (var id in context.IDENTIFIER())
-            {
-                AddIdentifier(id);
-            }
-            return new MacroStatement(context.IDENTIFIER().Select(id => id.NormalizeToken()).ToList());
-        }
+        public override object VisitMacroEndMarker(Z80AsmParser.MacroEndMarkerContext context) 
+            => new MacroEndStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.macroEndMarker"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitMacroEndMarker(Z80AsmParser.MacroEndMarkerContext context)
-        {
-            return new MacroEndStatement();
-        }
+        public override object VisitStructStatement(Z80AsmParser.StructStatementContext context) 
+            => new StructStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.structStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitStructStatement(Z80AsmParser.StructStatementContext context)
-        {
-            return new StructStatement();
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.structEndMarker"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitStructEndMarker(Z80AsmParser.StructEndMarkerContext context)
-        {
-            return new StructEndStatement();
-        }
+            => new StructEndStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.moduleStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitModuleStatement(Z80AsmParser.ModuleStatementContext context)
-        {
-            if (context.IDENTIFIER() != null)
-            {
-                AddIdentifier(context.IDENTIFIER());
-            }
-            return new ModuleStatement(context);
-        }
+        public override object VisitModuleStatement(Z80AsmParser.ModuleStatementContext context) 
+            => new ModuleStatement(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.moduleEndMarker"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitModuleEndMarker(Z80AsmParser.ModuleEndMarkerContext context)
-        {
-            return new ModuleEndStatement();
-        }
+        public override object VisitModuleEndMarker(Z80AsmParser.ModuleEndMarkerContext context) 
+            => new ModuleEndStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitLoopStatement(Z80AsmParser.LoopStatementContext context)
-        {
-            return new LoopStatement((ExpressionNode)VisitExpr(context.expr()));
-        }
+        public override object VisitLoopStatement(Z80AsmParser.LoopStatementContext context) 
+            => new LoopStatement(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitLoopEndMarker(Z80AsmParser.LoopEndMarkerContext context)
-        {
-            return new LoopEndStatement();
-        }
+        public override object VisitLoopEndMarker(Z80AsmParser.LoopEndMarkerContext context) 
+            => new LoopEndStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.procStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitProcStatement(Z80AsmParser.ProcStatementContext context)
-        {
-            return new ProcStatement();
-        }
+        public override object VisitProcStatement(Z80AsmParser.ProcStatementContext context) 
+            => new ProcStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.procEndMarker"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitProcEndMarker(Z80AsmParser.ProcEndMarkerContext context)
-        {
-            return new ProcEndStatement();
-        }
+        public override object VisitProcEndMarker(Z80AsmParser.ProcEndMarkerContext context) 
+            => new ProcEndStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitRepeatStatement(Z80AsmParser.RepeatStatementContext context)
-        {
-            return new RepeatStatement();
-        }
+        public override object VisitRepeatStatement(Z80AsmParser.RepeatStatementContext context) 
+            => new RepeatStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitUntilStatement(Z80AsmParser.UntilStatementContext context)
-        {
-            return new UntilStatement((ExpressionNode)VisitExpr(context.expr()));
-        }
+        public override object VisitUntilStatement(Z80AsmParser.UntilStatementContext context) 
+            => new UntilStatement(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitWhileStatement(Z80AsmParser.WhileStatementContext context)
-        {
-            return new WhileStatement((ExpressionNode)VisitExpr(context.expr()));
-        }
+        public override object VisitWhileStatement(Z80AsmParser.WhileStatementContext context) 
+            => new WhileStatement(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitWhileEndMarker(Z80AsmParser.WhileEndMarkerContext context)
-        {
-            return new WhileEndStatement();
-        }
+        public override object VisitWhileEndMarker(Z80AsmParser.WhileEndMarkerContext context) 
+            => new WhileEndStatement();
 
+        public override object VisitIfStatement(Z80AsmParser.IfStatementContext context) 
+            => new IfStatement(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.ifStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitIfStatement(Z80AsmParser.IfStatementContext context)
-        {
-            if (context.IFSTMT() != null)
-            {
-                return new IfStatement((ExpressionNode)VisitExpr(context.expr()));
-            }
+        public override object VisitElifStatement(Z80AsmParser.ElifStatementContext context) 
+            => new ElifStatement(this, context);
 
-            var isIfUsed = context.IFUSED() != null;
-            return new IfStatement((IdentifierNode)VisitSymbolExpr(context.symbolExpr()), isIfUsed);
-        }
+        public override object VisitElseStatement(Z80AsmParser.ElseStatementContext context) 
+            => new ElseStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitElifStatement(Z80AsmParser.ElifStatementContext context)
-        {
-            return new ElifStatement((ExpressionNode)VisitExpr(context.expr()));
-        }
+        public override object VisitEndifStatement(Z80AsmParser.EndifStatementContext context) 
+            => new IfEndStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.elseStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitElseStatement(Z80AsmParser.ElseStatementContext context)
-        {
-            return new ElseStatement();
-        }
+        public override object VisitForStatement(Z80AsmParser.ForStatementContext context) 
+            => new ForStatement(this, context);
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.endifStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitEndifStatement(Z80AsmParser.EndifStatementContext context)
-        {
-            return new IfEndStatement();
-        }
+        public override object VisitNextStatement(Z80AsmParser.NextStatementContext context) 
+            => new NextStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.forStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitForStatement(Z80AsmParser.ForStatementContext context)
-        {
-            if (context.IDENTIFIER() != null) AddIdentifier(context.IDENTIFIER());
-            if (context.TO() != null) AddStatement(context.TO());
-            if (context.STEP() != null) AddStatement(context.STEP());
-
-            var id = context.IDENTIFIER()?.NormalizeToken();
-            var fromExpr = context.expr().Length > 0 ? (ExpressionNode) VisitExpr(context.expr()[0]) : null;
-            var toExpr = context.expr().Length > 1 ? (ExpressionNode)VisitExpr(context.expr()[1]) : null;
-            var stepExpr = context.expr().Length > 2 ? (ExpressionNode)VisitExpr(context.expr()[2]) : null;
-            return new ForStatement(id, fromExpr, toExpr, stepExpr);
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.nextStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitNextStatement(Z80AsmParser.NextStatementContext context)
-        {
-            return new NextStatement();
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.breakStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitBreakStatement(Z80AsmParser.BreakStatementContext context)
-        {
-            return new BreakStatement();
-        }
+            => new BreakStatement();
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.continueStatement"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitContinueStatement(Z80AsmParser.ContinueStatementContext context)
-        {
-            return new ContinueStatement();
-        }
+        public override object VisitContinueStatement(Z80AsmParser.ContinueStatementContext context) 
+            => new ContinueStatement();
 
         #endregion
 
@@ -1165,6 +633,8 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitExpr(Z80AsmParser.ExprContext context)
         {
+            if (context == null) return null;
+
             // --- Extract the expression text
             var sb = new StringBuilder(400);
             for (var i = 0; i < context.ChildCount; i++)
@@ -1626,7 +1096,10 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitSymbolExpr(Z80AsmParser.SymbolExprContext context)
         {
-            if (context.ChildCount == 0 || context.IDENTIFIER().Length == 0) return null;
+            if (context == null || context.ChildCount == 0 || context.IDENTIFIER().Length == 0)
+            {
+                return null;
+            }
 
             AddIdentifier(context);
             return new IdentifierNode

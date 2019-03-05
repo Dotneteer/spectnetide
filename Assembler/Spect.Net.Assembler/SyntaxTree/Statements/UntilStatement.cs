@@ -1,4 +1,5 @@
-﻿using Spect.Net.Assembler.SyntaxTree.Expressions;
+﻿using Spect.Net.Assembler.Generated;
+using Spect.Net.Assembler.SyntaxTree.Expressions;
 
 namespace Spect.Net.Assembler.SyntaxTree.Statements
 {
@@ -10,11 +11,11 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// <summary>
         /// Until expression
         /// </summary>
-        public ExpressionNode Expr { get; }
+        public ExpressionNode Expression { get; }
 
-        public UntilStatement(ExpressionNode expr)
+        public UntilStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.UntilStatementContext context)
         {
-            Expr = expr;
+            Expression = visitorContext.GetExpression(context.expr());
         }
     }
 }
