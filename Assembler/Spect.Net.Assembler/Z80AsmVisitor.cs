@@ -626,11 +626,6 @@ namespace Spect.Net.Assembler
 
         #region Expression handling
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.expr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitExpr(Z80AsmParser.ExprContext context)
         {
             if (context == null) return null;
@@ -643,281 +638,245 @@ namespace Spect.Net.Assembler
                 sb.Append(token);
             }
 
-            var expr = (ExpressionNode)VisitOrExpr(context.GetChild(0) as Z80AsmParser.OrExprContext);
-            if (context.ChildCount == 1)
+            var expr = (ExpressionNode)VisitOrExpr(context.orExpr());
+            if (context.ChildCount != 1)
             {
-                if (expr != null)
-                {
-                    expr.SourceText = sb.ToString();
-                }
-                return expr;
+                // --- Conditional expression found
+                return new ConditionalExpressionNode(this, context, sb.ToString(), expr);
             }
 
-            return new ConditionalExpressionNode
+            // --- No conditional expression
+            if (expr != null)
             {
-                SourceText = sb.ToString(),
-                Condition = expr,
-                TrueExpression = (ExpressionNode)VisitExpr(context.GetChild(2) as Z80AsmParser.ExprContext),
-                FalseExpression = (ExpressionNode)VisitExpr(context.GetChild(4) as Z80AsmParser.ExprContext)
-            };
+                expr.SourceText = sb.ToString();
+            }
+            return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.orExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitOrExpr(Z80AsmParser.OrExprContext context)
         {
-            var expr = VisitXorExpr(context.GetChild(0)
-                as Z80AsmParser.XorExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            if (context == null) return null;
+
+            var subExprs = context.xorExpr();
+            var expr = VisitXorExpr(subExprs[0]);
+            for (var i = 1; i < subExprs.Length; i++)
             {
-                var rightExpr = VisitXorExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.XorExprContext);
-                expr = new BitwiseOrOperationNode
-                {
-                    LeftOperand = (ExpressionNode)expr,
-                    RightOperand = (ExpressionNode)rightExpr
-                };
-                nextChildIndex += 2;
+                var rightExpr = VisitXorExpr(subExprs[i]);
+                expr = new BitwiseOrOperationNode(expr, rightExpr);
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.xorExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitXorExpr(Z80AsmParser.XorExprContext context)
         {
-            var expr = VisitAndExpr(context.GetChild(0)
-                as Z80AsmParser.AndExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            if (context == null) return null;
+
+            var subExprs = context.andExpr();
+            var expr = VisitAndExpr(subExprs[0]);
+            for (var i = 1; i < subExprs.Length; i++)
             {
-                var rightExpr = VisitAndExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.AndExprContext);
-                expr = new BitwiseXorOperationNode
-                {
-                    LeftOperand = (ExpressionNode)expr,
-                    RightOperand = (ExpressionNode)rightExpr
-                };
-                nextChildIndex += 2;
+                var rightExpr = VisitAndExpr(subExprs[i]);
+                expr = new BitwiseXorOperationNode(expr, rightExpr);
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.andExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitAndExpr(Z80AsmParser.AndExprContext context)
         {
-            var expr = VisitEquExpr(context.GetChild(0)
-                as Z80AsmParser.EquExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            if (context == null) return null;
+
+            var subExprs = context.equExpr();
+            var expr = VisitEquExpr(subExprs[0]);
+            for (var i = 1; i < subExprs.Length; i++)
             {
-                var rightExpr = VisitEquExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.EquExprContext);
-                expr = new BitwiseAndOperationNode
-                {
-                    LeftOperand = (ExpressionNode)expr,
-                    RightOperand = (ExpressionNode)rightExpr
-                };
-                nextChildIndex += 2;
+                var rightExpr = VisitEquExpr(subExprs[i]);
+                expr = new BitwiseAndOperationNode(expr, rightExpr);
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.equExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitEquExpr(Z80AsmParser.EquExprContext context)
         {
-            var expr = (ExpressionNode)VisitRelExpr(context.GetChild(0) as Z80AsmParser.RelExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
+            if (context == null) return null;
+
+            var subExprs = context.relExpr();
+            var expr = VisitRelExpr(subExprs[0]);
+            var opIndex = 1;
+            for (var i = 1; i < subExprs.Length; i++)
             {
-                var rightExpr = VisitRelExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.RelExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
+                var rightExpr = VisitRelExpr(subExprs[i]);
+                var opToken = context.GetChild(opIndex).GetText();
                 BinaryOperationNode equExpr;
                 switch (opToken)
                 {
                     case "==":
-                        equExpr = new EqualOperationNode();
+                        equExpr = new EqualOperationNode(expr, rightExpr);
                         break;
                     case "===":
-                        equExpr = new CaseInsensitiveEqualOperationNode();
+                        equExpr = new CaseInsensitiveEqualOperationNode(expr, rightExpr);
                         break;
                     case "!=":
-                        equExpr = new NotEqualOperationNode();
+                        equExpr = new NotEqualOperationNode(expr, rightExpr);
                         break;
-                    default:
-                        equExpr = new CaseInsensitiveNotEqualOperationNode();
+                    default: // !==
+                        equExpr = new CaseInsensitiveNotEqualOperationNode(expr, rightExpr);
                         break;
 
                 }
-                equExpr.LeftOperand = expr;
-                equExpr.RightOperand = (ExpressionNode)rightExpr;
                 expr = equExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.relExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitRelExpr(Z80AsmParser.RelExprContext context)
         {
-            var expr = (ExpressionNode)VisitShiftExpr(context.GetChild(0) as Z80AsmParser.ShiftExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
-            {
-                var rightExpr = VisitShiftExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.ShiftExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
-                var relExpr = opToken == "<"
-                    ? new LessThanOperationNode()
-                    : (opToken == "<="
-                        ? new LessThanOrEqualOperationNode()
-                        : (opToken == ">" 
-                            ? new GreaterThanOperationNode()  
-                            : new GreaterThanOrEqualOperationNode() as BinaryOperationNode));
+            if (context == null) return null;
 
-                relExpr.LeftOperand = expr;
-                relExpr.RightOperand = (ExpressionNode)rightExpr;
+            var subExprs = context.shiftExpr();
+            var expr = VisitShiftExpr(subExprs[0]);
+            var opIndex = 1;
+            for (var i = 1; i < subExprs.Length; i++)
+            {
+                var rightExpr = VisitShiftExpr(subExprs[i]);
+                var opToken = context.GetChild(opIndex).GetText();
+                BinaryOperationNode relExpr;
+                switch (opToken)
+                {
+                    case "<":
+                        relExpr = new LessThanOperationNode(expr, rightExpr);
+                        break;
+                    case "<=":
+                        relExpr = new LessThanOrEqualOperationNode(expr, rightExpr);
+                        break;
+                    case ">":
+                        relExpr = new GreaterThanOperationNode(expr, rightExpr) ;
+                        break;
+                    default: // >=
+                        relExpr = new GreaterThanOrEqualOperationNode(expr, rightExpr);
+                        break;
+                }
                 expr = relExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.shiftExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitShiftExpr(Z80AsmParser.ShiftExprContext context)
         {
-            var expr = (ExpressionNode)VisitAddExpr(context.GetChild(0) as Z80AsmParser.AddExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
-            {
-                var rightExpr = VisitAddExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.AddExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
-                var shiftExpr = opToken == "<<" 
-                    ? new ShiftLeftOperationNode() 
-                    : new ShiftRightOperationNode() as BinaryOperationNode;
+            if (context == null) return null;
 
-                shiftExpr.LeftOperand = expr;
-                shiftExpr.RightOperand = (ExpressionNode)rightExpr;
+            var subExprs = context.addExpr();
+            var expr = VisitAddExpr(subExprs[0]);
+            var opIndex = 1;
+            for (var i = 1; i < subExprs.Length; i++)
+            {
+                var rightExpr = VisitAddExpr(subExprs[i]);
+                var opToken = context.GetChild(opIndex).GetText();
+                BinaryOperationNode shiftExpr;
+                switch (opToken)
+                {
+                    case "<<":
+                        shiftExpr = new ShiftLeftOperationNode(expr, rightExpr);
+                        break;
+                    default: // >>
+                        shiftExpr = new ShiftRightOperationNode(expr, rightExpr);
+                        break;
+
+                }
                 expr = shiftExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.addExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitAddExpr(Z80AsmParser.AddExprContext context)
         {
-            var expr = (ExpressionNode)VisitMultExpr(context.GetChild(0) as Z80AsmParser.MultExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
-            {
-                var rightExpr = VisitMultExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.MultExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
-                var addExpr = opToken == "+"
-                    ? new AddOperationNode()
-                    : new SubtractOperationNode() as BinaryOperationNode;
+            if (context == null) return null;
 
-                addExpr.LeftOperand = expr;
-                addExpr.RightOperand = (ExpressionNode)rightExpr;
+            var subExprs = context.multExpr();
+            var expr = VisitMultExpr(subExprs[0]);
+            var opIndex = 1;
+            for (var i = 1; i < subExprs.Length; i++)
+            {
+                var rightExpr = VisitMultExpr(subExprs[i]);
+                var opToken = context.GetChild(opIndex).GetText();
+                BinaryOperationNode addExpr;
+                switch (opToken)
+                {
+                    case "+":
+                        addExpr = new AddOperationNode(expr, rightExpr);
+                        break;
+                    default: // -
+                        addExpr = new SubtractOperationNode(expr, rightExpr);
+                        break;
+
+                }
                 expr = addExpr;
-                nextChildIndex += 2;
+                opIndex += 2;
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.multExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitMultExpr(Z80AsmParser.MultExprContext context)
         {
-            var expr = (ExpressionNode)VisitMinMaxExpr(context.GetChild(0) as Z80AsmParser.MinMaxExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
-            {
-                var rightExpr = VisitMinMaxExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.MinMaxExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
-                var multExpr = opToken == "*"
-                    ? new MultiplyOperationNode()
-                    : (opToken == "/"
-                        ? new DivideOperationNode()
-                        : new ModuloOperationNode() as BinaryOperationNode);
+            if (context == null) return null;
 
-                multExpr.LeftOperand = expr;
-                multExpr.RightOperand = (ExpressionNode)rightExpr;
-                expr = multExpr;
-                nextChildIndex += 2;
+            var subExprs = context.minMaxExpr();
+            var expr = VisitMinMaxExpr(subExprs[0]);
+            var opIndex = 1;
+            for (var i = 1; i < subExprs.Length; i++)
+            {
+                var rightExpr = VisitMinMaxExpr(subExprs[i]);
+                var opToken = context.GetChild(opIndex).GetText();
+                BinaryOperationNode mulExpr;
+                switch (opToken)
+                {
+                    case "*":
+                        mulExpr = new MultiplyOperationNode(expr, rightExpr);
+                        break;
+                    case "/":
+                        mulExpr = new DivideOperationNode(expr, rightExpr);
+                        break;
+                    default: // %
+                        mulExpr = new ModuloOperationNode(expr, rightExpr);
+                        break;
+
+                }
+                expr = mulExpr;
+                opIndex += 2;
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.minMaxExpr"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitMinMaxExpr(Z80AsmParser.MinMaxExprContext context)
         {
-            var expr = (ExpressionNode)VisitUnaryExpr(context.GetChild(0) as Z80AsmParser.UnaryExprContext);
-            var nextChildIndex = 2;
-            while (nextChildIndex < context.ChildCount)
-            {
-                var rightExpr = VisitUnaryExpr(context.GetChild(nextChildIndex)
-                    as Z80AsmParser.UnaryExprContext);
-                var opToken = context.GetChild(nextChildIndex - 1).NormalizeToken();
-                var multExpr = opToken == "<?"
-                    ? new MinOperationNode()
-                    : new MaxOperationNode() as BinaryOperationNode;
+            if (context == null) return null;
 
-                multExpr.LeftOperand = expr;
-                multExpr.RightOperand = (ExpressionNode)rightExpr;
-                expr = multExpr;
-                nextChildIndex += 2;
+            var subExprs = context.unaryExpr();
+            var expr = VisitUnaryExpr(subExprs[0]);
+            var opIndex = 1;
+            for (var i = 1; i < subExprs.Length; i++)
+            {
+                var rightExpr = VisitUnaryExpr(subExprs[i]);
+                var opToken = context.GetChild(opIndex).GetText();
+                BinaryOperationNode minExpr;
+                switch (opToken)
+                {
+                    case "<?":
+                        minExpr = new MinOperationNode(expr, rightExpr);
+                        break;
+                    default: // >?
+                        minExpr = new MaxOperationNode(expr, rightExpr);
+                        break;
+
+                }
+                expr = minExpr;
+                opIndex += 2;
             }
             return expr;
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.unaryExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitUnaryExpr(Z80AsmParser.UnaryExprContext context)
         {
             var child0 = context.GetChild(0);
@@ -954,31 +913,19 @@ namespace Spect.Net.Assembler
             }
             if (child0.GetText() == "+")
             {
-                return new UnaryPlusNode
-                {
-                    Operand = (ExpressionNode) VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext)
-                };
+                return new UnaryPlusNode(VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext));
             }
             if (child0.GetText() == "-")
             {
-                return new UnaryMinusNode
-                {
-                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext)
-                };
+                return new UnaryMinusNode(VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext));
             }
             if (child0.GetText() == "~")
             {
-                return new UnaryBitwiseNotNode()
-                {
-                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext)
-                };
+                return new UnaryBitwiseNotNode(VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext));
             }
             if (child0.GetText() == "!")
             {
-                return new UnaryLogicalNotNode()
-                {
-                    Operand = (ExpressionNode)VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext)
-                };
+                return new UnaryLogicalNotNode(VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext));
             }
             return VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext);
         }
@@ -1006,6 +953,7 @@ namespace Spect.Net.Assembler
             // --- Check for Boolean values
             if (context.BOOLLIT() != null)
             {
+                AddNumber(context);
                 var boolValue = new ExpressionValue(context.BOOLLIT().GetText().ToLower().Contains("t"));
                 return new LiteralNode(boolValue);
             }
@@ -1167,7 +1115,7 @@ namespace Spect.Net.Assembler
 
                 if (context.LTEXTOF() != null)
                 {
-                    token = token.ToLower();
+                    token = token?.ToLower();
                 }
                 return new LiteralNode(token);
             }

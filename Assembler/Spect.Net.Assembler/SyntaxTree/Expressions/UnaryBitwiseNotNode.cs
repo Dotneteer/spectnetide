@@ -29,5 +29,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public UnaryBitwiseNotNode(object operand) : base(operand)
+        {
+        }
     }
 }

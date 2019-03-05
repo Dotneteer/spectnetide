@@ -28,5 +28,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public UnaryLogicalNotNode(object operand) : base(operand)
+        {
+        }
     }
 }

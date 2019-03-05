@@ -26,5 +26,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
             return new ExpressionValue(left.AsLong() << (ushort)right.AsLong());
         }
+
+        public ShiftLeftOperationNode(object leftOperand, object rightOperand)
+            : base(leftOperand, rightOperand)
+        {
+        }
     }
 }

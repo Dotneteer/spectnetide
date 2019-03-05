@@ -12,12 +12,12 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <summary>
         /// Left operand
         /// </summary>
-        public ExpressionNode LeftOperand { get; set; }
+        public ExpressionNode LeftOperand { get; }
 
         /// <summary>
         /// Right operand
         /// </summary>
-        public ExpressionNode RightOperand { get; set; }
+        public ExpressionNode RightOperand { get; }
 
         /// <summary>
         /// Retrieves any error in child operator nodes
@@ -34,7 +34,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// </summary>
         public override bool ReadyToEvaluate(IEvaluationContext evalContext)
         {
-            // --- Note: We intentionally avoid short-curcuit evaluation!
+            // --- Note: We intentionally avoid short-circuit evaluation!
             var leftResult = LeftOperand.ReadyToEvaluate(evalContext);
             var rightResult = RightOperand.ReadyToEvaluate(evalContext);
             return leftResult && rightResult;
@@ -63,5 +63,11 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         public override bool HasMacroParameter
             => (LeftOperand?.HasMacroParameter ?? false)
                || (RightOperand?.HasMacroParameter ?? false);
+
+        protected BinaryOperationNode(object leftOperand, object rightOperand)
+        {
+            LeftOperand = leftOperand as ExpressionNode;
+            RightOperand = rightOperand as ExpressionNode;
+        }
     }
 }

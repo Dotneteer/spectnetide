@@ -12,5 +12,9 @@
         /// <returns>Evaluated expression value</returns>
         public override ExpressionValue Evaluate(IEvaluationContext evalContext) 
             => Operand.Evaluate(evalContext);
+
+        public UnaryPlusNode(object operand) : base(operand)
+        {
+        }
     }
 }

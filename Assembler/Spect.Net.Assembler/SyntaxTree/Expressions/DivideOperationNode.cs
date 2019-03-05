@@ -73,5 +73,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                     return ExpressionValue.Error;
             }
         }
+
+        public DivideOperationNode(object leftOperand, object rightOperand)
+            : base(leftOperand, rightOperand)
+        {
+        }
     }
 }
