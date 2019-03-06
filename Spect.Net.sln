@@ -68,7 +68,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.EvalParser", "Ass
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CommandParser", "Assembler\Spect.Net.CommandParser\Spect.Net.CommandParser.csproj", "{1A125004-6611-4AF1-ABC9-0053D78E9A5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CommandParser.Test", "Spect.Net.CommandParser.Test\Spect.Net.CommandParser.Test.csproj", "{A7B71614-9E99-430D-910D-9E938AD259CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CommandParser.Test", "Tests\Spect.Net.CommandParser.Test\Spect.Net.CommandParser.Test.csproj", "{A7B71614-9E99-430D-910D-9E938AD259CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
