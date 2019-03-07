@@ -33,6 +33,8 @@ $yamabuki-colors: #FF9C5B;
 $caribic-daylight-color: #EDC951;
 $above-yellow: #F9D423;
 $limey-color: #D1E751;
+$sugar: #F2E9E1;
+$sugar-dark: #E2D9D1;
 
 // --- Pastel
 $beach-storm-color: #E0E4CC;
@@ -103,9 +105,14 @@ th {
 }
 
 td {
-  padding: 4px 4px;
+  padding: 6px 8px;
   border: 1px dotted $threadless-color;
-  background: #F2E9E1;
+  background: $sugar;
+
+}
+
+tr:nth-child(2n+0) td {
+  background: $sugar-dark;
 }
 
 img {
@@ -315,7 +322,7 @@ footer p {
   .page-title-area {
     margin-bottom: 12px;
 
-    & h2, h3, h4, h5, h6 {
+    & h1, h2, h3, h4, h5, h6 {
       color: $threadless-yay-color;
       text-transform: none;
     }
@@ -388,7 +395,7 @@ footer p {
       margin-top: 0;
       margin-bottom: 24px;
       text-transform: none;
-      font-size: 28px;
+      font-size: 32px;
       color: $threadless-yay-color;
     }
   }
@@ -396,6 +403,11 @@ footer p {
   .main-content-area {
     padding-left: 4px;
     padding-right: 4px;
+ 
+    & h1 {
+      font-size: 26px;
+      color: $threadless-yay-color;
+    }
 
     & ol {
       padding-left: 1em;
@@ -464,7 +476,6 @@ footer p {
 // Code listings
 
 code {
-  //background-color: #F2E9E1;
   box-shadow: none;
   font-size: 16px;
   font-weight: bold;
@@ -472,11 +483,11 @@ code {
 }
 
 pre {
-  background-color: #F2E9E1;
+  background-color: $sugar;
 }
 
 pre code {
-  background-color: #F2E9E1;
+  background-color: $sugar;
   font-size: 16px;
   font-weight: normal;
   padding: 0;
@@ -484,7 +495,7 @@ pre code {
 
 pre.highlight {
   padding: 8px 12px;
-  background-color: #F2E9E1;
+  background-color: $sugar;
   margin: 18px 0px;
   line-height: 22px;
 }

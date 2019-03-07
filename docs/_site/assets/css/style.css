@@ -41,9 +41,12 @@ th {
   color: #E9F2F9; }
 
 td {
-  padding: 4px 4px;
+  padding: 6px 8px;
   border: 1px dotted #1B325F;
   background: #F2E9E1; }
+
+tr:nth-child(2n+0) td {
+  background: #E2D9D1; }
 
 img {
   border: none;
@@ -198,7 +201,7 @@ footer p {
 
 .ui.vertical.segment.with-content-back .page-title-area {
   margin-bottom: 12px; }
-  .ui.vertical.segment.with-content-back .page-title-area h2, .ui.vertical.segment.with-content-back .page-title-area h3, .ui.vertical.segment.with-content-back .page-title-area h4, .ui.vertical.segment.with-content-back .page-title-area h5, .ui.vertical.segment.with-content-back .page-title-area h6 {
+  .ui.vertical.segment.with-content-back .page-title-area h1, .ui.vertical.segment.with-content-back .page-title-area h2, .ui.vertical.segment.with-content-back .page-title-area h3, .ui.vertical.segment.with-content-back .page-title-area h4, .ui.vertical.segment.with-content-back .page-title-area h5, .ui.vertical.segment.with-content-back .page-title-area h6 {
     color: #3A89C9;
     text-transform: none; }
   .ui.vertical.segment.with-content-back .page-title-area p {
@@ -246,11 +249,14 @@ footer p {
   margin-top: 0;
   margin-bottom: 24px;
   text-transform: none;
-  font-size: 28px;
+  font-size: 32px;
   color: #3A89C9; }
 .ui.vertical.segment.with-content-back .main-content-area {
   padding-left: 4px;
   padding-right: 4px; }
+  .ui.vertical.segment.with-content-back .main-content-area h1 {
+    font-size: 26px;
+    color: #3A89C9; }
   .ui.vertical.segment.with-content-back .main-content-area ol {
     padding-left: 1em;
     margin-left: 6px; }
