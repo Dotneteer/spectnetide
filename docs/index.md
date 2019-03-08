@@ -11,11 +11,11 @@ selector: home
         <p>
           SpectNet IDE encapsulates the tools you need to develop Z80 Programs
           for the ZX Spectrum 48K, 128+, and +3E. It integrates with Visual
-          Studio 2017 and 2019 <em>(soon)</em> IDE, including the free Community editions.
+          Studio 2017 and 2019 <em>(Preview)</em> IDE, including the free Community editions.
         </p>
-        <br />
         <p><a class="button-like" target="_blank" href='https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde'>Download SpectNet IDE</a></p>
-        <p><a class="button-like" target="_blank" href='https://visualstudio.microsoft.com/free-developer-offers/'>Get VS 2017 Community</a></p>
+        <p><a class="button-like" target="_blank" href='https://visualstudio.microsoft.com/free-developer-offers/'>Get VS 2017 or 2019 Community</a></p>
+        <p><a class="button-like" target="_blank" href='https://github.com/Dotneteer/spectnetide/tree/master/vsix-archive'>SpectNet IDE Archive</a></p>
       </div>
       <div class="ten wide computer column eleven wide tablet sixteen wide mobile column">
         <img src='./assets/images/features/feature1.png'/>
