@@ -32,7 +32,7 @@
           <a class="item" href="{{ site.baseurl }}/">Home</a>
           <a class="active item" href="{{ site.baseurl }}/getting-started/install-spectnetide.html">Getting Started</a>
           <a class="item" href="{{ site.baseurl }}/documents/main-features.html">Documents</a>
-          <a class="item">ZX Spectrum</a>
+          <a class="item" href="{{ site.baseurl }}/spectrum/basic-toc.html">ZX Spectrum</a>
           <a class="item" target="_blank" href="https://github.com/Dotneteer/spectnetide">GitHub</a>
         </div>
       </div>
@@ -57,7 +57,7 @@
             <div class="document-list">
               {% assign sorted = site.posts|sort:"seqno" %}
               {% for post in sorted %}
-              {% if post.selector==page.selector%}
+              {% if post.selector=='tutorial' %}
               <a class="{% if post.id==page.id %} active {% endif %} {% if post==sorted.last%} last {% endif %}" href="{{ site.baseurl }}{{ post.url }}#article">{{ post.title }}</a>
               {% endif %}
               {% endfor %}

@@ -31,8 +31,8 @@
         <div class="ui menu with-menu-back">
           <a class="item" href="{{ site.baseurl }}/">Home</a>
           <a class="item" href="{{ site.baseurl }}/getting-started/install-spectnetide.html">Getting Started</a>
-          <a class="active item" href="{{ site.baseurl }}/documents/main-features.html">Documents</a>
-          <a class="item" href="{{ site.baseurl }}/spectrum/basic-toc.html">ZX Spectrum</a>
+          <a class="item" href="{{ site.baseurl }}/documents/main-features.html">Documents</a>
+          <a class="active item" href="{{ site.baseurl }}/spectrum/basic-toc.html">ZX Spectrum</a>
           <a class="item" target="_blank" href="https://github.com/Dotneteer/spectnetide">GitHub</a>
         </div>
       </div>
@@ -56,7 +56,7 @@
             <div class="document-list">
               {% assign catsorted = site.categories %}
                 {% for cat in catsorted %}
-                  {% assign sorted = site.posts | where:"selector","documents" | sort:"seqno" %}
+                  {% assign sorted = site.posts | where:"selector","spectrum" | sort:"seqno" %}
                   {% assign count = 0 %}
                   {% for post in sorted %}
                     {% if post.categories contains cat[0] %}
