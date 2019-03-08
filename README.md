@@ -1,10 +1,7 @@
 # Introduction
 
-This project implements a ZX Spectrum integrated development 
-environment (IDE) that is integrated into Visual Studio 2017. 
-Initially, I intended this project to be just a demo project 
-so that I can use it in my agile software design and testing 
-courses. However, it became a fun project.
+This project implements a ZX Spectrum integrated development environment (IDE) that is integrated into Visual Studio 2017 and 2019. 
+Initially, I intended this project to be just a demo project so that I can use it in my agile software design and testing courses. However, it became a fun project.
 
 It (will) support the following ZX Spectrum models:
 
@@ -30,21 +27,23 @@ I cannot be grateful enough to [__Simon Brattel__](http://www.desdes.com/index.h
 
 To get an impression about __SpectNetIde__, see these short articles with screenshots:
 
-1. [Obtain the SpectNetIde source code](Documentation/GettingStarted/GetSpectNetIde.md)
-2. [Create your first ZX Spectrum project](Documentation/GettingStarted/CreateFirstZxSpectrumProject.md)
-3. [Create and run a simple BASIC program](Documentation/GettingStarted/CreateSimpleBasicProgram.md)
-4. [Create and run a simple Z80 program](Documentation/GettingStarted/CreateSimpleZ80Program.md)
-5. [Export a Z80 program](Documentation/GettingStarted/ExportZ80Program.md)
-6. [Create your first Z80 unit test](Documentation/GettingStarted/CreateUnitTest.md)
-7. [Create your first scripting project](Documentation/GettingStarted/CreateScriptingProject.md)
+1. [Install SpectNetIDE](https://dotneteer.github.io/spectnetide/getting-started/install-spectnetide#article)
+1. [Create your first ZX Spectrum project](https://dotneteer.github.io/spectnetide/getting-started/create-zx-spectrum-48k-project#article)
+1. [Use the Keyboard Tool](https://dotneteer.github.io/spectnetide/getting-started/use-keyboard-tool#article)
+1. [Create and run a simple BASIC program](https://dotneteer.github.io/spectnetide/getting-started/create-a-basic-program#article)
+1. [Create and run a simple Z80 program](https://dotneteer.github.io/spectnetide/getting-started/create-a-z80-program#article)
+1. [Export a Z80 program](https://dotneteer.github.io/spectnetide/getting-started/export-a-z80-program#article)
+1. [LOAD a program](https://dotneteer.github.io/spectnetide/getting-started/load-a-program#article)
+1. [Fast (Instant) LOAD](https://dotneteer.github.io/spectnetide/getting-started/fast-load#article)
+1. [The ZX Spectrum Emulator](https://dotneteer.github.io/spectnetide/getting-started/zx-spectrum-emulator-window#article)
+
 
 ## Distinguishing Features
 
 Probably is less mature than most of the ZX Spectrum emulators with longer past &mdash; 
 Nevertheless, this project has some unique features:
 
-* __Unit tests for Z80 code (New, in progress!)__. I'm working on a Z80 test language that allows you to define and
-run unit tests for your Z80 code.
+* __Unit tests for Z80 code__. The [Z80 test language](https://dotneteer.github.io/spectnetide/documents/unit-testing-basics#article) allows you to define and run unit tests for your Z80 code.
 * __Requires no configuration__. You start the IDE, create a ZX Spectrum project, and everything is ready to work.
 * __The code is well commented and harnessed with unit tests__. I plan to add a lot of documentation that helps you
 understand how to design and develop such an emulator. I also plan articles about Visual Studio 2017 extensibility.
@@ -69,7 +68,7 @@ to the project hierarchy. When you start a Z80 program, the IDE uses VM states f
     * __Virtual floppy disk support__. You can create virtual floppy disks for the Spectrum +3e model, insert them into the virtual floppy
 drives, eject them, make the floppies write protected, or remove the write protection. 
 
-* __Full-blown Z80 assembly programming__. The [SpectNetIde Assembler](Documentation/Z80Assembly/Z80AssemblerReference.md) provides you a
+* __Full-blown Z80 assembly programming__. The [SpectNetIde Assembler](https://dotneteer.github.io/spectnetide/documents/main-features.html) provides you a
 robust Z80 assembler and related toolset.
     * __Syntax-highlighted editor__
     * __Convenient syntax__ (for example, labels are accepted with or without a subsequent colon; alternative syntax variations, 
@@ -82,8 +81,8 @@ for example, both `jp (hl)` and `jp hl` are accepted, as well as `sub b` and `su
 is displayed. *Run/Pause/Step-Into/Step/Over* commands are available with source code, too.
     * __Z80 Program code export__. You can export the Z80 assembly code into `.TZX` and `.TAP` code files that can be immediately
 LOADed into ZX Spectrum &mdash; with optional auto start support.
-* __Scripting object model__. You can create [scripts](Documentation/Scripting/Scripting.md) to automate common task with the 
-[scripting object model](Documentation/Scripting/ScriptingObjectModelReference.md).
+* __Scripting object model__. You can create [scripts](https://dotneteer.github.io/spectnetide/documents/scripting-overview#article) to automate common task with the 
+[scripting object model](https://dotneteer.github.io/spectnetide/documents/scripting-object-model#article).
 
 
 ## Future plans
