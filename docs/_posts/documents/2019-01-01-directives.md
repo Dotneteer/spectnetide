@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Z80 Assembler"
 title:  "Directives"
-id: directives
+alias: directives
 seqno: 90
 selector: documents
 permalink: "documents/directives"

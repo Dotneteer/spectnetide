@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Tool Commands"
 title:  "Watch Samples"
-id: watch-samples
+alias: watch-samples
 seqno: 80
 selector: documents
 permalink: "documents/watch-samples"

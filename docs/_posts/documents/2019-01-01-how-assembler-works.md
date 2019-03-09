@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Z80 Assembler"
 title:  "How the assembler works"
-id: how-assembler-works
+alias: how-assembler-works
 seqno: 20
 selector: documents
 permalink: "documents/how-assembler-works"

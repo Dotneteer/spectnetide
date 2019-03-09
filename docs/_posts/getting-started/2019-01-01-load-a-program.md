@@ -1,7 +1,7 @@
 ---
 layout: getting-started
 title:  "LOAD a Program"
-id: load-a-program
+alias: load-a-program
 seqno: 60
 selector: tutorial
 permalink: "getting-started/load-a-program"

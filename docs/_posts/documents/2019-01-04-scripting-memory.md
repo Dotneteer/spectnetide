@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Scripting"
 title:  "Scripting the Memory"
-id: scripting-memory
+alias: scripting-memory
 seqno: 60
 selector: documents
 permalink: "documents/scripting-memory"

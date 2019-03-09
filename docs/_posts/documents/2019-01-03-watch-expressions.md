@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Tool Commands"
 title:  "Watch Expressions"
-id: watch-expressions
+alias: watch-expressions
 seqno: 70
 selector: documents
 permalink: "documents/watch-expressions"

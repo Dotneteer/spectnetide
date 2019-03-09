@@ -1,7 +1,7 @@
 ---
 layout: getting-started
 title:  "Install SpectNetIDE"
-id: install-spectnetide
+alias: install-spectnetide
 seqno: 10
 selector: tutorial
 permalink: "getting-started/install-spectnetide"

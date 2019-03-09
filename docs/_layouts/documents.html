@@ -31,20 +31,9 @@
         <div class="ui menu with-menu-back">
           <a class="item" href="{{ site.baseurl }}/">Home</a>
           <a class="item" href="{{ site.baseurl }}/getting-started/install-spectnetide.html">Getting Started</a>
-          <a class="active item" href="{{ site.baseurl }}/documents/main-features.html">Documents</a>
-          <a class="item" href="{{ site.baseurl }}/spectrum/basic-toc.html">ZX Spectrum</a>
+          <a class="{% if page.selector=='documents' %} active {% endif %} item" href="{{ site.baseurl }}/documents/main-features.html">Documents</a>
+          <a class="{% if page.selector=='spectrum' %} active {% endif %}item" href="{{ site.baseurl }}/spectrum/basic-toc.html">ZX Spectrum</a>
           <a class="item" target="_blank" href="https://github.com/Dotneteer/spectnetide">GitHub</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="ui vertical stripe segment with-content-back as-first">
-      <div class="ui container">
-        <div class="page-title-area">
-          <h2>SpectNetIDE Documents</h2>
-          <p>
-            You can find a collection of categorized documents and reference materials that help you to work with SpectNetIDE.
-          </p>
         </div>
       </div>
     </div>
@@ -54,23 +43,44 @@
         <div class="ui grid">
           <div class="three wide computer sixteen wide mobile column">
             <div class="document-list">
+              {% assign prevPost = "" %}
+              {% assign prevCand = "" %}
+              {% assign activeFound = 0 %}
+              {% assign nextPost = "" %}
               {% assign catsorted = site.categories %}
                 {% for cat in catsorted %}
-                  {% assign sorted = site.posts | where:"selector","documents" | sort:"seqno" %}
+                  {% assign sorted = site.posts | sort:"seqno" %}
                   {% assign count = 0 %}
                   {% for post in sorted %}
-                    {% if post.categories contains cat[0] %}
+                    {% if post.categories contains cat[0] and post.selector == page.selector %}
                       {% assign count = count | plus:1 %}
                     {% endif %}
                   {% endfor %}
                   {% if count > 0 %}
-                  <div class="document-category">{{ cat[0] }}</div>
-                    {% for post in sorted %}
-                      {% if post.categories contains cat[0] %}
-                      <a class="{% if post.id==page.id %} active {% endif %}" href="{{ site.baseurl }}{{ post.url }}#article">{{ post.title }}</a>
+                  <div class="document-category {% if page.categories contains cat[0] %} expanded {% else %} collapsed {% endif %}" onclick="handleClick(this)">
+                    <span class="category-name">{{ cat[0] }}</span>
+                    <div class="extender {% if page.categories contains cat[0] %} expanded {% else %} collapsed {% endif %}">
+                      <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 16" >
+                        <path d="M10 10l-1.5 1.5L5 7.75 1.5 11.5 0 10l5-5z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="article-names {% if page.categories contains cat[0] %} displayed {% else %} hidden {% endif %}">
+                  {% for post in sorted %}
+                    {% if post.categories contains cat[0] %}
+                    <a id="{{ post.alias }}" class="{% if post.id==page.id %} active {% endif %}" href="{{ site.baseurl }}{{ post.url }}#article">{{ post.title }}</a>
+                      {% if activeFound == 1 %}
+                        {% assign nextPost = post.url %}
+                        {% assign activeFound = 0 %}
                       {% endif %}
-                    {% endfor %}
-                  <br/>
+                      {% if post.id==page.id %}
+                        {% assign prevPost = prevCand %}
+                        {% assign activeFound = 1 %}
+                      {% endif %}
+                      {% assign prevCand = post.url %}
+                    {% endif %}
+                  {% endfor %}
+                  </div>
                   {% endif %}
                 {% endfor %}
             </div>
@@ -102,10 +112,35 @@
         </svg>
       </span>
     </a>
+    {% if prevPost != "" %}
+    <!-- Floating go to previous button -->
+    <a href="{{ site.baseurl }}{{ prevPost }}#article" id="go-to-prev">
+      <span>
+        <svg width="32" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 16" transform="rotate(-90)">
+          <path d="M10 10l-1.5 1.5L5 7.75 1.5 11.5 0 10l5-5z"/>
+        </svg>
+      </span>
+    </a>
+    {% endif %}
+    {% if nextPost != "" %}
+    <!-- Floating go to next button -->
+    <a href="{{ site.baseurl }}{{ nextPost }}#article" id="go-to-next">
+      <span>
+        <svg width="32" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 16" transform="rotate(90)">
+          <path d="M10 10l-1.5 1.5L5 7.75 1.5 11.5 0 10l5-5z"/>
+        </svg>
+      </span>
+    </a>
+    {% endif %}
 
     <script>
       window.addEventListener("scroll", function(){
-        document.getElementById("return-to-top").style.display=window.pageYOffset > 50 ? "block" : "none";
+        var scrolled = window.pageYOffset > 50;
+        document.getElementById("return-to-top").style.display = scrolled ? "block" : "none";
+        var prevEl = document.getElementById("go-to-prev");
+        if (prevEl) prevEl.style.display = scrolled ? "block" : "none";
+        var nextEl = document.getElementById("go-to-next");
+        if (nextEl) nextEl.style.display = scrolled ? "block" : "none";
       });
       var intervalId = 0;
       var $scrollButton = document.querySelector('#return-to-top');
@@ -119,6 +154,26 @@
         intervalId = setInterval(scrollStep, 6.66);
       }
       $scrollButton.addEventListener('click', scrollToTop);
+
+      function handleClick(arg) {
+        var nextEl = arg.nextElementSibling;
+        var extEl = arg.children[1];
+        if (arg.classList.contains("expanded")) {
+          arg.classList.remove("expanded");
+          arg.classList.add("collapsed");
+          extEl.classList.remove("expanded");
+          extEl.classList.add("collapsed");
+          nextEl.classList.remove("displayed")
+          nextEl.classList.add("hidden")
+        } else {
+          arg.classList.remove("collapsed");
+          arg.classList.add("expanded");
+          extEl.classList.remove("collapsed");
+          extEl.classList.add("expanded");
+          nextEl.classList.remove("hidden")
+          nextEl.classList.add("displayed")
+        }
+      }
     </script>
 
     {% if site.google_analytics %}

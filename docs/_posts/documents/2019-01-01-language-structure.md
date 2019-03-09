@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Z80 Assembler"
 title:  "Language structure"
-id: language-structure
+alias: language-structure
 seqno: 30
 selector: documents
 permalink: "documents/language-structure"

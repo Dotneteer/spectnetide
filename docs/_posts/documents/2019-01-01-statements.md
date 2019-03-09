@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Z80 Assembler"
 title:  "Statements"
-id: statements
+alias: statements
 seqno: 70
 selector: documents
 permalink: "documents/statements"

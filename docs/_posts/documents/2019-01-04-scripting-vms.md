@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Scripting"
 title:  "Managing Virtual machines"
-id: scripting-vms
+alias: scripting-vms
 seqno: 30
 selector: documents
 permalink: "documents/scripting-vms"

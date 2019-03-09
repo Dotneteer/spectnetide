@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Unit Testing"
 title:  "Syntax Basics"
-id: unit-testing-basics
+alias: unit-testing-basics
 seqno: 10
 selector: documents
 permalink: "documents/unit-testing-basics"

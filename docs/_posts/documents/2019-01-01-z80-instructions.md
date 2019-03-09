@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Z80 Assembler"
 title:  "Z80 Instructions"
-id: instructions
+alias: instructions
 seqno: 50
 selector: documents
 permalink: "documents/z80-instructions"

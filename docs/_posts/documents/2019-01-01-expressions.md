@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Z80 Assembler"
 title:  "Expressions"
-id: expressions
+alias: expressions
 seqno: 40
 selector: documents
 permalink: "documents/expressions"

@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Scripting"
 title:  "Overview"
-id: scripting-overview
+alias: scripting-overview
 seqno: 10
 selector: documents
 permalink: "documents/scripting-overview"

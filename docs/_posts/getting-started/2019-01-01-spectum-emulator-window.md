@@ -1,7 +1,7 @@
 ---
 layout: getting-started
 title:  "The ZX Spectrum Emulator"
-id: zx-spectrum-emulator-window
+alias: zx-spectrum-emulator-window
 seqno: 80
 selector: tutorial
 permalink: "getting-started/zx-spectrum-emulator-window"

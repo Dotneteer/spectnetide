@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Tool Commands"
 title:  "Disassembly: Miscellaneous"
-id: miscellaneous-commands
+alias: miscellaneous-commands
 seqno: 50
 selector: documents
 permalink: "documents/miscellaneous-commands"

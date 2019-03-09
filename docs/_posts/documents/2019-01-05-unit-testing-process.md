@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Unit Testing"
 title:  "The Testing Process"
-id: unit-testing-process
+alias: unit-testing-process
 seqno: 40
 selector: documents
 permalink: "documents/unit-testing-process"

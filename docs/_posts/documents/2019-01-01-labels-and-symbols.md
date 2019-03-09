@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Z80 Assembler"
 title:  "Labels and Symbols"
-id: lables
+alias: labels
 seqno: 32
 selector: documents
 permalink: "documents/labels-and-symbols"

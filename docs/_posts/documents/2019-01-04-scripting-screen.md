@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Scripting"
 title:  "Scripting the Screen"
-id: scripting-screen
+alias: scripting-screen
 seqno: 50
 selector: documents
 permalink: "documents/scripting-screen"

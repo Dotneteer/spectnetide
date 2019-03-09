@@ -1,9 +1,9 @@
 ---
-layout: spectrum
+layout: documents
 categories: 
-  - "BASIC Programming"
+  - "Spectrum48 BASIC"
 title:  "Manual"
-id: basic-manual
+alias: basic-manual
 seqno: 20
 selector: spectrum
 permalink: "spectrum/basic-manual"

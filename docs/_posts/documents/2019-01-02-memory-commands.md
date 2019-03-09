@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Tool Commands"
 title:  "Navigation and View Commands"
-id: memory-commands
+alias: memory-commands
 seqno: 20
 selector: documents
 permalink: "documents/memory-commands"

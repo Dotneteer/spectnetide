@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Tool Commands"
 title:  "Disassembly: Memory Sections"
-id: memory-section-commands
+alias: memory-section-commands
 seqno: 30
 selector: documents
 permalink: "documents/memory-section-commands"

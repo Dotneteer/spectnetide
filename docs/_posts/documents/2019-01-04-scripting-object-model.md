@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Scripting"
 title:  "Scripting Object Model"
-id: scripting-object-model
+alias: scripting-object-model
 seqno: 20
 selector: documents
 permalink: "documents/scripting-object-model"

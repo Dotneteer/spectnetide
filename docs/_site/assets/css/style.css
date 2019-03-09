@@ -199,6 +199,82 @@ footer p {
 #return-to-top:hover span {
   top: 5px; }
 
+#go-to-next {
+  position: fixed;
+  top: 12px;
+  right: 20px;
+  background: #3A89C9;
+  width: 50px;
+  height: 50px;
+  display: none;
+  text-decoration: none;
+  -webkit-border-radius: 35px;
+  -moz-border-radius: 35px;
+  border-radius: 35px;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  fill: #E9F2F9; }
+
+#go-to-next span {
+  color: #fff;
+  margin: 0;
+  position: relative;
+  left: 11px;
+  top: 14px;
+  font-size: 19px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease; }
+
+#go-to-next:hover {
+  background: #26ADE4; }
+
+#go-to-next:hover span {
+  left: 18px; }
+
+#go-to-prev {
+  position: fixed;
+  top: 12px;
+  left: 20px;
+  background: #3A89C9;
+  width: 50px;
+  height: 50px;
+  display: none;
+  text-decoration: none;
+  -webkit-border-radius: 35px;
+  -moz-border-radius: 35px;
+  border-radius: 35px;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  fill: #E9F2F9; }
+
+#go-to-prev span {
+  color: #fff;
+  margin: 0;
+  position: relative;
+  left: 7px;
+  top: 14px;
+  font-size: 19px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease; }
+
+#go-to-prev:hover {
+  background: #26ADE4; }
+
+#go-to-prev:hover span {
+  left: 0px; }
+
 .ui.vertical.segment.with-content-back .page-title-area {
   margin-bottom: 12px; }
   .ui.vertical.segment.with-content-back .page-title-area h1, .ui.vertical.segment.with-content-back .page-title-area h2, .ui.vertical.segment.with-content-back .page-title-area h3, .ui.vertical.segment.with-content-back .page-title-area h4, .ui.vertical.segment.with-content-back .page-title-area h5, .ui.vertical.segment.with-content-back .page-title-area h6 {
@@ -216,13 +292,35 @@ footer p {
   flex-direction: column;
   margin-top: 12px; }
   .ui.vertical.segment.with-content-back .ui.grid .document-list .document-category {
+    display: flex;
+    flex-direction: row;
     font-family: "Roboto Condensed", sans-serif;
-    color: #3A89C9;
+    color: #1B325F;
     font-size: 1.6em;
     font-weight: bold;
     border-bottom: 2px dotted #3A89C9;
     padding-bottom: 2px;
-    margin-bottom: 12px; }
+    margin-bottom: 12px;
+    cursor: pointer; }
+    .ui.vertical.segment.with-content-back .ui.grid .document-list .document-category .category-name {
+      flex-grow: 1; }
+    .ui.vertical.segment.with-content-back .ui.grid .document-list .document-category .extender {
+      width: 24px; }
+      .ui.vertical.segment.with-content-back .ui.grid .document-list .document-category .extender svg {
+        fill: #3A89C9; }
+      .ui.vertical.segment.with-content-back .ui.grid .document-list .document-category .extender.expanded svg {
+        transform: rotate(180deg); }
+      .ui.vertical.segment.with-content-back .ui.grid .document-list .document-category .extender.collapsed svg {
+        transform: rotate(90deg); }
+  .ui.vertical.segment.with-content-back .ui.grid .document-list .article-names {
+    display: flex;
+    flex-direction: column; }
+    .ui.vertical.segment.with-content-back .ui.grid .document-list .article-names.displayed {
+      display: flex; }
+    .ui.vertical.segment.with-content-back .ui.grid .document-list .article-names.hidden {
+      display: none; }
+    .ui.vertical.segment.with-content-back .ui.grid .document-list .article-names a:last-of-type {
+      margin-bottom: 12px; }
   .ui.vertical.segment.with-content-back .ui.grid .document-list a {
     white-space: normal;
     background: transparent;
@@ -230,18 +328,18 @@ footer p {
     text-decoration: none;
     text-transform: none;
     padding: 4px 0;
-    color: #1B325F;
+    color: #3A89C9;
     font-family: "Roboto Condensed", sans-serif;
     font-size: 1.4em;
     line-height: 20px;
     font-weight: 400; }
   .ui.vertical.segment.with-content-back .ui.grid .document-list a.active {
-    color: #ED303C; }
+    color: #CC333F; }
   .ui.vertical.segment.with-content-back .ui.grid .document-list a.last {
     border: none;
     margin-bottom: 8px; }
   .ui.vertical.segment.with-content-back .ui.grid .document-list a:hover {
-    color: #3A89C9; }
+    color: #1B325F; }
 .ui.vertical.segment.with-content-back .ui.grid .with-main-back {
   background: #dddddd; }
 .ui.vertical.segment.with-content-back .main-title-area h1 {

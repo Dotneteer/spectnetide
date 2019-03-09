@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Scripting"
 title:  "Scripting the Audio"
-id: scripting-audio
+alias: scripting-audio
 seqno: 70
 selector: documents
 permalink: "documents/scripting-audio"

@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Tool Commands"
 title:  "Disassembly: Breakpoints"
-id: breakpoint-commands
+alias: breakpoint-commands
 seqno: 50
 selector: documents
 permalink: "documents/breakpoint-commands"

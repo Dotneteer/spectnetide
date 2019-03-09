@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Z80 Assembler"
 title:  "Main Features"
-id: main-features
+alias: main-features
 seqno: 10
 selector: documents
 permalink: "documents/main-features"

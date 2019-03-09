@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Tool Commands"
 title:  "Disassembly: Annotations"
-id: annotation-commands
+alias: annotation-commands
 seqno: 40
 selector: documents
 permalink: "documents/annotation-commands"

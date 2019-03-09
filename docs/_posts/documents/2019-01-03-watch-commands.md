@@ -3,7 +3,7 @@ layout: documents
 categories: 
   - "Tool Commands"
 title:  "Watch Commands"
-id: watch-commands
+alias: watch-commands
 seqno: 60
 selector: documents
 permalink: "documents/watch-commands"
