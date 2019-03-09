@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "Debug Machine Code"
 alias: debug-machine-code
 seqno: 90

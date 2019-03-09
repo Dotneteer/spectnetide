@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "LOAD a Program"
 alias: load-a-program
 seqno: 60

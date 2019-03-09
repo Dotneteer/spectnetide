@@ -23,8 +23,11 @@ h2 a {
   color: #49708A; }
 
 pre, code {
-  font-family: "Roboto Mono", monospace;
+  font-family: "Ununtu Mono", monospace;
   font-size: 16px; }
+
+code {
+  font-size: 18px; }
 
 table {
   border-collapse: collapse;
@@ -363,20 +366,29 @@ footer p {
     font-weight: 400;
     margin-bottom: 8px;
     padding-left: 1em; }
-  .ui.vertical.segment.with-content-back .main-content-area ul li {
-    list-style: none;
-    margin: 8px 0px;
-    font-size: 18px;
-    font-weight: 400;
-    margin-bottom: 8px;
-    padding-left: 1em; }
-    .ui.vertical.segment.with-content-back .main-content-area ul li::before {
-      content: "\2022";
-      color: #1B325F;
-      font-weight: bold;
-      display: inline-block;
-      width: 1em;
-      margin-left: -1em; }
+  .ui.vertical.segment.with-content-back .main-content-area ul {
+    display: block;
+    list-style-type: none;
+    margin-block-start: 1.0em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 28px; }
+    .ui.vertical.segment.with-content-back .main-content-area ul li {
+      list-style-image: none;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 28px;
+      font-family: 'Lato', sans-serif;
+      font-size: 18px;
+      font-weight: 400; }
+      .ui.vertical.segment.with-content-back .main-content-area ul li::before {
+        content: "\2022";
+        color: #3A89C9;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em; }
   .ui.vertical.segment.with-content-back .main-content-area p {
     font-size: 18px;
     font-weight: 400; }
@@ -400,7 +412,7 @@ footer p {
 
 code {
   box-shadow: none;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   padding: 0 0px; }
 

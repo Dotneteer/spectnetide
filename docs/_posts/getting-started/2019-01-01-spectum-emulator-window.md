@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "The ZX Spectrum Emulator"
 alias: zx-spectrum-emulator-window
 seqno: 80

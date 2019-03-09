@@ -83,8 +83,12 @@ h2 a {
 }
 
 pre, code {
-  font-family: "Roboto Mono", monospace;
+  font-family: "Ununtu Mono", monospace;
   font-size: 16px;
+}
+
+code {
+  font-size: 18px;
 }
 
 table {
@@ -545,25 +549,35 @@ footer p {
       padding-left: 1em;
     }
 
-    & ul li {
-      list-style: none;
-      margin: 8px 0px;
-      font-size: 18px;
-      font-weight: 400;
-      margin-bottom: 8px; 
-      padding-left: 1em;
-
-      &::before {
-        content: "\2022";
-        color: $threadless-color; 
-        font-weight: bold;
-        display: inline-block;
-        width: 1em;
-        margin-left: -1em;
+    & ul {
+      display: block;
+      list-style-type: none;
+      margin-block-start: 1.0em;
+      margin-block-end: 1em;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+      padding-inline-start: 28px;
+      
+      & li {
+        list-style-image: none;
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 28px;
+        font-family: 'Lato', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+  
+        &::before {
+          content: "\2022";
+          color: $threadless-yay-color; 
+          font-weight: bold;
+          display: inline-block;
+          width: 1em;
+          margin-left: -1em;
+        }
       }
     }
-
-
+  
     & p {
       font-size: 18px;
       font-weight: 400;
@@ -601,7 +615,7 @@ footer p {
 
 code {
   box-shadow: none;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   padding: 0 0px;
 }

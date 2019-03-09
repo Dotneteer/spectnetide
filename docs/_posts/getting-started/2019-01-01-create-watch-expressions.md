@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "Create Watch Expressions"
 alias: create-watch-expressions
 seqno: 110

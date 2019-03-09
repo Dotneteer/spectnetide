@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "Export a Z80 Program"
 alias: export-a-z80-program
 seqno: 50

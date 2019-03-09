@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "Use the Keyboard Tool"
 alias: use-keyboard-tool
 seqno: 21

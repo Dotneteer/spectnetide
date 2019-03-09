@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "Create a BASIC Program"
 alias: create-a-basic-program
 seqno: 30

@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "Create a ZX Spectrum 48K Project"
 alias: create-zx-spectrum-48k-project
 seqno: 20

@@ -1,7 +1,7 @@
 ---
 layout: documents
 categories: 
-  - "Tutorial"
+  - "Tutorials"
 title:  "Create a Z80 Program"
 alias: create-a-z80-program
 seqno: 40
