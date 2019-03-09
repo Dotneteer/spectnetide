@@ -30,7 +30,7 @@
       <div class="ui container">
         <div class="ui menu with-menu-back">
           <a class="item" href="{{ site.baseurl }}/">Home</a>
-          <a class="item" href="{{ site.baseurl }}/getting-started/install-spectnetide.html">Getting Started</a>
+          <a class="{% if page.selector=='tutorial' %} active {% endif %} item" href="{{ site.baseurl }}/getting-started/install-spectnetide.html">Getting Started</a>
           <a class="{% if page.selector=='documents' %} active {% endif %} item" href="{{ site.baseurl }}/documents/main-features.html">Documents</a>
           <a class="{% if page.selector=='spectrum' %} active {% endif %}item" href="{{ site.baseurl }}/spectrum/basic-toc.html">ZX Spectrum</a>
           <a class="item" target="_blank" href="https://github.com/Dotneteer/spectnetide">GitHub</a>

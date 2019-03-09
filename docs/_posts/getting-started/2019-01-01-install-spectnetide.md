@@ -1,5 +1,7 @@
 ---
-layout: getting-started
+layout: documents
+categories: 
+  - "Tutorial"
 title:  "Install SpectNetIDE"
 alias: install-spectnetide
 seqno: 10

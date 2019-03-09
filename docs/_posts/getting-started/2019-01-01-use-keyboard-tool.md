@@ -1,5 +1,7 @@
 ---
-layout: getting-started
+layout: documents
+categories: 
+  - "Tutorial"
 title:  "Use the Keyboard Tool"
 alias: use-keyboard-tool
 seqno: 21

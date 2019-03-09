@@ -1,5 +1,7 @@
 ---
-layout: getting-started
+layout: documents
+categories: 
+  - "Tutorial"
 title:  "Display Memory Contents"
 alias: display-memoty-contents
 seqno: 100

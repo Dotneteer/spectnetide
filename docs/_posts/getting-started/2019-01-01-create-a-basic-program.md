@@ -1,5 +1,7 @@
 ---
-layout: getting-started
+layout: documents
+categories: 
+  - "Tutorial"
 title:  "Create a BASIC Program"
 alias: create-a-basic-program
 seqno: 30
