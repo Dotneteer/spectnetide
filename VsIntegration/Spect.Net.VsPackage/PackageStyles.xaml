@@ -4,7 +4,8 @@
                     xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
                     xmlns:export="clr-namespace:Spect.Net.VsPackage.Z80Programs.Export"
                     xmlns:floppy="clr-namespace:Spect.Net.VsPackage.Z80Programs.Floppy"
-                    xmlns:watch="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch">
+                    xmlns:watch="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch"
+                    xmlns:exportDisassembly="clr-namespace:Spect.Net.VsPackage.Z80Programs.ExportDisassembly">
 
     <!-- Colors -->
     <Color x:Key="Cz80Text">#FF51c351</Color>
@@ -93,7 +94,7 @@
 
     <Style x:Key="DialogRadioButton" TargetType="RadioButton">
         <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
-        <Setter Property="Margin" Value="12,4" />
+        <Setter Property="Margin" Value="12,6" />
     </Style>
 
     <Style x:Key="DialogTextBox" TargetType="TextBox">
@@ -610,4 +611,7 @@
     <toolWindows:StringListToStringConverter x:Key="StringListToStringConverter" />
     <export:ExportFormatConverter x:Key="ExportFormatConverter" />
     <floppy:DiskFormatConverter x:Key="DiskFormatConverter" />
+    <exportDisassembly:CommentStyleConverter x:Key="CommentStyleConverter" />
+    <exportDisassembly:IndentDepthTypeConverter x:Key="IndentDepthTypeConverter" />
+    <exportDisassembly:LineLengthTypeConverter x:Key="LineLengthTypeConverter" />
 </ResourceDictionary>

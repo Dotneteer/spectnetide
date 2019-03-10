@@ -34,6 +34,7 @@ toolCommand
 	| exchangeWatchCommand
 	| eraseAllWatchCommand
 	| compactCommand
+	| exportDisassemblyCommand
 	;
 
 gotoCommand: G WS? LITERAL ;
@@ -63,6 +64,7 @@ labelWidthCommand: LW WS? LITERAL ;
 exchangeWatchCommand: XW WS? LITERAL WS LITERAL ;
 eraseAllWatchCommand: EW ;
 compactCommand: LITERAL .*?;
+exportDisassemblyCommand: XD WS? LITERAL WS LITERAL ;
 
 /*
  * Lexer Rules
@@ -106,6 +108,7 @@ T: 't'|'T' ;
 TB: 'tb'|'tB'|'Tb'|'TB' ;
 RB: 'rb'|'rB'|'Rb'|'RB' ;
 UB: 'ub'|'uB'|'Ub'|'UB' ;
+XD: 'xd'|'xD'|'Xd'|'XD' ;
 XW: 'xw'|'xW'|'Xw'|'XW' ;
 W: 'w'|'W' ;
 RETRIEVE: R (L|C|P) ;

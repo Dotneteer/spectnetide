@@ -147,6 +147,11 @@ namespace Spect.Net.CommandParser
                 return new EraseAllWatchToolCommand();
             }
 
+            if (context.exportDisassemblyCommand() != null)
+            {
+                return new ExportDisassemblyToolCommand(context.exportDisassemblyCommand());
+            }
+
             return null;
         }
     }

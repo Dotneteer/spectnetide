@@ -201,6 +201,17 @@
       <DependentUpon>WatchToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Watch\WatchToolWindowViewModel.cs" />
+    <Compile Include="Z80Programs\ExportDisassembly\CommentStyle.cs" />
+    <Compile Include="Z80Programs\ExportDisassembly\CommentStyleConverter.cs" />
+    <Compile Include="Z80Programs\ExportDisassembly\DisassemblyExporter.cs" />
+    <Compile Include="Z80Programs\ExportDisassembly\ExportDisassemblyDialog.xaml.cs">
+      <DependentUpon>ExportDisassemblyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Z80Programs\ExportDisassembly\ExportDisassemblyViewModel.cs" />
+    <Compile Include="Z80Programs\ExportDisassembly\IndentDepthType.cs" />
+    <Compile Include="Z80Programs\ExportDisassembly\IndentDepthTypeConverter.cs" />
+    <Compile Include="Z80Programs\ExportDisassembly\LineLengthType.cs" />
+    <Compile Include="Z80Programs\ExportDisassembly\LineLengthTypeConverter.cs" />
     <Compile Include="Z80Programs\Floppy\CreateVfddFileViewModel.cs" />
     <Compile Include="Z80Programs\Floppy\DiskFormatConverter.cs" />
     <Compile Include="Z80Programs\Floppy\CreateVfddFileDialog.xaml.cs">
@@ -802,6 +813,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolWindows\Watch\WatchToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Z80Programs\ExportDisassembly\ExportDisassemblyDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

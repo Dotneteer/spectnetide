@@ -1,3 +1,7 @@
+### Version 1.18.3
+__FEATURE__: You can toggle the the breakpoint in the Z80 Disassembly tool window by clicking on an item.  
+
+
 ### Version 1.18.2
 __FEATURE__: __SpectNetIDE__ now can be installed on Visual Studio 2019 Preview 4.1.  
 __CHANGE__: Old reference documentation has been moved to the new documentation hub at https://dotneteer.github.io/spectnetide/

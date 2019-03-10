@@ -859,6 +859,8 @@ namespace Spect.Net.CommandParser.Test
         [DataRow("rby1234", null)]
         [DataRow("xw1234 :2345", "XW 1234 :2345")]
         [DataRow("xwy1234 :2345", null)]
+        [DataRow("xd1234 :2345", "XD 1234 :2345")]
+        [DataRow("xdy1234 :2345", null)]
         public void CompactParsingWorks(string source, string expected)
         {
             // --- Act
@@ -878,6 +880,20 @@ namespace Spect.Net.CommandParser.Test
             }
         }
 
+        [TestMethod]
+        [DataRow("xd 1234 :1234", 4660, 1234)]
+        [DataRow("xd:1234 1234", 1234, 4660)]
+        public void ExportDisassemblyParsingWorks(string source, int from, int to)
+        {
+            // --- Act
+            var parsed = ParseCommand(source);
 
+            // --- Assert
+
+            var command = parsed as ExportDisassemblyToolCommand;
+            command.ShouldNotBeNull();
+            command.From.ShouldBe((ushort)from);
+            command.To.ShouldBe((ushort)to);
+        }
     }
 }

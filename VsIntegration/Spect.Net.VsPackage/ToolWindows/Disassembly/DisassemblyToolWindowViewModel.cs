@@ -11,6 +11,7 @@ using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Z80Programs.Debugging;
+using Spect.Net.VsPackage.Z80Programs.ExportDisassembly;
 
 // ReSharper disable IdentifierTypo
 
@@ -414,6 +415,33 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     }
 
                     address = MachineViewModel.SpectrumVm.Cpu.Registers.PC = resolvedAddress;
+                    break;
+                }
+
+                case ExportDisassemblyToolCommand exportDisassemblyCommand:
+                {
+                    if (!ObtainAddress(exportDisassemblyCommand.From, null,
+                        out var startAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    if (!ObtainAddress(exportDisassemblyCommand.To, null,
+                        out var endAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+
+                    if (DisplayExportDisassemblyDialog(out var vm, startAddress, endAddress))
+                    {
+                        // --- Export cancelled
+                        break;
+                    }
+
+                    var exporter = new DisassemblyExporter(vm, this);
+                    var disassembler = CreateDisassembler();
+                    exporter.ExportDisassembly(disassembler);
                     break;
                 }
 
@@ -1003,6 +1031,39 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             newItem.FilterExpression = z80Expr.Expression;
             return true;
+        }
+
+        /// <summary>
+        /// Displays the Export Z80 Code dialog to collect parameter data
+        /// </summary>
+        /// <param name="vm">View model with collected data</param>
+        /// <param name="startAddress">Disassembly start address</param>
+        /// <param name="endAddress">Disassembly end address</param>
+        /// <returns>
+        /// True, if the user stars export; false, if the export is cancelled
+        /// </returns>
+        private static bool DisplayExportDisassemblyDialog(out ExportDisassemblyViewModel vm, ushort startAddress, ushort endAddress)
+        {
+            var exportDialog = new ExportDisassemblyDialog()
+            {
+                HasMaximizeButton = false,
+                HasMinimizeButton = false
+            };
+
+            vm = new ExportDisassemblyViewModel
+            {
+                Filename = "ExportedCode.z80asm",
+                StartAddress = startAddress.ToString(),
+                EndAddress = endAddress.ToString(),
+                AddToProject = true,
+                HangingLabels = true,
+                CommentStyle = CommentStyle.Semicolon,
+                MaxLineLengthType = LineLengthType.L100,
+                IndentDepth = IndentDepthType.Two
+            };
+            exportDialog.SetVm(vm);
+            var accepted = exportDialog.ShowModal();
+            return !accepted.HasValue || !accepted.Value;
         }
 
 
