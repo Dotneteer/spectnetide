@@ -146,14 +146,20 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private async void OnItemClicked(object sender, DisassemblyItemSelectedEventArgs e)
         {
-            if (!SpectNetPackage.Default.Options.CommentingMode || e.Selected == null)
+            if (e.Selected == null) return;
+            if (SpectNetPackage.Default.Options.CommentingMode)
             {
+                // --- Commenting mode: Create an "L" command to utilize the label address
+                Prompt.CommandText = $"L {e.Selected.AddressFormatted} ";
+                Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
+                await Task.Delay(10);
+                Prompt.SetFocus();
                 return;
             }
-            Prompt.CommandText = $"L {e.Selected.AddressFormatted} ";
-            Prompt.CommandLine.CaretIndex = Prompt.CommandText.Length;
-            await Task.Delay(10);
-            Prompt.SetFocus();
+
+            // --- Normal mode, toggle the breakpoint
+            e.Selected.Parent.ToggleBreakpoint(e.Selected);
+            e.Selected.RaisePropertyChanged("HasBreakpoint");
         }
 
         /// <summary>

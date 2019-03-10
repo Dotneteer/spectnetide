@@ -427,35 +427,26 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Sets the disassembly type
+        /// Toggles the breakpoint represented by the specified item
         /// </summary>
-        /// <param name="modelType"></param>
-        private void SetDisassemblyType(string modelType)
+        /// <param name="item">Item to toggle the breakpoint for</param>
+        public void ToggleBreakpoint(DisassemblyItemViewModel item)
         {
-            DisassemblyAnnotation annotation;
-            if (RomViewMode)
+            if (item == null) return;
+
+            var breakPoints = MachineViewModel.SpectrumVm.DebugInfoProvider.Breakpoints;
+            var address = item.Item.Address;
+            if (breakPoints.ContainsKey(address))
             {
-                annotation = AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn) 
-                    ? romAnn : new DisassemblyAnnotation();
+                breakPoints.Remove(address);
             }
             else
             {
-                annotation = AnnotationHandler.RamBankAnnotations.TryGetValue(RamBankIndex, out var romAnn)
-                    ? romAnn : new DisassemblyAnnotation();
+                breakPoints[address] = new BreakpointInfo
+                {
+                    IsCpuBreakpoint = true,
+                };
             }
-            switch (modelType)
-            {
-                case "48":
-                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.Spectrum48);
-                    break;
-                case "128":
-                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.Spectrum128);
-                    break;
-                default:
-                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.None);
-                    break;
-            }
-            AnnotationHandler.SaveAnnotations(annotation, 0x0000);
         }
 
         #endregion
@@ -736,6 +727,38 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 ? ""
                 : $" C {bp.FilterExpression}";
             return $"SB {address:X4}{hitCondition}{filterCondition}";
+        }
+
+        /// <summary>
+        /// Sets the disassembly type
+        /// </summary>
+        /// <param name="modelType"></param>
+        private void SetDisassemblyType(string modelType)
+        {
+            DisassemblyAnnotation annotation;
+            if (RomViewMode)
+            {
+                annotation = AnnotationHandler.RomPageAnnotations.TryGetValue(RomIndex, out var romAnn) 
+                    ? romAnn : new DisassemblyAnnotation();
+            }
+            else
+            {
+                annotation = AnnotationHandler.RamBankAnnotations.TryGetValue(RamBankIndex, out var romAnn)
+                    ? romAnn : new DisassemblyAnnotation();
+            }
+            switch (modelType)
+            {
+                case "48":
+                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.Spectrum48);
+                    break;
+                case "128":
+                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.Spectrum128);
+                    break;
+                default:
+                    annotation.SetDisassemblyFlag(SpectrumSpecificDisassemblyFlags.None);
+                    break;
+            }
+            AnnotationHandler.SaveAnnotations(annotation, 0x0000);
         }
 
         /// <summary>

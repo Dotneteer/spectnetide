@@ -61,5 +61,11 @@
         /// <param name="itemAddress"></param>
         /// <returns></returns>
         bool HasCondition(ushort itemAddress);
+
+        /// <summary>
+        /// Toggles the breakpoint represented by the specified item
+        /// </summary>
+        /// <param name="item">Item to toggle the breakpoint for</param>
+        void ToggleBreakpoint(DisassemblyItemViewModel item);
     }
 }

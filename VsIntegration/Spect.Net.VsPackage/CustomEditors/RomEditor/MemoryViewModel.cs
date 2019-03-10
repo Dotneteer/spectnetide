@@ -231,5 +231,13 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         {
             return false;
         }
+
+        /// <summary>
+        /// Toggles the breakpoint represented by the specified item
+        /// </summary>
+        /// <param name="item">Item to toggle the breakpoint for</param>
+        public void ToggleBreakpoint(DisassemblyItemViewModel item)
+        {
+        }
     }
 }
