@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
-using Spect.Net.VsPackage.Vsx.Output;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
 {
@@ -13,6 +16,13 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
     /// </summary>
     public class DisassemblyExporter
     {
+        private const string FILE_EXISTS_MESSAGE = "The disassembly export file exists in the project. " +
+                                                   "Would you like to override it?";
+
+        private const string INVALID_FOLDER_MESSAGE = "The disassembly export folder specified in the Options dialog " +
+                                                      "contains invalid characters or an absolute path. Go to the Options dialog and " +
+                                                      "fix the issue so that you can add the exported file to the project.";
+
         /// <summary>
         /// Instantiates this object with the specified set of export parameters
         /// </summary>
@@ -79,12 +89,13 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
                 if (outputItem.HasLabelSymbol)
                 {
                     // --- Check if it is an external label
-                    if (outputItem.SymbolValue < startAddress || outputItem.SymbolValue > endAddress)
+                    if (outputItem.SymbolValue >= startAddress && outputItem.SymbolValue <= endAddress)
                     {
-                        if (ParentViewModel.GetLabel(outputItem.SymbolValue, out var extLabel))
-                        {
-                            equs[extLabel] = outputItem.SymbolValue;
-                        }
+                        continue;
+                    }
+                    if (ParentViewModel.GetLabel(outputItem.SymbolValue, out var extLabel))
+                    {
+                        equs[extLabel] = outputItem.SymbolValue;
                     }
                 }
                 // --- Check if literal replacement
@@ -183,10 +194,28 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
             }
 
             // --- Save the file
-            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
-            pane.WriteLine("Z80 Disassembly output:");
-            pane.WriteLine();
-            pane.WriteLine(contents.ToString());
+            try
+            {
+                var dirName = Path.GetDirectoryName(ExportParams.Filename);
+                if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName))
+                {
+                    Directory.CreateDirectory(dirName);
+                }
+                File.WriteAllText(ExportParams.Filename, contents.ToString());
+            }
+            catch (Exception ex)
+            {
+                VsxDialogs.Show($"Error while exporting to file {ExportParams.Filename}: {ex.Message}",
+                    "Export disassembly error.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                return;
+            }
+            if (!ExportParams.AddToProject) return;
+
+            // --- Step #6: Add the saved item to the project
+            // --- Check path segment names
+            DiscoveryProject.AddFileToProject(SpectNetPackage.Default.Options.DisassExportFolder, 
+                ExportParams.Filename,
+                INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);
         }
 
         /// <summary>

@@ -132,6 +132,11 @@ namespace Spect.Net.VsPackage
         [Description("In commenting mode, you can double-click to prepare an 'C' command for the disassembly clicked.")]
         public bool CommentingMode { get; set; } = false;
 
+        [Category("Disassembly View")]
+        [DisplayName("Export folder")]
+        [Description("Disassembly export files are added to this folder")]
+        public string DisassExportFolder { get; set; } = @"DisassemblyFiles";
+
         [Category("Keyboard Tool")]
         [DisplayName("Keyboard layout")]
         [Description("You can select the type of keyboard layout to display in the Zx Spectrum Keyboard tool window.")]

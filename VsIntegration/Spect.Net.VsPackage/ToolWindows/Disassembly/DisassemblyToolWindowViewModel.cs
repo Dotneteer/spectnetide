@@ -1052,7 +1052,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             vm = new ExportDisassemblyViewModel
             {
-                Filename = "ExportedCode.z80asm",
+                Filename = "C:\\Temp\\ExportedCode.z80asm",
                 StartAddress = startAddress.ToString(),
                 EndAddress = endAddress.ToString(),
                 AddToProject = true,

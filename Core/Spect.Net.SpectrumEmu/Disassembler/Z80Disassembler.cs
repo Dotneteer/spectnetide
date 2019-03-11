@@ -100,7 +100,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
         public DisassemblyOutput Disassemble(ushort startAddress = 0x0000, ushort endAddress = 0xFFFF)
         {
             _output = new DisassemblyOutput();
-            if (endAddress > MemoryContents.Length)
+            if (endAddress >= MemoryContents.Length)
             {
                 endAddress = (ushort)(MemoryContents.Length - 1);
             }
