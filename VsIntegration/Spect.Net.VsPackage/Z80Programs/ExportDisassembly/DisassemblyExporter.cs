@@ -81,6 +81,13 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
             var output = disassembler.Disassemble(startAddress, endAddress);
             var equs = new Dictionary<string, ushort>();
             var items = new List<DisassemblyItemViewModel>();
+            var addresses = new HashSet<ushort>();
+
+            // --- Create the set of addresses that may be referred through labels
+            foreach (var outputItem in output.OutputItems)
+            {
+                addresses.Add(outputItem.Address);
+            }
 
             // --- Collect all external labels and symbols
             foreach (var outputItem in output.OutputItems)
@@ -161,8 +168,23 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
                     lineContents.Append(InstructionIndent);
                 }
 
-                // --- Instruction part
-                lineContents.Append(item.InstructionFormatted);
+                // --- Instruction part: take care labels that cannot be accessed through instructions
+                var instruction = item.InstructionFormatted;
+                var instrItem = item.Item;
+                if (item.Item.HasLabelSymbol && !addresses.Contains(item.Item.SymbolValue))
+                {
+                    if (instrItem.SymbolValue >= startAddress && instrItem.SymbolValue <= endAddress 
+                        || !ParentViewModel.GetLabel(instrItem.SymbolValue, out _))
+                    {
+                        // --- Internal or external label without associated symbol
+                        // --- Change the disassembly label name to the corresponding address
+                        var addressString = $"#{instrItem.SymbolValue:X4}";
+                        instruction = instrItem.Instruction.Substring(0, instrItem.TokenPosition)
+                                      + addressString
+                                      + instrItem.Instruction.Substring(instrItem.TokenPosition + instrItem.TokenLength);
+                    }
+                }
+                lineContents.Append(instruction);
 
                 // --- Handle line comment
                 if (!string.IsNullOrEmpty(item.CommentFormatted))

@@ -1,6 +1,6 @@
 ### Version 1.18.3
 __FEATURE__: You can toggle the the breakpoint in the Z80 Disassembly tool window by clicking on an item.  
-__FEATURE__: The Z80 Disassembly window allows to export the disassembly.
+__FEATURE__: The Z80 Disassembly window allows exporting the disassembly.
 
 ### Version 1.18.2
 __FEATURE__: __SpectNetIDE__ now can be installed on Visual Studio 2019 Preview 4.1.  

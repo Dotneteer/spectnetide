@@ -54,7 +54,7 @@ namespace Spect.Net.VsPackage
     /// </remarks>
     [Export(typeof(SpectNetPackage))]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [InstalledProductRegistration("#110", "#112", "1.18.2", IconResourceID = 400)] // Info on this package for Help/About
+    [InstalledProductRegistration("#110", "#112", "1.18.3", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
 #pragma warning disable VSSDK004 // Use BackgroundLoad flag in ProvideAutoLoad attribute for asynchronous auto load.
@@ -120,7 +120,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
         public const string CPS_VERSION_FILE = "cps.version";
-        public const string CURRENT_CPS_VERSION = "1.18.2";
+        public const string CURRENT_CPS_VERSION = "1.18.3";
         public const string CPS_RESOURCE_PREFIX = "Spect.Net.VsPackage.DeploymentResources";
         public const string CPS_RULES = "Rules";
 
