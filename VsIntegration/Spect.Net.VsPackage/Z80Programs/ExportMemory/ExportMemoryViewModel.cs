@@ -1,20 +1,21 @@
 ﻿using Spect.Net.Wpf.Mvvm;
 
-namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
+namespace Spect.Net.VsPackage.Z80Programs.ExportMemory
 {
-    public class ExportDisassemblyViewModel: EnhancedViewModelBase
+
+    public class ExportMemoryViewModel: EnhancedViewModelBase
     {
         private string _startAddress;
         private string _startAddressHex;
         private string _endAddress;
         private string _endAddressHex;
         private string _filename;
-        private bool _hangingLabels;
-
         private bool _addToProject;
-        private IndentDepthType _indentDepth;
-        private CommentStyle _commentStyle;
-        private LineLengthType _maxLineLengthType;
+
+        /// <summary>
+        /// The latest export folder
+        /// </summary>
+        public static string LatestFolder { get; set; }
 
         /// <summary>
         /// Start address of the code
@@ -81,47 +82,6 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
                 Set(ref _filename, value);
                 RaisePropertyChanged(nameof(IsValid));
             }
-        }
-
-        /// <summary>
-        /// The latest folder for export files
-        /// </summary>
-        public static string LatestFolder { get; set; }
-
-        /// <summary>
-        /// Indicates if labels should be put on separate line
-        /// </summary>
-        public bool HangingLabels
-        {
-            get => _hangingLabels;
-            set => Set(ref _hangingLabels, value);
-        }
-
-        /// <summary>
-        /// Indentation depth type
-        /// </summary>
-        public IndentDepthType IndentDepth
-        {
-            get => _indentDepth;
-            set => Set(ref _indentDepth, value);
-        }
-
-        /// <summary>
-        /// Indicates the comment style
-        /// </summary>
-        public CommentStyle CommentStyle
-        {
-            get => _commentStyle;
-            set => Set(ref _commentStyle, value);
-        }
-
-        /// <summary>
-        /// Indicates the maximum line length
-        /// </summary>
-        public LineLengthType MaxLineLengthType
-        {
-            get => _maxLineLengthType;
-            set => Set(ref _maxLineLengthType, value);
         }
 
         /// <summary>

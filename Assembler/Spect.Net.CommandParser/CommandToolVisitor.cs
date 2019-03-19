@@ -152,6 +152,11 @@ namespace Spect.Net.CommandParser
                 return new ExportDisassemblyToolCommand(context.exportDisassemblyCommand());
             }
 
+            if (context.exportMemoryCommand() != null)
+            {
+                return new ExportMemoryToolCommand(context.exportMemoryCommand());
+            }
+
             return null;
         }
     }

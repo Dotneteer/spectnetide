@@ -133,9 +133,14 @@ namespace Spect.Net.VsPackage
         public bool CommentingMode { get; set; } = false;
 
         [Category("Disassembly View")]
-        [DisplayName("Export folder")]
+        [DisplayName("Disassembly export folder")]
         [Description("Disassembly export files are added to this folder")]
         public string DisassExportFolder { get; set; } = @"DisassemblyFiles";
+
+        [Category("Memory View")]
+        [DisplayName("Export folder")]
+        [Description("Memory export files are added to this folder")]
+        public string MemoryExportFolder { get; set; } = @"MemoryFiles";
 
         [Category("Keyboard Tool")]
         [DisplayName("Keyboard layout")]

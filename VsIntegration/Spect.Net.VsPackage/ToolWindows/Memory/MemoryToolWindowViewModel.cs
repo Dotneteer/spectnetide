@@ -1,7 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using Spect.Net.CommandParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Z80Programs.ExportMemory;
+
 // ReSharper disable IdentifierTypo
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
@@ -204,6 +207,34 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     }
                     SetFullViewMode();
                     break;
+
+                case ExportMemoryToolCommand exportMemoryCommand:
+                {
+                    if (!ObtainAddress(exportMemoryCommand.From, null,
+                        out var startAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+                    if (!ObtainAddress(exportMemoryCommand.To, null,
+                        out var endAddress,
+                        out validationMessage))
+                    {
+                        return false;
+                    }
+
+                    if (DisplayExportMemoryDialog(out var vm, startAddress, endAddress))
+                    {
+                        // --- Export cancelled
+                        break;
+                    }
+
+                    var exporter = new MemoryExporter(vm);
+                    exporter.ExportMemory(MachineViewModel.SpectrumVm);
+                    ExportMemoryViewModel.LatestFolder = Path.GetDirectoryName(vm.Filename);
+                    break;
+                }
+
                 default:
                     validationMessage = string.Format(INV_CONTEXT, "ZX Spectrum Memory window");
                     return false;
@@ -235,6 +266,36 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                 line.BindTo(memory, this);
                 MemoryLines.Add(line);
             }
+        }
+
+        /// <summary>
+        /// Displays the Export Disassembly dialog to collect parameter data
+        /// </summary>
+        /// <param name="vm">View model with collected data</param>
+        /// <param name="startAddress">Disassembly start address</param>
+        /// <param name="endAddress">Disassembly end address</param>
+        /// <returns>
+        /// True, if the user stars export; false, if the export is cancelled
+        /// </returns>
+        private static bool DisplayExportMemoryDialog(out ExportMemoryViewModel vm, ushort startAddress, ushort endAddress)
+        {
+            var exportDialog = new ExportMemoryDialog()
+            {
+                HasMaximizeButton = false,
+                HasMinimizeButton = false
+            };
+
+            vm = new ExportMemoryViewModel
+            {
+                Filename = Path.Combine(ExportMemoryViewModel.LatestFolder
+                                        ?? "C:\\Temp", "Memory.bin"),
+                StartAddress = startAddress.ToString(),
+                EndAddress = endAddress.ToString(),
+                AddToProject = true
+            };
+            exportDialog.SetVm(vm);
+            var accepted = exportDialog.ShowModal();
+            return !accepted.HasValue || !accepted.Value;
         }
     }
 }

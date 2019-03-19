@@ -212,6 +212,11 @@
     <Compile Include="Z80Programs\ExportDisassembly\IndentDepthTypeConverter.cs" />
     <Compile Include="Z80Programs\ExportDisassembly\LineLengthType.cs" />
     <Compile Include="Z80Programs\ExportDisassembly\LineLengthTypeConverter.cs" />
+    <Compile Include="Z80Programs\ExportMemory\ExportMemoryDialog.xaml.cs">
+      <DependentUpon>ExportMemoryDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Z80Programs\ExportMemory\ExportMemoryViewModel.cs" />
+    <Compile Include="Z80Programs\ExportMemory\MemoryExporter.cs" />
     <Compile Include="Z80Programs\Floppy\CreateVfddFileViewModel.cs" />
     <Compile Include="Z80Programs\Floppy\DiskFormatConverter.cs" />
     <Compile Include="Z80Programs\Floppy\CreateVfddFileDialog.xaml.cs">
@@ -817,6 +822,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Z80Programs\ExportDisassembly\ExportDisassemblyDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Z80Programs\ExportMemory\ExportMemoryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

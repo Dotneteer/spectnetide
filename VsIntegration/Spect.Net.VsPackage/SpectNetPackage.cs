@@ -57,9 +57,7 @@ namespace Spect.Net.VsPackage
     [InstalledProductRegistration("#110", "#112", "1.18.3", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-#pragma warning disable VSSDK004 // Use BackgroundLoad flag in ProvideAutoLoad attribute for asynchronous auto load.
-    [ProvideAutoLoad(UIContextGuids.NoSolution)]
-#pragma warning restore VSSDK004 // Use BackgroundLoad flag in ProvideAutoLoad attribute for asynchronous auto load.
+    [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
 
     // --- Tool windows
     [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
@@ -204,8 +202,10 @@ namespace Spect.Net.VsPackage
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override Task OnInitializeAsync()
+        protected override async Task OnInitializeAsync()
         {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
             // --- Prepare project system extension files
             CheckCpsFiles();
 
@@ -245,7 +245,6 @@ namespace Spect.Net.VsPackage
             StateFileManager = new VmStateFileManager();
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
-            return Task.FromResult(0);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
@@ -442,6 +443,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     var exporter = new DisassemblyExporter(vm, this);
                     var disassembler = CreateDisassembler();
                     exporter.ExportDisassembly(disassembler);
+                    ExportDisassemblyViewModel.LatestFolder =
+                        Path.GetDirectoryName(vm.Filename);
                     break;
                 }
 
@@ -865,35 +868,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Gets and checks the specified address.
-        /// </summary>
-        /// <param name="addr">Address, if specified with a number</param>
-        /// <param name="symbol">Symbol, if specified</param>
-        /// <param name="resolvedAddress">Resolved address</param>
-        /// <param name="validationMessage">Validation message, in case of error</param>
-        /// <returns>True, if the address is successfully resolved; otherwise, false.</returns>
-        private bool ObtainAddress(ushort addr, string symbol, out ushort resolvedAddress, out string validationMessage)
-        {
-            resolvedAddress = addr;
-            if (symbol != null)
-            {
-                if (!ResolveSymbol(symbol, out resolvedAddress))
-                {
-                    validationMessage = string.Format(UNDEF_SYMBOL, symbol);
-                    return false;
-                }
-            }
-
-            validationMessage = null;
-            if ((RomViewMode || RamBankViewMode) && addr > 0x4000)
-            {
-                validationMessage = $"Address #{addr:X4} out of range";
-                return false;
-            }
-            return true;
-        }
-
-        /// <summary>
         /// Whenever the tape device leaves the load mode, re-disassembly the output
         /// </summary>
         private void TapeDeviceOnLeftLoadMode(object sender, EventArgs eventArgs)
@@ -1034,7 +1008,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         }
 
         /// <summary>
-        /// Displays the Export Z80 Code dialog to collect parameter data
+        /// Displays the Export Disassembly dialog to collect parameter data
         /// </summary>
         /// <param name="vm">View model with collected data</param>
         /// <param name="startAddress">Disassembly start address</param>
@@ -1052,7 +1026,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             vm = new ExportDisassemblyViewModel
             {
-                Filename = "C:\\Temp\\ExportedCode.z80asm",
+                Filename = Path.Combine(ExportDisassemblyViewModel.LatestFolder 
+                    ?? "C:\\Temp", "ExportedCode.z80asm"),
                 StartAddress = startAddress.ToString(),
                 EndAddress = endAddress.ToString(),
                 AddToProject = true,
@@ -1065,8 +1040,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             var accepted = exportDialog.ShowModal();
             return !accepted.HasValue || !accepted.Value;
         }
-
-
+        
         #endregion
 
         #region IDisassemblyParent implementation

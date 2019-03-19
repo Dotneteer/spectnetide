@@ -3,47 +3,42 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Microsoft.Win32;
+using Spect.Net.VsPackage.Z80Programs.ExportDisassembly;
 
-namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
+namespace Spect.Net.VsPackage.Z80Programs.ExportMemory
 {
     /// <summary>
-    /// Interaction logic for ExportDisassemblyDialog.xaml
+    /// Interaction logic for ExportMemoryDialog.xaml
     /// </summary>
-    public partial class ExportDisassemblyDialog
+    public partial class ExportMemoryDialog
     {
         /// <summary>
         /// The view model behind this dialog
         /// </summary>
-        public ExportDisassemblyViewModel Vm { get; private set; }
+        public ExportMemoryViewModel Vm { get; private set; }
 
         /// <summary>
         /// Sets the view model of this dialog
         /// </summary>
         /// <param name="vm"></param>
-        public void SetVm(ExportDisassemblyViewModel vm)
+        public void SetVm(ExportMemoryViewModel vm)
         {
             DataContext = Vm = vm;
         }
 
-        public ExportDisassemblyDialog()
+
+        public ExportMemoryDialog()
         {
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Cancels the operation
-        /// </summary>
         private void OnCancelClick(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();
         }
 
-        /// <summary>
-        /// Initiates the export operation
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void OnExportClick(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
@@ -77,8 +72,8 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportDisassembly
             // --- Get the file name
             var dialog = new FolderBrowserDialog
             {
-                SelectedPath = ExportDisassemblyViewModel.LatestFolder 
-                    ?? "C:\\Temp",
+                SelectedPath = ExportMemoryViewModel.LatestFolder
+                               ?? "C:\\Temp",
                 Description = "Select the folder to export to"
             };
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)

@@ -57,7 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="CommandTool.g4">
-      <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Spect.Net.CommandParser.Generated</CustomToolNamespace>
     </Antlr4>
     <None Include="packages.config" />

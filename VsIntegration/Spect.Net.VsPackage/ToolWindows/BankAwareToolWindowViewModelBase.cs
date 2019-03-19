@@ -412,5 +412,34 @@ namespace Spect.Net.VsPackage.ToolWindows
             value = romLabelAddrs[0];
             return true;
         }
+
+        /// <summary>
+        /// Gets and checks the specified address.
+        /// </summary>
+        /// <param name="addr">Address, if specified with a number</param>
+        /// <param name="symbol">Symbol, if specified</param>
+        /// <param name="resolvedAddress">Resolved address</param>
+        /// <param name="validationMessage">Validation message, in case of error</param>
+        /// <returns>True, if the address is successfully resolved; otherwise, false.</returns>
+        protected bool ObtainAddress(ushort addr, string symbol, out ushort resolvedAddress, out string validationMessage)
+        {
+            resolvedAddress = addr;
+            if (symbol != null)
+            {
+                if (!ResolveSymbol(symbol, out resolvedAddress))
+                {
+                    validationMessage = string.Format(UNDEF_SYMBOL, symbol);
+                    return false;
+                }
+            }
+
+            validationMessage = null;
+            if ((RomViewMode || RamBankViewMode) && addr > 0x4000)
+            {
+                validationMessage = $"Address #{addr:X4} out of range";
+                return false;
+            }
+            return true;
+        }
     }
 }

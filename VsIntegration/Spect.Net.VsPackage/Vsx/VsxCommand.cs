@@ -39,7 +39,7 @@ namespace Spect.Net.VsPackage.Vsx
         /// Sites the instance of this class
         /// </summary>
         /// <param name="commandSet">The command set that holds this command</param>
-        public virtual void Site(IVsxCommandSet commandSet)
+        public virtual async void Site(IVsxCommandSet commandSet)
         {
             // --- Obtain and store command properties
             CommandSet = (TCommandSet)commandSet;
@@ -51,6 +51,7 @@ namespace Spect.Net.VsPackage.Vsx
             }
 
             // --- Register the command
+            await Package.JoinableTaskFactory.SwitchToMainThreadAsync();
             var commandService = ((IServiceProvider)Package).GetService(
                 typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService == null) return;
