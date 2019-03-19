@@ -1023,6 +1023,7 @@ namespace Spect.Net.Assembler
             // --- Character literals
             else if (token.StartsWith("\"") || token.StartsWith("'"))
             {
+                AddString(context);
                 var charExpr = context.GetText();
                 var bytes = Z80Assembler.SpectrumStringToBytes(charExpr.Substring(1, charExpr.Length - 2));
                 value = bytes.Count == 0 ? (ushort)0x00 : bytes[0];
