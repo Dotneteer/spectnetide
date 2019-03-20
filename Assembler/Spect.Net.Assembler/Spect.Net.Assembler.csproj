@@ -55,6 +55,7 @@
     <Compile Include="Assembler\AssemblerOutput.cs" />
     <Compile Include="Assembler\AssemblerTaskInfo.cs" />
     <Compile Include="Assembler\AssemblyModule.cs" />
+    <Compile Include="Assembler\BinaryComparisonInfo.cs" />
     <Compile Include="Assembler\FieldDefinition.cs" />
     <Compile Include="Assembler\IHasUsageInfo.cs" />
     <Compile Include="Assembler\StructDefinition.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="SyntaxTree\ParserErrorLine.cs" />
     <Compile Include="SyntaxTree\PragmaBase.cs" />
     <Compile Include="SyntaxTree\Pragmas\AlignPragma.cs" />
+    <Compile Include="SyntaxTree\Pragmas\CompareBinPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefbPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefgPragma.cs" />
     <Compile Include="SyntaxTree\Pragmas\DefgxPragma.cs" />

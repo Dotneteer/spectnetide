@@ -492,6 +492,9 @@ namespace Spect.Net.Assembler
         public override object VisitIncBinPragma(Z80AsmParser.IncBinPragmaContext context) 
             => new IncludeBinPragma(this, context);
 
+        public override object VisitCompareBinPragma(Z80AsmParser.CompareBinPragmaContext context)
+            => new CompareBinPragma(this, context);
+
         #endregion
 
         #region Field assignment

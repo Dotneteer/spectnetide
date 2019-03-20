@@ -43,7 +43,7 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportMemory
             {
                 var contents = spectrumVm.MemoryDevice.CloneMemory()
                     .Skip(startAddress)
-                    .Take(endAddress - startAddress)
+                    .Take(endAddress - startAddress + 1)
                     .ToArray();
                 var dirName = Path.GetDirectoryName(ExportParams.Filename);
                 if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName))
@@ -57,6 +57,9 @@ namespace Spect.Net.VsPackage.Z80Programs.ExportMemory
                 VsxDialogs.Show($"Error while exporting to file {ExportParams.Filename}: {ex.Message}",
                     "Export disassembly error.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
             }
+
+            if (!ExportParams.AddToProject) return;
+
             DiscoveryProject.AddFileToProject(SpectNetPackage.Default.Options.MemoryExportFolder,
                 ExportParams.Filename,
                 INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);

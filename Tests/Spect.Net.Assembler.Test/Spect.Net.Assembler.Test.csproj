@@ -58,6 +58,7 @@
     <Compile Include="AssemblerTestBed.cs" />
     <Compile Include="Assembler\AluOperationEmitTests.cs" />
     <Compile Include="Assembler\BitOperationEmitTests.cs" />
+    <Compile Include="Assembler\CompareBinPragmaTests.cs" />
     <Compile Include="Assembler\ContinueTests.cs" />
     <Compile Include="Assembler\ControlFlowOperationEmitTests.cs" />
     <Compile Include="Assembler\DirectiveTests.cs" />
@@ -141,6 +142,42 @@
     <Content Include="TestFiles\IncludeBinWithNegativeOffset.z80asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="TestFiles\CompareBinWithTooShortSegment.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinExists.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithNegativeLength.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithTightOffset.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithTooLongOffset.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithNonZeroOffset.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithNonZeroOffsetAndLength.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithNegativeOffset.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithNoMatch.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithZeroOffsetAndLength.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinWithZeroOffset.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CompareBinNotExists.z80asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestFiles\IncludeBinNotExists.z80asm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -243,6 +280,9 @@
     <Content Include="TestFiles\IncludeBinWithTightSegment.z80asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="TestFiles\Memory.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">

@@ -58,6 +58,7 @@ pragma
 	|	defgPragma
 	|   errorPragma
 	|	incBinPragma
+	|	compareBinPragma
 	;
 
 directive
@@ -147,6 +148,8 @@ defgxPragma	: DGXPRAG expr ;
 defgPragma	: DGPRAG ;
 errorPragma : ERRORPR expr ;
 incBinPragma: INCBIN expr ( ',' expr ( ',' expr)? )? ;
+compareBinPragma: COMPAREBIN expr ( ',' expr ( ',' expr)? )? ;
+
 byteEmPragma
 	:  defbPragma 
 	| defwPragma 
@@ -642,6 +645,8 @@ RNDSEED	: '.rndseed' | 'rndseed' | '.RNDSEED' | 'RNDSEED' ;
 ERRORPR	: '.error' | '.ERROR' | 'error' | 'ERROR' ;
 INCBIN	: '.includebin' | 'includebin' | '.INCLUDEBIN' | 'INCLUDEBIN' 
 		  | '.include_bin' | 'include_bin' | '.INCLUDE_BIN' | 'INCLUDE_BIN' ;
+COMPAREBIN
+		: '.comparebin' | 'comparebin' | '.COMPAREBIN' | 'COMPAREBIN' ;
 
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;

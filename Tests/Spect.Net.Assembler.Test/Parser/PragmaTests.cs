@@ -1144,5 +1144,61 @@ namespace Spect.Net.Assembler.Test.Parser
             line.LengthExpr.ShouldBeOfType<LiteralNode>();
         }
 
+        [TestMethod]
+        [DataRow(".comparebin \"file\"")]
+        [DataRow(".COMPAREBIN \"file\"")]
+        [DataRow("comparebin \"file\"")]
+        [DataRow("COMPAREBIN \"file\"")]
+        public void CompareBinPragmaWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompareBinPragma;
+            line.ShouldNotBeNull();
+            line.FileExpr.ShouldBeOfType<LiteralNode>();
+            line.OffsetExpr.ShouldBeNull();
+            line.LengthExpr.ShouldBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".comparebin \"file\", 100")]
+        [DataRow(".COMPAREBIN \"file\", 100")]
+        [DataRow("comparebin \"file\", 100")]
+        [DataRow("COMPAREBIN \"file\", 100")]
+        public void CompareBinPragmaWithOffsetWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompareBinPragma;
+            line.ShouldNotBeNull();
+            line.FileExpr.ShouldBeOfType<LiteralNode>();
+            line.OffsetExpr.ShouldBeOfType<LiteralNode>();
+            line.LengthExpr.ShouldBeNull();
+        }
+
+        [TestMethod]
+        [DataRow(".comparebin \"file\", 100, 200")]
+        [DataRow(".COMPAREBIN \"file\", 100, 200")]
+        [DataRow("comparebin \"file\", 100, 200")]
+        [DataRow("COMPAREBIN \"file\", 100, 200")]
+        public void CompareBinPragmaWithOffsetAndLengthWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as CompareBinPragma;
+            line.ShouldNotBeNull();
+            line.FileExpr.ShouldBeOfType<LiteralNode>();
+            line.OffsetExpr.ShouldBeOfType<LiteralNode>();
+            line.LengthExpr.ShouldBeOfType<LiteralNode>();
+        }
     }
 }

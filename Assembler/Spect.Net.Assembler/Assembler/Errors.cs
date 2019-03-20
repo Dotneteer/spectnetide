@@ -112,6 +112,10 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0440 = "Z0440";
         public const string Z0441 = "Z0441";
         public const string Z0442 = "Z0442";
+        public const string Z0443 = "Z0443";
+        public const string Z0444 = "Z0444";
+        public const string Z0445 = "Z0445";
+        public const string Z0446 = "Z0446";
 
         public const string Z0500 = "Z0500";
 
@@ -217,6 +221,10 @@ namespace Spect.Net.Assembler.Assembler
             { Z0440, "Field assignment instruction cannot be used outside of .struct invocation." },
             { Z0441, "The .struct definition of {0} does not have a field named {1}." },
             { Z0442, "The .struct size of {0} is {1} byte(s). The invocation wants to emit {2} bytes." },
+            { Z0443, "Invalid COMPAREBIN offset value (negative, or greater than the file length)." },
+            { Z0444, "Invalid COMPAREBIN length value (negative, or segment exceends the file length)." },
+            { Z0445, "COMPAREBIN fails: {0}." },
+            { Z0446, "Cannot open file '{0}' used in COMPAREBIN pragma ({0})." },
             { Z0500, "ERROR: {0}" },
         };
 

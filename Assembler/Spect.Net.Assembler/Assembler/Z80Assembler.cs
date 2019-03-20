@@ -5,6 +5,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
+using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Z80AsmParser = Spect.Net.Assembler.Generated.Z80AsmParser;
 
@@ -61,6 +62,11 @@ namespace Spect.Net.Assembler.Assembler
         /// This event is raised whenever a TRACE pragma creates an output message
         /// </summary>
         public event EventHandler<AssemblerMessageArgs> AssemblerMessageCreated;
+
+        /// <summary>
+        /// COMPAREBIN pragma information
+        /// </summary>
+        public List<BinaryComparisonInfo> CompareBins { get; private set; }
 
         /// <summary>
         /// Raises a new assembler message
@@ -133,11 +139,13 @@ namespace Spect.Net.Assembler.Assembler
             _options = options ?? new AssemblerOptions();
             ConditionSymbols = new HashSet<string>(_options.PredefinedSymbols);
             CurrentModule = Output = new AssemblerOutput(sourceItem);
+            CompareBins = new List<BinaryComparisonInfo>();
 
             // --- Do the compilation phases
             if (!ExecuteParse(0, sourceItem, sourceText, out var lines)
                 || !EmitCode(lines)
-                || !FixupSymbols())
+                || !FixupSymbols()
+                || !CompareBinaries())
             {
                 // --- Compilation failed, remove segments
                 Output.Segments.Clear();
@@ -270,7 +278,6 @@ namespace Spect.Net.Assembler.Assembler
             var filename = incDirective.Filename.Trim();
             if (filename.StartsWith("<") && filename.EndsWith(">"))
             {
-                // TODO: System include file
                 filename = filename.Substring(1, filename.Length - 2);
             }
 
@@ -426,6 +433,134 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         #endregion Parsing and Directive processing
+
+        #region Comparison
+
+        /// <summary>
+        /// Executes the COMPAREBIN pragmas
+        /// </summary>
+        /// <returns>True, if all comparison were OK; otherwise, false</returns>
+        private bool CompareBinaries()
+        {
+            foreach (var binInfo in CompareBins)
+            {
+                var pragma = binInfo.ComparePragma;
+
+                // --- Get the file name
+                var fileNameValue = EvalImmediate(pragma, pragma.FileExpr);
+                if (!fileNameValue.IsValid) continue;
+
+                if (fileNameValue.Type != ExpressionValueType.String)
+                {
+                    ReportError(Errors.Z0306, pragma);
+                    continue;
+                }
+
+                // --- Obtain optional offset
+                var offset = 0;
+                if (pragma.OffsetExpr != null)
+                {
+                    var offsValue = EvalImmediate(pragma, pragma.OffsetExpr);
+                    if (offsValue.Type != ExpressionValueType.Integer)
+                    {
+                        ReportError(Errors.Z0308, pragma);
+                        continue;
+                    }
+                    offset = (int)offsValue.AsLong();
+                    if (offset < 0)
+                    {
+                        ReportError(Errors.Z0443, pragma);
+                        continue;
+                    }
+                }
+
+                // --- Obtain optional length
+                int? length = null;
+                if (pragma.LengthExpr != null)
+                {
+                    var lengthValue = EvalImmediate(pragma, pragma.LengthExpr);
+                    if (lengthValue.Type != ExpressionValueType.Integer)
+                    {
+                        ReportError(Errors.Z0308, pragma);
+                        continue;
+                    }
+                    length = (int)lengthValue.AsLong();
+                    if (length < 0)
+                    {
+                        ReportError(Errors.Z0444, pragma);
+                        continue;
+                    }
+                }
+
+                // --- Read the binary file
+                var currentSourceFile = Output.SourceFileList[pragma.FileIndex];
+                var dirname = Path.GetDirectoryName(currentSourceFile.Filename) ?? string.Empty;
+                var filename = Path.Combine(dirname, fileNameValue.AsString());
+
+                byte[] contents;
+                try
+                {
+                    var fileLength = new FileInfo(filename).Length;
+                    using (var reader = new BinaryReader(File.OpenRead(filename)))
+                    {
+                        contents = reader.ReadBytes((int)fileLength);
+                    }
+                }
+                catch (Exception e)
+                {
+                    ReportError(Errors.Z0446, pragma, e.Message);
+                    continue;
+                }
+
+                // --- Check content segment
+                if (offset >= contents.Length)
+                {
+                    ReportError(Errors.Z0443, pragma);
+                    continue;
+                }
+
+                if (length == null)
+                {
+                    length = contents.Length - offset;
+                }
+
+                // --- Check length
+                if (offset + length > contents.Length)
+                {
+                    ReportError(Errors.Z0444, pragma);
+                    continue;
+                }
+
+                // --- Everything is ok, do the comparison
+                var segment = binInfo.Segment;
+                if (segment == null)
+                {
+                    ReportError(Errors.Z0445, pragma, "No output segment to compare.");
+                    continue;
+                }
+
+                // --- Check current segment length
+                if (binInfo.SegmentLength < length)
+                {
+                    ReportError(Errors.Z0445, pragma,
+                        $"Current segment length is only {segment.CurrentOffset} while binary length to check is {length}");
+                    continue;
+                }
+
+                for (var i = 0; i < length; i++)
+                {
+                    var segmData = segment.EmittedCode[i];
+                    var binData = contents[i + offset];
+                    if (segmData == binData) continue;
+                    ReportError(Errors.Z0445, pragma,
+                        $"Output segment at offset {i} (#{i:X4}) is {segmData} (#{segmData:X4}), but in binary it is {binData} (#{binData:X4})");
+                    break;
+                }
+            }
+            return Output.ErrorCount == 0;
+        }
+
+        #endregion
 
         #region Helpers
 

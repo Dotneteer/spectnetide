@@ -2079,6 +2079,10 @@ namespace Spect.Net.Assembler.Assembler
                 case IncludeBinPragma incBinPragma:
                     ProcessIncBinPragma(incBinPragma);
                     break;
+
+                case CompareBinPragma compareBinPragma:
+                    ProcessCompareBinPragma(compareBinPragma);
+                    break;
             }
         }
 
@@ -2918,6 +2922,28 @@ namespace Spect.Net.Assembler.Assembler
             {
                 EmitByte(contents[i]);
             }
+        }
+
+        /// <summary>
+        /// Processes the COMPAREBIN pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of DEFG pragma</param>
+        private void ProcessCompareBinPragma(CompareBinPragma pragma)
+        {
+            // --- Obtain the file name
+            var fileNameValue = EvalImmediate(pragma, pragma.FileExpr);
+            if (!fileNameValue.IsValid) return;
+
+            if (fileNameValue.Type != ExpressionValueType.String)
+            {
+                ReportError(Errors.Z0306, pragma);
+                return;
+            }
+
+            // --- Store pragma information
+            CompareBins.Add(new BinaryComparisonInfo(pragma, 
+                CurrentSegment, 
+                CurrentSegment.CurrentOffset));
         }
 
         #endregion
