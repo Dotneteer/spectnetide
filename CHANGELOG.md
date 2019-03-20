@@ -1,3 +1,10 @@
+### Version 1.18.4
+__FEATURE__: The ZX Spectrum memory window allows exporting the memory contents.  
+__FEATURE__: Z80 Assembler: new `.comparebin` pragma.  
+__CHANGE__: The Z80 Disassembly window uses `X` commands (instead of `XD`) for exporting disassembly  
+__FIX__: Character literals use syntax highlighting (just like strings).    
+__CHANGE__: The SpectNetIDE package now uses the `PackageAutoLoadFlags.BackgroundLoad` flag.
+
 ### Version 1.18.3
 __FEATURE__: You can toggle the the breakpoint in the Z80 Disassembly tool window by clicking on an item.  
 __FEATURE__: The Z80 Disassembly window allows exporting the disassembly.
