@@ -540,14 +540,14 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Check current segment length
-                if (binInfo.SegmentLength < length)
+                if (binInfo.SegmentLength > length)
                 {
                     ReportError(Errors.Z0445, pragma,
-                        $"Current segment length is only {segment.CurrentOffset} while binary length to check is {length}");
+                        $"Current binary length is only {length} while segment length to check is {binInfo.SegmentLength}");
                     continue;
                 }
 
-                for (var i = 0; i < length; i++)
+                for (var i = 0; i < binInfo.SegmentLength; i++)
                 {
                     var segmData = segment.EmittedCode[i];
                     var binData = contents[i + offset];

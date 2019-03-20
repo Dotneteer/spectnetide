@@ -35,12 +35,14 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
         {
             SourceBuffer = sourceBuffer;
             FilePath = filePath;
-            Package.SolutionOpened += (s, e) =>
+            if (Package != null)
             {
-                Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
-            };
+                Package.SolutionOpened += (s, e) =>
+                {
+                    Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
+                };
+            }
             sourceBuffer.Changed += SourceBufferOnChanged;
-            //sourceBuffer.PostChanged += SourceBufferOnPostChanged;
             _fakeEdit = false;
         }
 
@@ -49,40 +51,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
         /// </summary>
         private void SourceBufferOnChanged(object sender, TextContentChangedEventArgs e)
         {
-            Package.OnTestFileChanged(FilePath);
-        }
-
-        private void SourceBufferOnPostChanged(object sender, EventArgs eventArgs)
-        {
-            if (_fakeEdit) return;
-
-            _fakeEdit = true;
-            try
-            {
-                var (firstLine, lastLine) = Z80TestViewTagger.GetViewPortLines(FilePath);
-                if (firstLine < 0) return;
-
-                var edit = SourceBuffer.CreateEdit();
-                for (var i = firstLine; i <= lastLine; i++)
-                {
-                    var modeLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(i);
-                    var pos = modeLine.End.Position;
-                    edit.Insert(pos, " ");
-                }
-                edit.Apply();
-                edit = SourceBuffer.CreateEdit();
-                for (var i = firstLine; i <= lastLine; i++)
-                {
-                    var modeLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(i);
-                    var pos = modeLine.End.Position;
-                    edit.Delete(new Span(pos-1, 1));
-                }
-                edit.Apply();
-            }
-            finally
-            {
-                _fakeEdit = false;
-            }
+            Package?.OnTestFileChanged(FilePath);
         }
 
         /// <summary>

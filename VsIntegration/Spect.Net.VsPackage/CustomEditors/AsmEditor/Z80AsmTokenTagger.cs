@@ -38,6 +38,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
             SourceBuffer = sourceBuffer;
             SourceBuffer.Changed += (sender, args) => { Package.OnTestFileChanged(FilePath); };
             FilePath = filePath;
+            if (Package != null)
             Package.SolutionOpened += (s, e) =>
             {
                 Package.CodeDiscoverySolution.CurrentProject.ProjectItemRenamed += OnProjectItemRenamed;
@@ -71,12 +72,15 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         {
             // --- Obtain the breakpoints that may affect this view
             var affectedLines = new List<int>();
-            foreach (Breakpoint bp in Package.ApplicationObject.Debugger.Breakpoints)
+            if (Package != null)
             {
-                if (string.Compare(bp.File, FilePath, StringComparison.InvariantCultureIgnoreCase) == 0)
+                foreach (Breakpoint bp in Package.ApplicationObject.Debugger.Breakpoints)
                 {
-                    // --- Breakpoints start lines at 1, ITextBuffer starts from 0
-                    affectedLines.Add(bp.FileLine - 1);
+                    if (string.Compare(bp.File, FilePath, StringComparison.InvariantCultureIgnoreCase) == 0)
+                    {
+                        // --- Breakpoints start lines at 1, ITextBuffer starts from 0
+                        affectedLines.Add(bp.FileLine - 1);
+                    }
                 }
             }
 

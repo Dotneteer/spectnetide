@@ -149,7 +149,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
         /// <inheritdoc />
         public void Dispose()
         {
-            Package.DebugInfoProvider?.UnregisterTagger(FilePath);
+            Package?.DebugInfoProvider?.UnregisterTagger(FilePath);
         }
     }
 }

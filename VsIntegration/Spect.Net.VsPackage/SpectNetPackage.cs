@@ -204,13 +204,13 @@ namespace Spect.Net.VsPackage
         /// </summary>
         protected override async Task OnInitializeAsync()
         {
-            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            // --- We are going to use this singleton instance
+            Default = this;
 
             // --- Prepare project system extension files
             CheckCpsFiles();
 
-            // --- We are going to use this singleton instance
-            Default = this;
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             RegisterEditorFactory(new RomEditorFactory());
             RegisterEditorFactory(new TzxEditorFactory());

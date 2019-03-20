@@ -51,7 +51,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 filePath = docProperty.FilePath;
             }
             var tagger = new Z80DebugTokenTagger(buffer, textView, filePath);
-            SpectNetPackage.Default.DebugInfoProvider?.RegisterTagger(filePath, tagger);
+            SpectNetPackage.Default?.DebugInfoProvider?.RegisterTagger(filePath, tagger);
             return tagger as ITagger<T>;
         }
     }
