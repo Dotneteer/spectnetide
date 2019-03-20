@@ -3,9 +3,9 @@
 namespace Spect.Net.CommandParser.SyntaxTree
 {
     /// <summary>
-    /// This class represents an EXPORT MEMORY tool command
+    /// This class represents an EXPORT DISASSEMBLY tool command
     /// </summary>
-    public class ExportMemoryToolCommand : ToolCommandNode
+    public class ExportToolCommand : ToolCommandNode
     {
         /// <summary>
         /// FROM index
@@ -17,7 +17,7 @@ namespace Spect.Net.CommandParser.SyntaxTree
         /// </summary>
         public ushort To { get; }
 
-        public ExportMemoryToolCommand(CommandToolParser.ExportMemoryCommandContext context)
+        public ExportToolCommand(CommandToolParser.ExportCommandContext context)
         {
             if (context.LITERAL().Length < 2) return;
             From = ProcessNumber(context.LITERAL()[0].GetText());

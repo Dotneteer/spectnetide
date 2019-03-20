@@ -332,7 +332,7 @@ public partial class CommandToolBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	public virtual Result VisitCompactCommand([NotNull] CommandToolParser.CompactCommandContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CommandToolParser.exportDisassemblyCommand"/>.
+	/// Visit a parse tree produced by <see cref="CommandToolParser.exportCommand"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -340,17 +340,6 @@ public partial class CommandToolBaseVisitor<Result> : AbstractParseTreeVisitor<R
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitExportDisassemblyCommand([NotNull] CommandToolParser.ExportDisassemblyCommandContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="CommandToolParser.exportMemoryCommand"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitExportMemoryCommand([NotNull] CommandToolParser.ExportMemoryCommandContext context) { return VisitChildren(context); }
+	public virtual Result VisitExportCommand([NotNull] CommandToolParser.ExportCommandContext context) { return VisitChildren(context); }
 }
 } // namespace Spect.Net.CommandParser.Generated

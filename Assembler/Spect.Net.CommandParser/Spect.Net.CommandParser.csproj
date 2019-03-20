@@ -66,8 +66,7 @@
     <Compile Include="SyntaxTree\EraseAllBreakpointsToolCommand.cs" />
     <Compile Include="SyntaxTree\EraseAllWatchToolCommand.cs" />
     <Compile Include="SyntaxTree\ExchangeWatchToolCommand.cs" />
-    <Compile Include="SyntaxTree\ExportDisassemblyToolCommand.cs" />
-    <Compile Include="SyntaxTree\ExportMemoryToolCommand.cs" />
+    <Compile Include="SyntaxTree\ExportToolCommand.cs" />
     <Compile Include="SyntaxTree\GotoToolCommand.cs" />
     <Compile Include="SyntaxTree\JumpToolCommand.cs" />
     <Compile Include="SyntaxTree\LabelToolCommand.cs" />

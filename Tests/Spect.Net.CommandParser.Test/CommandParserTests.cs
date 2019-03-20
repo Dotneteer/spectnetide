@@ -859,10 +859,8 @@ namespace Spect.Net.CommandParser.Test
         [DataRow("rby1234", null)]
         [DataRow("xw1234 :2345", "XW 1234 :2345")]
         [DataRow("xwy1234 :2345", null)]
-        [DataRow("xd1234 :2345", "XD 1234 :2345")]
-        [DataRow("xdy1234 :2345", null)]
-        [DataRow("xm1234 :2345", "XM 1234 :2345")]
-        [DataRow("xmy1234 :2345", null)]
+        [DataRow("x1234 :2345", "X 1234 :2345")]
+        [DataRow("xy1234 :2345", null)]
         public void CompactParsingWorks(string source, string expected)
         {
             // --- Act
@@ -883,8 +881,8 @@ namespace Spect.Net.CommandParser.Test
         }
 
         [TestMethod]
-        [DataRow("xd 1234 :1234", 4660, 1234)]
-        [DataRow("xd:1234 1234", 1234, 4660)]
+        [DataRow("x 1234 :1234", 4660, 1234)]
+        [DataRow("x:1234 1234", 1234, 4660)]
         public void ExportDisassemblyParsingWorks(string source, int from, int to)
         {
             // --- Act
@@ -892,27 +890,10 @@ namespace Spect.Net.CommandParser.Test
 
             // --- Assert
 
-            var command = parsed as ExportDisassemblyToolCommand;
+            var command = parsed as ExportToolCommand;
             command.ShouldNotBeNull();
             command.From.ShouldBe((ushort)from);
             command.To.ShouldBe((ushort)to);
         }
-
-        [TestMethod]
-        [DataRow("xm 1234 :1234", 4660, 1234)]
-        [DataRow("xm:1234 1234", 1234, 4660)]
-        public void ExportMemoryParsingWorks(string source, int from, int to)
-        {
-            // --- Act
-            var parsed = ParseCommand(source);
-
-            // --- Assert
-
-            var command = parsed as ExportMemoryToolCommand;
-            command.ShouldNotBeNull();
-            command.From.ShouldBe((ushort)from);
-            command.To.ShouldBe((ushort)to);
-        }
-
     }
 }

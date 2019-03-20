@@ -142,7 +142,7 @@
     <Content Include="TestFiles\IncludeBinWithNegativeOffset.z80asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="TestFiles\CompareBinWithTooShortSegment.z80asm">
+    <None Include="TestFiles\CompareBinWithTooLongSegment.z80asm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestFiles\CompareBinExists.z80asm">

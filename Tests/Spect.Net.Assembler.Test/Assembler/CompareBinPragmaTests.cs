@@ -118,7 +118,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         public void CompilationWithTooShortSegmentFails()
         {
             // --- Act
-            var output = Compile("CompareBinWithTooShortSegment.z80asm");
+            var output = Compile("CompareBinWithTooLongSegment.z80asm");
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);

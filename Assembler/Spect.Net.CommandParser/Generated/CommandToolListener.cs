@@ -329,25 +329,14 @@ public interface ICommandToolListener : IParseTreeListener {
 	void ExitCompactCommand([NotNull] CommandToolParser.CompactCommandContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandToolParser.exportDisassemblyCommand"/>.
+	/// Enter a parse tree produced by <see cref="CommandToolParser.exportCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterExportDisassemblyCommand([NotNull] CommandToolParser.ExportDisassemblyCommandContext context);
+	void EnterExportCommand([NotNull] CommandToolParser.ExportCommandContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandToolParser.exportDisassemblyCommand"/>.
+	/// Exit a parse tree produced by <see cref="CommandToolParser.exportCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitExportDisassemblyCommand([NotNull] CommandToolParser.ExportDisassemblyCommandContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandToolParser.exportMemoryCommand"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterExportMemoryCommand([NotNull] CommandToolParser.ExportMemoryCommandContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandToolParser.exportMemoryCommand"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitExportMemoryCommand([NotNull] CommandToolParser.ExportMemoryCommandContext context);
+	void ExitExportCommand([NotNull] CommandToolParser.ExportCommandContext context);
 }
 } // namespace Spect.Net.CommandParser.Generated

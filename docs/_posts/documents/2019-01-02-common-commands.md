@@ -2,11 +2,11 @@
 layout: documents
 categories: 
   - "Tool Commands"
-title:  "Navigation and View Commands"
+title:  "Common Commands"
 alias: memory-commands
 seqno: 20
 selector: documents
-permalink: "documents/memory-commands"
+permalink: "documents/common-commands"
 ---
 
 This section describes the navigation and view commands you can use in the __ZX Spectrum Memory__, and __Z80 Disassembly__ tool windows.
@@ -51,3 +51,19 @@ Uses the currently paged bank for the `#C000`..`#FFFF` range.
 
 > __Note__: Right now, these views cannot handle the special banking modes available in the Spectrum +3E model (through the `#1ffd` port).
 This feature will be implemented later.
+
+## Export Command
+
+You can export the contents of the memory or the disassembly with the export command:
+
+__`X`__ *`literal`* *`literal`*
+
+The first literal defines the start (inclusive), the second the end of the address range (inclusive) to export. When you run the command, it shows up a dialog to set a few export parameters.
+
+ZX Spectrum Memory:
+
+![Predefined symbols]({{ site.baseurl }}/assets/images/commands/export-memory-dialog.png)
+
+Z80 Disassembly:
+
+![Predefined symbols]({{ site.baseurl }}/assets/images/commands/export-disassembly-dialog.png)

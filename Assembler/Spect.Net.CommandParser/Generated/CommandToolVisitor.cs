@@ -222,17 +222,10 @@ public interface ICommandToolVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCompactCommand([NotNull] CommandToolParser.CompactCommandContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CommandToolParser.exportDisassemblyCommand"/>.
+	/// Visit a parse tree produced by <see cref="CommandToolParser.exportCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExportDisassemblyCommand([NotNull] CommandToolParser.ExportDisassemblyCommandContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="CommandToolParser.exportMemoryCommand"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExportMemoryCommand([NotNull] CommandToolParser.ExportMemoryCommandContext context);
+	Result VisitExportCommand([NotNull] CommandToolParser.ExportCommandContext context);
 }
 } // namespace Spect.Net.CommandParser.Generated

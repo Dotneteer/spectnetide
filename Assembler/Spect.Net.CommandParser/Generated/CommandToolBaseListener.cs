@@ -387,30 +387,17 @@ public partial class CommandToolBaseListener : ICommandToolListener {
 	public virtual void ExitCompactCommand([NotNull] CommandToolParser.CompactCommandContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandToolParser.exportDisassemblyCommand"/>.
+	/// Enter a parse tree produced by <see cref="CommandToolParser.exportCommand"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExportDisassemblyCommand([NotNull] CommandToolParser.ExportDisassemblyCommandContext context) { }
+	public virtual void EnterExportCommand([NotNull] CommandToolParser.ExportCommandContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandToolParser.exportDisassemblyCommand"/>.
+	/// Exit a parse tree produced by <see cref="CommandToolParser.exportCommand"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExportDisassemblyCommand([NotNull] CommandToolParser.ExportDisassemblyCommandContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandToolParser.exportMemoryCommand"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExportMemoryCommand([NotNull] CommandToolParser.ExportMemoryCommandContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandToolParser.exportMemoryCommand"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExportMemoryCommand([NotNull] CommandToolParser.ExportMemoryCommandContext context) { }
+	public virtual void ExitExportCommand([NotNull] CommandToolParser.ExportCommandContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

@@ -419,7 +419,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                     break;
                 }
 
-                case ExportDisassemblyToolCommand exportDisassemblyCommand:
+                case ExportToolCommand exportDisassemblyCommand:
                 {
                     if (!ObtainAddress(exportDisassemblyCommand.From, null,
                         out var startAddress,

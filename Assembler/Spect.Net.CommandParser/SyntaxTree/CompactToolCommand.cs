@@ -13,7 +13,7 @@ namespace Spect.Net.CommandParser.SyntaxTree
             "G", "R", "B", "LW", "L", "C", "D", "P", "J",
             "MB", "MD", "MW", "MS", "MC",
             "MG", "MG1", "MG2", "MG3", "MG4",
-            "SB", "TB", "T", "RB", "UB", "RL", "RC", "RB", "RP", "XW", "XD", "XM"
+            "SB", "TB", "T", "RB", "UB", "RL", "RC", "RB", "RP", "XW", "X"
         };
 
         /// <summary>

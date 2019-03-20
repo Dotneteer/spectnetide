@@ -147,14 +147,9 @@ namespace Spect.Net.CommandParser
                 return new EraseAllWatchToolCommand();
             }
 
-            if (context.exportDisassemblyCommand() != null)
+            if (context.exportCommand() != null)
             {
-                return new ExportDisassemblyToolCommand(context.exportDisassemblyCommand());
-            }
-
-            if (context.exportMemoryCommand() != null)
-            {
-                return new ExportMemoryToolCommand(context.exportMemoryCommand());
+                return new ExportToolCommand(context.exportCommand());
             }
 
             return null;

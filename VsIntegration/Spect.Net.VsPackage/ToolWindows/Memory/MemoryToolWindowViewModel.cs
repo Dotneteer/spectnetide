@@ -208,7 +208,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                     SetFullViewMode();
                     break;
 
-                case ExportMemoryToolCommand exportMemoryCommand:
+                case ExportToolCommand exportMemoryCommand:
                 {
                     if (!ObtainAddress(exportMemoryCommand.From, null,
                         out var startAddress,
