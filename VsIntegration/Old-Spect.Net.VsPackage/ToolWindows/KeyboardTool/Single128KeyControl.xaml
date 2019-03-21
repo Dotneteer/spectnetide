@@ -1,0 +1,214 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.ToolWindows.KeyboardTool" x:Class="Spect.Net.VsPackage.ToolWindows.KeyboardTool.Single128KeyControl" 
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="100" d:DataContext="{d:DesignInstance {x:Type local:SingleKey128ControlSampleData}, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Border Padding="3,0,3,0" BorderBrush="#181818" 
+            BorderThickness="1" 
+            Background="{StaticResource BDebugBackground}"
+            Width="75" Height="73">
+        <Grid>
+            <Ellipse x:Name="ButtonBack"
+                     Margin="0,3,0,0"
+                     Fill="#FF383838"
+                     Width="66" Height="66" StrokeThickness="0" 
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Top" />
+            <StackPanel Orientation="Vertical">
+                <Border Width="66" Height="24" HorizontalAlignment="Left" 
+                        Background="{StaticResource BDebugBackground}">
+                    <StackPanel Orientation="Vertical"
+                                Visibility="{Binding CleanMode, Converter={StaticResource BoolToCollapsedConverter}}">
+                        <Border HorizontalAlignment="Center" Padding="4,1" Margin="0,1,0,1" 
+                                CornerRadius="2" 
+                                Visibility="{Binding HidesExtCaption, Converter={StaticResource BoolToHiddenConverter}}"
+                                MouseDown="OnExtKeyMouseDown"
+                                MouseUp="OnMouseUp"
+                                Cursor="Hand">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource BVividBlue}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="{Binding ExtKey}" HorizontalAlignment="Center" 
+                                       Style="{StaticResource ResourceKey=Sp128ButtonText}" />
+                        </Border>
+                        <Border HorizontalAlignment="Center" Padding="4,1" Margin="0,-4,0,1" 
+                                CornerRadius="2" 
+                                Visibility="{Binding HidesExtCaption, Converter={StaticResource BoolToHiddenConverter}}"
+                                MouseDown="OnExtShifKeyMouseDown"
+                                MouseUp="OnMouseUp"
+                                Cursor="Hand">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource BVividBlue}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="{Binding ExtShiftKey}" 
+                                       HorizontalAlignment="Center" 
+                                       Style="{StaticResource Sp128ButtonText}"/>
+                            </Border>
+                    </StackPanel>
+                </Border>
+                <Border Width="66" HorizontalAlignment="Left" 
+                        Background="Transparent" 
+                        Visibility="{Binding SimpleMode, Converter={StaticResource BoolToCollapsedConverter}}" 
+                        MouseEnter="OnMouseEnter"
+                        MouseLeave="OnMouseLeave"
+                        MouseDown="OnMainKeyMouseDown"
+                        MouseUp="OnMouseUp"
+                        Cursor="Hand">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Vertical" Visibility="{Binding NumericMode, Converter={StaticResource BoolToCollapsedConverter}}">
+                            <TextBlock Text="{Binding Keyword}" HorizontalAlignment="Center" Padding="4,2" Style="{StaticResource Sp128ButtonText}" Margin="0,0,0,0"/>
+                            <Border HorizontalAlignment="Right" Padding="4,2" Margin="0,-6,8,0" CornerRadius="2" 
+                                    Visibility="{Binding Centered, Converter={StaticResource BoolToCollapsedConverter}}"
+                                    MouseDown="OnSShiftMouseDown"
+                                    MouseUp="OnMouseUp">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource BVividBlue}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding SShiftKey}" 
+                                           HorizontalAlignment="Right" 
+                                           Style="{StaticResource Sp128ButtonText}" />
+                            </Border>
+                            <StackPanel
+                                Visibility="{Binding Centered, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Border HorizontalAlignment="Center" Padding="4,4,4,2" Margin="0,-5,0,0" CornerRadius="2" 
+                                        Visibility="{Binding CleanMode, Converter={StaticResource BoolToCollapsedConverter}}"
+                                        MouseDown="OnSShiftMouseDown"
+                                        MouseUp="OnMouseUp">
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource BVividBlue}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding SShiftKey}" 
+                                               HorizontalAlignment="Center"
+                                               Margin="0,-2,0,0"
+                                               Style="{StaticResource Sp128ButtonText}"
+                                    />
+                                </Border>
+                                <TextBlock Text="{Binding SShiftKey}" 
+                                           HorizontalAlignment="Center" 
+                                           Margin="0,-2,0,2"
+                                           Style="{StaticResource Sp128ButtonText}" 
+                                           Visibility="{Binding CleanMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Visibility="{Binding NumericMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"
+                                        Padding="4,4" Margin="8,0,0,0" CornerRadius="2"
+                                        Visibility="{Binding HasGraphics, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        MouseDown="OnGraphicsKeyMouseDown"
+                                        MouseUp="OnMouseUp">
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource BVividBlue}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border Width="16" Height="16" HorizontalAlignment="Center"
+                                        BorderBrush="White" 
+                                        BorderThickness="1" Visibility="{Binding HasGraphics, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Row="0" Grid.Column="1" Background="White" Visibility="{Binding HasBit0, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <Border Grid.Row="0" Grid.Column="0" Background="White" Visibility="{Binding HasBit1, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <Border Grid.Row="1" Grid.Column="1" Background="White" Visibility="{Binding HasBit2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    </Grid>
+                                </Border>
+                                </Border>
+                                <Border Grid.Column="1"
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"
+                                        Padding="4,2" Margin="0,0,2,0" CornerRadius="2"
+                                        MouseDown="OnSShiftMouseDown"
+                                        MouseUp="OnMouseUp">
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource BVividBlue}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding SShiftKey}" 
+                                               Style="{StaticResource Sp128NumButtonText}" 
+                                               HorizontalAlignment="Center" />
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                        <TextBlock Text="{Binding MainKey}" HorizontalAlignment="Center" Padding="6,2" TextAlignment="Center" 
+                                   Style="{StaticResource Sp128MainButtonText}" Margin="0,-5,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Width="66" Height="45"
+                        HorizontalAlignment="Left" 
+                        Background="Transparent" 
+                        MouseEnter="OnMouseEnter"
+                        MouseLeave="OnMouseLeave"
+                        MouseDown="OnMainKeyMouseDown"
+                        MouseUp="OnMouseUp"
+                        Visibility="{Binding SimpleMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                    <TextBlock Text="{Binding MainKey}" HorizontalAlignment="Center" Padding="6,2" TextAlignment="Center" Style="{StaticResource Sp128SimpleButtonText}" Margin="-1,4,0,0"/>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

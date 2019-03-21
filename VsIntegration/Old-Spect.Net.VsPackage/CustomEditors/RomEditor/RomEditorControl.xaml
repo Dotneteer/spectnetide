@@ -1,0 +1,63 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
+    xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
+    xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.ToolWindows.Disassembly"
+    x:Class="Spect.Net.VsPackage.CustomEditors.RomEditor.RomEditorControl" 
+    mc:Ignorable="d" 
+    Background="{DynamicResource BToolBackground}"
+    d:DesignHeight="300" d:DesignWidth="300" 
+    d:DataContext="{d:DesignInstance {x:Type local:MemoryViewModel}, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ShowPrompt">
+                <VisualState x:Name="ShowPrompt_False">
+                </VisualState>
+                <VisualState x:Name="ShowPrompt_True">
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition x:Name="MemoryRow" Height="*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition x:Name="DisassemblyRow" Height="0"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Panel.ZIndex="0" VerticalAlignment="Top" Visibility="{Binding ShowPrompt, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <toolWindows:CommandPromptControl x:Name="Prompt" Margin="2" MaxLength="32" IsValid="true"/>
+        </Border>
+        <ListBox Grid.Row="1" x:Name="MemoryDumpListBox"
+                 BorderThickness="0"
+                 HorizontalAlignment="Stretch"
+                 Margin="2"
+                 SelectionMode="Extended"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.CanContentScroll="True"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 ItemsSource="{Binding MemoryLines}"
+                 Background="Transparent"
+                 FontFamily="Consolas"
+                 FontSize="14"
+                 Foreground="{StaticResource BDebugForeground}" 
+                 ItemTemplate="{DynamicResource MemoryLineTemplate}"
+                 AlternationCount="2" 
+                 ItemContainerStyle="{DynamicResource MemoryLineItemStyle}"/>
+        <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="{DynamicResource BDebugHeaderBackground}" Visibility="{Binding ShowDisassembly, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <disassembly:DisassemblyControl x:Name="DisassemblyControl" Grid.Row="3" />
+    </Grid>
+
+</UserControl>

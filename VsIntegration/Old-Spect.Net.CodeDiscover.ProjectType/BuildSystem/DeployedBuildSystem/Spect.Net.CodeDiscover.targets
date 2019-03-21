@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- ReSharper disable UnknownProperty -->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Capabilities for this project.  Conditions should be based on platform|configuration only. -->
+  <ItemGroup>
+    <ProjectCapability Include="Spect.Net.CodeDiscover" />
+    <ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Declares general project properties -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    <!-- Declares how file types are mapped to content types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml"/>
+
+    <!-- Disassembly Annotation file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\DisassAnn.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- Z80 Assembly file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Z80Asm.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- Z80 Unit Test file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Z80Test.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- ZX Spectrum file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Rom.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- ZX Spectrum TZX tape file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Tzx.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- ZX Spectrum TAP tape file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Tap.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- ZX Spectrum Virtual FDD file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Vfdd.xaml;">
+        <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+
+      <!-- ZX Spectrum inventory file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\SpConf.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- ZX Spectrum virtual machine state file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\VmState.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- Declares source code control properties -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\scc.xaml">
+      <Context>Invisible</Context>
+    </PropertyPageSchema>
+
+    <!-- 
+        Declares how folders should be displayed in Solution Explorer and
+        how their properties are shown in Object Browser
+    -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\folder.xaml;$(MSBuildThisFileDirectory)Rules\none.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- 
+        Declares how  item types marked as "none" should be displayed in Solution Explorer and
+        how their properties are shown in Object Browser
+    -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\none.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general.browseobject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+
+  </ItemGroup>
+
+  <Import Project="$(MSBuildProjectFullPath).user" Condition="Exists('$(MSBuildProjectFullPath).user')" />
+</Project>
+<!-- ReSharper restore UnknownProperty -->

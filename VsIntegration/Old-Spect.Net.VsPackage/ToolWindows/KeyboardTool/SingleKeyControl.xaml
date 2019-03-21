@@ -1,0 +1,238 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:keyboardTool="clr-namespace:Spect.Net.VsPackage.ToolWindows.KeyboardTool"
+             x:Name="userControl" x:Class="Spect.Net.VsPackage.ToolWindows.KeyboardTool.SingleKeyControl" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type keyboardTool:SingleKeyControlSampleData}, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" 
+                Padding="2" 
+                Margin="6,0,0,0" 
+                HorizontalAlignment="Left" 
+                CornerRadius="2"
+                MouseDown="NumericControlKeyMouseDown"
+                MouseUp="OnMouseUp"
+                Cursor="Hand">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="Background" Value="{Binding NumBackground}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BKeyHoverBackground}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock Text="{Binding ColorKey}" Style="{DynamicResource ExtKeyLine}"
+                       HorizontalAlignment="Left"
+                       Visibility="{Binding NumericMode, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                       Foreground="{Binding NumForeground}" 
+                       Height="11" VerticalAlignment="Top"                       
+                       Margin="-2,-2,0,2" Padding="2" />
+        </Border>
+
+        <Border Grid.Row="1" 
+                Padding="2" 
+                Margin="6,0,0,1" 
+                HorizontalAlignment="Left" 
+                CornerRadius="2" 
+                MouseDown="OnExtKeyMouseDown" 
+                MouseUp="OnMouseUp"
+                Cursor="Hand" Height="15" VerticalAlignment="Bottom">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BKeyHoverBackground}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock Text="{Binding ExtKey}" Style="{DynamicResource ExtKeyLine}"
+                       HorizontalAlignment="Left"
+                       Margin="-2,-2,0,-2" Padding="2" />
+        </Border>
+        <!-- Simple key mode -->
+        <Border Grid.Row="2" Width="{Binding ButtonWidth}" Height="36" 
+                Padding="6,4"
+                HorizontalAlignment="Left" 
+                CornerRadius="4" 
+                Visibility="{Binding SimpleMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                MouseDown="OnMainKeyMouseDown" 
+                MouseUp="OnMouseUp"
+                Cursor="Hand">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="Background" Value="#FF808080"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BKeyHoverBackground}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <Grid VerticalAlignment="Center">
+                <TextBlock Text="{Binding Keyword}" Style="{DynamicResource KeywordLine}"
+                               TextAlignment="Center" Margin="0,2,0,0" TextWrapping="Wrap" Visibility="{Binding SymMode, Converter={StaticResource BoolToCollapsedConverter}}"/>
+                <TextBlock Text="{Binding Keyword}" Style="{DynamicResource SymShiftLine}"
+                               TextAlignment="Center" Margin="0,2,0,0" TextWrapping="Wrap" Visibility="{Binding SymMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </Grid>
+        </Border>
+        <!-- Normal key mode -->
+        <Border Grid.Row="2" Width="76" Height="36" 
+                Padding="6,4"
+                HorizontalAlignment="Left" 
+                CornerRadius="4" 
+                Visibility="{Binding SimpleMode, Converter={StaticResource BoolToCollapsedConverter}}" 
+                MouseDown="OnMainKeyMouseDown"
+                MouseUp="OnMouseUp"
+                Cursor="Hand">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="Background" Value="#FF808080"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BKeyHoverBackground}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding MainKey}" Style="{DynamicResource MainButton}" />
+                <StackPanel Grid.Column="1" Visibility="{Binding NumericMode, Converter={StaticResource BoolToCollapsedConverter}}">
+                    <Border Padding="2" Margin="-2" 
+                            HorizontalAlignment="Right" 
+                            CornerRadius="2" 
+                            Panel.ZIndex="-10" 
+                            MouseDown="OnSymShiftKeyMouseDown"
+                            MouseUp="OnMouseUp">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource BShiftKeyHoverBackground}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="{Binding SShiftKey}" Style="{DynamicResource SymShiftLine}"
+                                   Margin="0"
+                                   HorizontalAlignment="Right">
+                        </TextBlock>
+                    </Border>
+                    <TextBlock Text="{Binding Keyword}" Style="{DynamicResource KeywordLine}"
+                                   HorizontalAlignment="Right" Padding="0" Margin="0,2,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Visibility="{Binding NumericMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border 
+                        Padding="2" 
+                        Margin="28,0,0,0" 
+                        HorizontalAlignment="Left" 
+                        CornerRadius="2"
+                        MouseDown="OnGraphicsKeyMouseDown"
+                        MouseUp="OnMouseUp">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource BShiftKeyHoverBackground}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <Border Width="16" Height="16" HorizontalAlignment="Right" 
+                            BorderBrush="White" 
+                            BorderThickness="1" Visibility="{Binding HasGraphics, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Row="0" Grid.Column="1" Background="White" Visibility="{Binding HasBit0, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <Border Grid.Row="0" Grid.Column="0" Background="White" Visibility="{Binding HasBit1, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <Border Grid.Row="1" Grid.Column="1" Background="White" Visibility="{Binding HasBit2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </Grid>
+                    </Border>
+                    </Border>
+                    <Border Width="16" Height="16" HorizontalAlignment="Right" 
+                            BorderThickness="0" Visibility="{Binding HasGraphics, Converter={StaticResource BoolToCollapsedConverter}}" />
+                    <Border 
+                        Padding="2" 
+                        Margin="8,-6,0,0" 
+                        HorizontalAlignment="Left" 
+                        CornerRadius="2"
+                        MouseDown="OnSymShiftKeyMouseDown"
+                        MouseUp="OnMouseUp">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource BShiftKeyHoverBackground}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="{Binding SShiftKey}" Style="{DynamicResource NumShiftLine}"
+                                   HorizontalAlignment="Left"
+                                   Margin="-2,-6,0,-2" Padding="2" />
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Grid.Row="3" 
+                Padding="2" 
+                Margin="6,0,0,0" 
+                HorizontalAlignment="Left" 
+                CornerRadius="2" 
+                MouseDown="OnExtShiftKeyMouseDown" 
+                MouseUp="OnMouseUp"
+                Cursor="Hand">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BKeyHoverBackground}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock Text="{Binding ExtShiftKey}" Style="{DynamicResource ExtShiftLine}"
+                       HorizontalAlignment="Left"
+                       Margin="-2,-2,0,-2" Padding="2" />
+        </Border>
+    </Grid>
+</UserControl>

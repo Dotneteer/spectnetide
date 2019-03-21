@@ -1,0 +1,40 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.ToolWindows.StackTool" x:Class="Spect.Net.VsPackage.ToolWindows.StackTool.SpManipulationItemControl" 
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="800" d:DataContext="{d:DesignInstance {x:Type local:StackPointerManipulationViewModel}, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding NewValue}" Style="{DynamicResource Z80StatusText}" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <TextBlock Text="(" Style="{DynamicResource Z80HilitedText}" />
+            <TextBlock Text="{Binding OldValue}" Style="{DynamicResource Z80HilitedText}" />
+            <TextBlock Text=")" Style="{DynamicResource Z80HilitedText}" />
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal">
+            <TextBlock Text="&lt;-- " Style="{DynamicResource Z80Text}" />
+            <TextBlock Text="{Binding OperationAddress}" Style="{DynamicResource Z80Text}" />
+            <TextBlock Text=": " Style="{DynamicResource Z80Text}" />
+            <TextBlock Text="{Binding Operation}" Style="{DynamicResource Z80Text}" />
+            <TextBlock Text=" (T: " Style="{DynamicResource Z80Text}" />
+            <TextBlock Text="{Binding Tacts}" Style="{DynamicResource Z80Text}" />
+            <TextBlock Text=")" Style="{DynamicResource Z80Text}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

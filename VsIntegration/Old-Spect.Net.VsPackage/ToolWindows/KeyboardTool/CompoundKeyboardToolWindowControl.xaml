@@ -1,0 +1,40 @@
+﻿<UserControl xmlns:keyboardTool="clr-namespace:Spect.Net.VsPackage.ToolWindows.KeyboardTool"  x:Class="Spect.Net.VsPackage.ToolWindows.KeyboardTool.CompoundKeyboardToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="1200" d:DataContext="{d:DesignInstance {x:Type keyboardTool:KeyboardToolViewModel}, IsDesignTimeCreatable=True}">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Viewbox Stretch="Uniform"
+                 Visibility="{Binding IsOriginalSize, Converter={StaticResource BoolToCollapsedConverter}}">
+            <Grid>
+                <keyboardTool:KeyboardToolWindowControl x:Name="Spectrum48Keyboard" 
+                                                        Visibility="{Binding IsSpectrum48Layout, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <keyboardTool:KeyboardToolWindow128Control x:Name="Spectrum128Keyboard" 
+                                                           Visibility="{Binding IsSpectrum48Layout, Converter={StaticResource BoolToCollapsedConverter}}"/>
+            </Grid>
+        </Viewbox>
+        <ScrollViewer Visibility="{Binding IsOriginalSize, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      CanContentScroll="True">
+            <Grid HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <keyboardTool:KeyboardToolWindowControl x:Name="Spectrum48Keyboard2" 
+                                                        Visibility="{Binding IsSpectrum48Layout, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <keyboardTool:KeyboardToolWindow128Control x:Name="Spectrum128Keyboard2" 
+                                                           Visibility="{Binding IsSpectrum48Layout, Converter={StaticResource BoolToCollapsedConverter}}"/>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
