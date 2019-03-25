@@ -1,3 +1,7 @@
+### Version 1.18.5
+__CHANGE__: The standalone emulator client has been deleted from the solution.
+
+
 ### Version 1.18.4
 __FEATURE__: The ZX Spectrum memory window allows exporting the memory contents.  
 __FEATURE__: Z80 Assembler: new `.comparebin` pragma.  
