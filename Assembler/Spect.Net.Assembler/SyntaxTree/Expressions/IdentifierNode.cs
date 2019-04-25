@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -76,6 +78,13 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                 }
                 return sb.ToString();
             }
-        } 
+        }
+
+        public IdentifierNode(Z80AsmParser.SymbolContext context) : base(context)
+        {
+            StartFromGlobal = context.GetChild(0).GetText() == "::";
+            SymbolName = context.IDENTIFIER()[0].NormalizeToken();
+            ScopeSymbolNames = context.IDENTIFIER().Skip(1).Select(i => i.NormalizeToken()).ToList();
+        }
     }
 }

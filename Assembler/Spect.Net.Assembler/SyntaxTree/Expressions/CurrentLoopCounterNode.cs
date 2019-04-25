@@ -1,3 +1,5 @@
+using Spect.Net.Assembler.Generated;
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -13,6 +15,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
             return new ExpressionValue(evalContext.GetLoopCounterValue());
+        }
+
+        public CurrentLoopCounterNode(Z80AsmParser.CurCounterLiteralContext context) : base(context)
+        {
         }
     }
 }

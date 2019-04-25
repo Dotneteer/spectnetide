@@ -1,3 +1,5 @@
+using Spect.Net.Assembler.Generated;
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -27,8 +29,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             return new ExpressionValue(left.AsLong() >> (ushort)right.AsLong());
         }
 
-        public ShiftRightOperationNode(object leftOperand, object rightOperand)
-            : base(leftOperand, rightOperand)
+        public ShiftRightOperationNode(Z80AsmParser.ShiftExprContext context, Z80AsmVisitor visitor)
+            : base(context, context.expr()[0], context.expr()[1], visitor)
         {
         }
     }

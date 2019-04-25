@@ -72,9 +72,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
         {
             if (count < 0) count = bytes.Length - offset;
             var sb = new StringBuilder();
-            for (var i = offset; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
-                sb.Append(Convert.ToChar(bytes[i]));
+                sb.Append(Convert.ToChar(bytes[i+offset]));
             }
             return sb.ToString();
         }

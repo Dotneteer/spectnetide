@@ -1,4 +1,5 @@
 using System;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -70,8 +71,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// </summary>
         public virtual StringComparison Comparison => StringComparison.InvariantCulture;
 
-        public EqualOperationNode(object leftOperand = null, object rightOperand = null)
-            : base(leftOperand, rightOperand)
+        public EqualOperationNode(Z80AsmParser.EquExprContext context, Z80AsmVisitor visitor)
+            : base(context, context.expr()[0], context.expr()[1], visitor)
         {
         }
     }

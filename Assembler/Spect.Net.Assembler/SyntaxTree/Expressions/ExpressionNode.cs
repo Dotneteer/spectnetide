@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Antlr4.Runtime;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -7,6 +8,10 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
     /// </summary>
     public abstract class ExpressionNode
     {
+        protected ExpressionNode(ParserRuleContext context)
+        {
+        }
+
         /// <summary>
         /// Gets the list of symbol errors
         /// </summary>

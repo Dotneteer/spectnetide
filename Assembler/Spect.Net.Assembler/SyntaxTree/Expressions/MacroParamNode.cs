@@ -1,3 +1,5 @@
+using Spect.Net.Assembler.Generated;
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -33,10 +35,15 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <summary>
         /// Initializes the node
         /// </summary>
-        /// <param name="macroParamId">Macro parameter ID</param>
-        public MacroParamNode(string macroParamId)
+        public MacroParamNode(Z80AsmParser.MacroParamContext context, Z80AsmVisitor visitor) 
+            : base(context)
         {
-            MacroParamId = macroParamId;
+            visitor.AddMacroParam(context);
+            if (context.IDENTIFIER() != null)
+            {
+                visitor.AddMacroParamName(context.IDENTIFIER().NormalizeToken());
+            }
+            MacroParamId = context.IDENTIFIER()?.NormalizeToken();
         }
 
         /// <summary>

@@ -116,7 +116,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         }
 
         /// <summary>
-        /// Colects .TZX info from the specified TzxReader
+        /// Collects .TZX info from the specified TzxReader
         /// </summary>
         /// <param name="tzxReader">TzxReader to collect the info from</param>
         private void CollectTzxInfo(TzxReader tzxReader)

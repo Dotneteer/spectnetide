@@ -74,20 +74,21 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                || (TrueExpression?.HasMacroParameter ?? false)
                || (FalseExpression?.HasMacroParameter ?? false);
 
-        public ConditionalExpressionNode(IZ80AsmVisitorContext visitorContext,
-            Z80AsmParser.ExprContext context,
-            string sourceText,
-            ExpressionNode condition)
+        public ConditionalExpressionNode(Z80AsmParser.TernaryExprContext context, Z80AsmVisitor visitor)
+            : base(context)
         {
-            SourceText = sourceText;
-            Condition = condition;
-            if (context.expr().Length > 0)
+            var exprs = context.expr();
+            if (exprs.Length > 0)
             {
-                TrueExpression = visitorContext.GetExpression(context.expr()[0]);
+                Condition = (ExpressionNode)visitor.VisitExpr(exprs[0]);
             }
-            if (context.expr().Length > 1)
+            if (exprs.Length > 1)
             {
-                FalseExpression = visitorContext.GetExpression(context.expr()[1]);
+                TrueExpression = (ExpressionNode)visitor.VisitExpr(exprs[1]);
+            }
+            if (exprs.Length > 2)
+            {
+                FalseExpression = (ExpressionNode)visitor.VisitExpr(exprs[2]);
             }
         }
     }

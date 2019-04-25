@@ -1,4 +1,6 @@
 ﻿using System;
+using Spect.Net.Assembler.Generated;
+
 // ReSharper disable SwitchStatementMissingSomeCases
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
@@ -30,7 +32,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
         }
 
-        public UnaryBitwiseNotNode(object operand) : base(operand)
+        public UnaryBitwiseNotNode(Z80AsmParser.BinaryNotExprContext context, Z80AsmVisitor visitor)
+            : base(context.expr(), visitor)
         {
         }
     }

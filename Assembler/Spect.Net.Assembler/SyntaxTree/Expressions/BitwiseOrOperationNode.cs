@@ -1,4 +1,7 @@
 // ReSharper disable SwitchStatementMissingSomeCases
+
+using Spect.Net.Assembler.Generated;
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -46,8 +49,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
         }
 
-        public BitwiseOrOperationNode(object leftOperand = null, object rightOperand = null)
-            : base(leftOperand, rightOperand)
+        public BitwiseOrOperationNode(Z80AsmParser.OrExprContext context, Z80AsmVisitor visitor)
+            : base(context, context.expr()[0], context.expr()[1], visitor)
         {
         }
     }
