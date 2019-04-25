@@ -1,4 +1,6 @@
 ﻿using System;
+using Spect.Net.Assembler.Generated;
+
 // ReSharper disable SwitchStatementMissingSomeCases
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
@@ -38,7 +40,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
         }
 
-        public UnaryMinusNode(object operand) : base(operand)
+        public UnaryMinusNode(Z80AsmParser.UnaryMinusExprContext context, Z80AsmVisitor visitor)
+            : base(context.expr(), visitor)
         {
         }
     }

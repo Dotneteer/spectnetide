@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -48,12 +50,15 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <summary>
         /// Initializes the function invocation
         /// </summary>
-        /// <param name="functionName">Name of the function</param>
-        /// <param name="argumentExpressions">Argument expressions</param>
-        public FunctionInvocationNode(string functionName, List<ExpressionNode> argumentExpressions)
+        public FunctionInvocationNode(Z80AsmParser.FunctionInvocationContext context, Z80AsmVisitor visitor)
+            : base(context)
         {
-            FunctionName = functionName;
-            ArgumentExpressions = argumentExpressions;
+            FunctionName = context.IDENTIFIER()?.GetText()?.ToLower();
+            if (FunctionName != null)
+            {
+                visitor.AddFunction(context);
+            }
+            ArgumentExpressions = context.expr().Select(expr => (ExpressionNode)visitor.VisitExpr(expr)).ToList();
         }
 
         /// <summary>

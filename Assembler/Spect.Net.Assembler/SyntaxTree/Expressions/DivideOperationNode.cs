@@ -1,4 +1,5 @@
 using System;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -74,8 +75,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
         }
 
-        public DivideOperationNode(object leftOperand, object rightOperand)
-            : base(leftOperand, rightOperand)
+        public DivideOperationNode(Z80AsmParser.MultExprContext context, Z80AsmVisitor visitor)
+            : base(context, context.expr()[0], context.expr()[1], visitor)
         {
         }
     }

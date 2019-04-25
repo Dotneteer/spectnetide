@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -267,16 +266,6 @@ namespace Spect.Net.Assembler
         public Operand GetOperand(Z80AsmParser.OperandContext context)
         {
             return (Operand) VisitOperand(context);
-        }
-
-        /// <summary>
-        /// Gets a symbol from the specified context
-        /// </summary>
-        /// <param name="context">Context to get the symbol from</param>
-        /// <returns>Node that represents the symbol</returns>
-        public IdentifierNode GetSymbol(Z80AsmParser.SymbolExprContext context)
-        {
-            return (IdentifierNode) VisitSymbolExpr(context);
         }
 
         #endregion
@@ -641,14 +630,167 @@ namespace Spect.Net.Assembler
                 sb.Append(token);
             }
 
-            var expr = (ExpressionNode)VisitOrExpr(context.orExpr());
-            if (context.ChildCount != 1)
+            ExpressionNode expr = null;
+            switch (context)
             {
-                // --- Conditional expression found
-                return new ConditionalExpressionNode(this, context, sb.ToString(), expr);
+                // --- Primary operators
+                case Z80AsmParser.BuiltInFunctionExprContext ctx:
+                    expr = (ExpressionNode) VisitBuiltinFunctionInvocation(ctx.builtinFunctionInvocation());
+                    break;
+
+                case Z80AsmParser.FunctionInvocationExprContext ctx:
+                    expr = new FunctionInvocationNode(ctx.functionInvocation(), this);
+                    break;
+
+                case Z80AsmParser.MacroParamExprContext ctx:
+                    expr = new MacroParamNode(ctx.macroParam(), this);
+                    break;
+
+                // --- Unary operators
+                case Z80AsmParser.UnaryPlusExprContext ctx:
+                    expr = new UnaryPlusNode(ctx, this);
+                    break;
+                case Z80AsmParser.UnaryMinusExprContext ctx:
+                    expr = new UnaryMinusNode(ctx, this);
+                    break;
+                case Z80AsmParser.BinaryNotExprContext ctx:
+                    expr = new UnaryBitwiseNotNode(ctx, this);
+                    break;
+                case Z80AsmParser.LogicalNotExprContext ctx:
+                    expr = new UnaryLogicalNotNode(ctx, this);
+                    break;
+
+                // --- Bracketed/Parenthesized expressions
+                case Z80AsmParser.BracketedExprContext ctx:
+                    expr = (ExpressionNode) VisitExpr(ctx.expr());
+                    break;
+                case Z80AsmParser.ParenthesizedExprContext ctx:
+                    expr = (ExpressionNode)VisitExpr(ctx.expr());
+                    break;
+
+                // --- Literals
+                case Z80AsmParser.LiteralExprContext ctx:
+                    expr = (ExpressionNode)VisitLiteral(ctx.literal());
+                    break;
+
+                case Z80AsmParser.SymbolExprContext ctx:
+                    if (ctx.ChildCount != 0 && ctx.symbol()?.IDENTIFIER()?.Length != 0)
+                    {
+                        AddIdentifier(ctx);
+                        expr = new IdentifierNode(ctx.symbol());
+                    }
+                    break;
+
+                // --- Min/Max operators
+                case Z80AsmParser.MinMaxExprContext ctx:
+                    switch (ctx.op?.Text)
+                    {
+                        case "<?":
+                            expr = new MinOperationNode(ctx, this);
+                            break;
+                        default:
+                            expr = new MaxOperationNode(ctx, this);
+                            break;
+                    }
+                    break;
+
+                // --- Multiplication operators
+                case Z80AsmParser.MultExprContext ctx:
+                    switch (ctx.op?.Text)
+                    {
+                        case "*":
+                            expr = new MultiplyOperationNode(ctx, this);
+                            break;
+                        case "/":
+                            expr = new DivideOperationNode(ctx, this);
+                            break;
+                        default:
+                            expr = new ModuloOperationNode(ctx, this);
+                            break;
+                    }
+                    break;
+
+                // --- Addition operators
+                case Z80AsmParser.AddExprContext ctx:
+                    switch (ctx.op?.Text)
+                    {
+                        case "+":
+                            expr = new AddOperationNode(ctx, this);
+                            break;
+                        default:
+                            expr = new SubtractOperationNode(ctx, this);
+                            break;
+                    }
+                    break;
+
+                // --- Shift operators
+                case Z80AsmParser.ShiftExprContext ctx:
+                    switch (ctx.op?.Text)
+                    {
+                        case "<<":
+                            expr = new ShiftLeftOperationNode(ctx, this);
+                            break;
+                        default:
+                            expr = new ShiftRightOperationNode(ctx, this);
+                            break;
+                    }
+                    break;
+
+                // --- Relational operators
+                case Z80AsmParser.RelExprContext ctx:
+                    switch (ctx.op?.Text)
+                    {
+                        case "<":
+                            expr = new LessThanOperationNode(ctx, this);
+                            break;
+                        case "<=":
+                            expr = new LessThanOrEqualOperationNode(ctx, this);
+                            break;
+                        case ">":
+                            expr = new GreaterThanOperationNode(ctx, this);
+                            break;
+                        default:
+                            expr = new GreaterThanOrEqualOperationNode(ctx, this);
+                            break;
+                    }
+                    break;
+
+                // --- Equality operators
+                case Z80AsmParser.EquExprContext ctx:
+                    switch (ctx.op?.Text)
+                    {
+                        case "==":
+                            expr = new EqualOperationNode(ctx, this);
+                            break;
+                        case "===":
+                            expr = new CaseInsensitiveEqualOperationNode(ctx, this);
+                            break;
+                        case "!=":
+                            expr = new NotEqualOperationNode(ctx, this);
+                            break;
+                        default:
+                            expr = new CaseInsensitiveNotEqualOperationNode(ctx, this);
+                            break;
+                    }
+                    break;
+
+                // --- Bitwise operators
+                case Z80AsmParser.AndExprContext ctx:
+                    expr = new BitwiseAndOperationNode(ctx, this);
+                    break;
+                case Z80AsmParser.XorExprContext ctx:
+                    expr = new BitwiseXorOperationNode(ctx, this);
+                    break;
+                case Z80AsmParser.OrExprContext ctx:
+                    expr = new BitwiseOrOperationNode(ctx, this);
+                    break;
+
+                // --- Ternary operator
+                case Z80AsmParser.TernaryExprContext ctx:
+                    expr = new ConditionalExpressionNode(ctx, this);
+                    break;
             }
 
-            // --- No conditional expression
             if (expr != null)
             {
                 expr.SourceText = sb.ToString();
@@ -656,329 +798,41 @@ namespace Spect.Net.Assembler
             return expr;
         }
 
-        public override object VisitOrExpr(Z80AsmParser.OrExprContext context)
+        public override object VisitLiteral(Z80AsmParser.LiteralContext context)
         {
             if (context == null) return null;
 
-            var subExprs = context.xorExpr();
-            var expr = VisitXorExpr(subExprs[0]);
-            for (var i = 1; i < subExprs.Length; i++)
+            switch (context)
             {
-                var rightExpr = VisitXorExpr(subExprs[i]);
-                expr = new BitwiseOrOperationNode(expr, rightExpr);
-            }
-            return expr;
-        }
+                case Z80AsmParser.CurAddrLiteralContext ctx:
+                    AddSemiVar(ctx);
+                    return new CurrentAddressNode(ctx);
 
-        public override object VisitXorExpr(Z80AsmParser.XorExprContext context)
-        {
-            if (context == null) return null;
+                case Z80AsmParser.CurCounterLiteralContext ctx:
+                    AddSemiVar(ctx);
+                    return new CurrentLoopCounterNode(ctx);
 
-            var subExprs = context.andExpr();
-            var expr = VisitAndExpr(subExprs[0]);
-            for (var i = 1; i < subExprs.Length; i++)
-            {
-                var rightExpr = VisitAndExpr(subExprs[i]);
-                expr = new BitwiseXorOperationNode(expr, rightExpr);
-            }
-            return expr;
-        }
+                case Z80AsmParser.BoolLiteralContext ctx:
+                    AddNumber(ctx);
+                    var boolValue = new ExpressionValue(ctx.BOOLLIT().GetText().ToLower().Contains("t"));
+                    return new LiteralNode(ctx, boolValue);
 
-        public override object VisitAndExpr(Z80AsmParser.AndExprContext context)
-        {
-            if (context == null) return null;
+                case Z80AsmParser.RealLiteralContext ctx:
+                    AddNumber(ctx);
+                    return double.TryParse(ctx.REALNUM().GetText(), out var realValue)
+                        ? new LiteralNode(ctx, realValue)
+                        : new LiteralNode(ctx, ExpressionValue.Error);
 
-            var subExprs = context.equExpr();
-            var expr = VisitEquExpr(subExprs[0]);
-            for (var i = 1; i < subExprs.Length; i++)
-            {
-                var rightExpr = VisitEquExpr(subExprs[i]);
-                expr = new BitwiseAndOperationNode(expr, rightExpr);
-            }
-            return expr;
-        }
+                case Z80AsmParser.StringLiteralContext ctx:
+                    AddString(ctx);
+                    var stringValue = ctx.STRING().NormalizeString();
+                    return new LiteralNode(ctx, stringValue);
 
-        public override object VisitEquExpr(Z80AsmParser.EquExprContext context)
-        {
-            if (context == null) return null;
-
-            var subExprs = context.relExpr();
-            var expr = VisitRelExpr(subExprs[0]);
-            var opIndex = 1;
-            for (var i = 1; i < subExprs.Length; i++)
-            {
-                var rightExpr = VisitRelExpr(subExprs[i]);
-                var opToken = context.GetChild(opIndex).GetText();
-                BinaryOperationNode equExpr;
-                switch (opToken)
-                {
-                    case "==":
-                        equExpr = new EqualOperationNode(expr, rightExpr);
-                        break;
-                    case "===":
-                        equExpr = new CaseInsensitiveEqualOperationNode(expr, rightExpr);
-                        break;
-                    case "!=":
-                        equExpr = new NotEqualOperationNode(expr, rightExpr);
-                        break;
-                    default: // !==
-                        equExpr = new CaseInsensitiveNotEqualOperationNode(expr, rightExpr);
-                        break;
-
-                }
-                expr = equExpr;
-                opIndex += 2;
-            }
-            return expr;
-        }
-
-        public override object VisitRelExpr(Z80AsmParser.RelExprContext context)
-        {
-            if (context == null) return null;
-
-            var subExprs = context.shiftExpr();
-            var expr = VisitShiftExpr(subExprs[0]);
-            var opIndex = 1;
-            for (var i = 1; i < subExprs.Length; i++)
-            {
-                var rightExpr = VisitShiftExpr(subExprs[i]);
-                var opToken = context.GetChild(opIndex).GetText();
-                BinaryOperationNode relExpr;
-                switch (opToken)
-                {
-                    case "<":
-                        relExpr = new LessThanOperationNode(expr, rightExpr);
-                        break;
-                    case "<=":
-                        relExpr = new LessThanOrEqualOperationNode(expr, rightExpr);
-                        break;
-                    case ">":
-                        relExpr = new GreaterThanOperationNode(expr, rightExpr) ;
-                        break;
-                    default: // >=
-                        relExpr = new GreaterThanOrEqualOperationNode(expr, rightExpr);
-                        break;
-                }
-                expr = relExpr;
-                opIndex += 2;
-            }
-            return expr;
-        }
-
-        public override object VisitShiftExpr(Z80AsmParser.ShiftExprContext context)
-        {
-            if (context == null) return null;
-
-            var subExprs = context.addExpr();
-            var expr = VisitAddExpr(subExprs[0]);
-            var opIndex = 1;
-            for (var i = 1; i < subExprs.Length; i++)
-            {
-                var rightExpr = VisitAddExpr(subExprs[i]);
-                var opToken = context.GetChild(opIndex).GetText();
-                BinaryOperationNode shiftExpr;
-                switch (opToken)
-                {
-                    case "<<":
-                        shiftExpr = new ShiftLeftOperationNode(expr, rightExpr);
-                        break;
-                    default: // >>
-                        shiftExpr = new ShiftRightOperationNode(expr, rightExpr);
-                        break;
-
-                }
-                expr = shiftExpr;
-                opIndex += 2;
-            }
-            return expr;
-        }
-
-        public override object VisitAddExpr(Z80AsmParser.AddExprContext context)
-        {
-            if (context == null) return null;
-
-            var subExprs = context.multExpr();
-            var expr = VisitMultExpr(subExprs[0]);
-            var opIndex = 1;
-            for (var i = 1; i < subExprs.Length; i++)
-            {
-                var rightExpr = VisitMultExpr(subExprs[i]);
-                var opToken = context.GetChild(opIndex).GetText();
-                BinaryOperationNode addExpr;
-                switch (opToken)
-                {
-                    case "+":
-                        addExpr = new AddOperationNode(expr, rightExpr);
-                        break;
-                    default: // -
-                        addExpr = new SubtractOperationNode(expr, rightExpr);
-                        break;
-
-                }
-                expr = addExpr;
-                opIndex += 2;
-            }
-            return expr;
-        }
-
-        public override object VisitMultExpr(Z80AsmParser.MultExprContext context)
-        {
-            if (context == null) return null;
-
-            var subExprs = context.minMaxExpr();
-            var expr = VisitMinMaxExpr(subExprs[0]);
-            var opIndex = 1;
-            for (var i = 1; i < subExprs.Length; i++)
-            {
-                var rightExpr = VisitMinMaxExpr(subExprs[i]);
-                var opToken = context.GetChild(opIndex).GetText();
-                BinaryOperationNode mulExpr;
-                switch (opToken)
-                {
-                    case "*":
-                        mulExpr = new MultiplyOperationNode(expr, rightExpr);
-                        break;
-                    case "/":
-                        mulExpr = new DivideOperationNode(expr, rightExpr);
-                        break;
-                    default: // %
-                        mulExpr = new ModuloOperationNode(expr, rightExpr);
-                        break;
-
-                }
-                expr = mulExpr;
-                opIndex += 2;
-            }
-            return expr;
-        }
-
-        public override object VisitMinMaxExpr(Z80AsmParser.MinMaxExprContext context)
-        {
-            if (context == null) return null;
-
-            var subExprs = context.unaryExpr();
-            var expr = VisitUnaryExpr(subExprs[0]);
-            var opIndex = 1;
-            for (var i = 1; i < subExprs.Length; i++)
-            {
-                var rightExpr = VisitUnaryExpr(subExprs[i]);
-                var opToken = context.GetChild(opIndex).GetText();
-                BinaryOperationNode minExpr;
-                switch (opToken)
-                {
-                    case "<?":
-                        minExpr = new MinOperationNode(expr, rightExpr);
-                        break;
-                    default: // >?
-                        minExpr = new MaxOperationNode(expr, rightExpr);
-                        break;
-
-                }
-                expr = minExpr;
-                opIndex += 2;
-            }
-            return expr;
-        }
-
-        public override object VisitUnaryExpr(Z80AsmParser.UnaryExprContext context)
-        {
-            var child0 = context.GetChild(0);
-            if (child0 == null) return null;
-
-            if (context.functionInvocation() != null)
-            {
-                return VisitFunctionInvocation(context.functionInvocation());
             }
 
-            if (context.builtinFunctionInvocation() != null)
-            {
-                return VisitBuiltinFunctionInvocation(context.builtinFunctionInvocation());
-            }
-
-            if (context.literalExpr() != null)
-            {
-                return VisitLiteralExpr(context.literalExpr());
-            }
-
-            if (context.macroParam() != null)
-            {
-                AddMacroParam(context);
-                if (context.macroParam().IDENTIFIER() != null)
-                {
-                    AddMacroParamName(context.macroParam().IDENTIFIER().NormalizeToken());
-                }
-                return new MacroParamNode(context.macroParam().IDENTIFIER()?.NormalizeToken());
-            }
-
-            if (child0 is Z80AsmParser.SymbolExprContext exprContext)
-            {
-                return VisitSymbolExpr(exprContext);
-            }
-            if (child0.GetText() == "+")
-            {
-                return new UnaryPlusNode(VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext));
-            }
-            if (child0.GetText() == "-")
-            {
-                return new UnaryMinusNode(VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext));
-            }
-            if (child0.GetText() == "~")
-            {
-                return new UnaryBitwiseNotNode(VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext));
-            }
-            if (child0.GetText() == "!")
-            {
-                return new UnaryLogicalNotNode(VisitUnaryExpr(context.GetChild(1) as Z80AsmParser.UnaryExprContext));
-            }
-            return VisitExpr(context.GetChild(1) as Z80AsmParser.ExprContext);
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.literalExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitLiteralExpr(Z80AsmParser.LiteralExprContext context)
-        {
             var token = context.NormalizeToken();
-            if (context.CURADDR() != null || context.MULOP() != null || context.DOT() != null)
-            {
-                AddSemiVar(context);
-                return new CurrentAddressNode();
-            }
-
-            if (context.CURCNT() != null)
-            {
-                AddSemiVar(context);
-                return new CurrentLoopCounterNode();
-            }
-
-            // --- Check for Boolean values
-            if (context.BOOLLIT() != null)
-            {
-                AddNumber(context);
-                var boolValue = new ExpressionValue(context.BOOLLIT().GetText().ToLower().Contains("t"));
-                return new LiteralNode(boolValue);
-            }
-
-            // --- Check for real values
-            if (context.REALNUM() != null)
-            {
-                AddNumber(context);
-                return double.TryParse(context.REALNUM().GetText(), out var realValue) 
-                    ? new LiteralNode(realValue) 
-                    : new LiteralNode(ExpressionValue.Error);
-            }
-
-            // --- Check for string values
-            if (context.STRING() != null)
-            {
-                AddString(context);
-                var stringValue = context.STRING().NormalizeString();
-                return new LiteralNode(stringValue);
-            }
-
             ushort value;
+
             // --- Hexadecimal literals
             if (token.StartsWith("#"))
             {
@@ -1001,6 +855,7 @@ namespace Spect.Net.Assembler
                 value = (ushort)int.Parse(token.Substring(0, token.Length - 1),
                     NumberStyles.HexNumber);
             }
+            
             // --- Binary literals
             else if (token.StartsWith("%"))
             {
@@ -1017,12 +872,14 @@ namespace Spect.Net.Assembler
                 AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(0, token.Length - 1).Replace("_", ""), 2);
             }
+            
             // --- Octal literals
             else if (token.EndsWith("q") || token.EndsWith("Q") || token.EndsWith("o") || token.EndsWith("O"))
             {
                 AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(0, token.Length - 1), 8);
             }
+            
             // --- Character literals
             else if (token.StartsWith("\"") || token.StartsWith("'"))
             {
@@ -1031,6 +888,7 @@ namespace Spect.Net.Assembler
                 var bytes = Z80Assembler.SpectrumStringToBytes(charExpr.Substring(1, charExpr.Length - 2));
                 value = bytes.Count == 0 ? (ushort)0x00 : bytes[0];
             }
+
             // --- Decimal literals
             else
             {
@@ -1038,189 +896,114 @@ namespace Spect.Net.Assembler
                 value = (ushort)int.Parse(context.NormalizeToken());
             }
 
-            return new LiteralNode(value);
+            return new LiteralNode(context, value);
         }
 
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Generated.Z80AsmParser.symbolExpr"/>.
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitSymbolExpr(Z80AsmParser.SymbolExprContext context)
-        {
-            if (context == null || context.ChildCount == 0 || context.IDENTIFIER().Length == 0)
-            {
-                return null;
-            }
-
-            AddIdentifier(context);
-            return new IdentifierNode
-            {
-                StartFromGlobal = context.GetChild(0).GetText() == "::",
-                SymbolName = context.IDENTIFIER()[0].NormalizeToken(),
-                ScopeSymbolNames = context.IDENTIFIER().Skip(1).Select(i => i.NormalizeToken()).ToList()
-            };
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.functionInvocation"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public override object VisitFunctionInvocation(Z80AsmParser.FunctionInvocationContext context)
-        {
-            var funcName = context.IDENTIFIER()?.GetText()?.ToLower();
-            if (funcName != null)
-            {
-                AddFunction(context);
-            }
-            var args = context.expr().Select(expr => (ExpressionNode) VisitExpr(expr)).ToList();
-            return new FunctionInvocationNode(funcName, args);
-        }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
         public override object VisitBuiltinFunctionInvocation(Z80AsmParser.BuiltinFunctionInvocationContext context)
         {
             AddFunction(context);
             string token = null;
-            if (context.TEXTOF() != null || context.LTEXTOF() != null)
+
+            switch (context)
             {
-                if (context.macroParam() != null)
-                {
-                    AddFunction(context);
-                    AddMacroParam(context.macroParam());
-                    if (context.macroParam().IDENTIFIER() != null)
+                case Z80AsmParser.TextOfInvokeContext ctx:
+                    if (ctx.macroParam() != null)
                     {
-                        AddMacroParamName(context.macroParam().IDENTIFIER().NormalizeToken());
+                        AddFunction(context);
+                        AddMacroParam(ctx.macroParam());
+                        if (ctx.macroParam().IDENTIFIER() != null)
+                        {
+                            AddMacroParamName(ctx.macroParam().IDENTIFIER().NormalizeToken());
+                        }
                     }
-                }
-                if (context.mnemonic() != null)
-                {
-                    AddMnemonics(context.mnemonic());
-                    token = context.mnemonic().NormalizeToken();
-                }
-                else if (context.regsAndConds() != null)
-                {
-                    AddOperand(context.regsAndConds());
-                    token = context.regsAndConds().NormalizeToken();
-                }
+                    if (ctx.mnemonic() != null)
+                    {
+                        AddMnemonics(ctx.mnemonic());
+                        token = ctx.mnemonic().NormalizeToken();
+                    }
+                    else if (ctx.regsAndConds() != null)
+                    {
+                        AddOperand(ctx.regsAndConds());
+                        token = ctx.regsAndConds().NormalizeToken();
+                    }
 
-                if (context.LTEXTOF() != null)
-                {
-                    token = token?.ToLower();
-                }
-                return new LiteralNode(token);
+                    if (ctx.LTEXTOF() != null)
+                    {
+                        token = token?.ToLower();
+                    }
+                    return new LiteralNode(ctx, token);
+
+                case Z80AsmParser.DefInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand() != null && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsReg8InvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx,
+                        (ctx.operand()?.reg8() != null
+                         || ctx.operand()?.reg8Spec() != null
+                         || ctx.operand()?.reg8Idx() != null)
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsReg8StdInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8() != null
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsReg8StdSpecInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8Spec() != null
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsReg8IdxInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8Idx() != null
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsReg16InvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx,
+                        (ctx.operand()?.reg16() != null
+                         || ctx.operand()?.reg16Idx() != null
+                         || ctx.operand()?.reg16Spec() != null)
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsReg16StdInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16() != null
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsReg16IdxInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16Idx() != null
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegIndirectInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.regIndirect() != null
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsCportInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.cPort() != null
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsIndexedAddrInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.indexedAddr() != null
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsConditionInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx,
+                        (ctx.operand()?.condition() != null || ctx.operand().reg8()?.GetText()?.ToLower() == "c")
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsExprInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.expr() != null
+                        && ctx.operand().NONEARG() == null);
             }
-
-            if (context.DEF() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand() != null && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISREG8() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(
-                    (context.operand()?.reg8() != null 
-                        || context.operand()?.reg8Spec() != null
-                        || context.operand()?.reg8Idx() != null)
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISREG8STD() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.reg8() != null
-                                       && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISREG8SPEC() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.reg8Spec() != null
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISREG8IDX() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.reg8Idx() != null
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISREG16() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(
-                    (context.operand()?.reg16() != null
-                        || context.operand()?.reg16Idx() != null
-                        || context.operand()?.reg16Spec() != null)
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISREG16IDX() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.reg16Idx() != null
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISREG16STD() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.reg16() != null
-                                       && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISREGINDIRECT() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.regIndirect() != null
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISCPORT() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.cPort() != null
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISINDEXEDADDR() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.indexedAddr() != null
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISCONDITION() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(
-                    (context.operand()?.condition() != null || context.operand().reg8()?.GetText()?.ToLower() == "c")
-                    && context.operand().NONEARG() == null);
-            }
-
-            if (context.ISEXPR() != null)
-            {
-                CheckForMacroParamNode(context);
-                return new LiteralNode(context.operand()?.expr() != null
-                                       && context.operand().NONEARG() == null);
-            }
-
             return null;
         }
 
@@ -1228,11 +1011,11 @@ namespace Spect.Net.Assembler
         /// Checks if the operand is used as a macro parameter node
         /// </summary>
         /// <param name="context"></param>
-        private void CheckForMacroParamNode(Z80AsmParser.BuiltinFunctionInvocationContext context)
+        private void CheckForMacroParamNode(Z80AsmParser.OperandContext context)
         {
-            if (context.operand() == null) return;
+            if (context == null) return;
 
-            var op = (Operand) VisitOperand(context.operand());
+            var op = (Operand) VisitOperand(context);
             if (!MacroParsingPhase && (op.Type != OperandType.Expr || !(op.Expression is MacroParamNode)))
             {
                 // --- Built in function can use only macro parameters during the collection phase

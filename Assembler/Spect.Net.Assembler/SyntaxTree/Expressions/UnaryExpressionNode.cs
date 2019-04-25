@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Expressions
+﻿using Spect.Net.Assembler.Generated;
+
+namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
     /// This class represents an abstract unary operation
@@ -19,9 +21,10 @@
         public override bool ReadyToEvaluate(IEvaluationContext evalContext)
             => Operand.ReadyToEvaluate(evalContext);
 
-        protected UnaryExpressionNode(object operand)
+        protected UnaryExpressionNode(Z80AsmParser.ExprContext context, Z80AsmVisitor visitor)
+            : base(context)
         {
-            Operand = operand as ExpressionNode;
+            Operand = (ExpressionNode)visitor.VisitExpr(context);
         }
     }
 }

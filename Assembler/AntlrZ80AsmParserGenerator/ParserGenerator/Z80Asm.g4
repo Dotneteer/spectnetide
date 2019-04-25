@@ -104,7 +104,7 @@ repeatStatement: REPEAT ;
 untilStatement: UNTIL expr ;
 whileStatement: WHILE expr ;
 whileEndMarker: ENDWHILE ;
-ifStatement: IFSTMT expr | IFUSED symbolExpr | IFNUSED symbolExpr ;
+ifStatement: IFSTMT expr | IFUSED symbol | IFNUSED symbol ;
 elifStatement: ELIF expr ;
 elseStatement: ELSESTMT ;
 endifStatement: ENDIFSTMT ;
@@ -297,57 +297,27 @@ condition: Z | NZ |	C | NC | PO | PE | P | M ;
 
 // --- Expressions
 expr
-	: orExpr (QMARK expr COLON expr)?
-	; 
-
-orExpr
-	: xorExpr (VBAR xorExpr)*
-	;
-
-xorExpr
-	: andExpr (UPARR andExpr)*
-	;
-
-andExpr
-	: equExpr (AMP equExpr)*
-	;
-
-equExpr
-	: relExpr ((EQOP | NEQOP | CIEQOP | CINEQOP) relExpr)*
-	;
-
-relExpr
-	: shiftExpr ((LTOP | LTEOP | GTOP | GTEOP) shiftExpr)*
-	;
-
-shiftExpr
-	: addExpr ((LSHOP | RSHOP) addExpr)*
-	;
-
-addExpr
-	: multExpr ((PLUS | MINUS ) multExpr)*
-	;
-
-multExpr
-	: minMaxExpr ((MULOP | DIVOP | MODOP | MINOP | MAXOP) minMaxExpr)*
-	;
-
-minMaxExpr
-	: unaryExpr ((MINOP | MAXOP) unaryExpr)*
-	;
-
-unaryExpr
-	: builtinFunctionInvocation
-	| functionInvocation
-	| macroParam
-	| PLUS unaryExpr
-	| MINUS unaryExpr
-	| TILDE unaryExpr
-	| EXCLM unaryExpr
-	| LSBRAC expr RSBRAC
-	| LPAR expr RPAR
-	| literalExpr
-	| symbolExpr
+	: builtinFunctionInvocation                            #BuiltInFunctionExpr
+	| functionInvocation                                   #FunctionInvocationExpr
+	| macroParam                                           #MacroParamExpr
+	| PLUS expr                                            #UnaryPlusExpr
+	| MINUS expr                                           #UnaryMinusExpr
+	| TILDE expr                                           #BinaryNotExpr
+	| EXCLM expr                                           #LogicalNotExpr
+	| LSBRAC expr RSBRAC                                   #BracketedExpr
+	| LPAR expr RPAR                                       #ParenthesizedExpr
+	| literal                                              #LiteralExpr
+	| symbol                                               #SymbolExpr
+	| expr op=(MINOP | MAXOP) expr                         #MinMaxExpr
+	| expr op=(MULOP | DIVOP | MODOP | MINOP | MAXOP) expr #MultExpr
+	| expr op=(PLUS | MINUS ) expr                         #AddExpr
+	| expr op=(LSHOP | RSHOP) expr                         #ShiftExpr
+	| expr op=(LTOP | LTEOP | GTOP | GTEOP) expr           #RelExpr
+	| expr op=(EQOP | NEQOP | CIEQOP | CINEQOP) expr       #EquExpr
+	| expr AMP expr                                        #AndExpr
+	| expr UPARR expr                                      #XorExpr
+	| expr VBAR expr                                       #OrExpr
+	| expr QMARK expr COLON expr                           #TernaryExpr
 	;
 
 functionInvocation
@@ -356,38 +326,37 @@ functionInvocation
 	;
 
 builtinFunctionInvocation
-	: (TEXTOF | LTEXTOF) LPAR (mnemonic | regsAndConds | macroParam) RPAR
-	| DEF LPAR operand? RPAR
-	| ISREG8 LPAR operand? RPAR
-	| ISREG8STD LPAR operand? RPAR
-	| ISREG8SPEC LPAR operand? RPAR
-	| ISREG8IDX LPAR operand? RPAR
-	| ISREG16 LPAR operand? RPAR
-	| ISREG16STD LPAR operand? RPAR
-	| ISREG16IDX LPAR operand? RPAR
-	| ISREGINDIRECT LPAR operand? RPAR
-	| ISCPORT LPAR operand? RPAR
-	| ISINDEXEDADDR LPAR operand? RPAR
-	| ISCONDITION LPAR operand? RPAR
-	| ISEXPR LPAR operand? RPAR
+	: (TEXTOF | LTEXTOF) LPAR 
+		(mnemonic | regsAndConds | macroParam) RPAR        #TextOfInvoke
+	| DEF LPAR operand? RPAR                               #DefInvoke
+	| ISREG8 LPAR operand? RPAR                            #IsReg8Invoke
+	| ISREG8STD LPAR operand? RPAR                         #IsReg8StdInvoke
+	| ISREG8SPEC LPAR operand? RPAR                        #IsReg8StdSpecInvoke
+	| ISREG8IDX LPAR operand? RPAR                         #IsReg8IdxInvoke
+	| ISREG16 LPAR operand? RPAR                           #IsReg16Invoke
+	| ISREG16STD LPAR operand? RPAR                        #IsReg16StdInvoke
+	| ISREG16IDX LPAR operand? RPAR                        #IsReg16IdxInvoke
+	| ISREGINDIRECT LPAR operand? RPAR                     #IsRegIndirectInvoke
+	| ISCPORT LPAR operand? RPAR                           #IsCportInvoke
+	| ISINDEXEDADDR LPAR operand? RPAR                     #IsIndexedAddrInvoke
+	| ISCONDITION LPAR operand? RPAR                       #IsConditionInvoke
+	| ISEXPR LPAR operand? RPAR                            #IsExprInvoke
 	;
 
-literalExpr
-	: HEXNUM 
-	| DECNUM 
-	| OCTNUM
-	| CHAR
-	| BINNUM
-	| REALNUM
-	| BOOLLIT
-	| STRING
-	| CURADDR
-	| DOT	  // Functions as the second CURADDR token
-	| MULOP   // Functions as the third CURADDR token
-	| CURCNT
+literal
+	: HEXNUM                                               #HexLiteral
+	| DECNUM                                               #DecimalLiteral
+	| OCTNUM                                               #OctalLiteral
+	| CHAR                                                 #CharLiteral
+	| BINNUM                                               #BinLiteral
+	| REALNUM                                              #RealLiteral
+	| BOOLLIT                                              #BoolLiteral
+	| STRING                                               #StringLiteral
+	| (CURADDR | DOT | MULOP)                              #CurAddrLiteral
+	| CURCNT                                               #CurCounterLiteral
 	;
 
-symbolExpr
+symbol
 	: DCOLON? IDENTIFIER ( DOT IDENTIFIER)*
 	;
 

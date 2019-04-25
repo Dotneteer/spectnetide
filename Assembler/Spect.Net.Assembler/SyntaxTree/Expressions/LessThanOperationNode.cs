@@ -1,4 +1,4 @@
-using System;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -65,8 +65,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
         }
 
-        public LessThanOperationNode(object leftOperand, object rightOperand)
-            : base(leftOperand, rightOperand)
+        public LessThanOperationNode(Z80AsmParser.RelExprContext context, Z80AsmVisitor visitor)
+            : base(context, context.expr()[0], context.expr()[1], visitor)
         {
         }
     }

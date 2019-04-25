@@ -200,12 +200,5 @@ namespace Spect.Net.Assembler
         /// <param name="context">Context to get the operand from</param>
         /// <returns>Node that represents the operand</returns>
         Operand GetOperand(Z80AsmParser.OperandContext context);
-
-        /// <summary>
-        /// Gets a symbol from the specified context
-        /// </summary>
-        /// <param name="context">Context to get the symbol from</param>
-        /// <returns>Node that represents the symbol</returns>
-        IdentifierNode GetSymbol(Z80AsmParser.SymbolExprContext context);
     }
 }

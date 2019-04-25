@@ -1,4 +1,5 @@
 ﻿using System;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -29,7 +30,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
         }
 
-        public UnaryLogicalNotNode(object operand) : base(operand)
+        public UnaryLogicalNotNode(Z80AsmParser.LogicalNotExprContext context, Z80AsmVisitor visitor)
+            : base(context.expr(), visitor)
         {
         }
     }

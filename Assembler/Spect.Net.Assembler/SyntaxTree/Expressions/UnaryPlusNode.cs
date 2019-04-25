@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Expressions
+﻿using Spect.Net.Assembler.Generated;
+
+namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
     /// This class represents an UNARY + operation
@@ -13,7 +15,8 @@
         public override ExpressionValue Evaluate(IEvaluationContext evalContext) 
             => Operand.Evaluate(evalContext);
 
-        public UnaryPlusNode(object operand) : base(operand)
+        public UnaryPlusNode(Z80AsmParser.UnaryPlusExprContext context, Z80AsmVisitor visitor) 
+            : base(context.expr(), visitor)
         {
         }
     }

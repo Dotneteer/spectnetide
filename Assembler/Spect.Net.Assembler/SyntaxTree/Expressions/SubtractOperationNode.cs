@@ -1,3 +1,5 @@
+using Spect.Net.Assembler.Generated;
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -61,8 +63,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
         }
 
-        public SubtractOperationNode(object leftOperand, object rightOperand)
-            : base(leftOperand, rightOperand)
+        public SubtractOperationNode(Z80AsmParser.AddExprContext context, Z80AsmVisitor visitor)
+            : base(context, context.expr()[0], context.expr()[1], visitor)
         {
         }
     }

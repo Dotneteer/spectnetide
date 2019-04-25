@@ -1,5 +1,7 @@
 // ReSharper disable ArrangeAccessorOwnerBody
 
+using Spect.Net.Assembler.Generated;
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -64,10 +66,13 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             => (LeftOperand?.HasMacroParameter ?? false)
                || (RightOperand?.HasMacroParameter ?? false);
 
-        protected BinaryOperationNode(object leftOperand, object rightOperand)
+        protected BinaryOperationNode(Z80AsmParser.ExprContext context,
+            Z80AsmParser.ExprContext leftContext,
+            Z80AsmParser.ExprContext rightContext,
+            Z80AsmVisitor visitor) : base(context)
         {
-            LeftOperand = leftOperand as ExpressionNode;
-            RightOperand = rightOperand as ExpressionNode;
+            LeftOperand = (ExpressionNode)visitor.VisitExpr(leftContext);
+            RightOperand = (ExpressionNode)visitor.VisitExpr(rightContext);
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace Spect.Net.Assembler.SyntaxTree.Expressions
+﻿using Antlr4.Runtime;
+using Spect.Net.Assembler.Generated;
+
+namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
     /// This class represents a single literal node
@@ -37,8 +40,10 @@
         /// <summary>
         /// Initialize an ushort literal value
         /// </summary>
+        /// <param name="context">Parser context</param>
         /// <param name="value">Ushort value</param>
-        public LiteralNode(ExpressionValue value)
+        public LiteralNode(ParserRuleContext context, ExpressionValue value)
+            : base(context)
         {
             LiteralValue = value;
         }
@@ -46,8 +51,10 @@
         /// <summary>
         /// Initialize a Boolean literal value
         /// </summary>
+        /// <param name="context">Parser context</param>
         /// <param name="value">Boolean value</param>
-        public LiteralNode(bool value)
+        public LiteralNode(ParserRuleContext context, bool value)
+            : base(context)
         {
             LiteralValue = new ExpressionValue(value);
         }
@@ -55,8 +62,10 @@
         /// <summary>
         /// Initialize an ushort literal value
         /// </summary>
+        /// <param name="context">Parser context</param>
         /// <param name="value">Ushort value</param>
-        public LiteralNode(ushort value)
+        public LiteralNode(ParserRuleContext context, ushort value)
+            : base(context)
         {
             LiteralValue = new ExpressionValue(value);
         }
@@ -64,8 +73,10 @@
         /// <summary>
         /// Initialize a long literal value
         /// </summary>
+        /// <param name="context">Parser context</param>
         /// <param name="value">long value</param>
-        public LiteralNode(long value)
+        public LiteralNode(ParserRuleContext context, long value)
+            : base(context)
         {
             LiteralValue = new ExpressionValue(value);
         }
@@ -73,8 +84,10 @@
         /// <summary>
         /// Initialize a double literal value
         /// </summary>
+        /// <param name="context">Parser context</param>
         /// <param name="value">Double value</param>
-        public LiteralNode(double value)
+        public LiteralNode(ParserRuleContext context, double value)
+            : base(context)
         {
             LiteralValue = new ExpressionValue(value);
         }
@@ -82,8 +95,10 @@
         /// <summary>
         /// Initialize a string literal value
         /// </summary>
+        /// <param name="context">Parser context</param>
         /// <param name="value">String value</param>
-        public LiteralNode(string value)
+        public LiteralNode(ParserRuleContext context, string value)
+            : base(context)
         {
             LiteralValue = new ExpressionValue(value);
         }

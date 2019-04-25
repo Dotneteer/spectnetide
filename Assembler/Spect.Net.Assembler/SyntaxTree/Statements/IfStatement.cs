@@ -44,7 +44,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
             }
 
             Type = context.IFUSED() != null ? IfStatementType.IfUsed : IfStatementType.IfNotUsed;
-            Symbol = visitorContext.GetSymbol(context.symbolExpr());
+            Symbol = new IdentifierNode(context.symbol());
         }
     }
 }

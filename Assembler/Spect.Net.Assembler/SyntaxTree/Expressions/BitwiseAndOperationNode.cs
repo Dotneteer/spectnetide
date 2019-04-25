@@ -1,3 +1,5 @@
+using Spect.Net.Assembler.Generated;
+
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
     /// <summary>
@@ -52,8 +54,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             }
         }
 
-        public BitwiseAndOperationNode(object leftOperand = null, object rightOperand = null)
-            : base(leftOperand, rightOperand)
+        public BitwiseAndOperationNode(Z80AsmParser.AndExprContext context, Z80AsmVisitor visitor)
+            : base(context, context.expr()[0], context.expr()[1], visitor)
         {
         }
     }

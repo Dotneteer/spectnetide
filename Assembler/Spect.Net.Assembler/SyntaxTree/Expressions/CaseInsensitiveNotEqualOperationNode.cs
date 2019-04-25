@@ -1,4 +1,5 @@
 using System;
+using Spect.Net.Assembler.Generated;
 
 namespace Spect.Net.Assembler.SyntaxTree.Expressions
 {
@@ -12,8 +13,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// </summary>
         public override StringComparison Comparison => StringComparison.InvariantCultureIgnoreCase;
 
-        public CaseInsensitiveNotEqualOperationNode(object leftOperand = null, object rightOperand = null)
-            : base(leftOperand, rightOperand)
+        public CaseInsensitiveNotEqualOperationNode(Z80AsmParser.EquExprContext context, Z80AsmVisitor visitor) 
+            : base(context, visitor)
         {
         }
     }
