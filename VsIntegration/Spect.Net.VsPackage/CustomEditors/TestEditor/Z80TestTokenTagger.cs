@@ -20,8 +20,6 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
 {
     public class Z80TestTokenTagger : ITagger<Z80TestTokenTag>
     {
-        private bool _fakeEdit;
-
         internal SpectNetPackage Package => SpectNetPackage.Default;
         internal ITextBuffer SourceBuffer { get; }
         internal string FilePath { get; private set; }
@@ -43,7 +41,6 @@ namespace Spect.Net.VsPackage.CustomEditors.TestEditor
                 };
             }
             sourceBuffer.Changed += SourceBufferOnChanged;
-            _fakeEdit = false;
         }
 
         /// <summary>

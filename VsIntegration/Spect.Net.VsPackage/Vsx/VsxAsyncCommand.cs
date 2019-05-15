@@ -120,10 +120,6 @@ namespace Spect.Net.VsPackage.Vsx
                         OnException(ex);
                     }
                 }
-                catch (Exception ex)
-                {
-                    var x = 1;
-                }
                 finally
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
