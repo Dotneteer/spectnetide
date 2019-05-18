@@ -1,15 +1,31 @@
 ﻿using System;
+using System.IO;
+using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.VsPackage.ProjectStructure;
+using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
 using Task = System.Threading.Tasks.Task;
 using VsTask = Microsoft.VisualStudio.Shell.Task;
+// ReSharper disable SuspiciousTypeConversion.Global
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
 namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
     public abstract class Z80CompileCodeCommandBase : Z80ProgramCommandBase
     {
+        public const string LIST_TMP_FOLDER = ".SpectNetIde/Lists";
+        private const string FILE_EXISTS_MESSAGE = "The list file exists in the project. " +
+                                                   "Would you like to override it?";
+
+        private const string INVALID_FOLDER_MESSAGE = "The list file folder specified in the Options dialog " +
+                                                      "contains invalid characters or an absolute path. Go to the Options dialog and " +
+                                                      "fix the issue so that you can add the list file to the project.";
+
+
+
         /// <summary>
         /// The output of the compilation
         /// </summary>
@@ -107,6 +123,8 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// <summary>
         /// Compiles the code.
         /// </summary>
+        /// <param name="hierarchy">Hierarchy object</param>
+        /// <param name="itemId">Identifier of item to compile</param>
         /// <returns>True, if compilation successful; otherwise, false</returns>
         protected virtual bool CompileCode(IVsHierarchy hierarchy, uint itemId)
         {
@@ -130,6 +148,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
 
             // --- Sign the compilation was successful
             Package.DebugInfoProvider.CompiledOutput = Output;
+
+            // --- Create the compilation list file
+            CreateCompilationListFile(hierarchy, itemId);
             return true;
         }
 
@@ -251,5 +272,57 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                 Package.ErrorList.Navigate(task);
             }
         }
+
+        /// <summary>
+        /// Creates the compilation list file as set up in the package options
+        /// </summary>
+        /// <param name="hierarchy">Hierarchy object</param>
+        /// <param name="itemId">Identifier of item to compile</param>
+        private void CreateCompilationListFile(IVsHierarchy hierarchy, uint itemId)
+        {
+            var options = Package.Options;
+            if (!options.GenerateCompilationList) return;
+
+            // --- Create list file name
+            if (!(hierarchy is IVsProject project)) return;
+            project.GetMkDocument(itemId, out var itemFullPath);
+            var codeFile = Path.GetFileNameWithoutExtension(itemFullPath);
+            var suffix = string.IsNullOrWhiteSpace(options.CompilationFileSuffix)
+                ? string.Empty
+                : DateTime.Now.ToString(options.CompilationFileSuffix);
+            var listFilename = $"{codeFile}{suffix}{options.CompilationFileExtension ?? ".list"}";
+            var listFolder = string.IsNullOrWhiteSpace(options.CompilationFileFolder)
+                ? LIST_TMP_FOLDER
+                : options.CompilationFileFolder;
+
+            // -- Make sure list folder exists
+            if (!Directory.Exists(listFolder))
+            {
+                Directory.CreateDirectory(listFolder);
+            }
+
+            // --- Save the list file
+            var listContents = "This is an output list";
+            var fullListFileName = Path.Combine(listFolder, listFilename);
+            try
+            {
+                File.WriteAllText(fullListFileName, listContents);
+            }
+            catch
+            {
+                VsxDialogs.Show($"Error when writing list file {fullListFileName}. "
+                    + "The file name may contain invalid characters, or you miss file permissions.",
+                    "Error when creating list file.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                return;
+            }
+
+            if (options.AddCompilationToProject)
+            {
+                DiscoveryProject.AddFileToProject(Package.Options.CompilationProjectFolder, fullListFileName,
+                    INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE, false);
+            }
+        }
     }
 }
+
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread

@@ -27,7 +27,7 @@ namespace Spect.Net.Assembler.Test
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new Z80AsmParser(tokenStream);
             var context = parser.compileUnit();
-            var visitor = new Z80AsmVisitor();
+            var visitor = new Z80AsmVisitor(inputStream);
             visitor.Visit(context);
             parser.SyntaxErrors.Count.ShouldBe(expectedErrors);
 
@@ -49,7 +49,7 @@ namespace Spect.Net.Assembler.Test
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new Z80AsmParser(tokenStream);
             var context = parser.expr();
-            var visitor = new Z80AsmVisitor();
+            var visitor = new Z80AsmVisitor(inputStream);
             parser.SyntaxErrors.Count.ShouldBe(expectedErrors);
             return (ExpressionNode)visitor.VisitExpr(context);
         }
@@ -68,7 +68,7 @@ namespace Spect.Net.Assembler.Test
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new Z80AsmParser(tokenStream);
             var context = parser.compileUnit();
-            var visitor = new Z80AsmVisitor();
+            var visitor = new Z80AsmVisitor(inputStream);
             visitor.Visit(context);
             return parser.SyntaxErrors;
         }

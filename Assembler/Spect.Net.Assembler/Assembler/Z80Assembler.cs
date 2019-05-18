@@ -179,7 +179,7 @@ namespace Spect.Net.Assembler.Assembler
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new Z80AsmParser(tokenStream);
             var context = parser.compileUnit();
-            var visitor = new Z80AsmVisitor();
+            var visitor = new Z80AsmVisitor(inputStream);
             visitor.Visit(context);
             var visitedLines = visitor.Compilation;
 
@@ -229,7 +229,7 @@ namespace Spect.Net.Assembler.Assembler
                 else if (processOps)
                 {
                     line.FileIndex = fileIndex;
-                    line.SourceText = sourceText.Substring(line.FirstPosition,
+                    line.MacroSourceText = sourceText.Substring(line.FirstPosition,
                         line.LastPosition - line.FirstPosition + 1);
                     parsedLines.Add(line);
                 }

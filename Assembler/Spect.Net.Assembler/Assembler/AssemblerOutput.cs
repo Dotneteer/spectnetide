@@ -69,6 +69,10 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public Dictionary<(int FileIndex, int Line), List<ushort>> AddressMap { get; }
 
+        /// <summary>
+        /// Items of the list file
+        /// </summary>
+        public List<ListFileItem> ListFileItems { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public AssemblerOutput(SourceFileItem sourceItem)
@@ -78,6 +82,7 @@ namespace Spect.Net.Assembler.Assembler
             SourceFileList = new List<SourceFileItem> { sourceItem };
             SourceMap = new Dictionary<ushort, (int FileIndex, int Line)>();
             AddressMap = new Dictionary<(int FileIndex, int Line), List<ushort>>();
+            ListFileItems = new List<ListFileItem>();
         }
 
         /// <summary>

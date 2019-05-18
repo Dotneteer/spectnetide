@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.Assembler.Generated;
@@ -19,7 +20,22 @@ namespace Spect.Net.Assembler
     /// </summary>
     public class Z80AsmVisitor : Z80AsmBaseVisitor<object>, IZ80AsmVisitorContext
     {
+        public Z80AsmVisitor(AntlrInputStream inputStream)
+        {
+            InputStream = inputStream;
+        }
+
         #region IZ80AsmVisitorState implementation
+
+        /// <summary>
+        /// The input stream used by the parser
+        /// </summary>
+        public AntlrInputStream InputStream { get; }
+
+        /// <summary>
+        /// Source code text of the line being processed
+        /// </summary>
+        public string CurrentSourceText { get; set; }
 
         /// <summary>
         /// Source line number
@@ -312,6 +328,10 @@ namespace Spect.Net.Assembler
             {
                 return null;
             }
+
+            var startIndex = context.start.StartIndex;
+            var stopIndex = context.stop.StopIndex;
+            CurrentSourceText = InputStream.GetText(new Interval(startIndex, stopIndex));
 
             CurrentSourceLine = context.Start.Line;
             FirstColumn = context.Start.Column;
@@ -1035,6 +1055,7 @@ namespace Spect.Net.Assembler
         /// <returns>The newly added line</returns>
         private SourceLineBase AddLine(SourceLineBase line, ParserRuleContext context)
         {
+            line.SourceText = CurrentSourceText;
             line.SourceLine = CurrentSourceLine;
             line.FirstColumn = FirstColumn;
             line.FirstPosition = FirstPosition;

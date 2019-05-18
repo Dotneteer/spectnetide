@@ -401,8 +401,9 @@ namespace Spect.Net.VsPackage.ProjectStructure
         /// <param name="filename">Filename to add to the project</param>
         /// <param name="invFolderMessage">Message to display when folder name is invalid</param>
         /// <param name="fileExistsMessage">Message to display when file already exists</param>
+        /// <param name="confirmOverwrite">When a file exists, the user must confirm overwriting it</param>
         public static void AddFileToProject(string projectFolder, string filename, string invFolderMessage = null, 
-            string fileExistsMessage = null)
+            string fileExistsMessage = null, bool confirmOverwrite = true)
         {
             var folderSegments = projectFolder.Split(new[] { '/', '\\' },
                 StringSplitOptions.RemoveEmptyEntries);
@@ -504,12 +505,15 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 if (string.Compare(file, tempFile,
                         StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
-                    var answer = VsxDialogs.Show(fileExistsMessage ?? DEFAULT_FILE_EXISTS_MESSAGE,
-                        "File already exists",
-                        MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
-                    if (answer == VsxDialogResult.No)
+                    if (confirmOverwrite)
                     {
-                        return;
+                        var answer = VsxDialogs.Show(fileExistsMessage ?? DEFAULT_FILE_EXISTS_MESSAGE,
+                            "File already exists",
+                            MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
+                        if (answer == VsxDialogResult.No)
+                        {
+                            return;
+                        }
                     }
                     toDelete = projItem;
                     break;

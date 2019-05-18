@@ -61,6 +61,11 @@ namespace Spect.Net.Assembler.Assembler
         public NoInstructionLine OverflowLabelLine { get; private set; }
 
         /// <summary>
+        /// The current list item being processed.
+        /// </summary>
+        public ListFileItem CurrentListFileItem { get; private set; }
+
+        /// <summary>
         /// Gets the current assembly address (represented by the "$" sign
         /// in the assembly language)
         /// </summary>
@@ -181,6 +186,16 @@ namespace Spect.Net.Assembler.Assembler
             bool fromMacroEmit = false)
         {
             CurrentSourceLine = asmLine;
+            CurrentListFileItem = new ListFileItem
+            {
+                FileIndex = asmLine.FileIndex,
+                Address = GetCurrentAssemblyAddress(),
+                LineNumber = asmLine.SourceLine,
+                SegmentIndex = Output.Segments.Count - 1,
+                CodeStartIndex = CurrentSegment.EmittedCode.Count,
+                SourceText = asmLine.SourceText,
+                CodeLength = 0
+            };
 
             // --- Report any parse-time function issue
             if (asmLine.IssueToEmit != null)
@@ -202,6 +217,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 OverflowLabelLine = noInstrLine;
+                EmitListItem();
             }
             else
             {
@@ -347,6 +363,7 @@ namespace Spect.Net.Assembler.Assembler
                     GetCurrentAssemblyAddress();
                     CurrentSegment.CurrentInstructionOffset = CurrentSegment.EmittedCode.Count;
                     ApplyPragma(pragmaLine, currentLabel);
+                    EmitListItem();
                 }
                 else if (asmLine is StatementBase statement)
                 {
@@ -363,7 +380,16 @@ namespace Spect.Net.Assembler.Assembler
                     var sourceInfo = (opLine.FileIndex, opLine.SourceLine);
                     Output.SourceMap[addr] = sourceInfo;
                     Output.AddToAddressMap(opLine.FileIndex, opLine.SourceLine, addr);
+                    EmitListItem();
                 }
+            }
+
+            // --- Emits the current list item
+            void EmitListItem()
+            {
+                CurrentListFileItem.CodeLength = CurrentSegment.EmittedCode.Count
+                    - CurrentListFileItem.CodeStartIndex;
+                Output.ListFileItems.Add(CurrentListFileItem);
             }
         }
 
@@ -1756,7 +1782,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 // --- Replace all macro arguments by their actual value
                 var curLine = allLines[lineIndex];
-                var lineText = curLine.SourceText;
+                var lineText = curLine.MacroSourceText;
                 var matches = MacroParamRegex.Matches(lineText);
                 foreach (Match match in matches)
                 {
@@ -1785,7 +1811,7 @@ namespace Spect.Net.Assembler.Assembler
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new Z80AsmParser(tokenStream);
             var context = parser.compileUnit();
-            var visitor = new Z80AsmVisitor
+            var visitor = new Z80AsmVisitor(inputStream)
             {
                 MacroParsingPhase = true
             };

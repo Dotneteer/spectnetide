@@ -58,6 +58,7 @@
     <Compile Include="Assembler\BinaryComparisonInfo.cs" />
     <Compile Include="Assembler\FieldDefinition.cs" />
     <Compile Include="Assembler\IHasUsageInfo.cs" />
+    <Compile Include="Assembler\ListFileItem.cs" />
     <Compile Include="Assembler\StructDefinition.cs" />
     <Compile Include="Assembler\AssemblySymbolInfo.cs" />
     <Compile Include="Assembler\SymbolType.cs" />

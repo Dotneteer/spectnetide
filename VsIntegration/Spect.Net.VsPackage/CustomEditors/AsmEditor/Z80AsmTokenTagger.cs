@@ -98,7 +98,7 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                 var tokenStream = new CommonTokenStream(lexer);
                 var parser = new Z80AsmParser(tokenStream);
                 var context = parser.asmline();
-                var visitor = new Z80AsmVisitor();
+                var visitor = new Z80AsmVisitor(inputStream);
                 visitor.Visit(context);
 
                 // --- Check for a block comment

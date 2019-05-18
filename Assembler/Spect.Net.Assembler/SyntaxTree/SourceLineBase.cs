@@ -121,12 +121,17 @@ namespace Spect.Net.Assembler.SyntaxTree
         public TextSpan InstructionSpan;
 
         /// <summary>
-        /// The source text of the line
+        /// Source text of the entire line
+        /// </summary>
+        public string SourceText;
+
+        /// <summary>
+        /// The source text of the macro line
         /// </summary>
         /// <remarks>
         /// Contains value only when the line has a macro parameter
         /// </remarks>
-        public string SourceText;
+        public string MacroSourceText;
 
         /// <summary>
         /// Set this value to an error code to emit that issue
