@@ -9,7 +9,7 @@ selector: documents
 permalink: "documents/how-assembler-works"
 ---
 
-The assembler compiles the code in three phases:
+The assembler compiles the code in these phases:
 
 1. It takes the source code and runs a preprocessor that parses the entire code, and applies the
 *directives* in the code. You can easily recognize directives, as they start with `#`, such as

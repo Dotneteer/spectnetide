@@ -93,52 +93,52 @@ namespace Spect.Net.VsPackage
         [Description("Predefined symbols to use when you start the program (both in debug mode and without debugging)")]
         public string RunSymbols { get; set; } = "";
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("Generate output list file")]
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Generate listing output file")]
         [Description("Turn on this option to generate output file when compiling Z80 code")]
         public bool GenerateCompilationList { get; set; } = false;
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("Generate list file only for Compile")]
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Generate listing file only for Compile")]
         [Description("Turn on this option to generate output file only for the Compile command but not for " 
                      + "Run, Debug, or Inject.")]
         public bool GenerateForCompileOnly { get; set; } = true;
 
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("Add list file to project")]
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Add listing file to project")]
         [Description("Turn on this option to add output list file to the current project")]
         public bool AddCompilationToProject { get; set; } = false;
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("List file name suffix")]
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Listing file name suffix")]
         [Description("Leave this option empty to omit file name suffix. Set it to a date pattern (e.g. 'dd-mm-yyyy') to add date to the file name.")]
         public string CompilationFileSuffix { get; set; } = null;
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("List file project folder")]
-        [Description("Compilation list files are added to this folder within the project.")]
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Listing file project folder")]
+        [Description("Compilation listing files are added to this folder within the project.")]
         public string CompilationProjectFolder { get; set; } = @"Listings";
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("List file save folder")]
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Listing file save folder")]
         [Description("Compilation list files are saved to this folder.")]
         public string CompilationFileFolder { get; set; } = @"C:\Temp\Listings";
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("List file extension")]
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Listing file extension")]
         [Description("Use this extension when creating list files.")]
         public string CompilationFileExtension { get; set; } = ".list";
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("List file line template")]
-        [Description("Template to define the list output line format. Placeholders: {A}: address; {C}: operation codes; " +
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Listing file line template")]
+        [Description("Template to define the listing output line format. Placeholders: {A}: address; {C}: operation codes; " +
                      "{CP}: operation codes padded with spaces (11 characters); {F}: file index, {L}: line number; {S}: source code. " +
                      "Other special characters: '\\t': tabulator.")]
         public string CompilationLineTemplate { get; set; } = "{A} {CX} {F} {L} {S}";
 
-        [Category("Compile Z80 Code")]
-        [DisplayName("List file output mode")]
+        [Category("Assembler Listing Output File")]
+        [DisplayName("Source file name output mode")]
         [Description("This option specifies how source file information should be put into the list file. " +
                      "None: no file information output, except file index; " +
                      "Header: Display a file header for each list section; " + 
