@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.VsPackage.Commands;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.Vsx;
 using Spect.Net.VsPackage.Vsx.Output;
@@ -281,7 +284,11 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         private void CreateCompilationListFile(IVsHierarchy hierarchy, uint itemId)
         {
             var options = Package.Options;
-            if (!options.GenerateCompilationList) return;
+            if (!options.GenerateCompilationList
+                || options.GenerateForCompileOnly && !(this is CompileZ80CodeCommand))
+            {
+                return;
+            }
 
             // --- Create list file name
             if (!(hierarchy is IVsProject project)) return;
@@ -302,7 +309,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             }
 
             // --- Save the list file
-            var listContents = "This is an output list";
+            var listContents = CreateListFileContents();
             var fullListFileName = Path.Combine(listFolder, listFilename);
             try
             {
@@ -320,6 +327,99 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             {
                 DiscoveryProject.AddFileToProject(Package.Options.CompilationProjectFolder, fullListFileName,
                     INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE, false);
+            }
+        }
+
+        /// <summary>
+        /// Creates the contents of the list file from the output information
+        /// </summary>
+        /// <returns>List file contents</returns>
+        private string CreateListFileContents()
+        {
+            // --- Create a format string from the list template
+            var options = Package.Options;
+            var template = options.CompilationLineTemplate;
+            template = ReplaceFirst(template, "{F}", "{0}");
+            template = ReplaceFirst(template, "{F2}", "{0,2}");
+            template = ReplaceFirst(template, "{F3}", "{0,3}");
+            template = ReplaceFirst(template, "{L}", "{1}");
+            template = ReplaceFirst(template, "{L3}", "{1,3}");
+            template = ReplaceFirst(template, "{L4}", "{1,4}");
+            template = ReplaceFirst(template, "{L5}", "{1,5}");
+            template = ReplaceFirst(template, "{A}", "{2:X4}");
+            template = ReplaceFirst(template, "{C}", "{3}");
+            template = ReplaceFirst(template, "{CX}", "{3,-11}");
+            template = ReplaceFirst(template, "{S}", "{4}");
+            template = template.Replace("\\t", "\t");
+            template = template.Replace("{F}", "");
+            template = template.Replace("{F2}", "");
+            template = template.Replace("{F3}", "");
+            template = template.Replace("{L}", "");
+            template = template.Replace("{L3}", "");
+            template = template.Replace("{L4}", "");
+            template = template.Replace("{L5}", "");
+            template = template.Replace("{A}", "");
+            template = template.Replace("{C}", "");
+            template = template.Replace("{CX}", "");
+            template = template.Replace("{S}", "");
+            template += Environment.NewLine;
+            
+            // --- Initialize the output loop
+            var list = new StringBuilder(1024 * 1024);
+            var currentFileIndex = -1;
+
+            // --- Create file map
+            if (options.ListFileOutputMode == ListFileOutputMode.FileMap)
+            {
+                list.AppendLine("; File Mapping:");
+                for (var i = 0; i < Output.SourceFileList.Count; i++)
+                {
+                    list.AppendLine($"; File #{i}: {Output.SourceFileList[i].Filename}");
+                }
+                list.AppendLine();
+            }
+
+            // --- Create listing output
+            foreach (var outItem in Output.ListFileItems)
+            {
+                // --- Check file header
+                if (options.ListFileOutputMode == ListFileOutputMode.Header 
+                    && outItem.FileIndex != currentFileIndex)
+                {
+                    list.AppendLine();
+                    list.AppendLine($"; File #{outItem.FileIndex}: {Output.SourceFileList[outItem.FileIndex].Filename}");
+                    list.AppendLine();
+                }
+                currentFileIndex = outItem.FileIndex;
+
+                // --- Create operation codes
+                var opCodes = new StringBuilder(100);
+                for (var i = 0; i < outItem.CodeLength; i++)
+                {
+                    opCodes.Append(
+                        $"{Output.Segments[outItem.SegmentIndex].EmittedCode[outItem.CodeStartIndex + i]:X2} ");
+                }
+
+                // --- Display list line contents
+                list.AppendFormat(template,
+                    outItem.FileIndex,
+                    outItem.LineNumber,
+                    outItem.Address,
+                    opCodes.ToString().TrimEnd(),
+                    outItem.SourceText);
+            }
+
+            // --- Done
+            return list.ToString();
+
+            string ReplaceFirst(string source, string oldString, string newString)
+            {
+                var pos = source.IndexOf(oldString, StringComparison.Ordinal);
+                if (pos < 0) return source;
+
+                return pos == 0
+                    ? newString + source.Substring(oldString.Length)
+                    : source.Substring(0, pos) + newString + source.Substring(pos + oldString.Length);
             }
         }
     }

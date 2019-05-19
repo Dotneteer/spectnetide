@@ -99,6 +99,13 @@ namespace Spect.Net.VsPackage
         public bool GenerateCompilationList { get; set; } = false;
 
         [Category("Compile Z80 Code")]
+        [DisplayName("Generate list file only for Compile")]
+        [Description("Turn on this option to generate output file only for the Compile command but not for " 
+                     + "Run, Debug, or Inject.")]
+        public bool GenerateForCompileOnly { get; set; } = true;
+
+
+        [Category("Compile Z80 Code")]
         [DisplayName("Add list file to project")]
         [Description("Turn on this option to add output list file to the current project")]
         public bool AddCompilationToProject { get; set; } = false;
@@ -126,9 +133,17 @@ namespace Spect.Net.VsPackage
         [Category("Compile Z80 Code")]
         [DisplayName("List file line template")]
         [Description("Template to define the list output line format. Placeholders: {A}: address; {C}: operation codes; " +
-                     "{CP}: operation codes padded with spaces (11 characters); {L}: line number; {S}: source code. " +
+                     "{CP}: operation codes padded with spaces (11 characters); {F}: file index, {L}: line number; {S}: source code. " +
                      "Other special characters: '\\t': tabulator.")]
-        public string CompilationLineTemplate { get; set; } = "{A} {CX} {L} {S}";
+        public string CompilationLineTemplate { get; set; } = "{A} {CX} {F} {L} {S}";
+
+        [Category("Compile Z80 Code")]
+        [DisplayName("List file output mode")]
+        [Description("This option specifies how source file information should be put into the list file. " +
+                     "None: no file information output, except file index; " +
+                     "Header: Display a file header for each list section; " + 
+                     "FileMap: Display a file map at the beginning of the list.")]
+        public ListFileOutputMode ListFileOutputMode { get; set; } = ListFileOutputMode.Header;
 
         // --- Export Z80 Code options
         [Category("Export Z80 Code")]
@@ -299,6 +314,16 @@ namespace Spect.Net.VsPackage
         /// Signs that the keyboard fit type has changed
         /// </summary>
         public event EventHandler<KeyboardFitTypeChangedEventArgs> KeyboardFitTypeChanged;
+    }
+
+    /// <summary>
+    /// Options for list file output
+    /// </summary>
+    public enum ListFileOutputMode
+    {
+        None,
+        Header,
+        FileMap
     }
 
     /// <summary>
