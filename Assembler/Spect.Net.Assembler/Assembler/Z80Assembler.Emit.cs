@@ -207,6 +207,7 @@ namespace Spect.Net.Assembler.Assembler
             // --- No parse-time issue, process the line
             if (asmLine is NoInstructionLine noInstrLine)
             {
+                EmitListItem();
                 if (noInstrLine.Label == null) return;
 
                 // --- This is a label-only line
@@ -217,7 +218,6 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 OverflowLabelLine = noInstrLine;
-                EmitListItem();
             }
             else
             {

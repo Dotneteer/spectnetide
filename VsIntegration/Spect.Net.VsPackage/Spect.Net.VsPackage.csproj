@@ -430,6 +430,12 @@
     <Compile Include="Z80Programs\Z80CodeManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
+      <Link>DeploymentResources\Spect.Net.CodeDiscover.props</Link>
+    </None>
+    <None Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
+      <Link>DeploymentResources\Spect.Net.CodeDiscover.targets</Link>
+    </None>
     <None Include="app.config" />
     <None Include="Docs\UPD765A.pdf" />
     <None Include="Key.snk" />
@@ -475,7 +481,9 @@
     <Content Include="Docs\stdidcmd.h" />
     <Content Include="Docs\vsshlids.h" />
     <Content Include="LICENSE.txt" />
-    <Content Include="Resources\SpecteNetIde.ico" />
+    <Content Include="Resources\SpecteNetIde.ico">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="_VsixDependencies\Newtonsoft.Json.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -788,10 +796,14 @@
     <ProjectReference Include="..\Spect.Net.CodeDiscover.ProjectType\Spect.Net.CodeDiscover.ProjectType.csproj">
       <Project>{1ddee870-3e1e-4833-9576-c29d6ceaee1e}</Project>
       <Name>Spect.Net.CodeDiscover.ProjectType</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%253bBuiltProjectOutputGroupDependencies%253bGetCopyToOutputDirectoryItems%253bSatelliteDllsProjectOutputGroup%253bPkgdefProjectOutputGroup%253bVSIXContainerProjectOutputGroup%253b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%253b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
       <Project>{28b59ae6-c12f-4c54-adc7-4cd89e24baba}</Project>
       <Name>Spect.Net.ProjectWizard</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%253bBuiltProjectOutputGroupDependencies%253bGetCopyToOutputDirectoryItems%253bSatelliteDllsProjectOutputGroup%253b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%253b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

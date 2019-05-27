@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -49,7 +48,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         }
 
         /// <summary>
-        /// The start address of the diassembly view
+        /// The start address of the disassembly view
         /// </summary>
         public int DisassemblyStartAddress
         {
@@ -392,21 +391,36 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                 }
                 currentFileIndex = outItem.FileIndex;
 
-                // --- Create operation codes
-                var opCodes = new StringBuilder(100);
-                for (var i = 0; i < outItem.CodeLength; i++)
+                // --- Emit non-code lines
+                if (outItem.CodeLength == 0)
                 {
-                    opCodes.Append(
-                        $"{Output.Segments[outItem.SegmentIndex].EmittedCode[outItem.CodeStartIndex + i]:X2} ");
+                    list.AppendFormat(template,
+                        outItem.FileIndex,
+                        outItem.LineNumber,
+                        outItem.Address,
+                        string.Empty,
+                        outItem.SourceText);
+                    continue;
                 }
 
-                // --- Display list line contents
-                list.AppendFormat(template,
-                    outItem.FileIndex,
-                    outItem.LineNumber,
-                    outItem.Address,
-                    opCodes.ToString().TrimEnd(),
-                    outItem.SourceText);
+                // --- Output separate lines for each 4 operation codes
+                for (var i = 0; i < outItem.CodeLength; i += 4)
+                {
+                    var opCodes = new StringBuilder(20);
+                    for (var j = i; j < i + 4 && j < outItem.CodeLength; j++)
+                    {
+                        opCodes.Append(
+                            $"{Output.Segments[outItem.SegmentIndex].EmittedCode[outItem.CodeStartIndex + j]:X2} ");
+                    }
+
+                    // --- Display list line contents
+                    list.AppendFormat(template,
+                        outItem.FileIndex,
+                        outItem.LineNumber,
+                        outItem.Address + i,
+                        opCodes.ToString().TrimEnd(),
+                        i == 0 ? outItem.SourceText : string.Empty);
+                }
             }
 
             // --- Done
