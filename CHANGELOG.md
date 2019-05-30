@@ -1,10 +1,12 @@
+### Version 1.19.1
+__FIX__: Typing binary literals starting with "0b" in the code editor does not raise an exception.
+
 ### Version 1.19.0
 __FEATURE__: Now, you can create assembly output listing file when comiling th code.
 __CHANGE__: SpectNetIDE uses the new VS SDK metapackages.
 
 ### Version 1.18.5
 __CHANGE__: The standalone emulator client has been deleted from the solution.
-
 
 ### Version 1.18.4
 __FEATURE__: The ZX Spectrum memory window allows exporting the memory contents.  

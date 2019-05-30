@@ -854,22 +854,22 @@ namespace Spect.Net.Assembler
             ushort value;
 
             // --- Hexadecimal literals
-            if (token.StartsWith("#"))
+            if (token.StartsWith("#") && token.Length > 1)
             {
                 AddNumber(context);
                 value = ushort.Parse(token.Substring(1), NumberStyles.HexNumber);
             }
-            else if (token.StartsWith("0X"))
+            else if (token.StartsWith("0X") && token.Length > 2)
             {
                 AddNumber(context);
                 value = ushort.Parse(token.Substring(2), NumberStyles.HexNumber);
             }
-            else if (token.StartsWith("$"))
+            else if (token.StartsWith("$") && token.Length > 1)
             {
                 AddNumber(context);
                 value = ushort.Parse(token.Substring(1), NumberStyles.HexNumber);
             }
-            else if (token.EndsWith("H", StringComparison.OrdinalIgnoreCase))
+            else if (token.EndsWith("H", StringComparison.OrdinalIgnoreCase) && token.Length > 1)
             {
                 AddNumber(context);
                 value = (ushort)int.Parse(token.Substring(0, token.Length - 1),
@@ -877,31 +877,32 @@ namespace Spect.Net.Assembler
             }
             
             // --- Binary literals
-            else if (token.StartsWith("%"))
+            else if (token.StartsWith("%") && token.Length > 1)
             {
                 AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(1).Replace("_", ""), 2);
             }
-            else if (token.StartsWith("0B"))
+            else if (token.StartsWith("0B") && token.Length > 2)
             {
                 AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(2).Replace("_", ""), 2);
             }
-            else if (token.EndsWith("b") || token.EndsWith("B"))
+            else if ((token.EndsWith("b") || token.EndsWith("B")) && token.Length > 1)
             {
                 AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(0, token.Length - 1).Replace("_", ""), 2);
             }
             
             // --- Octal literals
-            else if (token.EndsWith("q") || token.EndsWith("Q") || token.EndsWith("o") || token.EndsWith("O"))
+            else if ((token.EndsWith("q") || token.EndsWith("Q") || token.EndsWith("o") || token.EndsWith("O"))
+                && token.Length > 1)
             {
                 AddNumber(context);
                 value = (ushort)Convert.ToInt32(token.Substring(0, token.Length - 1), 8);
             }
             
             // --- Character literals
-            else if (token.StartsWith("\"") || token.StartsWith("'"))
+            else if ((token.StartsWith("\"") || token.StartsWith("'")) && token.Length > 2)
             {
                 AddString(context);
                 var charExpr = context.GetText();
