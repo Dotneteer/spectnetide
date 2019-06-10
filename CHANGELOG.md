@@ -1,3 +1,6 @@
+### Version 1.19.2
+__FIX__: The resource issues that prevented SpectNetIDE to load in VS 2019 16.1.2 resolved.
+
 ### Version 1.19.1
 __FIX__: Typing binary literals starting with "0b" in the code editor does not raise an exception.
 

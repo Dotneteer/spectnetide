@@ -430,12 +430,12 @@
     <Compile Include="Z80Programs\Z80CodeManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
       <Link>DeploymentResources\Spect.Net.CodeDiscover.props</Link>
-    </None>
-    <None Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
       <Link>DeploymentResources\Spect.Net.CodeDiscover.targets</Link>
-    </None>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Docs\UPD765A.pdf" />
     <None Include="Key.snk" />
@@ -497,81 +497,81 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\DisassAnn.xaml">
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\DisassAnn.xaml">
       <Link>DeploymentResources\DisassAnn.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\folder.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\folder.xaml">
       <Link>DeploymentResources\folder.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\general.browseobject.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\general.browseobject.xaml">
       <Link>DeploymentResources\general.browseobject.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\general.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\general.xaml">
       <Link>DeploymentResources\general.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\none.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\none.xaml">
       <Link>DeploymentResources\none.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\ProjectItemsSchema.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\ProjectItemsSchema.xaml">
       <Link>DeploymentResources\ProjectItemsSchema.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Rom.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Rom.xaml">
       <Link>DeploymentResources\Rom.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\scc.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\scc.xaml">
       <Link>DeploymentResources\scc.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\SpConf.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\SpConf.xaml">
       <Link>DeploymentResources\SpConf.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Tap.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Tap.xaml">
       <Link>DeploymentResources\Tap.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Tzx.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Tzx.xaml">
       <Link>DeploymentResources\Tzx.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Vfdd.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Vfdd.xaml">
       <Link>DeploymentResources\Vfdd.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\VmState.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\VmState.xaml">
       <Link>DeploymentResources\VmState.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Z80Asm.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Z80Asm.xaml">
       <Link>DeploymentResources\Z80Asm.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Z80Test.xaml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\Z80Test.xaml">
       <Link>DeploymentResources\Z80Test.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
+    </EmbeddedResource>
     <Page Include="CustomEditors\DisannEditor\DisAnnEditorControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
