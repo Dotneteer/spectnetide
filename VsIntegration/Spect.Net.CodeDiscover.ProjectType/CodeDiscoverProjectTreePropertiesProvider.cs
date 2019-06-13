@@ -49,6 +49,7 @@ namespace ZXSpectrumCodeDiscover
                 case "SpConf":
                     propertyValues.Icon = ImageMonikers.SpConfIconImageMoniker.ToProjectSystemType();
                     break;
+                case "ZxBasic":
                 case "Z80Test":
                     propertyValues.Icon = ImageMonikers.Z80TestIconImageMoniker.ToProjectSystemType();
                     break;

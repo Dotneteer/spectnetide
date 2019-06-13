@@ -66,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CodeDiscover.Proj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.VsPackage", "VsIntegration\Spect.Net.VsPackage\Spect.Net.VsPackage.csproj", "{1137FDF8-C2CA-4142-B327-7D37AAC1CF80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.ZxBasicTemplate", "VsIntegration\Spect.Net.ZxBasicTemplate\Spect.Net.ZxBasicTemplate.csproj", "{684ABFAC-5982-4BF8-BF28-05BB621383DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +158,10 @@ Global
 		{1137FDF8-C2CA-4142-B327-7D37AAC1CF80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1137FDF8-C2CA-4142-B327-7D37AAC1CF80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1137FDF8-C2CA-4142-B327-7D37AAC1CF80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684ABFAC-5982-4BF8-BF28-05BB621383DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684ABFAC-5982-4BF8-BF28-05BB621383DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684ABFAC-5982-4BF8-BF28-05BB621383DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684ABFAC-5982-4BF8-BF28-05BB621383DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,6 +188,7 @@ Global
 		{A7B71614-9E99-430D-910D-9E938AD259CE} = {C1E57370-ADB2-4B95-A791-454DCAE84708}
 		{1DDEE870-3E1E-4833-9576-C29D6CEAEE1E} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{1137FDF8-C2CA-4142-B327-7D37AAC1CF80} = {61B00143-1411-4891-B064-15B6E276B08B}
+		{684ABFAC-5982-4BF8-BF28-05BB621383DF} = {61B00143-1411-4891-B064-15B6E276B08B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {470717C5-BD47-46B0-A255-7687A092812B}

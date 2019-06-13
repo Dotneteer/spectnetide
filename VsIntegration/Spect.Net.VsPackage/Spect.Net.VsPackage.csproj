@@ -572,6 +572,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Page Include="..\Spect.Net.CodeDiscover.ProjectType\BuildSystem\Rules\ZxBasic.xaml">
+      <Link>DeploymentResources\ZxBasic.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomEditors\DisannEditor\DisAnnEditorControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
