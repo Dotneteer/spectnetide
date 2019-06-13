@@ -1,3 +1,9 @@
+### Version 1.19.3
+__FIX__: In a few cases the emulator did not remove the breakpoint when you erased
+that in the code window. Now, it works correctly.  
+__FIX__: The Code.z80asm code file in a newly created project missed the `.model Spectrum48` pragma, 
+and so it did not run on other architectures than ZX Spectrum 48K.
+
 ### Version 1.19.2
 __FIX__: The resource issues that prevented SpectNetIDE to load in VS 2019 16.1.2 resolved.
 

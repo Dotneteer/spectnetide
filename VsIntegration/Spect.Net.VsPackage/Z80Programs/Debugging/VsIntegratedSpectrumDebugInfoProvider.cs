@@ -13,6 +13,7 @@ using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.CustomEditors.AsmEditor;
 using Spect.Net.VsPackage.ProjectStructure;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
+// ReSharper disable IdentifierTypo
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
@@ -243,6 +244,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
 
                         newBreakpointCollection.Add(addr, newVsBreakpoint);
                     }
+                    _previousVsBreakpoints.Add(newBp, newBreakpointCollection);
                 }
 
             }

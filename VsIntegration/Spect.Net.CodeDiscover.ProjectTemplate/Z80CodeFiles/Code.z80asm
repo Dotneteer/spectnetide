@@ -1,5 +1,6 @@
 ﻿; Put your Z80 assembly code into code files
 Start:
+    .model Spectrum48
 	.org #8000
 	ld a,2;	      ; upper screen
 	call #1601    ; open the channel
