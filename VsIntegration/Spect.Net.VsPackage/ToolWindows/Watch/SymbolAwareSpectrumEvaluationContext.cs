@@ -20,7 +20,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         
         public SymbolAwareSpectrumEvaluationContext(ISpectrumVm spectrumVm): base(spectrumVm)
         {
-            SpectNetPackage.Default.CodeManager.CompilationCompleted += OnCompilationCompleted;
+            SpectNetPackage.Default.Z80CodeManager.CompilationCompleted += OnCompilationCompleted;
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Watch
         /// </summary>
         public void Dispose()
         {
-            SpectNetPackage.Default.CodeManager.CompilationCompleted -= OnCompilationCompleted;
+            SpectNetPackage.Default.Z80CodeManager.CompilationCompleted -= OnCompilationCompleted;
         }
 
         /// <summary>

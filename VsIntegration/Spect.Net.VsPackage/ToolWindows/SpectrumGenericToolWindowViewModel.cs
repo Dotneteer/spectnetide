@@ -82,7 +82,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             Package.SolutionClosed += OnInternalSolutionClosed;
             MachineViewModel.VmStateChanged += OnInternalVmStateChanged;
             MachineViewModel.VmScreenRefreshed += BridgeScreenRefreshed;
-            Package.CodeManager.CompilationCompleted += OnCompilationCompleted;
+            Package.Z80CodeManager.CompilationCompleted += OnCompilationCompleted;
 
             // ReSharper disable once VirtualMemberCallInConstructor
             Initialize();
@@ -100,7 +100,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             Package.SolutionClosed -= OnInternalSolutionClosed;
             MachineViewModel.VmStateChanged -= OnInternalVmStateChanged;
             MachineViewModel.VmScreenRefreshed -= BridgeScreenRefreshed;
-            Package.CodeManager.CompilationCompleted -= OnCompilationCompleted;
+            Package.Z80CodeManager.CompilationCompleted -= OnCompilationCompleted;
             base.Dispose();
         }
 

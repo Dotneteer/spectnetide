@@ -26,9 +26,9 @@ namespace Spect.Net.VsPackage.Commands
         /// Override this method to prepare assembler options
         /// </summary>
         /// <returns>Options to use with the assembler</returns>
-        protected override AssemblerOptions PrepareOptions()
+        protected override AssemblerOptions PrepareAssemblerOptions()
         {
-            var options = base.PrepareOptions();
+            var options = base.PrepareAssemblerOptions();
             var debugOptions = SpectNetPackage.Default.Options.DebugSymbols;
             if (debugOptions != null)
             {

@@ -72,8 +72,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             }
 
             _tapeDeviceAttached = false;
-            Package.CodeManager.CodeInjected += OnVmCodeInjected;
-            Package.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
+            Package.Z80CodeManager.CodeInjected += OnVmCodeInjected;
+            Package.Z80CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
             if (VmRuns)
             {
                 AttachToTapeDeviceEvents();
@@ -86,8 +86,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public override void Dispose()
         {
-            Package.CodeManager.CodeInjected -= OnVmCodeInjected;
-            Package.CodeManager.AnnotationFileChanged -= OnAnnotationFileChanged;
+            Package.Z80CodeManager.CodeInjected -= OnVmCodeInjected;
+            Package.Z80CodeManager.AnnotationFileChanged -= OnAnnotationFileChanged;
             base.Dispose();
         }
 

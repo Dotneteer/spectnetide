@@ -137,7 +137,7 @@ namespace Spect.Net.VsPackage.Commands
             }
             else
             {
-                var stopped = await Package.CodeManager.StopSpectrumVmAsync(options.ConfirmMachineRestart);
+                var stopped = await Package.Z80CodeManager.StopSpectrumVmAsync(options.ConfirmMachineRestart);
                 if (!stopped) return;
             }
 
@@ -196,7 +196,7 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #7: Inject the code into the memory, and force
             // --- new disassembly
             await pane.WriteLineAsync("Injecting code into the Spectrum virtual machine.");
-            Package.CodeManager.InjectCodeIntoVm(Output);
+            Package.Z80CodeManager.InjectCodeIntoVm(Output);
             CodeInjected = true;
 
             // --- Step #8: Jump to execute the code

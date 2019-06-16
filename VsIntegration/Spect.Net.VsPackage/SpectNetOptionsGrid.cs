@@ -11,6 +11,7 @@ namespace Spect.Net.VsPackage
     {
         private KeyboardLayoutTypeOptions _keyboardLayoutType = KeyboardLayoutTypeOptions.Default;
         private KeyboardFitTypeOptions _keyboardFitType = KeyboardFitTypeOptions.OriginalSize;
+        private byte _optimize = 1;
 
         // --- Virtual machine options
         [Category("Virtual machine")]
@@ -304,6 +305,79 @@ namespace Spect.Net.VsPackage
         [DisplayName("Annotation Border Color")]
         [Description("Border color for memory pointing to an annotation label (#rrggbb)")]
         public string AnnotationColor { get; set; } = @"Green";
+
+        [Category("ZX BASIC options")]
+        [DisplayName("ZXB utility path")]
+        [Description("The full path where the ZXB utility (ZXB.EXE) can be found.")]
+        public string ZxbPath { get; set; }
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Optimization level")]
+        [Description("The optimization level to use with the --optimize option of ZXB")]
+        public byte Optimize
+        {
+            get => _optimize;
+            set
+            {
+                _optimize = value;
+                if (_optimize > 3) _optimize = 3;
+            }
+        }
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Machine code origin")]
+        [Description("The machine code origin value to use with the --org option of ZXB")]
+        public ushort OrgValue { get; set; } = 0x8000;
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Use 1 as array base index")]
+        [Description("The --array-base option of ZXB")]
+        public bool ArrayBaseOne { get; set; }
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Use 1 as string base index")]
+        [Description("The --string-base option of ZXB")]
+        public bool StringBaseOne { get; set; }
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Use SINCLAIR flag")]
+        [Description("The --SINCLAIR option of ZXB")]
+        public bool SinclairFlag { get; set; }
+
+        [Category("ZX BASIC options")]
+        [DisplayName("String manipulation heap size")]
+        [Description("The --heap-size option of ZXB")]
+        public ushort HeapSize { get; set; } = 4096;
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Checking heap size")]
+        [Description("The --debug-memory option of ZXB")]
+        public bool DebugMemory { get; set; } = false;
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Check array index boundaries")]
+        [Description("The --debug-array option of ZXB")]
+        public bool DebugArray { get; set; } = false;
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Use strict Boolean values")]
+        [Description("The --strict-bool option of ZXB")]
+        public bool StrictBool { get; set; } = false;
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Enable BREAK key")]
+        [Description("The --strict-bool option of ZXB")]
+        public bool EnableBreak { get; set; } = false;
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Require explicit DIM")]
+        [Description("The --explicit option of ZXB")]
+        public bool ExplicitDim { get; set; } = false;
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Require strict types")]
+        [Description("The --strict option of ZXB")]
+        public bool StrictType { get; set; } = false;
 
         /// <summary>
         /// Signs that the keyboard layout type has changed

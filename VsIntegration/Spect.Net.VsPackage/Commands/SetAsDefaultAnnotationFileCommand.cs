@@ -26,7 +26,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task FinallyOnMainThreadAsync()
         {
-            Package.CodeManager.RaiseAnnotationFileChanged();
+            Package.Z80CodeManager.RaiseAnnotationFileChanged();
             return Task.FromResult(0);
         }
     }

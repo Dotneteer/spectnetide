@@ -143,7 +143,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                 //await SwitchToBackgroundThreadAsync();
                 try
                 {
-                    var stopped = await Package.CodeManager.StopSpectrumVmAsync(
+                    var stopped = await Package.Z80CodeManager.StopSpectrumVmAsync(
                         Package.Options.ConfirmTestMachineRestart);
                     if (!stopped) return;
 

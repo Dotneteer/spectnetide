@@ -56,7 +56,7 @@ namespace Spect.Net.VsPackage.Commands
 
             if (vm.Format == ExportFormat.IntelHex)
             {
-                Package.CodeManager.SaveIntelHexFile(vm.Filename, Output);
+                Package.Z80CodeManager.SaveIntelHexFile(vm.Filename, Output);
                 return;
             }
 
@@ -71,11 +71,11 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Step #4: Create code segments
-            var codeBlocks = Package.CodeManager.CreateTapeBlocks(vm.Name, Output, vm.SingleBlock);
+            var codeBlocks = Package.Z80CodeManager.CreateTapeBlocks(vm.Name, Output, vm.SingleBlock);
             List<byte[]> screenBlocks = null;
             if (useScreenFile)
             {
-                screenBlocks = Package.CodeManager.CreatScreenBlocks(vm.ScreenFile);
+                screenBlocks = Package.Z80CodeManager.CreatScreenBlocks(vm.ScreenFile);
             }
 
             // --- Step #5: Create Auto Start header block, if required
@@ -84,7 +84,7 @@ namespace Spect.Net.VsPackage.Commands
             {
                 startAddress = (ushort)ExportStartAddress;
             }
-            var autoStartBlocks = Package.CodeManager.CreateAutoStartBlock(
+            var autoStartBlocks = Package.Z80CodeManager.CreateAutoStartBlock(
                 vm.Name, 
                 useScreenFile, 
                 vm.AddPause0, 

@@ -12,6 +12,7 @@ using Spect.Net.VsPackage.Vsx.Output;
 using Task = System.Threading.Tasks.Task;
 using VsTask = Microsoft.VisualStudio.Shell.Task;
 // ReSharper disable SuspiciousTypeConversion.Global
+// ReSharper disable StringLiteralTypo
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
 namespace Spect.Net.VsPackage.Z80Programs.Commands
@@ -27,6 +28,67 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                                                       "fix the issue so that you can add the list file to the project.";
 
 
+        /// <summary>Override this method to define the status query action</summary>
+        /// <param name="mc"></param>
+        protected override void OnQueryStatus(OleMenuCommand mc)
+        {
+            base.OnQueryStatus(mc);
+            if (!mc.Visible) return;
+
+            mc.Enabled = !Package.Z80CodeManager.CompilatioInProgress;
+        }
+
+        /// <summary>
+        /// Override this method to define how to prepare the command on the
+        /// main thread of Visual Studio
+        /// </summary>
+        protected override void PrepareCommandOnMainThread(ref bool cancel)
+        {
+            base.PrepareCommandOnMainThread(ref cancel);
+            if (cancel) return;
+
+            // --- Get the item
+            GetItem(out var hierarchy, out _);
+            if (hierarchy == null)
+            {
+                cancel = true;
+                return;
+            }
+
+            // --- Clear the error list
+            Package.ErrorList.Clear();
+
+            // --- Sign that the compilation is in progress, and there
+            // --- in no compiled output yet
+            Package.Z80CodeManager.CompilatioInProgress = true;
+            Package.DebugInfoProvider.CompiledOutput = null;
+            Package.ApplicationObject.ExecuteCommand("File.SaveAll");
+        }
+
+        /// <summary>
+        /// Override this method to define the completion of successful
+        /// command execution on the main thread of Visual Studio
+        /// </summary>
+        protected override void CompleteOnMainThread()
+        {
+            DisplayAssemblyErrors();
+            HandleAssemblyTasks();
+        }
+
+        /// <summary>
+        /// Override this method to define the action to execute on the main
+        /// thread of Visual Studio -- finally
+        /// </summary>
+        protected override Task FinallyOnMainThreadAsync()
+        {
+            Package.Z80CodeManager.CompilatioInProgress = false;
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Get the path of the item to compile
+        /// </summary>
+        protected virtual string CompiledItemPath => ItemPath;
 
         /// <summary>
         /// The output of the compilation
@@ -43,7 +105,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                 if (Output == null) return -1;
                 if (Output.EntryAddress != null) return Output.EntryAddress.Value;
                 return Output.ExportEntryAddress 
-                    ?? Output.Segments[0].StartAddress;
+                       ?? Output.Segments[0].StartAddress;
             }
         }
 
@@ -68,7 +130,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             Output == null 
                 ? -1
                 : Output.EntryAddress 
-                    ?? Output.Segments[0].StartAddress;
+                  ?? Output.Segments[0].StartAddress;
 
         /// <summary>
         /// Gets the start address to use when exporting code
@@ -80,48 +142,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                   ?? Output.EntryAddress
                   ?? Output.Segments[0].StartAddress;
 
-        /// <summary>Override this method to define the status query action</summary>
-        /// <param name="mc"></param>
-        protected override void OnQueryStatus(OleMenuCommand mc)
-        {
-            base.OnQueryStatus(mc);
-            if (!mc.Visible) return;
-
-            mc.Enabled = !Package.CodeManager.CompilatioInProgress;
-        }
-
-        /// <summary>
-        /// Get the path of the item to compile
-        /// </summary>
-        protected virtual string CompiledItemPath => ItemPath;
-
-        /// <summary>
-        /// Override this method to define how to prepare the command on the
-        /// main thread of Visual Studio
-        /// </summary>
-        protected override void PrepareCommandOnMainThread(ref bool cancel)
-        {
-            base.PrepareCommandOnMainThread(ref cancel);
-            if (cancel) return;
-
-            // --- Get the item
-            GetItem(out var hierarchy, out _);
-            if (hierarchy == null)
-            {
-                cancel = true;
-                return;
-            }
-
-            // --- Clear the error list
-            Package.ErrorList.Clear();
-
-            // --- Sign that the compilation is in progress, and there
-            // --- in no compiled output yet
-            Package.CodeManager.CompilatioInProgress = true;
-            Package.DebugInfoProvider.CompiledOutput = null;
-            Package.ApplicationObject.ExecuteCommand("File.SaveAll");
-        }
-
         /// <summary>
         /// Compiles the code.
         /// </summary>
@@ -132,35 +152,28 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         {
             if (hierarchy == null) return false;
 
-            var codeManager = Package.CodeManager;
+            if (!(hierarchy is IVsProject project)) return false;
+            project.GetMkDocument(itemId, out var itemFullPath);
+            var extension = Path.GetExtension(itemFullPath);
 
-            // --- Step #1: Compile
-            var start = DateTime.Now;
-            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
-            pane.WriteLine("Z80 Assembler");
-            Output = codeManager.Compile(hierarchy, itemId, PrepareOptions());
-            var duration = (DateTime.Now - start).TotalMilliseconds;
-            pane.WriteLine($"Compile time: {duration}ms");
-
-            if (Output.ErrorCount != 0)
+            switch (extension?.ToLower())
             {
-                // --- Compilation completed with errors
-                return false;
+                case ".z80asm":
+                    return CompileZ80Assembly(hierarchy, itemId);
+                case ".zxbas":
+                    return CompileZxBasic(hierarchy, itemId);
+                default:
+                    return false;
             }
-
-            // --- Sign the compilation was successful
-            Package.DebugInfoProvider.CompiledOutput = Output;
-
-            // --- Create the compilation list file
-            CreateCompilationListFile(hierarchy, itemId);
-            return true;
         }
+
+        #region Z80 Assembly Compilations
 
         /// <summary>
         /// Override this method to prepare assembler options
         /// </summary>
         /// <returns>Options to use with the assembler</returns>
-        protected virtual AssemblerOptions PrepareOptions()
+        protected virtual AssemblerOptions PrepareAssemblerOptions()
         {
             var options = new AssemblerOptions
             {
@@ -181,14 +194,30 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             return options;
         }
 
-        /// <summary>
-        /// Override this method to define the completion of successful
-        /// command execution on the main thread of Visual Studio
-        /// </summary>
-        protected override void CompleteOnMainThread()
+        protected bool CompileZ80Assembly(IVsHierarchy hierarchy, uint itemId)
         {
-            DisplayAssemblyErrors();
-            HandleAssemblyTasks();
+            var codeManager = Package.Z80CodeManager;
+
+            // --- Step #1: Compile
+            var start = DateTime.Now;
+            var pane = OutputWindow.GetPane<Z80BuildOutputPane>();
+            pane.WriteLine("Z80 Assembler");
+            Output = codeManager.Compile(hierarchy, itemId, PrepareAssemblerOptions());
+            var duration = (DateTime.Now - start).TotalMilliseconds;
+            pane.WriteLine($"Compile time: {duration}ms");
+
+            if (Output.ErrorCount != 0)
+            {
+                // --- Compilation completed with errors
+                return false;
+            }
+
+            // --- Sign the compilation was successful
+            Package.DebugInfoProvider.CompiledOutput = Output;
+
+            // --- Create the compilation list file
+            CreateCompilationListFile(hierarchy, itemId);
+            return true;
         }
 
         /// <summary>
@@ -227,7 +256,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                 {
                     Category = TaskCategory.User,
                     ErrorCategory = TaskErrorCategory.Error,
-                    HierarchyItem = Package.CodeManager.CurrentHierarchy,
+                    HierarchyItem = Package.Z80CodeManager.CurrentHierarchy,
                     Document = error.Filename ?? ItemPath,
                     Line = error.Line,
                     Column = error.Column,
@@ -241,16 +270,6 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
             }
 
             Package.ApplicationObject.ExecuteCommand("View.ErrorList");
-        }
-
-        /// <summary>
-        /// Override this method to define the action to execute on the main
-        /// thread of Visual Studio -- finally
-        /// </summary>
-        protected override Task FinallyOnMainThreadAsync()
-        {
-            Package.CodeManager.CompilatioInProgress = false;
-            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -436,6 +455,18 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
                     : source.Substring(0, pos) + newString + source.Substring(pos + oldString.Length);
             }
         }
+
+        #endregion
+
+        #region Boriel's BASIC Compilations
+
+        protected bool CompileZxBasic(IVsHierarchy hierarchy, uint itemId)
+        {
+            Output = null;
+            return false;
+        }
+
+        #endregion
     }
 }
 

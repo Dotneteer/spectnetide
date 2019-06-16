@@ -69,6 +69,11 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         }
 
         /// <summary>
+        /// Gets the extension of the project item
+        /// </summary>
+        public string Extension => Path.GetExtension(ItemPath);
+
+        /// <summary>
         /// Gets the identity of the project item.
         /// </summary>
         public string Identity

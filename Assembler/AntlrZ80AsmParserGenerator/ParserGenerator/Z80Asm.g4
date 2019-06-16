@@ -67,6 +67,7 @@ directive
 	|	ELSE
 	|	IF expr
 	|	INCLUDE (STRING | FSTRING)
+	|	LINEDIR expr COMMA? STRING
 	;	
 
 statement
@@ -584,6 +585,7 @@ INCLUDE	: '#include' ;
 IF		: '#if' ;
 IFMOD	: '#ifmod' ;
 IFNMOD	: '#ifnmod' ;
+LINEDIR	: '#line';
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;

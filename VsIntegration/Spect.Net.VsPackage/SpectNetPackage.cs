@@ -156,7 +156,7 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// The object responsible for managing Z80 program files
         /// </summary>
-        public Z80CodeManager CodeManager { get; private set; }
+        public Z80CodeManager Z80CodeManager { get; private set; }
 
         /// <summary>
         /// The object responsible for managing Z80 unit test files
@@ -230,7 +230,7 @@ namespace Spect.Net.VsPackage
             _solutionEvents.AfterClosing += OnSolutionClosed;
 
             // --- Create other helper objects
-            CodeManager = new Z80CodeManager();
+            Z80CodeManager = new Z80CodeManager();
             TestManager = new Z80TestManager();
             StateFileManager = new VmStateFileManager();
             ErrorList = new ErrorListWindow();

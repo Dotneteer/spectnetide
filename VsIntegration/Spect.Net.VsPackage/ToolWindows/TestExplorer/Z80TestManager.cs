@@ -146,7 +146,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
                     {
                         Category = TaskCategory.User,
                         ErrorCategory = TaskErrorCategory.Error,
-                        HierarchyItem = Package.CodeManager.CurrentHierarchy,
+                        HierarchyItem = Package.Z80CodeManager.CurrentHierarchy,
                         Document = error.Filename ?? plan.Filename,
                         Line = error.Line,
                         Column = error.Column,
@@ -398,7 +398,7 @@ namespace Spect.Net.VsPackage.ToolWindows.TestExplorer
 
                 // --- Inject the source code into the vm
                 var plan = setToRun.Plan;
-                Package.CodeManager.InjectCodeIntoVm(plan.CodeOutput);
+                Package.Z80CodeManager.InjectCodeIntoVm(plan.CodeOutput);
 
                 // --- Set up registers with default values
                 ExecuteAssignment(plan.InitAssignments);

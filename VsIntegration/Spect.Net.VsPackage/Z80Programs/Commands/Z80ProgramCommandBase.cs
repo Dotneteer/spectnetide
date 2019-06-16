@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+// ReSharper disable StringLiteralTypo
 
 namespace Spect.Net.VsPackage.Z80Programs.Commands
 {
@@ -13,7 +14,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         /// This command accepts only Z80 code files
         /// </summary>
         public override IEnumerable<string> ItemExtensionsAccepted =>
-            new[] {".z80Asm", ".z80cdproj"};
+            new[] {".z80Asm", ".zxbas", ".z80cdproj"};
 
         /// <summary>
         /// Gets the hierarchy information for the selected item.

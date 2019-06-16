@@ -68,6 +68,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.VsPackage", "VsIn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.ZxBasicTemplate", "VsIntegration\Spect.Net.ZxBasicTemplate\Spect.Net.ZxBasicTemplate.csproj", "{684ABFAC-5982-4BF8-BF28-05BB621383DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.ZxBasicParser", "Assembler\Spect.Net.ZxBasicParser\Spect.Net.ZxBasicParser.csproj", "{D7BD291E-4CB5-423F-A86B-D1431A6DE1D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -162,6 +164,10 @@ Global
 		{684ABFAC-5982-4BF8-BF28-05BB621383DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{684ABFAC-5982-4BF8-BF28-05BB621383DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{684ABFAC-5982-4BF8-BF28-05BB621383DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7BD291E-4CB5-423F-A86B-D1431A6DE1D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7BD291E-4CB5-423F-A86B-D1431A6DE1D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7BD291E-4CB5-423F-A86B-D1431A6DE1D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7BD291E-4CB5-423F-A86B-D1431A6DE1D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,6 +195,7 @@ Global
 		{1DDEE870-3E1E-4833-9576-C29D6CEAEE1E} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{1137FDF8-C2CA-4142-B327-7D37AAC1CF80} = {61B00143-1411-4891-B064-15B6E276B08B}
 		{684ABFAC-5982-4BF8-BF28-05BB621383DF} = {61B00143-1411-4891-B064-15B6E276B08B}
+		{D7BD291E-4CB5-423F-A86B-D1431A6DE1D6} = {F42659D3-2385-4C73-976C-E6156FA46CD9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {470717C5-BD47-46B0-A255-7687A092812B}

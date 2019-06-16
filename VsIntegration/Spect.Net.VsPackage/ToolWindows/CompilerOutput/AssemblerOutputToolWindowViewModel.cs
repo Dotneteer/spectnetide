@@ -133,7 +133,7 @@ namespace Spect.Net.VsPackage.ToolWindows.CompilerOutput
             }
 
             Symbols = new List<AssemblySymbol>();
-            Package.CodeManager.CompilationCompleted += OnCompilationCompleted;
+            Package.Z80CodeManager.CompilationCompleted += OnCompilationCompleted;
             ToggleSymbolOrderCommand = new RelayCommand(OnToggleSymbolOrder);
             ToggleFixupFilterCommand = new RelayCommand(OnToggleFixupFilter);
 
@@ -148,7 +148,7 @@ namespace Spect.Net.VsPackage.ToolWindows.CompilerOutput
         /// </summary>
         public override void Dispose()
         {
-            Package.CodeManager.CompilationCompleted -= OnCompilationCompleted;
+            Package.Z80CodeManager.CompilationCompleted -= OnCompilationCompleted;
             base.Dispose();
         }
 

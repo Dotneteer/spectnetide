@@ -104,14 +104,6 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 .ToList());
 
         /// <summary>
-        /// Unused project items
-        /// </summary>
-        public IReadOnlyList<UnusedProjectItem> UnusedProjectItems => new ReadOnlyCollection<UnusedProjectItem>(
-            HierarchyItems.Where(i => i.GetType() == typeof(UnusedProjectItem))
-            .Cast<UnusedProjectItem>()
-            .ToList());
-
-        /// <summary>
         /// The default annotation item
         /// </summary>
         public AnnotationProjectItem DefaultAnnotationItem { get; set; }
@@ -218,6 +210,11 @@ namespace Spect.Net.VsPackage.ProjectStructure
                 HierarchyItems.Add(new TapProjectItem(item));
             }
             else if (string.Compare(extension, VsHierarchyTypes.Z80Item,
+                         StringComparison.InvariantCultureIgnoreCase) == 0)
+            {
+                HierarchyItems.Add(new Z80CodeProjectItem(item));
+            }
+            else if (string.Compare(extension, VsHierarchyTypes.ZxbItem,
                          StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 HierarchyItems.Add(new Z80CodeProjectItem(item));

@@ -402,6 +402,14 @@ namespace Spect.Net.Assembler
         {
             KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             var mnemonic = context.GetChild(0).NormalizeToken();
+            if (context.STRING() != null)
+            {
+                AddString(context.STRING());
+            }
+            else if (context.FSTRING() != null)
+            {
+                AddString(context.FSTRING());
+            }
             return mnemonic == "#INCLUDE" 
                 ? (object) new IncludeDirective(this, context) 
                 : new Directive(this, context);
