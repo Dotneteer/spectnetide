@@ -31,5 +31,10 @@ namespace Spect.Net.Assembler.Assembler
         /// The maximum number of errors to report within a loop
         /// </summary>
         public int MaxLoopErrorsToReport { get; set; } = 16;
+
+        /// <summary>
+        /// Signs that PROC labels and symbols are not locals by default
+        /// </summary>
+        public bool ProcExplicitLocalsOnly { get; set; } = false;
     }
 }

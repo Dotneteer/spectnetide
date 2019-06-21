@@ -123,6 +123,10 @@ namespace Spect.Net.Assembler.Assembler
                     ? CurrentModule.LocalScopes.Peek().Symbols
                     : CurrentModule.Symbols;
 
+            if (symbol == "__SET_ATTR2")
+            {
+                var x = 1;
+            }
             var currentScopeIsTemporary = CurrentModule.LocalScopes.Count != 0 
                 && CurrentModule.LocalScopes.Peek().IsTemporaryScope;
             var symbolIsTemporary = symbol.StartsWith("`");
@@ -168,11 +172,14 @@ namespace Spect.Net.Assembler.Assembler
                     // --- We already booked local symbols
                     if (!scope.LocalSymbolBookings.Contains(symbol))
                     {
-                        // --- This symbol must be defined in an outer scope
-                        var tmpScope = localScopes.Pop();
-                        scope = localScopes.Peek();
-                        localScopes.Push(tmpScope);
-                        lookup = scope.Symbols;
+                        lookup = CurrentModule.Symbols;
+                    }
+                }
+                else
+                {
+                    if (_options.ProcExplicitLocalsOnly)
+                    {
+                        lookup = CurrentModule.Symbols;
                     }
                 }
             }

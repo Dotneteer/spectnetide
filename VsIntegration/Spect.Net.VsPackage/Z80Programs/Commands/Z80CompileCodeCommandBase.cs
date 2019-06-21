@@ -177,7 +177,9 @@ namespace Spect.Net.VsPackage.Z80Programs.Commands
         {
             var options = new AssemblerOptions
             {
-                CurrentModel = SpectNetPackage.GetCurrentSpectrumModelType()
+                CurrentModel = SpectNetPackage.GetCurrentSpectrumModelType(),
+                // TODO: Use it only for ZX BASIC
+                ProcExplicitLocalsOnly = true
             };
             var runOptions = SpectNetPackage.Default.Options.RunSymbols;
             if (runOptions != null)

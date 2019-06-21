@@ -174,7 +174,7 @@ namespace Spect.Net.VsPackage.Z80Programs.Debugging
             {
                 foreach (var bp in existingBp)
                 {
-                    newBreakpointCollection.Add(bp.Key, bp.Value);
+                    newBreakpointCollection[bp.Key] = bp.Value;
                 }
             }
             

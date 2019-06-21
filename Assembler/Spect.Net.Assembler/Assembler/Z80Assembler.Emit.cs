@@ -749,17 +749,9 @@ namespace Spect.Net.Assembler.Assembler
                 localScopes.Push(tmpScope);
             }
 
-            foreach (var symbol in stmt.Locals)
+            if (!scope.IsProcScope)
             {
-                if (symbol.StartsWith("`"))
-                {
-                    ReportError(Errors.Z0447, stmt, symbol);
-                }
-                if (scope.LocalSymbolBookings.Contains(symbol) || scope.Symbols.ContainsKey(symbol))
-                {
-                    ReportError(Errors.Z0449, stmt, symbol);
-                }
-                scope.LocalSymbolBookings.Add(symbol);
+                ReportError(Errors.Z0448, stmt);
             }
         }
 
@@ -883,8 +875,30 @@ namespace Spect.Net.Assembler.Assembler
             var lastLine = currentLineIndex;
 
             // --- Create a scope for the proc
-            var procScope = new SymbolScope {IsLoopScope = false};
+            var procScope = new SymbolScope {IsLoopScope = false, IsProcScope = true };
             CurrentModule.LocalScopes.Push(procScope);
+
+            // --- Collect and process LOCAL statements
+
+            for (var line = firstLine + 1; line < lastLine; line++)
+            {
+                var localLine = scopeLines[line] as LocalStatement;
+                if (localLine == null) continue;
+
+
+                foreach (var symbol in localLine.Locals)
+                {
+                    if (symbol.StartsWith("`"))
+                    {
+                        ReportError(Errors.Z0447, localLine, symbol);
+                    }
+                    if (procScope.LocalSymbolBookings.Contains(symbol))
+                    {
+                        ReportError(Errors.Z0449, localLine, symbol);
+                    }
+                    procScope.LocalSymbolBookings.Add(symbol);
+                }
+            }
 
             // --- Create a local scope for the loop body
             var loopLineIndex = firstLine + 1;

@@ -25,13 +25,32 @@ namespace Spect.Net.Assembler.Test
             }
         }
 
-        public void CodeRaisesError(string instruction, string errorCode)
+        protected void CodeEmitWorksWithOptions(AssemblerOptions options, string source, params byte[] opCodes)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
-            var output = compiler.Compile(instruction);
+            var output = compiler.Compile(source, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var bytes = output.Segments[0].EmittedCode;
+            bytes.Count.ShouldBe(opCodes.Length);
+            for (var i = 0; i < opCodes.Length; i++)
+            {
+                bytes[i].ShouldBe(opCodes[i]);
+            }
+        }
+
+        public void CodeRaisesError(string instruction, string errorCode, AssemblerOptions options = null)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(instruction, options);
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);

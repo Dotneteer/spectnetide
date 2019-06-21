@@ -229,7 +229,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0445, "COMPAREBIN fails: {0}." },
             { Z0446, "Cannot open file '{0}' used in COMPAREBIN pragma ({0})." },
             { Z0447, "You cannot define a local symbol with a temporary name ({0})." },
-            { Z0448, "LOCAL cannot be used outside of locally-scoped constructs." },
+            { Z0448, "LOCAL can be used only within PROC." },
             { Z0449, "This local symbol is already declared: ({0})." },
             { Z0500, "ERROR: {0}" },
         };
