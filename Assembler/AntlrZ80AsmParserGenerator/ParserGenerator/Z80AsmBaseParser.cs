@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Antlr4.Runtime;
+
 // ReSharper disable InconsistentNaming
 
 // ReSharper disable once CheckNamespace
@@ -27,7 +28,7 @@ namespace Spect.Net.Assembler.Generated
         /// </summary>
         protected bool prev(params string[] str)
         {
-            return str.Any(s => _input.Lt(-1).Text.Equals(s));
+            return str.Any(s => _input.Lt(-1).Text.Equals(s) || _input.Lt(-1).Text.Equals(s.ToUpper()));
         }
         
         /// <summary>

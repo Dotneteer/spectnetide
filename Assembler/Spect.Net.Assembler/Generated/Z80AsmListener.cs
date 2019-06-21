@@ -705,6 +705,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitStatement([NotNull] Z80AsmParser.StatementContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIterationTest([NotNull] Z80AsmParser.IterationTestContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIterationTest([NotNull] Z80AsmParser.IterationTestContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -725,28 +736,6 @@ public interface IZ80AsmListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMacroEndMarker([NotNull] Z80AsmParser.MacroEndMarkerContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.procStatement"/>.
@@ -771,6 +760,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitProcEndMarker([NotNull] Z80AsmParser.ProcEndMarkerContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -780,28 +780,6 @@ public interface IZ80AsmListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitRepeatStatement([NotNull] Z80AsmParser.RepeatStatementContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
@@ -824,17 +802,6 @@ public interface IZ80AsmListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitIfStatement([NotNull] Z80AsmParser.IfStatementContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterElifStatement([NotNull] Z80AsmParser.ElifStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitElifStatement([NotNull] Z80AsmParser.ElifStatementContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.elseStatement"/>.

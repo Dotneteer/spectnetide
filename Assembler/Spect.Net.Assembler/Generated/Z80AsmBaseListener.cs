@@ -815,6 +815,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitStatement([NotNull] Z80AsmParser.StatementContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIterationTest([NotNull] Z80AsmParser.IterationTestContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIterationTest([NotNull] Z80AsmParser.IterationTestContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -839,32 +852,6 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMacroEndMarker([NotNull] Z80AsmParser.MacroEndMarkerContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.procStatement"/>.
@@ -893,6 +880,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitProcEndMarker([NotNull] Z80AsmParser.ProcEndMarkerContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -904,32 +904,6 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitRepeatStatement([NotNull] Z80AsmParser.RepeatStatementContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
@@ -956,19 +930,6 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIfStatement([NotNull] Z80AsmParser.IfStatementContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterElifStatement([NotNull] Z80AsmParser.ElifStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitElifStatement([NotNull] Z80AsmParser.ElifStatementContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.elseStatement"/>.

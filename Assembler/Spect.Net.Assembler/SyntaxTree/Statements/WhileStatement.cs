@@ -24,9 +24,14 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public ExpressionNode Expr { get; }
 
-        public WhileStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.WhileStatementContext context)
+        //public WhileStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.WhileStatementContext context)
+        //{
+        //    Expr = visitorContext.GetExpression(context.expr());
+        //}
+
+        public WhileStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.ExprContext context)
         {
-            Expr = visitorContext.GetExpression(context.expr());
+            Expr = visitorContext.GetExpression(context);
         }
     }
 }

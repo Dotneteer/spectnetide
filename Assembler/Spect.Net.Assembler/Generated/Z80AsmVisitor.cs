@@ -449,6 +449,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitStatement([NotNull] Z80AsmParser.StatementContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIterationTest([NotNull] Z80AsmParser.IterationTestContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.macroStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -461,20 +468,6 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMacroEndMarker([NotNull] Z80AsmParser.MacroEndMarkerContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.procStatement"/>.
@@ -491,25 +484,18 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitProcEndMarker([NotNull] Z80AsmParser.ProcEndMarkerContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRepeatStatement([NotNull] Z80AsmParser.RepeatStatementContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
@@ -524,13 +510,6 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIfStatement([NotNull] Z80AsmParser.IfStatementContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitElifStatement([NotNull] Z80AsmParser.ElifStatementContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.elseStatement"/>.

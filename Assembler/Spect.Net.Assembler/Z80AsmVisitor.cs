@@ -12,6 +12,7 @@ using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Spect.Net.Assembler.SyntaxTree.Statements;
+// ReSharper disable StringLiteralTypo
 
 namespace Spect.Net.Assembler
 {
@@ -395,12 +396,48 @@ namespace Spect.Net.Assembler
                 mainInstructionPart = new NoInstructionLine();
                 if (CurrentLabel != null && !CurrentLabelColon)
                 {
+                    var statementFound = true;
                     switch (CurrentLabel.ToLower())
                     {
                         case "continue":
                             mainInstructionPart = new ContinueStatement();
-                            CurrentLabel = null;
                             break;
+                        case "break":
+                            mainInstructionPart = new BreakStatement();
+                            break;
+                        case "endm":
+                        case "mend":
+                            mainInstructionPart = new MacroEndStatement();
+                            break;
+                        case "endl":
+                        case "lend":
+                            mainInstructionPart = new LoopEndStatement();
+                            break;
+                        case "proc":
+                            mainInstructionPart = new ProcStatement();
+                            break;
+                        case "endp":
+                        case "pend":
+                            mainInstructionPart = new ProcEndStatement();
+                            break;
+                        case "repeat":
+                            mainInstructionPart = new RepeatStatement();
+                            break;
+                        case "endw":
+                        case "wend":
+                            mainInstructionPart = new WhileEndStatement();
+                            break;
+                        case "ends":
+                            mainInstructionPart = new StructEndStatement();
+                            break;
+                        default:
+                            statementFound = false;
+                            break;
+                    }
+
+                    if (statementFound)
+                    {
+                        CurrentLabel = null;
                     }
                 }
             }
@@ -573,6 +610,40 @@ namespace Spect.Net.Assembler
 
         #region Statement handling
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitIterationTest(Z80AsmParser.IterationTestContext context)
+        {
+            if (context.LOOP() != null || context.IDENTIFIER()?.GetText().ToLower() == "loop")
+            {
+                return new LoopStatement(this, context.expr());
+            }
+
+            if (context.WHILE() != null || context.IDENTIFIER()?.GetText().ToLower() == "while")
+            {
+                return new WhileStatement(this, context.expr());
+            }
+
+            if (context.UNTIL() != null || context.IDENTIFIER()?.GetText().ToLower() == "until")
+            {
+                return new UntilStatement(this, context.expr());
+            }
+
+            if (context.ELIF() != null || context.IDENTIFIER()?.GetText().ToLower() == "elif")
+            {
+                return new ElifStatement(this, context.expr());
+            }
+
+            return null;
+        }
+
         public override object VisitStatement(Z80AsmParser.StatementContext context)
         {
             KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
@@ -610,9 +681,6 @@ namespace Spect.Net.Assembler
         public override object VisitModuleEndMarker(Z80AsmParser.ModuleEndMarkerContext context) 
             => new ModuleEndStatement();
 
-        public override object VisitLoopStatement(Z80AsmParser.LoopStatementContext context) 
-            => new LoopStatement(this, context);
-
         public override object VisitLoopEndMarker(Z80AsmParser.LoopEndMarkerContext context) 
             => new LoopEndStatement();
 
@@ -625,20 +693,14 @@ namespace Spect.Net.Assembler
         public override object VisitRepeatStatement(Z80AsmParser.RepeatStatementContext context) 
             => new RepeatStatement();
 
-        public override object VisitUntilStatement(Z80AsmParser.UntilStatementContext context) 
-            => new UntilStatement(this, context);
-
-        public override object VisitWhileStatement(Z80AsmParser.WhileStatementContext context) 
-            => new WhileStatement(this, context);
-
         public override object VisitWhileEndMarker(Z80AsmParser.WhileEndMarkerContext context) 
             => new WhileEndStatement();
 
         public override object VisitIfStatement(Z80AsmParser.IfStatementContext context) 
             => new IfStatement(this, context);
 
-        public override object VisitElifStatement(Z80AsmParser.ElifStatementContext context) 
-            => new ElifStatement(this, context);
+        //public override object VisitElifStatement(Z80AsmParser.ElifStatementContext context) 
+        //    => new ElifStatement(this, context);
 
         public override object VisitElseStatement(Z80AsmParser.ElseStatementContext context) 
             => new ElseStatement();

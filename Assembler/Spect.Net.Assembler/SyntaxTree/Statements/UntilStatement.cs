@@ -13,9 +13,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public ExpressionNode Expression { get; }
 
-        public UntilStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.UntilStatementContext context)
+        public UntilStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.ExprContext context)
         {
-            Expression = visitorContext.GetExpression(context.expr());
+            Expression = visitorContext.GetExpression(context);
         }
     }
 }

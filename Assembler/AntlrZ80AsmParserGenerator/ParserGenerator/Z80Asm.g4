@@ -23,7 +23,7 @@ lineBody
 	|	operation 
 	|	macroParam 
 	|	macroOrStructInvocation 
-	|	statement 
+	|	statement
 	|	fieldAssignment
 	;
 
@@ -78,16 +78,13 @@ directive
 statement
 	:	macroStatement
 	|	macroEndMarker
-	|	loopStatement
+	|	iterationTest
 	|	loopEndMarker
+	|	whileEndMarker
 	|	procStatement
 	|	procEndMarker
 	|	repeatStatement
-	|	untilStatement
-	|	whileStatement
-	|	whileEndMarker
 	|	ifStatement
-	|	elifStatement
 	|	elseStatement
 	|	endifStatement
 	|	forStatement
@@ -100,18 +97,17 @@ statement
 	|	structEndMarker
 	;
 
+iterationTest: (LOOP | WHILE | UNTIL | ELIF | IDENTIFIER
+	{this.p("loop", "while", "until", "elif")}?
+	) expr;
 macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
-macroEndMarker: ENDMACRO ;
-loopStatement: (LOOP | IDENTIFIER{this.p("loop", "LOOP")}?) expr ;
+macroEndMarker: (ENDMACRO | IDENTIFIER{this.p("endm", "mend")}?) ;
+procStatement: (IDENTIFIER{this.p("proc")}? | PROC);
+procEndMarker: ENDPROC ;
 loopEndMarker: ENDLOOP ;
-procStatement: PROC;
-procEndMarker: ENDPROC;
-repeatStatement: REPEAT ;
-untilStatement: UNTIL expr ;
-whileStatement: WHILE expr ;
+repeatStatement: (IDENTIFIER{this.p("repeat")}? | REPEAT) ;
 whileEndMarker: ENDWHILE ;
 ifStatement: IFSTMT expr | IFUSED symbol | IFNUSED symbol ;
-elifStatement: ELIF expr ;
 elseStatement: ELSESTMT ;
 endifStatement: ENDIFSTMT ;
 forStatement: FOR IDENTIFIER ASSIGN expr TO expr (STEP expr)? ;
@@ -626,19 +622,19 @@ COMPAREBIN
 
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
-ENDMACRO: '.endm' | '.ENDM' | 'endm' | 'ENDM' | '.mend' | '.MEND' | 'mend' | 'MEND' ;
-PROC	: '.proc' | '.PROC' | 'proc' | 'PROC' ;
-ENDPROC	: '.endp' | '.ENDP' | 'endp' | 'ENDP' | '.pend' | '.PEND' | 'pend' | 'PEND' ;
+ENDMACRO: '.endm' | '.ENDM' | '.mend' | '.MEND' ;
+PROC	: '.proc' | '.PROC' ;
+ENDPROC	: '.endp' | '.ENDP' | '.pend' | '.PEND' ;
 LOOP	: '.loop' | '.LOOP' ;
-ENDLOOP	: '.endl' | '.ENDL' | 'endl' | 'ENDL' | '.lend' | '.LEND' | 'lend' | 'LEND' ;
-REPEAT	: '.repeat' | '.REPEAT' | 'repeat' | 'REPEAT' ;
-UNTIL	: '.until' | '.UNTIL' | 'until' | 'UNTIL' ;
-WHILE	: '.while' | '.WHILE' | 'while' | 'WHILE' ;
-ENDWHILE: '.endw' | '.ENDW' | 'endw' | 'ENDW' | '.wend' | '.WEND' | 'wend' | 'WEND' ;
+ENDLOOP	: '.endl' | '.ENDL' | '.lend' | '.LEND' ;
+REPEAT	: '.repeat' | '.REPEAT' ;
+UNTIL	: '.until' | '.UNTIL' ;
+WHILE	: '.while' | '.WHILE' ;
+ENDWHILE: '.endw' | '.ENDW' | '.wend' | '.WEND' ;
 IFSTMT	: '.if' | '.IF' | 'if' | 'IF' ;
 IFUSED	: '.ifused' | '.IFUSED' | 'ifused' | 'IFUSED' ;
 IFNUSED	: '.ifnused' | '.IFNUSED' | 'ifnused' | 'IFNUSED' ;
-ELIF	: '.elif' | '.ELIF' | 'elif' | 'ELIF' ;
+ELIF	: '.elif' | '.ELIF' ;
 ELSESTMT: '.else' | '.ELSE' | 'else' | 'ELSE' ;
 ENDIFSTMT: '.endif' | '.ENDIF' | 'endif' | 'ENDIF' ;
 FOR		: '.for' | '.FOR' | 'for' | 'FOR' ;
@@ -646,7 +642,7 @@ TO		: '.to' | '.TO' | 'to' | 'TO' ;
 STEP	: '.step' | '.STEP' | 'step' | 'STEP' ;
 FORNEXT	: '.next' | '.NEXT' ;
 NEXT	: 'next' | 'NEXT' ;
-BREAK	: '.break' | 'break' | '.BREAK' | 'BREAK' ;
+BREAK	: '.break' | '.BREAK' ;
 CONTINUE: '.continue' | '.CONTINUE' ;
 MODULE	: '.module' | '.MODULE' | 'module' | 'MODULE' | '.scope' | '.SCOPE' | 'scope' | 'SCOPE' ;
 ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE' 
@@ -654,7 +650,7 @@ ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE'
 		  | '.moduleend' | '.MODULEEND' | 'moduleend' | 'MODULEEND'
 		  | '.scopeend' | '.SCOPEEND' | 'scopeend' | 'SCOPEEND' ;
 STRUCT	: '.struct' | '.STRUCT' | 'struct' | 'STRUCT' ;
-ENDST	: '.ends' | '.ENDS' | 'ends' | 'ENDS' ;
+ENDST	: '.ends' | '.ENDS' ;
 
 // --- Built-in function names
 TEXTOF	: 'textof' | 'TEXTOF' ;
