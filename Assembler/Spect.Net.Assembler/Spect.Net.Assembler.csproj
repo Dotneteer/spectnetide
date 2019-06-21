@@ -79,6 +79,7 @@
     <Compile Include="Assembler\Z80Assembler.Emit.cs" />
     <Compile Include="Assembler\Z80Assembler.Expressions.cs" />
     <Compile Include="Generated\Z80AsmBaseListener.cs" />
+    <Compile Include="Generated\Z80AsmBaseParser.cs" />
     <Compile Include="Generated\Z80AsmBaseVisitor.cs" />
     <Compile Include="Generated\Z80AsmLexer.cs" />
     <Compile Include="Generated\Z80AsmListener.cs" />

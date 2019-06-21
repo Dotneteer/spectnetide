@@ -46,6 +46,11 @@ namespace Spect.Net.Assembler.SyntaxTree
         public string Label;
 
         /// <summary>
+        /// Indicates if the label had a colon
+        /// </summary>
+        public bool LabelColon;
+        
+        /// <summary>
         /// Label span information
         /// </summary>
         public TextSpan LabelSpan;

@@ -23,16 +23,34 @@ namespace Spect.Net.Assembler.Assembler
         /// Gets the value of the specified symbol
         /// </summary>
         /// <param name="symbol">Symbol name</param>
-        /// <param name="scopeSymbolNames">Additional symbol name segments</param>
         /// <param name="startFromGlobal">Should resolution start from global scope?</param>
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false)
+        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) GetSymbolValue(string symbol, bool startFromGlobal = false)
         {
-            return (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
-                ? CurrentModule.ResolveSimpleSymbol(symbol)
-                : CurrentModule.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal);
+            (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) resolved;
+            if (startFromGlobal)
+            {
+                // --- Most be a compound symbol
+                resolved = CurrentModule.ResolveCompoundSymbol(symbol, true);
+            }
+            else if (symbol.Contains("."))
+            {
+                resolved = CurrentModule.ResolveCompoundSymbol(symbol, false);
+                if (resolved.ExprValue == null)
+                {
+                    resolved = CurrentModule.ResolveSimpleSymbol(symbol);
+                }
+            }
+            else
+            {
+                resolved = CurrentModule.ResolveSimpleSymbol(symbol);
+            }
+            return resolved;
+            //return !symbol.Contains(".") && !startFromGlobal
+            //    ? CurrentModule.ResolveSimpleSymbol(symbol)
+            //    : CurrentModule.ResolveCompoundSymbol(symbol, startFromGlobal);
         }
 
         /// <summary>

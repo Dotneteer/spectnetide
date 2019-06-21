@@ -117,10 +117,22 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void MacroInvocationWorks()
+        {
+            // --- Act
+            var visitor = Parse("MyMacro()");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as MacroOrStructInvocation;
+            line.Name.ShouldBe("MYMACRO");
+        }
+
+        [TestMethod]
         public void MacroParamOperationWithLabelWorks()
         {
             // --- Act
-            var visitor = Parse("MyLabel {{ MyMacroParam }}");
+            var visitor = Parse("MyLabel: {{ MyMacroParam }}");
 
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);

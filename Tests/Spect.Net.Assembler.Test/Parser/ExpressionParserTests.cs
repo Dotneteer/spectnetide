@@ -564,33 +564,6 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        [DataRow("Symbol.s1", "SYMBOL", "S1", null, null)]
-        [DataRow("@Symbol.s1.s2", "@SYMBOL", "S1", "S2", null)]
-        [DataRow("S@ymbol.s1.S2.S3", "S@YMBOL", "S1", "S2", "S3")]
-        public void ScopedIdentifierParsingWorks(string source, string symbol, string s1, string s2, string s3)
-        {
-            // --- Act
-            var expr = ParseExpr(source);
-
-            // --- Assert
-            var ident = expr as IdentifierNode;
-            ident.ShouldNotBeNull();
-            ident.SymbolName.ShouldBe(symbol);
-            if (s1 != null)
-            {
-                ident.ScopeSymbolNames[0].ShouldBe(s1);
-            }
-            if (s2 != null)
-            {
-                ident.ScopeSymbolNames[1].ShouldBe(s2);
-            }
-            if (s3 != null)
-            {
-                ident.ScopeSymbolNames[2].ShouldBe(s3);
-            }
-        }
-
-        [TestMethod]
         [DataRow("Symbol", false)]
         [DataRow("::@Symbol", true)]
         [DataRow("@Symbol", false)]

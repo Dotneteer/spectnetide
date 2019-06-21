@@ -1474,8 +1474,7 @@ namespace Spect.Net.Assembler.Assembler
                         case IfStatementType.IfUsed:
                         case IfStatementType.IfNotUsed:
                             var idSymbol = ifStmt.Symbol;
-                            var (expressionValue, usageInfo) = GetSymbolValue(idSymbol.SymbolName, idSymbol.ScopeSymbolNames, 
-                                idSymbol.StartFromGlobal);
+                            var (expressionValue, usageInfo) = GetSymbolValue(idSymbol.SymbolName, idSymbol.StartFromGlobal);
                             var isUsed = expressionValue != null && usageInfo != null && usageInfo.IsUsed;
                             conditionValue = new ExpressionValue(ifStmt.Type == IfStatementType.IfUsed ? isUsed : !isUsed);
                             break;

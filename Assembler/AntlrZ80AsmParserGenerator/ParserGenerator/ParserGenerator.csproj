@@ -55,6 +55,7 @@
     <Compile Include="Z80Asm.g4.parser.cs">
       <DependentUpon>Z80Asm.g4</DependentUpon>
     </Compile>
+    <Compile Include="Z80AsmBaseParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="Z80Asm.g4">
@@ -75,7 +76,9 @@
   </Target>
   <Import Project="..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)obj\Debug\Z80Asm*.cs $(ProjectDir)..\..\Spect.Net.Assembler\Generated</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)Z80AsmBase*.cs $(ProjectDir)..\..\Spect.Net.Assembler\Generated
+copy $(ProjectDir)obj\Debug\Z80Asm*.cs $(ProjectDir)..\..\Spect.Net.Assembler\Generated
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

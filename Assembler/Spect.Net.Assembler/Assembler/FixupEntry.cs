@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 
@@ -89,19 +90,32 @@ namespace Spect.Net.Assembler.Assembler
         /// Gets the value of the specified symbol
         /// </summary>
         /// <param name="symbol">Symbol name</param>
-        /// <param name="scopeSymbolNames">Additional symbol name segments</param>
         /// <param name="startFromGlobal">Should resolution start from global scope?</param>
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
         public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) GetSymbolValue(string symbol, 
-            List<string> scopeSymbolNames = null, 
             bool startFromGlobal = false)
         {
-            var result = (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
-                ? Module.ResolveSimpleSymbol(symbol)
-                : Module.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal);
-            return result.ExprValue != null ? result : ParentContext.GetSymbolValue(symbol, scopeSymbolNames, startFromGlobal);
+            (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) resolved;
+            if (startFromGlobal)
+            {
+                // --- Most be a compound symbol
+                resolved = Module.ResolveCompoundSymbol(symbol, true);
+            }
+            else if (symbol.Contains("."))
+            {
+                resolved = Module.ResolveCompoundSymbol(symbol, false);
+                if (resolved.ExprValue == null)
+                {
+                    resolved = Module.ResolveSimpleSymbol(symbol);
+                }
+            }
+            else
+            {
+                resolved = Module.ResolveSimpleSymbol(symbol);
+            }
+            return resolved.ExprValue != null ? resolved : ParentContext.GetSymbolValue(symbol, startFromGlobal);
         }
 
         /// <summary>

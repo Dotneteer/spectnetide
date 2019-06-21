@@ -68,6 +68,11 @@ namespace Spect.Net.Assembler
         public string CurrentLabel { get; set; }
 
         /// <summary>
+        /// Indicates if the current label has a colon
+        /// </summary>
+        public bool CurrentLabelColon { get; set; }
+
+        /// <summary>
         /// The current comment
         /// </summary>
         public string CurrentComment { get; set; }
@@ -306,6 +311,7 @@ namespace Spect.Net.Assembler
         public override object VisitAsmline(Z80AsmParser.AsmlineContext context)
         {
             CurrentLabel = null;
+            CurrentLabelColon = false;
             CurrentComment = null;
             LabelSpan = null;
             KeywordSpan = null;
@@ -345,6 +351,7 @@ namespace Spect.Net.Assembler
             if (labelCtx != null)
             {
                 CurrentLabel = labelCtx.GetChild(0).NormalizeToken();
+                CurrentLabelColon = labelCtx.COLON() != null;
                 LabelSpan = new TextSpan(labelCtx.Start.StartIndex, labelCtx.Start.StopIndex + 1);
             }
 
@@ -385,8 +392,17 @@ namespace Spect.Net.Assembler
             }
             else if (mainInstructionPart == null && (CurrentLabel != null || CurrentComment != null))
             {
-                // --- Either a label only or a comment only line
                 mainInstructionPart = new NoInstructionLine();
+                if (CurrentLabel != null && !CurrentLabelColon)
+                {
+                    switch (CurrentLabel.ToLower())
+                    {
+                        case "continue":
+                            mainInstructionPart = new ContinueStatement();
+                            CurrentLabel = null;
+                            break;
+                    }
+                }
             }
 
             return mainInstructionPart is SourceLineBase sourceLine
@@ -702,7 +718,7 @@ namespace Spect.Net.Assembler
                     break;
 
                 case Z80AsmParser.SymbolExprContext ctx:
-                    if (ctx.ChildCount != 0 && ctx.symbol()?.IDENTIFIER()?.Length != 0)
+                    if (ctx.ChildCount != 0 && ctx.symbol()?.IDENTIFIER() != null)
                     {
                         AddIdentifier(ctx);
                         expr = new IdentifierNode(ctx.symbol());
@@ -1071,6 +1087,7 @@ namespace Spect.Net.Assembler
             line.LastPosition = LastPosition;
             line.ParserException = context.exception;
             line.Label = CurrentLabel;
+            line.LabelColon = CurrentLabelColon;
             line.LabelSpan = LabelSpan;
             line.KeywordSpan = KeywordSpan;
             line.NumberSpans = NumberSpans;

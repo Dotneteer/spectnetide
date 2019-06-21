@@ -1,5 +1,9 @@
 grammar Z80Asm;
 
+options {
+    superClass=Z80AsmBaseParser;
+}
+
 /*
  * Parser Rules
  */
@@ -18,13 +22,14 @@ lineBody
 	:	pragma 
 	|	operation 
 	|	macroParam 
-	|	statement 
 	|	macroOrStructInvocation 
+	|	statement 
 	|	fieldAssignment
 	;
 
 label
-	:	IDENTIFIER COLON?
+	:	IDENTIFIER COLON
+	|	IDENTIFIER{!this.exprStart()}?
 	;
 
 comment
@@ -97,7 +102,7 @@ statement
 
 macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
 macroEndMarker: ENDMACRO ;
-loopStatement: LOOP expr ;
+loopStatement: (LOOP | IDENTIFIER{this.p("loop", "LOOP")}?) expr ;
 loopEndMarker: ENDLOOP ;
 procStatement: PROC;
 procEndMarker: ENDPROC;
@@ -358,11 +363,11 @@ literal
 	;
 
 symbol
-	: DCOLON? IDENTIFIER ( DOT IDENTIFIER)*
+	: DCOLON? IDENTIFIER
 	;
 
 macroParam
-	: '{{' IDENTIFIER '}}'
+	: LDBRAC IDENTIFIER RDBRAC
 	;
 
 regs
@@ -624,7 +629,7 @@ MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
 ENDMACRO: '.endm' | '.ENDM' | 'endm' | 'ENDM' | '.mend' | '.MEND' | 'mend' | 'MEND' ;
 PROC	: '.proc' | '.PROC' | 'proc' | 'PROC' ;
 ENDPROC	: '.endp' | '.ENDP' | 'endp' | 'ENDP' | '.pend' | '.PEND' | 'pend' | 'PEND' ;
-LOOP	: '.loop' | '.LOOP' | 'loop' | 'LOOP' ;
+LOOP	: '.loop' | '.LOOP' ;
 ENDLOOP	: '.endl' | '.ENDL' | 'endl' | 'ENDL' | '.lend' | '.LEND' | 'lend' | 'LEND' ;
 REPEAT	: '.repeat' | '.REPEAT' | 'repeat' | 'REPEAT' ;
 UNTIL	: '.until' | '.UNTIL' | 'until' | 'UNTIL' ;
@@ -642,7 +647,7 @@ STEP	: '.step' | '.STEP' | 'step' | 'STEP' ;
 FORNEXT	: '.next' | '.NEXT' ;
 NEXT	: 'next' | 'NEXT' ;
 BREAK	: '.break' | 'break' | '.BREAK' | 'BREAK' ;
-CONTINUE: '.continue' | 'continue' | '.CONTINUE' | 'CONTINUE' ;
+CONTINUE: '.continue' | '.CONTINUE' ;
 MODULE	: '.module' | '.MODULE' | 'module' | 'MODULE' | '.scope' | '.SCOPE' | 'scope' | 'SCOPE' ;
 ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE' 
 		  | '.endscope' | '.ENDSCOPE' | 'endscope' | 'ENDSCOPE'
@@ -708,7 +713,7 @@ FALSE	: 'false' | '.false' | 'FALSE' | '.FALSE' ;
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
 IDSTART	: '_' | '@' | '`' | 'A'..'Z' | 'a'..'z'	;
-IDCONT	: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+IDCONT	: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' | '.' ;
 
 CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
 NONEARG	: '$<none>$' ;
