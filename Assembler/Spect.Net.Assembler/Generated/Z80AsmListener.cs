@@ -914,6 +914,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitStructEndMarker([NotNull] Z80AsmParser.StructEndMarkerContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.localStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLocalStatement([NotNull] Z80AsmParser.LocalStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.localStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLocalStatement([NotNull] Z80AsmParser.LocalStatementContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroOrStructInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -116,6 +116,9 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0444 = "Z0444";
         public const string Z0445 = "Z0445";
         public const string Z0446 = "Z0446";
+        public const string Z0447 = "Z0447";
+        public const string Z0448 = "Z0448";
+        public const string Z0449 = "Z0449";
 
         public const string Z0500 = "Z0500";
 
@@ -225,6 +228,9 @@ namespace Spect.Net.Assembler.Assembler
             { Z0444, "Invalid COMPAREBIN length value (negative, or segment exceends the file length)." },
             { Z0445, "COMPAREBIN fails: {0}." },
             { Z0446, "Cannot open file '{0}' used in COMPAREBIN pragma ({0})." },
+            { Z0447, "You cannot define a local symbol with a temporary name ({0})." },
+            { Z0448, "LOCAL cannot be used outside of locally-scoped constructs." },
+            { Z0449, "This local symbol is already declared: ({0})." },
             { Z0500, "ERROR: {0}" },
         };
 

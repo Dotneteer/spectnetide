@@ -99,6 +99,7 @@
     <Compile Include="Assembler\StructEmitTests.cs" />
     <Compile Include="Assembler\StructFieldEmitTests.cs" />
     <Compile Include="Assembler\SpecialLabelEmitTests.cs" />
+    <Compile Include="Assembler\LocalStatementEmitTests.cs" />
     <Compile Include="Assembler\WhileEmitTests.cs" />
     <Compile Include="ExpressionTestBed.cs" />
     <Compile Include="ParserTestBed.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Parser\ForTests.cs" />
     <Compile Include="Parser\ModuleTests.cs" />
     <Compile Include="Parser\FieldAssignmentTests.cs" />
+    <Compile Include="Parser\LocalStatementTests.cs" />
     <Compile Include="Parser\WhileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

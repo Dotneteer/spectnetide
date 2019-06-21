@@ -129,12 +129,6 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
                     }
                 }
 
-                if (asmline.LabelSpan != null)
-                {
-                    // --- Retrieve a label
-                    yield return CreateSpan(currentLine, asmline.LabelSpan, Z80AsmTokenType.Label);
-                }
-
                 if (asmline.KeywordSpan != null)
                 {
                     var type = Z80AsmTokenType.Instruction;
@@ -163,6 +157,12 @@ namespace Spect.Net.VsPackage.CustomEditors.AsmEditor
 
                     // --- Retrieve a pragma/directive/instruction
                     yield return CreateSpan(currentLine, asmline.KeywordSpan, type);
+                }
+
+                if (asmline.LabelSpan != null)
+                {
+                    // --- Retrieve a label
+                    yield return CreateSpan(currentLine, asmline.LabelSpan, Z80AsmTokenType.Label);
                 }
 
                 if (asmline.CommentSpan != null)

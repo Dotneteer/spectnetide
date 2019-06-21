@@ -76,9 +76,9 @@ directive
 	;	
 
 statement
-	:	macroStatement
+	:	iterationTest
+	|	macroStatement
 	|	macroEndMarker
-	|	iterationTest
 	|	loopEndMarker
 	|	whileEndMarker
 	|	procStatement
@@ -95,17 +95,18 @@ statement
 	|	moduleEndMarker
 	|	structStatement
 	|	structEndMarker
+	|	localStatement
 	;
 
 iterationTest: (LOOP | WHILE | UNTIL | ELIF | IDENTIFIER
 	{this.p("loop", "while", "until", "elif")}?
 	) expr;
 macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
-macroEndMarker: (ENDMACRO | IDENTIFIER{this.p("endm", "mend")}?) ;
-procStatement: (IDENTIFIER{this.p("proc")}? | PROC);
+macroEndMarker: ENDMACRO ;
+procStatement: PROC;
 procEndMarker: ENDPROC ;
 loopEndMarker: ENDLOOP ;
-repeatStatement: (IDENTIFIER{this.p("repeat")}? | REPEAT) ;
+repeatStatement: REPEAT ;
 whileEndMarker: ENDWHILE ;
 ifStatement: IFSTMT expr | IFUSED symbol | IFNUSED symbol ;
 elseStatement: ELSESTMT ;
@@ -118,6 +119,7 @@ moduleStatement: MODULE IDENTIFIER? ;
 moduleEndMarker: ENDMOD ;
 structStatement: STRUCT ;
 structEndMarker: ENDST ;
+localStatement: LOCAL IDENTIFIER (COMMA IDENTIFIER)* ;
 
 macroOrStructInvocation: IDENTIFIER LPAR macroArgument (COMMA macroArgument)* RPAR	;
 macroArgument: operand? ;
@@ -635,8 +637,8 @@ IFSTMT	: '.if' | '.IF' | 'if' | 'IF' ;
 IFUSED	: '.ifused' | '.IFUSED' | 'ifused' | 'IFUSED' ;
 IFNUSED	: '.ifnused' | '.IFNUSED' | 'ifnused' | 'IFNUSED' ;
 ELIF	: '.elif' | '.ELIF' ;
-ELSESTMT: '.else' | '.ELSE' | 'else' | 'ELSE' ;
-ENDIFSTMT: '.endif' | '.ENDIF' | 'endif' | 'ENDIF' ;
+ELSESTMT: '.else' | '.ELSE' ;
+ENDIFSTMT: '.endif' | '.ENDIF' ;
 FOR		: '.for' | '.FOR' | 'for' | 'FOR' ;
 TO		: '.to' | '.TO' | 'to' | 'TO' ;
 STEP	: '.step' | '.STEP' | 'step' | 'STEP' ;
@@ -651,6 +653,7 @@ ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE'
 		  | '.scopeend' | '.SCOPEEND' | 'scopeend' | 'SCOPEEND' ;
 STRUCT	: '.struct' | '.STRUCT' | 'struct' | 'STRUCT' ;
 ENDST	: '.ends' | '.ENDS' ;
+LOCAL	: '.local' | '.LOCAL' | 'local' | 'LOCAL' ;
 
 // --- Built-in function names
 TEXTOF	: 'textof' | 'TEXTOF' ;

@@ -1062,6 +1062,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitStructEndMarker([NotNull] Z80AsmParser.StructEndMarkerContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.localStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLocalStatement([NotNull] Z80AsmParser.LocalStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.localStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLocalStatement([NotNull] Z80AsmParser.LocalStatementContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroOrStructInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

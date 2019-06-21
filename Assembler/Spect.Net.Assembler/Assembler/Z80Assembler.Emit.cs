@@ -269,14 +269,7 @@ namespace Spect.Net.Assembler.Assembler
                                 CurrentModule.LocalScopes.Pop();
                             }
                         }
-                        if (SymbolExists(currentLabel))
-                        {
-                            ReportError(Errors.Z0040, asmLine, currentLabel);
-                        }
-                        else
-                        {
-                            AddSymbol(currentLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                        }
+                        AddSymbol(currentLabel, asmLine, new ExpressionValue(GetCurrentAssemblyAddress()));
                     }
                 }
 
@@ -399,14 +392,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="asmLine">Assembly line with a label</param>
         private void CreateCurrentPointLabel(SourceLineBase asmLine)
         {
-            if (SymbolExists(asmLine.Label))
-            {
-                ReportError(Errors.Z0040, asmLine, asmLine.Label);
-            }
-            else
-            {
-               AddSymbol(asmLine.Label, new ExpressionValue(GetCurrentAssemblyAddress()));
-            }
+           AddSymbol(asmLine.Label, asmLine, new ExpressionValue(GetCurrentAssemblyAddress()));
         }
 
         #region Statement processing
@@ -514,6 +500,10 @@ namespace Spect.Net.Assembler.Assembler
 
                 case MacroOrStructInvocation macroInvokeStmt:
                     ProcessMacroOrStructInvocation(macroInvokeStmt, allLines);
+                    break;
+
+                case LocalStatement localStmt:
+                    ProcessLocalStatement(localStmt);
                     break;
             }
         }
@@ -739,6 +729,42 @@ namespace Spect.Net.Assembler.Assembler
         }
 
         /// <summary>
+        /// Processes the LOCAL statement
+        /// </summary>
+        /// <param name="stmt"></param>
+        private void ProcessLocalStatement(LocalStatement stmt)
+        {
+            if (IsInGlobalScope)
+            {
+                ReportError(Errors.Z0448, stmt);
+                return;
+            }
+
+            var localScopes = CurrentModule.LocalScopes;
+            var scope = localScopes.Peek();
+            if (scope.IsTemporaryScope)
+            {
+                var tmpScope = localScopes.Pop();
+                scope = localScopes.Peek();
+                localScopes.Push(tmpScope);
+            }
+
+            foreach (var symbol in stmt.Locals)
+            {
+                if (symbol.StartsWith("`"))
+                {
+                    ReportError(Errors.Z0447, stmt, symbol);
+                }
+                if (scope.LocalSymbolBookings.Contains(symbol) || scope.Symbols.ContainsKey(symbol))
+                {
+                    ReportError(Errors.Z0449, stmt, symbol);
+                }
+                scope.LocalSymbolBookings.Add(symbol);
+            }
+        }
+
+
+        /// <summary>
         /// Processes the LOOP statement
         /// </summary>
         /// <param name="loop">LOOP statement</param>
@@ -801,14 +827,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // --- Add the end label to the loop scope
                     var endLine = scopeLines[currentLineIndex];
-                    if (SymbolExists(endLabel))
-                    {
-                        ReportError(Errors.Z0040, endLine, endLabel);
-                    }
-                    else
-                    {
-                        AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                    }
+                    AddSymbol(endLabel, endLine, new ExpressionValue(GetCurrentAssemblyAddress()));
                 }
 
                 // --- Clean up the hanging label
@@ -881,14 +900,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 // --- Add the end label to the loop scope
                 var endLine = scopeLines[currentLineIndex];
-                if (SymbolExists(endLabel))
-                {
-                    ReportError(Errors.Z0040, endLine, endLabel);
-                }
-                else
-                {
-                    AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                }
+                AddSymbol(endLabel, endLine, new ExpressionValue(GetCurrentAssemblyAddress()));
             }
 
             // --- Clean up the hanging label
@@ -968,14 +980,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 // --- Add the end label to the loop scope
                 var endLine = scopeLines[currentLineIndex];
-                if (SymbolExists(endLabel))
-                {
-                    ReportError(Errors.Z0040, endLine, endLabel);
-                }
-                else
-                {
-                    AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                }
+                AddSymbol(endLabel, endLine, new ExpressionValue(GetCurrentAssemblyAddress()));
             }
 
             // --- Clean up the hanging label
@@ -1050,14 +1055,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // --- Add the end label to the loop scope
                     var endLine = scopeLines[currentLineIndex];
-                    if (SymbolExists(endLabel))
-                    {
-                        ReportError(Errors.Z0040, endLine, endLabel);
-                    }
-                    else
-                    {
-                        AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                    }
+                    AddSymbol(endLabel, endLine, new ExpressionValue(GetCurrentAssemblyAddress()));
                 }
 
                 // --- Clean up the hanging label
@@ -1175,14 +1173,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // --- Add the end label to the loop scope
                     var endLine = scopeLines[currentLineIndex];
-                    if (SymbolExists(endLabel))
-                    {
-                        ReportError(Errors.Z0040, endLine, endLabel);
-                    }
-                    else
-                    {
-                        AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                    }
+                    AddSymbol(endLabel, endLine, new ExpressionValue(GetCurrentAssemblyAddress()));
                 }
 
                 // --- Clean up the hanging label
@@ -1354,14 +1345,7 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     // --- Add the end label to the loop scope
                     var endLine = scopeLines[currentLineIndex];
-                    if (SymbolExists(endLabel))
-                    {
-                        ReportError(Errors.Z0040, endLine, endLabel);
-                    }
-                    else
-                    {
-                        AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                    }
+                    AddSymbol(endLabel, endLine, new ExpressionValue(GetCurrentAssemblyAddress()));
                 }
 
                 // --- Clean up the hanging label
@@ -1522,14 +1506,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 // --- Add the end label to the loop scope
                 var endLine = scopeLines[currentLineIndex];
-                if (SymbolExists(endLabel))
-                {
-                    ReportError(Errors.Z0040, endLine, endLabel);
-                }
-                else
-                {
-                    AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                }
+                AddSymbol(endLabel, endLine, new ExpressionValue(GetCurrentAssemblyAddress()));
             }
 
             // --- Clean up the hanging label
@@ -1872,14 +1849,7 @@ namespace Spect.Net.Assembler.Assembler
             {
                 // --- Add the end label to the macro scope
                 var endLine = allLines[lastLine];
-                if (SymbolExists(endLabel))
-                {
-                    ReportError(Errors.Z0040, endLine, endLabel);
-                }
-                else
-                {
-                    AddSymbol(endLabel, new ExpressionValue(GetCurrentAssemblyAddress()));
-                }
+                AddSymbol(endLabel, endLine, new ExpressionValue(GetCurrentAssemblyAddress()));
             }
 
             // --- Clean up the hanging label
@@ -2152,12 +2122,7 @@ namespace Spect.Net.Assembler.Assembler
             FixupTemporaryScope();
 
             // --- There is a label, set its value
-            if (SymbolExists(label))
-            {
-                ReportError(Errors.Z0040, pragma, label);
-                return;
-            }
-            AddSymbol(label, value);
+            AddSymbol(label, pragma, value);
         }
 
         /// <summary>
@@ -2259,7 +2224,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             else
             {
-                AddSymbol(label, value);
+                AddSymbol(label, pragma, value);
             }
         }
 

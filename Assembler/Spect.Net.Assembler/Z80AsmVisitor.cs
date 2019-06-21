@@ -430,6 +430,13 @@ namespace Spect.Net.Assembler
                         case "ends":
                             mainInstructionPart = new StructEndStatement();
                             break;
+                        case "else":
+                            mainInstructionPart = new ElseStatement();
+                            break;
+                        case "endif":
+                            mainInstructionPart = new IfEndStatement();
+                            break;
+
                         default:
                             statementFound = false;
                             break;
@@ -437,6 +444,7 @@ namespace Spect.Net.Assembler
 
                     if (statementFound)
                     {
+                        KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
                         CurrentLabel = null;
                     }
                 }
@@ -621,27 +629,39 @@ namespace Spect.Net.Assembler
         /// <return>The visitor result.</return>
         public override object VisitIterationTest(Z80AsmParser.IterationTestContext context)
         {
+            IToken token = null;
+            StatementBase stmt = null;
             if (context.LOOP() != null || context.IDENTIFIER()?.GetText().ToLower() == "loop")
             {
-                return new LoopStatement(this, context.expr());
+                token = context.LOOP()?.Symbol;
+                stmt = new LoopStatement(this, context.expr());
             }
-
-            if (context.WHILE() != null || context.IDENTIFIER()?.GetText().ToLower() == "while")
+            else if (context.WHILE() != null || context.IDENTIFIER()?.GetText().ToLower() == "while")
             {
-                return new WhileStatement(this, context.expr());
+                token = context.WHILE()?.Symbol;
+                stmt = new WhileStatement(this, context.expr());
             }
-
-            if (context.UNTIL() != null || context.IDENTIFIER()?.GetText().ToLower() == "until")
+            else if (context.UNTIL() != null || context.IDENTIFIER()?.GetText().ToLower() == "until")
             {
-                return new UntilStatement(this, context.expr());
+                token = context.UNTIL()?.Symbol;
+                stmt = new UntilStatement(this, context.expr());
             }
-
-            if (context.ELIF() != null || context.IDENTIFIER()?.GetText().ToLower() == "elif")
+            else if (context.ELIF() != null || context.IDENTIFIER()?.GetText().ToLower() == "elif")
             {
-                return new ElifStatement(this, context.expr());
+                token = context.ELIF()?.Symbol;
+                stmt = new ElifStatement(this, context.expr());
+            }
+            else
+            {
+                return null;
             }
 
-            return null;
+            if (token == null)
+            {
+                token = context.IDENTIFIER().Symbol;
+            }
+            KeywordSpan = new TextSpan(token.StartIndex, token.StopIndex + 1);
+            return stmt;
         }
 
         public override object VisitStatement(Z80AsmParser.StatementContext context)
@@ -699,9 +719,6 @@ namespace Spect.Net.Assembler
         public override object VisitIfStatement(Z80AsmParser.IfStatementContext context) 
             => new IfStatement(this, context);
 
-        //public override object VisitElifStatement(Z80AsmParser.ElifStatementContext context) 
-        //    => new ElifStatement(this, context);
-
         public override object VisitElseStatement(Z80AsmParser.ElseStatementContext context) 
             => new ElseStatement();
 
@@ -719,6 +736,9 @@ namespace Spect.Net.Assembler
 
         public override object VisitContinueStatement(Z80AsmParser.ContinueStatementContext context) 
             => new ContinueStatement();
+
+        public override object VisitLocalStatement(Z80AsmParser.LocalStatementContext context)
+            => new LocalStatement(this, context);
 
         #endregion
 

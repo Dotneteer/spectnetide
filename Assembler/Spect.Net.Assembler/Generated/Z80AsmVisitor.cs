@@ -582,6 +582,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitStructEndMarker([NotNull] Z80AsmParser.StructEndMarkerContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.localStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLocalStatement([NotNull] Z80AsmParser.LocalStatementContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.macroOrStructInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

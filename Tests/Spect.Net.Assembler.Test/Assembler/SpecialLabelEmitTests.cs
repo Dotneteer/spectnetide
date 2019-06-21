@@ -43,7 +43,11 @@ namespace Spect.Net.Assembler.Test.Assembler
         [DataRow("UNTIL")]
         [DataRow("elif")]
         [DataRow("ELIF")]
-        public void SpecialLabelWorks(string source)
+        [DataRow("else")]
+        [DataRow("ELSE")]
+        [DataRow("endif")]
+        [DataRow("ENDIF")]
+        public void SpecialLabelsWork(string source)
         {
             CodeEmitWorks($@"
                 ld bc,{source}
@@ -53,36 +57,141 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void ContinueLabelWorksWithoutColon()
+        [DataRow("continue")]
+        [DataRow("CONTINUE")]
+        [DataRow("break")]
+        [DataRow("BREAK")]
+        [DataRow("loop")]
+        [DataRow("LOOP")]
+        [DataRow("endm")]
+        [DataRow("ENDM")]
+        [DataRow("mend")]
+        [DataRow("MEND")]
+        [DataRow("endl")]
+        [DataRow("ENDL")]
+        [DataRow("lend")]
+        [DataRow("LEND")]
+        [DataRow("proc")]
+        [DataRow("PROC")]
+        [DataRow("endp")]
+        [DataRow("ENDP")]
+        [DataRow("pend")]
+        [DataRow("PEND")]
+        [DataRow("repeat")]
+        [DataRow("REPEAT")]
+        [DataRow("while")]
+        [DataRow("WHILE")]
+        [DataRow("endw")]
+        [DataRow("ENDW")]
+        [DataRow("wend")]
+        [DataRow("WEND")]
+        [DataRow("ends")]
+        [DataRow("ENDS")]
+        [DataRow("until")]
+        [DataRow("UNTIL")]
+        [DataRow("elif")]
+        [DataRow("ELIF")]
+        [DataRow("else")]
+        [DataRow("ELSE")]
+        [DataRow("endif")]
+        [DataRow("ENDIF")]
+        public void SpecialLabelsWorkWithoutColon(string source)
         {
-            CodeEmitWorks(@"
-                ld bc,continue
-                continue nop
+            CodeEmitWorks($@"
+                ld bc,{source}
+                {source} nop
             ",
                 0x01, 0x03, 0x80, 0x00);
         }
 
         [TestMethod]
-        public void HangingContinueLabelWorks()
+        [DataRow("continue")]
+        [DataRow("CONTINUE")]
+        [DataRow("break")]
+        [DataRow("BREAK")]
+        [DataRow("loop")]
+        [DataRow("LOOP")]
+        [DataRow("endm")]
+        [DataRow("ENDM")]
+        [DataRow("mend")]
+        [DataRow("MEND")]
+        [DataRow("endl")]
+        [DataRow("ENDL")]
+        [DataRow("lend")]
+        [DataRow("LEND")]
+        [DataRow("proc")]
+        [DataRow("PROC")]
+        [DataRow("endp")]
+        [DataRow("ENDP")]
+        [DataRow("pend")]
+        [DataRow("PEND")]
+        [DataRow("repeat")]
+        [DataRow("REPEAT")]
+        [DataRow("while")]
+        [DataRow("WHILE")]
+        [DataRow("endw")]
+        [DataRow("ENDW")]
+        [DataRow("wend")]
+        [DataRow("WEND")]
+        [DataRow("ends")]
+        [DataRow("ENDS")]
+        [DataRow("until")]
+        [DataRow("UNTIL")]
+        [DataRow("elif")]
+        [DataRow("ELIF")]
+        [DataRow("else")]
+        [DataRow("ELSE")]
+        [DataRow("endif")]
+        [DataRow("ENDIF")]
+        public void SpecialLabelsWorkAsHangingLabels(string source)
         {
-            CodeEmitWorks(@"
-                ld bc,continue
-                continue:
+            CodeEmitWorks($@"
+                ld bc,{source}
+                {source}:
                     nop
             ",
                 0x01, 0x03, 0x80, 0x00);
         }
-
         [TestMethod]
-        public void HangingContinueLabelFailsWithoutColon()
+        [DataRow("continue")]
+        [DataRow("CONTINUE")]
+        [DataRow("break")]
+        [DataRow("BREAK")]
+        [DataRow("endm")]
+        [DataRow("ENDM")]
+        [DataRow("mend")]
+        [DataRow("MEND")]
+        [DataRow("endl")]
+        [DataRow("ENDL")]
+        [DataRow("lend")]
+        [DataRow("LEND")]
+        [DataRow("proc")]
+        [DataRow("PROC")]
+        [DataRow("endp")]
+        [DataRow("ENDP")]
+        [DataRow("pend")]
+        [DataRow("PEND")]
+        [DataRow("repeat")]
+        [DataRow("REPEAT")]
+        [DataRow("endw")]
+        [DataRow("ENDW")]
+        [DataRow("wend")]
+        [DataRow("WEND")]
+        [DataRow("ends")]
+        [DataRow("ENDS")]
+        [DataRow("else")]
+        [DataRow("ELSE")]
+        [DataRow("endif")]
+        [DataRow("ENDIF")]
+        public void SpecialLabelsWorkAsHangingLabelsWithoutColon(string source)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
-            var output = compiler.Compile(@"
-                ld bc,continue
-                continue
+            var output = compiler.Compile($@"
+                ld bc,{source}
+                {source}
                     nop
             ");
 
