@@ -1,0 +1,2 @@
+﻿#ifndef MySymbol
+ld a,b

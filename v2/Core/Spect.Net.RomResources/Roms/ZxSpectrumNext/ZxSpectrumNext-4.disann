@@ -1,0 +1,43 @@
+﻿{
+  "Labels": {},
+  "Comments": {},
+  "PrefixComments": {},
+  "Literals": {
+    "4780": [
+      "$MainExecAddress"
+    ],
+    "1218": [
+      "$SaveBytesRoutineAddress"
+    ],
+    "0": [
+      "$SaveBytesResumeAddress"
+    ],
+    "1388": [
+      "$LoadBytesRoutineAddress"
+    ],
+    "1506": [
+      "$LoadBytesResumeAddress"
+    ],
+    "1462": [
+      "$LoadBytesInvalidHeaderAddress"
+    ],
+    "149": [
+      "$TokenTableAddress",
+      "TOKEN_TABLE"
+    ],
+    "91": [
+      "$TokenCount"
+    ],
+    "165": [
+      "$TokenOffset"
+    ]
+  },
+  "LiteralReplacements": {},
+  "MemorySections": [
+    {
+      "StartAddress": 0,
+      "EndAddress": 8191,
+      "SectionType": 1
+    }
+  ]
+}

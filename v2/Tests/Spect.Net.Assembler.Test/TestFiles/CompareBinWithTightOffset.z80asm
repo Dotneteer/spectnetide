@@ -1,0 +1,2 @@
+﻿nop
+.comparebin "./Memory.bin", 6

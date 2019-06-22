@@ -1,0 +1,1 @@
+﻿.comparebin "./Memory.bin", 0, -1

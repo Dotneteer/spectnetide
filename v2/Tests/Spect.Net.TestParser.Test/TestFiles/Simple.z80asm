@@ -1,0 +1,5 @@
+﻿    .org #8000
+CallStubAddr:
+    .defs 3
+MySymbol .equ #2345
+ld a,b

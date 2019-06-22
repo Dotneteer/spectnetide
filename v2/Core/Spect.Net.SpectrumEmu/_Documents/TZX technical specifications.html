@@ -1,0 +1,3087 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0045)http://www.worldofspectrum.org/TZXformat.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="keywords" content="TZX,ZX Spectrum,Speccy,Sinclair,tech,tape,format,specification">
+<title>TZX technical specifications</title></head>
+
+
+<body alink="#ff0000" bgcolor="#ffffff" link="#0000ff" text="#000000" vlink="#800080">
+
+<basefont face="Verdana" size="0">
+
+<center id="INDEX">
+<table bgcolor="#0040ff" border="0" width="50%">
+<tbody><tr><td align="center"><font color="#ffff40" size="+4"><strong>TZX FORMAT</strong></font></td></tr>
+</tbody></table>
+<br><br><br>
+<font size="+2"><strong>Format revision: v1.20
+<br><br>
+19 Dec 2006
+</strong></font>
+</center>
+
+<br><br><br>
+
+<div align="center">
+<table width="40%">
+<tbody><tr><td align="left">
+<ol>
+<li><b><a href="http://www.worldofspectrum.org/TZXformat.html#INTRODUCTION">Introduction</a></b></li>
+<li><b><a href="http://www.worldofspectrum.org/TZXformat.html#RULES">Rules and definitions</a></b></li>
+<li><b><a href="http://www.worldofspectrum.org/TZXformat.html#TZXFORMAT">TZX file format</a></b></li>
+<li><b><a href="http://www.worldofspectrum.org/TZXformat.html#HWINFOREF">Hardware information reference</a></b></li>
+<li><b><a href="http://www.worldofspectrum.org/TZXformat.html#MACHINFO">Machine specific information</a></b></li>
+<li><b><a href="http://www.worldofspectrum.org/TZXformat.html#DEPRECATED">Deprecated blocks</a></b></li>
+<li><b><a href="http://www.worldofspectrum.org/TZXformat.html#HISTORY">Revision history</a></b></li>
+</ol></td></tr></tbody></table>
+</div>
+
+<br><br>
+
+<a name="INTRODUCTION"></a>
+<p><table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="12" width="100%"><tbody><tr>
+<td align="center" bgcolor="#ff7848" width="10%"><font color="white" size="+2"><b>
+1.
+</b></font></td><td><font size="+2">
+Introduction
+</font></td></tr></tbody></table>
+<br>
+<table border="0" width="100%">
+<tbody><tr><td width="10%"></td>
+<td>
+TZX is a file format designed to preserve all (hopefully) of the tapes
+with turbo or custom loading routines. Even though some of the newer
+and 'smarter' emulators can find most of the info about the loader from
+the code itself, this isn't possible if you want to save the file to
+tape, or to a real Spectrum. And with all this information in the file,
+the emulators don't have to bother with finding out the timings and
+other things.<br>
+This file format is explicitly targeted to the ZX Spectrum compatible
+computers only. Specialized versions of the TZX format have been
+defined for other machines too, e.g. the Amstrad CPC and C64, but they
+are now available as distinct file formats with other filename
+extensions.<br>
+At the end of this document you can find a description of encoding
+differences between these machines and a table which displays timings
+used by their respective ROM loading routines (some of them are not
+official). If you know of any other machines that have similar encoding
+that could be represented with this file format then let us know.<br>
+<br>
+If you're looking for TZX files, you can find an extensive collection at Martijn van der Heide's '<a href="http://www.worldofspectrum.org/">World of Spectrum</a>'.<br>
+<br>
+The format was first started off by Tomaz Kac who was maintainer until
+revision 1.13, and then passed to Martijn v.d. Heide.
+After that, Ramsoft were the maintainers for a brief period during which the v1.20 revision was put together.
+
+If you have any questions about the format, visit the forums at <a href="http://www.worldofspectrum.org/">World of Spectrum</a> and ask.<br>
+<br>
+The default format file extension is "TZX" and hopefully this won't
+have to change in the future; for RISC OS, the current TAP file type
+will be used.
+Amstrad CPC files should use the extension "CDT" to distinguish them
+from the ZX Spectrum files, otherwise the inner structure is totally
+the same. </td></tr></tbody></table>
+<br></p><p align="right"><font size="+2"><a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></font></p>
+<br><br><br>
+
+<a name="RULES"></a>
+<p><table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="12" width="100%"><tbody><tr>
+<td align="center" bgcolor="#ff7848" width="10%"><font color="white" size="+2"><b>
+2.
+</b></font></td><td><font size="+2">
+Rules and definitions
+</font></td></tr></tbody></table>
+<br>
+<table border="0" width="100%"><tbody><tr><td width="10%"> </td><td>
+
+<ul>
+<li>Any value requiring more than one byte is stored in little endian format (i.e. LSB first).</li>
+<li>All unused bits should be set to zero.</li>
+<li>The timings are given in Z80 clock ticks (T states) unless otherwise stated. <b>1 T state = (1/3500000)s</b></li>
+<li>The block IDs are given in hex.</li>
+<li>All ASCII texts use the ISO 8859-1 (Latin 1) encoding; some of them
+can have several lines, which should be separated by ASCII code 13
+decimal (0D hex).</li>
+<li>You might interpret 'full-period' as ----____ or ____----, and
+'half-period' as ---- or ____. One 'half-period' will also be referred
+to as a 'pulse'.</li>
+<li>The values in curly brackets {} are the default values that are used in the Spectrum ROM saving routines.
+These values are in decimal.</li>
+<li>If there is no pause between two data blocks then the second one
+should follow immediately; not even so much as one T state between them.</li>
+<li>This document refers to 'high' and 'low' pulse levels. Whether this
+is implemented as ear=1 and ear=0 respectively or the other way around
+is not important, as long as it is done consistently.</li>
+<li>Zeros and ones in 'Direct recording' blocks mean low and high pulse
+levels respectively. The 'current pulse level' after playing a Direct
+Recording block of CSW recording block is the last level played.</li>
+<li>The 'current pulse level' after playing the blocks ID 10,11,12,13,14 or 19
+is the opposite of the last pulse level played, so that a subsequent pulse will produce an edge. </li>
+<li>A 'Pause' block consists of a 'low' pulse level of some duration.
+To ensure that the last edge produced is properly finished there should
+be at least 1 ms. pause of the opposite level and only after that the
+pulse should go to 'low'. At the end of a 'Pause' block the 'current
+pulse level' is low (note that the first pulse will therefore not
+immediately produce an edge). A 'Pause' block of zero duration is
+completely ignored, so the 'current pulse level' will NOT change in
+this case. This also applies to 'Data' blocks that have some pause
+duration included in them.</li>
+<li>An emulator should put the 'current pulse level' to 'low' when
+starting to play a TZX file, either from the start or from a certain
+position. The writer of a TZX file should ensure that the 'current
+pulse level' is well-defined in every sequence of blocks where this is
+important, i.e. in any sequence that includes a 'Direct recording'
+block, or that depends on edges generated by 'Pause' blocks. The
+recommended way of doing this is to include a Pause after each sequence
+of blocks.</li>
+<li>When creating a 'Direct recording' block please stick to the
+standard sampling frequencies of 22050 or 44100 Hz. This will ensure
+correct playback when using PC's soundcards.</li>
+<li>The endAddress of a block is given in the following format: numbers in
+square brackets [] mean that the value must be read from the offset in
+the brackets. Other values are normal numbers. Example: [02,03]+0A
+means: get number (a word) from offset 02 and add 0A. All numbers are
+in hex.</li>
+<li>General Extension Rule: ALL custom blocks that will be added after
+version 1.10 will have the endAddress of the block in first 4 bytes (long
+word) after the ID (this endAddress does not include these 4 endAddress bytes).
+This should enable programs that can only handle older versions to skip
+that block. </li><li>Just in case:<br>
+MSB = most significant byte<br>
+LSB = least significant byte<br>
+MSb = most significant bit<br>
+LSb = least significant bit<br>
+</li></ul>
+</td></tr>
+</tbody></table>
+<br></p><p align="right"><font size="+2"><a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></font></p>
+<br><br><br>
+
+
+<a name="TZXFORMAT"></a>
+<p><table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="12" width="100%"><tbody><tr>
+<td align="center" bgcolor="#ff7848" width="10%"><font color="white" size="+2"><b>
+3.
+</b></font></td><td><font size="+2">
+TZX file format
+</font></td></tr></tbody></table>
+<br>
+<table border="0" width="100%"><tbody><tr><td width="10%"> </td>
+<td>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">TZX Header</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">10 bytes</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center"><strong>Offset</strong></td>
+<td align="center"><strong>Value</strong></td>
+<td align="center"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">"ZXTape!"</td>
+<td align="center">ASCII[7]</td>
+<td>TZX signature</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x07</td>
+<td align="center">0x1A</td>
+<td align="center">BYTE</td>
+<td>End of text file marker</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x08</td>
+<td align="center">1</td>
+<td align="center">BYTE</td>
+<td>TZX major revision number</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x09</td>
+<td align="center">20</td>
+<td align="center">BYTE</td>
+<td>TZX minor revision number</td>
+</tr>
+</tbody></table>
+
+<br><br>
+The file is identified with the first 8 bytes being 'ZXTape!' plus the
+'end of file' byte 26 (1A hex). This is followed by two bytes
+containing the major and minor version numbers.<br>
+<br>
+To be able to use a TZX file, your program (emulator, utility, or
+whatever) must be able to handle files of at least its major version
+number. If your program can handle (say) version 1.05 and you encounter
+a file with version number 1.06, your program must be able to handle
+it, even if it cannot handle all the data in the file.<br>
+<br> Then the main body of the file follows. It consists of a mixture
+of blocks, each identified by an ID byte.<br>
+<a name="ID_LIST"></a>
+<br>
+<strong>TZX block ID list:</strong>
+<ul>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#STDSPEED">ID 10 - Standard speed data block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#TURBOSPEED">ID 11 - Turbo speed data block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#PURETONE">ID 12 - Pure tone</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#PULSESEQ">ID 13 - Sequence of pulses of various endAddresss</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#PUREDATA">ID 14 - Pure data block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#DIRECTREC">ID 15 - Direct recording block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#CSWBLOCK">ID 18 - CSW recording block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#GENDATA">ID 19 - Generalized data block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#PAUSEBLOCK">ID 20 - Pause (silence) or 'Stop the tape' command</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#GRPSTART">ID 21 - Group start</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#GRPEND">ID 22 - Group end</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#JUMPBLOCK">ID 23 - Jump to block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#LOOPSTART">ID 24 - Loop start</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#LOOPEND">ID 25 - Loop end</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#CALLSEQ">ID 26 - Call sequence</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#RETURNSEQ">ID 27 - Return from sequence</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#SELBLOCK">ID 28 - Select block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#STOP48K">ID 2A - Stop the tape if in 48K mode</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#SETLEVEL">ID 2B - Set signal level</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#TEXTDESCR">ID 30 - Text description</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#MSGBLOCK">ID 31 - Message block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#ARCHINFO">ID 32 - Archive info</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#HARDTYPE">ID 33 - Hardware type</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#CUSTOMBLOCK">ID 35 - Custom info block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#GLUEBLOCK">ID 5A - "Glue" block (90 dec, ASCII Letter 'Z')</a></li>
+</ul>
+
+<br><br>
+
+<a name="STDSPEED"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 10 - Standard Speed Data Block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[02,03]+04</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause after this block (ms.) {1000}</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">N</td>
+<td align="center">WORD</td>
+<td>Length of data that follow</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">BYTE[N]</td>
+<td>Data as in .TAP files</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block must be replayed with the standard Spectrum ROM timing values - see the values in curly brackets in block ID 11.
+The pilot tone consists in 8063 pulses if the first data byte (flag byte) is &lt; 128,
+3223 otherwise. This block can be used for the ROM loading routines AND
+for custom loading routines that use the same timings as ROM ones do.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+
+<br><br>
+
+<a name="TURBOSPEED"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 11 - Turbo Speed Data Block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[0F,10,11]+12</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of PILOT pulse {2168}</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of SYNC first pulse {667}</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of SYNC second pulse {735}</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x06</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of ZERO bit pulse {855}</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x08</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of ONE bit pulse {1710}</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0A</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of PILOT tone (number of pulses) {8063 header (flag&lt;128), 3223 data (flag&gt;=128)}</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0C</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Used bits in the last byte (other bits should be 0) {8}<br>
+(e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0D</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause after this block (ms.) {1000}</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0F</td>
+<td align="center">N</td>
+<td align="center">BYTE[3]</td>
+<td>Length of data that follow</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x12</td>
+<td align="center">-</td>
+<td align="center">BYTE[N]</td>
+<td>Data as in .TAP files</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block is very similar to the normal TAP block but with some
+additional info on the timings and other important differences. The
+same tape encoding is used as for the standard speed data block. If a
+block should use some non-standard sync or pilot tones (i.e. all sorts
+of protection schemes) then use the next three blocks to describe it. <br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+
+<a name="PURETONE"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 12 - Pure Tone</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">04</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of one pulse in T-states</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Number of pulses</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This will produce a tone which is basically the same as the pilot tone
+in the ID 10, ID 11 blocks. You can define how long the pulse is and
+how many pulses are in the tone.
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+
+<br><br>
+
+<a name="PULSESEQ"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 13 - Pulse sequence</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00]*02+01</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">N</td>
+<td align="center">BYTE</td>
+<td>Number of pulses</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">WORD[N]</td>
+<td>Pulses' endAddresss</td>
+</tr>
+</tbody></table>
+
+<br><br>This will produce N pulses, each having its own timing. Up to
+255 pulses can be stored in this block; this is useful for non-standard
+sync tones used by some protection schemes.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="PUREDATA"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 14 - Pure Data Block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[07,08,09]+0A</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of ZERO bit pulse</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of ONE bit pulse</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Used bits in last byte (other bits should be 0)<br>
+(e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x05</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause after this block (ms.)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x07</td>
+<td align="center">N</td>
+<td align="center">BYTE[3]</td>
+<td>Length of data that follow</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0A</td>
+<td align="center">-</td>
+<td align="center">BYTE[N]</td>
+<td>Data as in .TAP files</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This is the same as in the turbo loading data block, except that it has no pilot or sync pulses.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="DIRECTREC"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 15 - Direct Recording</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[05,06,07]+08</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Number of T-states per sample (bit of data)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause after this block in milliseconds (ms.)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Used bits (samples) in last byte of data (1-8)<br>(e.g. if this is 2, only first two samples of the last byte will be played)
+</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x05</td>
+<td align="center">N</td>
+<td align="center">BYTE[3]</td>
+<td>Length of samples' data</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x08</td>
+<td align="center">-</td>
+<td align="center">BYTE[N]</td>
+<td>Samples data. Each bit represents a state on the EAR port (i.e. one sample).<br>MSb is played first.</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block is used for tapes which have some parts in a format such
+that the turbo loader block cannot be used. This is not like a VOC
+file, since the information is much more compact. Each sample value is
+represented by one bit only (0 for low, 1 for high) which means that
+the block will be at most 1/8 the size of the equivalent VOC.<br>
+The preferred sampling frequencies are 22050 or 44100 Hz (158 or 79
+T-states/sample). Please, if you can, don't use other sampling
+frequencies.<br><br>
+Please use this block only if you cannot use any other block.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+
+
+<a name="CSWBLOCK"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 18 - CSW Recording</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01,02,03]+04</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">10+N</td>
+<td align="center">DWORD</td>
+<td>Block endAddress (without these four bytes)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause after this block (in ms).</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x06</td>
+<td align="center">-</td>
+<td align="center">BYTE[3]</td>
+<td>Sampling rate</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x09</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Compression type<br>
+<font size="1">0x01: RLE<br>
+0x02: Z-RLE</font>
+</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0A</td>
+<td align="center">-</td>
+<td align="center">DWORD</td>
+<td>Number of stored pulses (after decompression, for validation purposes)
+</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0E</td>
+<td align="center">-</td>
+<td align="center">BYTE[N]</td>
+<td>CSW data, encoded according to the CSW file format specification.</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block contains a sequence of raw pulses encoded in CSW format v2
+(Compressed Square Wave).<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+
+
+<a name="GENDATA"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 19 - Generalized Data Block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01,02,03]+04</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">DWORD</td>
+<td>Block endAddress (without these four bytes)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause after this block (ms)</td>
+</tr>
+<tr bgcolor="#b0e0f0">
+<td align="center">0x06</td>
+<td align="center">TOTP</td>
+<td align="center">DWORD</td>
+<td>Total number of symbols in pilot/sync block (can be 0)</td>
+</tr>
+<tr bgcolor="#b0e0f0">
+<td align="center">0x0A</td>
+<td align="center">NPP</td>
+<td align="center">BYTE</td>
+<td>Maximum number of pulses per pilot/sync symbol<br>
+</td></tr>
+<tr bgcolor="#b0e0f0">
+<td align="center">0x0B</td>
+<td align="center">ASP</td>
+<td align="center">BYTE</td>
+<td>Number of pilot/sync symbols in the alphabet table (0=256)<br>
+</td></tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0C</td>
+<td align="center">TOTD</td>
+<td align="center">DWORD</td>
+<td>Total number of symbols in data stream (can be 0)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x10</td>
+<td align="center">NPD</td>
+<td align="center">BYTE</td>
+<td>Maximum number of pulses per data symbol<br>
+</td></tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x11</td>
+<td align="center">ASD</td>
+<td align="center">BYTE</td>
+<td>Number of data symbols in the alphabet table (0=256)<br>
+</td></tr>
+<tr bgcolor="#b0e0f0">
+<td align="center">0x12</td>
+<td align="center">-</td>
+<td align="center">SYMDEF[ASP]</td>
+<td>Pilot and sync symbols definition table<br>
+<font size="1">This field is present only if TOTP&gt;0</font>
+</td></tr>
+<tr bgcolor="#b0e0f0">
+<td align="center">0x12+<br>(2*NPP+1)*ASP</td>
+<td align="center">-</td>
+<td align="center">PRLE[TOTP]</td>
+<td>Pilot and sync data stream<br>
+<font size="1">This field is present only if TOTP&gt;0</font>
+</td></tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x12+<br>(TOTP&gt;0)*((2*NPP+1)*ASP)+<br>TOTP*3</td>
+<td align="center">-</td>
+<td align="center">SYMDEF[ASD]</td>
+<td>Data symbols definition table<br>
+<font size="1">This field is present only if TOTD&gt;0</font>
+</td></tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x12+<br>(TOTP&gt;0)*((2*NPP+1)*ASP)+<br>TOTP*3+<br>(2*NPD+1)*ASD</td>
+<td align="center">-</td>
+<td align="center">BYTE[DS]</td>
+<td>Data stream<br>
+<font size="1">This field is present only if TOTD&gt;0</font></td>
+</tr>
+</tbody></table>
+
+<br><br>
+
+This block has been specifically developed to represent an extremely wide range of data encoding techniques.<br>
+The basic idea is that each loading component (pilot tone, sync pulses,
+data) is associated to a specific sequence of pulses,
+where each sequence (wave) can contain a different number of pulses
+from the others. In this way we can have a situation where bit 0 is
+represented with 4 pulses and bit 1 with 8 pulses.<br>
+<br>
+
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4"><font color="#ffffff" size="+2"><strong>SYMDEF structure format</strong></font></td>
+</tr>
+<tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Symbol flags<br>
+<font size="1">
+b0-b1: starting symbol polarity<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 00: opposite to the current level (make an edge, as usual) - default<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 01: same as the current level (no edge - prolongs the previous pulse)<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 10: force low level<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 11: force high level<br>
+</font></td>
+</tr>
+
+<tr bgcolor="#c0ffc0">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">WORD[MAXP]</td>
+<td>Array of pulse endAddresss.</td>
+</tr>
+</tbody></table>
+<br>
+The alphabet is stored using a table where each symbol is a row of
+pulses. The number of columns (i.e. pulses) of the table is the endAddress
+of the longest sequence amongst all (MAXP=NPP or NPD, for pilot/sync or
+data blocks respectively); shorter waves are terminated by a
+zero-endAddress pulse in the sequence.<br>
+<br>
+Any number of data symbols is allowed, so we can have more than two
+distinct waves; for example, imagine a loader which writes two bits at
+a time by encoding them with four distinct pulse endAddresss: this loader
+would have an alphabet of four symbols, each associated to a specific
+sequence of pulses (wave).<br><br>
+
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4"><font color="#ffffff" size="+2"><strong>PRLE structure format</strong></font></td>
+</tr>
+<tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Symbol to be represented</td>
+</tr>
+
+<tr bgcolor="#c0ffc0">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Number of repetitions</td>
+</tr>
+</tbody></table>
+<br>
+Most commonly, pilot and sync are repetitions of the same pulse, thus
+they are represented using a very simple RLE encoding structure which
+stores the symbol and the number of times it must be repeated.<br>
+<br>
+Each symbol in the data stream is represented by a string of NB bits of the block data, where NB = ceiling(Log2(ASD)).
+Thus the endAddress of the whole data stream in bits is NB*TOTD, or in bytes DS=ceil(NB*TOTD/8).
+<br><br>
+
+<br>
+<strong>Example</strong><br><br>
+
+A typical Spectrum's standard loading header can be represented like this:<br>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#c0a0ff">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="30%"><strong>Value</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x00</td>
+<td align="center">59 (0x3B)</td>
+<td>Total block endAddress</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x04</td>
+<td align="center">1000 (0x03E8)</td>
+<td>Pause after this block (ms.)</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x06</td>
+<td align="center">2</td>
+<td>Total number of symbols in pilot/sync block</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x0A</td>
+<td align="center">2</td>
+<td>Max pulses per symbol</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x0B</td>
+<td align="center">2</td>
+<td>Number of symbols in pilot/sync alphabet</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x0C</td>
+<td align="center">152 (0x98)</td>
+<td>Total number of symbols (bits, in this case) in data stream</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x10</td>
+<td align="center">2</td>
+<td>Max pulses per data symbol</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x11</td>
+<td align="center">2</td>
+<td>Number of symbols in data alphabet</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x12</td>
+<td align="center">
+SYMDEF[0]: ( 0, 2168, 0 )<br>
+SYMDEF[1]: ( 0, 667, 735)
+</td>
+<td>Pilot/sync symbol definitions</td>
+</tr><tr bgcolor="#ffdf90">
+<td align="center">0x1C</td>
+<td align="center">
+PRLE[0]: ( 0, 8063 )<br>
+PRLE[1]: ( 1, 1)
+</td>
+<td>Pilot/sync data block</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x22</td>
+<td align="center">
+SYMDEF[0]: ( 0, 855, 855 )<br>
+SYMDEF[1]: ( 0, 1710, 1710)
+</td>
+<td>Data symbol definitions</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x2C</td>
+<td align="center">
+00000000 - 0x00<br>
+00000011 - 0x03<br>
+01001010 - 0x4A<br>
+01010000 - 0x50<br>
+01010011 - 0x53<br>
+01010000 - 0x50<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00000000 - 0x00<br>
+00011011 - 0x1B<br>
+00000000 - 0x00<br>
+01000000 - 0x40<br>
+00000000 - 0x00<br>
+10000000 - 0x80<br>
+11000001 - 0xC1
+</td>
+<td>Data stream:<br>
+<br>
+&nbsp;&nbsp;&nbsp; 00: loading flag (0x00 = header)<br>
+&nbsp;&nbsp;&nbsp; 03: data type (0x03 = "Bytes:")<br>
+&nbsp;&nbsp;&nbsp; 4A,50,53,50,20,20,20,20,20,20: file name ("JPSP")<br>
+&nbsp;&nbsp;&nbsp; 1B00: data endAddress<br>
+&nbsp;&nbsp;&nbsp; 4000: start address<br>
+&nbsp;&nbsp;&nbsp; 8000: autostart (no meaning here)<br>
+&nbsp;&nbsp;&nbsp; C1: checksum<br>
+</td>
+</tr>
+
+</tbody></table>
+<br><br>
+
+The very same data information encoded to work with the ZX81 would look like this:<br>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#c0a0ff">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="42%"><strong>Value</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x00</td>
+<td align="center">107 (0x6B)</td>
+<td>Total block endAddress</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x04</td>
+<td align="center">1000 (0x03E8)</td>
+<td>Pause after this block (ms.)</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x06</td>
+<td align="center">0</td>
+<td>Total number of records in pilot/sync block</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x0A</td>
+<td align="center">0</td>
+<td>Max pulses per symbol</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x0B</td>
+<td align="center">0</td>
+<td>Number of symbols in pilot/sync alphabet</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x0C</td>
+<td align="center">152 (0x98)</td>
+<td>Total number of records in data stream</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x10</td>
+<td align="center">18 (0x12)</td>
+<td>Max pulses per data symbol</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x11</td>
+<td align="center">2</td>
+<td>Number of symbols in data alphabet</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x12</td>
+<td align="center">
+SYMDEF[0]:<br>
+( 3, 530, 520, 530, 520, 530, 520, 530, 4689, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )<br>
+SYMDEF[1]:<br>
+( 3, 530, 520, 530, 520, 530, 520, 530, 520, 530, 520, 530, 520, 530, 520, 530, 520, 530, 4689 )
+</td>
+<td>Data symbol definitions<br>
+<font size="1">(referred to 3.5MHz clock frequency)</font></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">0x5C</td>
+<td align="center">
+00000000 - 0x00<br>
+00000011 - 0x03<br>
+01001010 - 0x4A<br>
+01010000 - 0x50<br>
+01010011 - 0x53<br>
+01010000 - 0x50<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00100000 - 0x20<br>
+00000000 - 0x00<br>
+00011011 - 0x1B<br>
+00000000 - 0x00<br>
+01000000 - 0x40<br>
+00000000 - 0x00<br>
+10000000 - 0x80<br>
+11000001 - 0xC1
+</td>
+<td>Data stream</td>
+</tr>
+
+</tbody></table>
+
+
+<br><br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+
+<br><br>
+
+
+
+<a name="PAUSEBLOCK"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 20 - Pause (silence) or 'Stop the Tape' command</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">02</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause duration (ms.)</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This will make a silence (low amplitude level (0)) for a given time in
+milliseconds. If the value is 0 then the emulator or utility should (in
+effect) STOP THE TAPE, i.e. should not continue loading until the user
+or emulator requests it.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="GRPSTART"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 21 - Group start</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00]+01</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">L</td>
+<td align="center">BYTE</td>
+<td>Length of the group name string</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">CHAR[L]</td>
+<td>Group name in ASCII format (please keep it under 30 characters long)</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block marks the start of a group of blocks which are to be treated
+as one single (composite) block. This is very handy for tapes that use
+lots of subblocks like Bleepload (which may well have over 160 custom loading
+blocks). You can also give the group a name (example 'Bleepload Block 1').<br>
+<br>
+For each group start block, there must be a group end block. Nesting of groups is not allowed.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="GRPEND"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 22 - Group end</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">00</font></strong></td>
+</tr>
+</tbody></table>
+
+<br><br>
+This indicates the end of a group. This block has no body.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="JUMPBLOCK"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 23 - Jump to block</strong></font></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">02</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Relative jump value</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block will enable you to jump from one block to another within the
+file. The value is a signed short word (usually 'signed short' in C);
+Some examples: <ul>
+<li>Jump 0 = 'Loop Forever' - this should never happen</li>
+<li>Jump 1 = 'Go to the next block' - it is like NOP in assembler ;)</li>
+<li>Jump 2 = 'Skip one block'</li>
+<li>Jump -1 = 'Go to the previous block'</li>
+</ul>
+All blocks are included in the block count!<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="LOOPSTART"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 24 - Loop start</strong></font></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">02</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Number of repetitions (greater than 1)</td>
+</tr>
+</tbody></table>
+
+<br><br>
+If you have a sequence of identical blocks, or of identical groups of
+blocks, you can use this block to tell how many times they should be
+repeated.
+This block is the same as the FOR statement in BASIC.<br>
+<br>
+For simplicity reasons don't nest loop blocks!<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="LOOPEND"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 25 - Loop end</strong></font></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">00</font></strong></td>
+</tr>
+</tbody></table>
+
+<br><br>
+This is the same as BASIC's NEXT statement. It means that the utility
+should jump back to the start of the loop if it hasn't been run for the
+specified number of times.<br>
+<br>
+This block has no body.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="CALLSEQ"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 26 - Call sequence</strong></font></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01]*02+02</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">N</td>
+<td align="center">WORD</td>
+<td>Number of calls to be made</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">WORD[N]</td>
+<td>Array of call block numbers (relative-signed offsets)</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block is an analogue of the CALL Subroutine statement. It basically
+executes a sequence of blocks that are somewhere else and then goes
+back to the next block. Because more than one call can be normally used
+you can include a list of sequences to be called. The 'nesting' of call
+blocks is also not allowed for the simplicity reasons. You can, of course,
+use the CALL blocks in the LOOP sequences and vice versa. The value is
+relative for the obvious reasons - so that you can add some blocks in the
+beginning of the file without disturbing the call values. Please take a
+look at 'Jump To Block' for reference on the values.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="RETURNSEQ"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 27 - Return from sequence</strong></font></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">00</font></strong></td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block indicates the end of the Called Sequence. The next block
+played will be the block after the last CALL block (or the next Call,
+if the Call block had multiple calls).<br>
+<br>
+Again, this block has no body.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="SELBLOCK"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 28 - Select block</strong></font></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2"> [00,01]+02</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of the whole block (without these two bytes)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">N</td>
+<td align="center">BYTE</td>
+<td>Number of selections</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x03</td>
+<td align="center">-</td>
+<td align="center">SELECT[N]</td>
+<td>List of selections</td>
+</tr>
+</tbody></table>
+<br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4"><font color="#ffffff" size="+2"><strong>SELECT structure format</strong></font></td>
+</tr>
+<tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Relative Offset</td>
+</tr>
+
+<tr bgcolor="#c0ffc0">
+<td align="center">0x02</td>
+<td align="center">L</td>
+<td align="center">BYTE</td>
+<td>Length of description text</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x03</td>
+<td align="center">-</td>
+<td align="center">CHAR[L]</td>
+<td>Description text (please use single line and max. 30 chars)</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block is useful when the tape consists of two or more
+separately-loadable parts. With this block, you are able to select one
+of the parts and the utility/emulator will start loading from that
+block. For example you can use it when the game has a separate Trainer
+or when it is a multiload. Of course, to make some use of it the
+emulator/utility has to show a menu with the selections when it
+encounters such a block. All offsets are relative signed words.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="STOP48K"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><font color="#ffffff" size="+2"><strong>ID 2A - Stop the tape if in 48K mode</strong></font></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">04</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">0</td>
+<td align="center">DWORD</td>
+<td>Length of the block without these four bytes (0)</td>
+</tr>
+</tbody></table>
+
+<br><br>
+When this block is encountered, the tape will stop ONLY if the machine
+is an 48K Spectrum. This block is to be used for multiloading games
+that load one level at a time in 48K mode, but load the entire tape at
+once if in 128K mode.<br>
+<br>
+This block has no body of its own, but follows the extension rule.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+
+<a name="SETLEVEL"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 2B - Set signal level</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">05</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">1</td>
+<td align="center">DWORD</td>
+<td>Block endAddress (without these four bytes)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Signal level (0=low, 1=high)</td>
+</tr>
+</tbody></table>
+<br><br>
+This block sets the current signal level to the specified value (high or low). It should be used whenever it is
+necessary to avoid any ambiguities, e.g. with custom loaders which are level-sensitive.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+
+<a name="TEXTDESCR"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 30 - Text description</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00]+01</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">N</td>
+<td align="center">BYTE</td>
+<td> Length of the text description</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">CHAR[N]</td>
+<td>Text description in ASCII format</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This is meant to identify parts of the tape, so you know where level 1
+starts, where to rewind to when the game ends, etc. This description is
+not guaranteed to be shown while the tape is playing, but can be read
+while browsing the tape or changing the tape pointer.<br>
+<br>
+The description can be up to 255 characters long but please keep it
+down to about 30 so the programs can show it in one line (where this is
+appropriate).<br>
+<br>
+Please use 'Archive Info' block for title, authors, publisher, etc.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="MSGBLOCK"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 31 - Message block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[01]+02</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Time (in seconds) for which the message should be displayed</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x01</td>
+<td align="center">N</td>
+<td align="center">BYTE</td>
+<td>Length of the text message</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">CHAR[N]</td>
+<td>Message that should be displayed in ASCII format</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This will enable the emulators to display a message for a given time.
+This should not stop the tape and it should not make silence. If the
+time is 0 then the emulator should wait for the user to press a key.<br><br>
+The text message should:
+<ul>
+<li>stick to a maximum of 30 chars per line;</li>
+<li>use single 0x0D (13 decimal) to separate lines;</li>
+<li>stick to a maximum of 8 lines.</li>
+</ul>
+If you do not obey these rules, emulators may display your message in any way they like.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="ARCHINFO"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 32 - Archive info</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01]+02</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Length of the whole block (without these two bytes)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">N</td>
+<td align="center">BYTE</td>
+<td>Number of text strings</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x03</td>
+<td align="center">-</td>
+<td align="center">TEXT[N]</td>
+<td>List of text strings</td>
+</tr>
+</tbody></table>
+<br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4"><strong><font color="#ffffff" size="+2">TEXT structure format</font></strong></td>
+</tr>
+<tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr><tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Text identification byte:<br>
+&nbsp;&nbsp;&nbsp; 00 - Full title<br>
+&nbsp;&nbsp;&nbsp; 01 - Software house/publisher<br>
+&nbsp;&nbsp;&nbsp; 02 - Author(s)<br>
+&nbsp;&nbsp;&nbsp; 03 - Year of publication<br>
+&nbsp;&nbsp;&nbsp; 04 - Language<br>
+&nbsp;&nbsp;&nbsp; 05 - Game/utility type<br>
+&nbsp;&nbsp;&nbsp; 06 - Price<br>
+&nbsp;&nbsp;&nbsp; 07 - Protection scheme/loader<br>
+&nbsp;&nbsp;&nbsp; 08 - Origin<br>
+&nbsp;&nbsp;&nbsp; FF - Comment(s)<br>
+</td>
+</tr>
+
+<tr bgcolor="#c0ffc0">
+<td align="center">0x01</td>
+<td align="center">L</td>
+<td align="center">BYTE</td>
+<td>Length of text string</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">CHAR[L]</td>
+<td>Text string in ASCII format</td>
+</tr>
+</tbody></table>
+
+<br><br>
+Use this block at the beginning of the tape to identify the title of
+the game, author, publisher, year of publication, price (including the
+currency), type of software (arcade adventure, puzzle, word processor,
+...), protection scheme it uses (Speedlock 1, Alkatraz, ...) and its
+origin (Original, Budget re-release, ...), etc. This block is built in
+a way that allows easy future expansion. The block consists of a series
+of text strings. Each text has its identification number (which tells
+us what the text means) and then the ASCII text. To make it possible to
+skip this block, if needed, the endAddress of the whole block is at the
+beginning of it.<br>
+<br>
+If all texts on the tape are in English language then you don't have to supply the 'Language' field<br>
+<br>
+The information about what hardware the tape uses is in the 'Hardware Type' block, so no need for it here.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="HARDTYPE"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 33 - Hardware type</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00]*03+01</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">N</td>
+<td align="center">BYTE</td>
+<td>Number of machines and hardware types for which info is supplied</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">HWINFO[N]</td>
+<td>List of machines and hardware</td>
+</tr>
+</tbody></table>
+<br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4"><strong><font color="#ffffff" size="+2">HWINFO structure format</font></strong></td>
+</tr>
+<tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Hardware type</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Hardware ID</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Hardware information:<br>
+&nbsp;&nbsp;&nbsp; 00 - The tape RUNS on this machine or with this hardware,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; but may or may not use the hardware or special features of the machine.<br>
+&nbsp;&nbsp;&nbsp; 01 - The tape USES the hardware or special features of the machine,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; such as extra memory or a sound chip.<br>
+&nbsp;&nbsp;&nbsp; 02 - The tape RUNS but it DOESN'T use the hardware<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; or special features of the machine.<br>
+&nbsp;&nbsp;&nbsp; 03 - The tape DOESN'T RUN on this machine or with this hardware.<br>
+</td>
+</tr>
+
+</tbody></table>
+
+<br><br>
+This blocks contains information about the hardware that the programs on this tape use. Please
+include only machines and hardware for which you are 100% sure that it
+either runs (or doesn't run) on or with, or you know it uses (or
+doesn't use) the hardware or special features of that machine.<br>
+<br>
+If the tape runs only on the ZX81 (and TS1000, etc.) then it clearly
+won't work on any Spectrum or Spectrum variant, so there's no need to
+list this information.<br>
+<br>
+If you are not sure or you haven't tested a tape on some particular
+machine/hardware combination then do not include it in the list.<br>
+<br>
+The list of hardware types and IDs is somewhat large, and may be found at the end of the format description.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+
+
+<a name="CUSTOMBLOCK"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 35 - Custom info block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[10,11,12,13]+14</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">CHAR[10]</td>
+<td>Identification string (in ASCII)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x10</td>
+<td align="center">L</td>
+<td align="center">DWORD</td>
+<td>Length of the custom info</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x14</td>
+<td align="center">-</td>
+<td align="center">BYTE[L]</td>
+<td>Custom info</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block can be used to save any information you want. For example,
+it might contain some information written by a utility, extra settings
+required by a particular emulator, or even poke data.
+<br><br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="GLUEBLOCK"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 5A - "Glue" block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">09</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">BYTE[9]</td>
+<td>Value: { "XTape!",0x1A,MajR,MinR } <br>
+Just skip these 9 bytes and you will end up on the next ID.</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block is generated when you merge two ZX Tape files together. It
+is here so that you can easily copy the files together and use them. Of
+course, this means that resulting file would be 10 bytes longer than if
+this block was not used. All you have to do if you encounter this block
+ID is to skip next 9 bytes.<br>
+If you can avoid using this block for this purpose, then do so; it is
+preferable to use a utility to join the two files and ensure that they
+are both of the higher version number.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#ID_LIST">Return to ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+</td></tr></tbody></table>
+
+<a name="HWINFOREF"></a>
+<br>
+</p><p><table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="12" width="100%"><tbody><tr>
+<td align="center" bgcolor="#ff7848" width="10%"><font color="white" size="+2"><b>
+4.
+</b></font></td><td><font size="+2">
+Hardware information reference
+</font></td></tr></tbody></table>
+<br>
+<table border="0" width="100%"><tbody><tr><td width="10%"></td>
+<td><br><br>
+This is the list of all hardware types and hardware identification ID's
+that are used in the 'Hardware info' block. Please send any additions
+you might have to the TZX maintainers so that they can be included. <br><br>
+By default you don't have to write any of the information if the game
+is made for the ZX Spectrum and complies with the following:
+<ul>
+<li>runs on ZX Spectrum 48K</li>
+<li>runs on, but doesn't use any of the special hardware of ZX Spectrum 128K</li>
+<li>doesn't run on ZX Spectrum 16K</li>
+</ul>
+If, for example, game works on BOTH ZX 48K and 128K, and uses the
+hardware of the 128K Spectrum, then you would just include the 128K
+Spectrum in the list (because by default it has to work on 48K too).<br>
+If the game is 128K ONLY then you would include two entries: The game
+works on AND uses the hardware of a 128K Spectrum AND the game DOESN'T
+work on a 48K Spectrum.<br>
+If the game works on both 48K and 128K Spectrum, but it only uses the
+sound chip (AY) of the 128K Spectrum and none of its extra memory then
+you would only include the entry that says that the game uses the
+'Classic AY hardware (Spectrum 128 sompatible sound device)'.<br>
+<br><br>
+These were only some examples of the usage of this block. 
+
+<br><br>
+
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#8080d0">
+<td align="center"><font color="#ffffff"><strong>Hardware type</strong></font></td>
+<td align="center"><font color="#ffffff"><strong>Hardware ID</strong></font></td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>00 - Computers</td>
+<td>
+00 - ZX Spectrum 16k<br>
+01 - ZX Spectrum 48k, Plus<br>
+02 - ZX Spectrum 48k ISSUE 1<br>
+03 - ZX Spectrum 128k +(Sinclair)<br>
+04 - ZX Spectrum 128k +2 (grey case)<br>
+05 - ZX Spectrum 128k +2A, +3<br>
+06 - Timex Sinclair TC-2048<br>
+07 - Timex Sinclair TS-2068<br>
+08 - Pentagon 128<br>
+09 - Sam Coupe<br>
+0A - Didaktik M<br>
+0B - Didaktik Gama<br>
+0C - ZX-80<br>
+0D - ZX-81<br>
+0E - ZX Spectrum 128k, Spanish version<br>
+0F - ZX Spectrum, Arabic version<br>
+10 - Microdigital TK 90-X<br>
+11 - Microdigital TK 95<br>
+12 - Byte<br>
+13 - Elwro 800-3 <br>
+14 - ZS Scorpion 256<br>
+15 - Amstrad CPC 464<br>
+16 - Amstrad CPC 664<br>
+17 - Amstrad CPC 6128<br>
+18 - Amstrad CPC 464+<br>
+19 - Amstrad CPC 6128+<br>
+1A - Jupiter ACE<br>
+1B - Enterprise<br>
+<strike>1C - Commodore 64<br>
+1D - Commodore 128</strike><br>
+1E - Inves Spectrum+<br>
+1F - Profi<br>
+20 - GrandRomMax<br>
+21 - Kay 1024<br>
+22 - Ice Felix HC 91<br>
+23 - Ice Felix HC 2000<br>
+24 - Amaterske RADIO Mistrum<br>
+25 - Quorum 128<br>
+26 - MicroART ATM<br>
+27 - MicroART ATM Turbo 2<br>
+28 - Chrome<br>
+29 - ZX Badaloc<br>
+2A - TS-1500<br>
+2B - Lambda<br>
+2C - TK-65<br>
+2D - ZX-97
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>01 - External storage</td>
+<td>
+00 - ZX Microdrive<br>
+01 - Opus Discovery<br>
+02 - MGT Disciple<br>
+03 - MGT Plus-D<br>
+04 - Rotronics Wafadrive<br>
+05 - TR-DOS (BetaDisk)<br>
+06 - Byte Drive<br>
+07 - Watsford<br>
+08 - FIZ<br>
+09 - Radofin<br>
+0A - Didaktik disk drives<br>
+0B - BS-DOS (MB-02)<br>
+0C - ZX Spectrum +3 disk drive<br>
+0D - JLO (Oliger) disk interface<br>
+0E - Timex FDD3000<br>
+0F - Zebra disk drive<br>
+10 - Ramex Millenia<br>
+11 - Larken<br>
+12 - Kempston disk interface<br>
+13 - Sandy<br>
+14 - ZX Spectrum +3e hard disk<br>
+15 - ZXATASP<br>
+16 - DivIDE<br>
+17 - ZXCF
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>02 - ROM/RAM type add-ons</td>
+<td>
+00 - Sam Ram<br>
+01 - Multiface ONE<br>
+02 - Multiface 128k<br>
+03 - Multiface +3<br>
+04 - MultiPrint<br>
+05 - MB-02 ROM/RAM expansion<br>
+06 - SoftROM<br>
+07 - 1k<br>
+08 - 16k<br>
+09 - 48k<br>
+0A - Memory in 8-16k used
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>03 - Sound devices</td>
+<td>
+00 - Classic AY hardware (compatible with 128k ZXs)<br>
+01 - Fuller Box AY sound hardware<br>
+02 - Currah microSpeech<br>
+03 - SpecDrum<br>
+04 - AY ACB stereo (A+C=left, B+C=right); Melodik<br>
+05 - AY ABC stereo (A+B=left, B+C=right)<br>
+06 - RAM Music Machine<br>
+07 - Covox<br>
+08 - General Sound<br>
+09 - Intec Electronics Digital Interface B8001<br>
+0A - Zon-X AY<br>
+0B - QuickSilva AY<br>
+0C - Jupiter ACE
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>04 - Joysticks</td>
+<td>
+00 - Kempston<br>
+01 - Cursor, Protek, AGF<br>
+02 - Sinclair 2 Left  (12345)<br>
+03 - Sinclair 1 Right (67890)<br>
+04 - Fuller
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>05 - Mice</td>
+<td>
+00 - AMX mouse<br>
+01 - Kempston mouse<br>
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>06 - Other controllers</td>
+<td>
+00 - Trickstick<br>
+01 - ZX Light Gun<br>
+02 - Zebra Graphics Tablet<br>
+03 - Defender Light Gun
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>07 - Serial ports</td>
+<td>
+00 - ZX Interface 1<br>
+01 - ZX Spectrum 128k
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>08 - Parallel ports</td>
+<td>
+00 - Kempston S<br>
+01 - Kempston E<br>
+02 - ZX Spectrum +3<br>
+03 - Tasman<br>
+04 - DK'Tronics<br>
+05 - Hilderbay<br>
+06 - INES Printerface<br>
+07 - ZX LPrint Interface 3<br>
+08 - MultiPrint<br>
+09 - Opus Discovery<br>
+0A - Standard 8255 chip with ports 31,63,95
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>09 - Printers</td>
+<td>
+00 - ZX Printer, Alphacom 32 &amp; compatibles<br>
+01 - Generic printer<br>
+02 - EPSON compatible
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>0A - Modems</td>
+<td>
+00 - Prism VTX 5000<br>
+01 - T/S 2050 or Westridge 2050
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>0B - Digitizers</td>
+<td>
+00 - RD Digital Tracer<br>
+01 - DK'Tronics Light Pen<br>
+02 - British MicroGraph Pad<br>
+03 - Romantic Robot Videoface</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>0C - Network adapters</td>
+<td>
+00 - ZX Interface 1
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>0D - Keyboards &amp; keypads</td>
+<td>
+00 - Keypad for ZX Spectrum 128k
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>0E - AD/DA converters
+</td>
+<td>
+00 - Harley Systems ADC 8.2<br>
+01 - Blackboard Electronics
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>0F - EPROM programmers</td>
+<td>
+00 - Orme Electronics
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td>10 - Graphics</td>
+<td>
+00 - WRX Hi-Res<br>
+01 - G007<br>
+02 - Memotech<br>
+03 - Lambda Colour
+</td>
+</tr>
+</tbody></table>
+<br><br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+</td></tr></tbody></table>
+
+<br><br>
+
+<a name="MACHINFO"></a>
+<br>
+</p><p><table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="12" width="100%"><tbody><tr>
+<td align="center" bgcolor="#ff7848" width="10%"><font color="white" size="+2"><b>
+5.
+</b></font></td><td><font size="+2">
+Machine specific information
+</font></td></tr></tbody></table>
+<br>
+<table border="0" width="100%"><tbody><tr><td width="10%"> </td>
+<td><br><br>
+Currently supported machines are: ZX Spectrum, Amstrad CPC, SAM Coupe,
+ZX-81 Jupiter ACE and Enterprise. Only ZX-81 (or the old Timex 1000)
+and Jupiter ACE use different tape encoding than the others.
+<ul>
+<li><strong>Jupiter ACE encoding</strong> - see <a href="http://www.jupiter-ace.co.uk/doc_AceTapeFormat.html">a dedicated site</a>.</li>
+<li><strong>ZX Spectrum, Amstrad CPC, SAM Coupe &amp; Enterprise tape encoding</strong>
+<br><br>These computers share the same tape encoding, which is normal
+frequency type encoding. Each bit is represented by one 'wave' of
+different duration for bit 0 and bit 1. Normally bit 1 is twice as big
+as bit 0. In the blocks, the timings are presented with Z80 T-states
+(cycles) per pulse. One wave is made from two pulses.
+<br><br>The standard data blocks have always the same structure: first
+there is the PILOT tone, then the two SYNC pulses (one wave) and after
+that the actual DATA (which can include a FLAG byte at the beginning
+and a CHECKSUM byte at the end).<br><br>
+Here is a table showing the pulse timings for each part of the standard
+ROM load/save routine for each of these machines. If you have more
+accurate information then we would be glad to include it here.
+Enterprise has two loading speeds so timings for both are included.
+<br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#8080df">
+
+<td align="center"><font color="#ffffff"><strong>Machine</strong></font></td>
+<td align="center"><font color="#ffffff"><strong>Pilot pulse</strong></font></td>
+<td align="center"><font color="#ffffff"><strong>Length</strong></font></td>
+<td align="center"><font color="#ffffff"><strong>Sync1</strong></font></td>
+<td align="center"><font color="#ffffff"><strong>Sync2</strong></font></td>
+<td align="center"><font color="#ffffff"><strong>Bit 0</strong></font></td>
+<td align="center"><font color="#ffffff"><strong>Bit 1</strong></font></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">ZX Spectrum</td>
+<td align="center">2168</td>
+<td align="center">(1)</td>
+<td align="center">667</td>
+<td align="center">735</td>
+<td align="center">855</td>
+<td align="center">1710</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">SAM Coupe'</td>
+<td align="center">58+19*W</td>
+<td align="center">6000</td>
+<td align="center">58+9*W</td>
+<td align="center">113+9*W</td>
+<td align="center">10+8*W</td>
+<td align="center">42+15*W (*)</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">Amstrad CPC</td>
+<td align="center">Bit 1</td>
+<td align="center">4096</td>
+<td align="center">Bit 0</td>
+<td align="center">Bit 0</td>
+<td align="center">(2)</td>
+<td align="center">(2)</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">Enterprise (fast)</td>
+<td align="center">742</td>
+<td align="center">?</td>
+<td align="center">1280</td>
+<td align="center">1280</td>
+<td align="center">882</td>
+<td align="center">602 (**)</td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center">Enterprise (slow)</td>
+<td align="center">1750</td>
+<td align="center">?</td>
+<td align="center">2800</td>
+<td align="center">2800</td>
+<td align="center">1982</td>
+<td align="center">1400 (**)</td>
+</tr>
+</tbody></table>
+<br><br>
+<strong>Notes:</strong>
+<br>
+(1) The Spectrum uses different pilot endAddresss for header and data
+blocks. Header blocks have 8063 and data blocks have 3223 pilot pulses.<br>
+(2) Amstrad CPC ROM load/save routine can use variable speed for
+loading, so the bit 1 pulse must be read from the pilot tone and bit 0
+can be read from the sync pulses, and is always half the size of bit 1.
+The checksum is also different than the other two machines. The speed
+can vary from 1000 to 2000 baud.<br>
+(*) The SAM Coupe' timings can be user selected by a system variable.
+The standard value is 112, which is VERY close to ZX Spectrum loading
+speed, and therefore the 'Standard Speed Data' block can be used for
+those blocks. However if this system variable is changed then the
+timings will change accordingly. In the above table the value of this
+variable is given as 'W', the 'H' value is 'W/2'. Of course the best
+way to determine it is to calculate it from the timings you get when
+sampling the Pilot tone. The values in the table could be by a fraction
+of the real ones, but it should not matter. Note: All timings are
+written in 3.5MHz clock. Also, there might be some junk bits (usually 7
+or 8) AFTER the checksum (XOR) byte at the end of the block, but they
+can just be ignored.<br>
+(**) The Enterprise stores data in a different way than all other
+computers do. It stores the LSb first, but the data blocks require the
+data to be MSb first. This might lead to some confusion, but if the
+same mechanism is used to replay data for all machines then there will
+be no problem. Just store the data as MSb first, but if you want to
+view the raw data in the TZX file then you will have to mirror each
+byte to get the correct values.<br>
+<br>
+<strong>IMPORTANT:</strong> The ZXTape format has ALL timings written
+according to a 3.5MHz clock (the standard Spectrum 16/48K clock), so if
+the tape should be used on an Amstrad CPC with 4MHz clock then you
+should multiply ALL timings with 4/3.5 when you use that tape (this
+should be trivial). Similarly goes for SAM Coupe, that uses a 6MHz
+clock and Jupiter ACE that uses 3.2448 MHz and Enterprise that uses 4
+MHz!
+<br><br><br>
+</li>
+</ul>
+
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+</td></tr></tbody></table>
+<br><br>
+
+<a name="DEPRECATED"></a>
+<br>
+</p><p><table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="12" width="100%"><tbody><tr>
+<td align="center" bgcolor="#ff7848" width="10%"><font color="white" size="+2"><b>
+6.
+</b></font></td><td><font size="+2">
+Deprecated blocks
+</font></td></tr></tbody></table>
+<br>
+<table border="0" width="100%"><tbody><tr><td width="10%"></td>
+<td>
+The following blocks, which were in the format until revision 1.13 (inclusive),
+have now been deprecated and they should not appear in TZX files v1.20
+and above.
+Their structure is documented here for completeness, to allow general
+tools and emulators to maintain full backward compatibility with old
+TZX files.
+However note that these blocks have not proven to be useful and,
+as a consequence, it appears that almost no existing TZX files contain them.
+<ul>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#C64ROM">ID 16 - C64 ROM type data block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#C64TURBO">ID 17 - C64 turbo tape data block</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#EMUINFO">ID 34 - Emulation info</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#CUSTINFODPR">ID 35 - Custom info deprecated types</a></li>
+<li><a href="http://www.worldofspectrum.org/TZXformat.html#SNAPSHOT">ID 40 - Snapshot block</a></li>
+</ul>
+
+<a name="C64ROM"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 16 - C64 ROM Type Data Block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01,02,03]</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">DWORD</td>
+<td>Length of the WHOLE block including the data (extension rule)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>PILOT TONE pulse endAddress [616]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x06</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Number of waves in PILOT TONE</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x08</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>SYNC first wave pulse endAddress [1176]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0A</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>SYNC 2nd wave pulse endAddress [896]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0C</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>ZERO bit 1st wave pulse endAddress [616]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0E</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>ZERO bit 2nd wave pulse endAddress [896]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x10</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>ONE bit 1st wave pulse endAddress [896]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x12</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>ONE bit 2nd wave pulse endAddress [616]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x14</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>XOR Checksum bit for each Data byte: [1] <br>
+&nbsp;&nbsp;&nbsp; 00 - Start XOR checksum with value 0<br>
+&nbsp;&nbsp;&nbsp; 01 - Start XOR checksum with value 1<br>
+&nbsp;&nbsp;&nbsp; FF - No checksum bit</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x15</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>FINISH BYTE 1st wave pulse endAddress [1176]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x17</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>FINISH BYTE 2nd wave pulse endAddress [896]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x19</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>FINISH DATA 1st wave pulse endAddress [1176]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x1B</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>FINISH DATA 2nd wave pulse endAddress [616]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x1D</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>TRAILING TONE pulse endAddress [616]</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x1F</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Number of waves in TRAILING TONE</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x21</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Used bits in last byte (other bits should be 0)<br>(e.g. if this is 6, then the bits used (x) in last byte are: xxxxxx00)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x22</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>General Purpose, bit-mapped: [1]<br>
+&nbsp;&nbsp;&nbsp; bit 0 - Data Endianess: 0=LSb first, 1=MSb first</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x23</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause after this block in milliseconds (ms.)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x25</td>
+<td align="center">N</td>
+<td align="center">BYTE[3]</td>
+<td>Length of following data</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x28</td>
+<td align="center">-</td>
+<td align="center">BYTE[N]</td>
+<td>Data as in .TAP files</td>
+</tr>
+</tbody></table>
+
+<br><br>Well, this block was created to support the Commodore 64
+standard ROM and similar tape blocks. It is made so basically anything
+that uses two or four pulses (which are the same in pairs) per bit can
+be written with it.<br><br>
+Some explanation:
+<ul> 
+<li>A wave consists of TWO pulses. The structure contains the endAddress of ONE pulse.</li> 
+<li>The wave MUST always start with the LOW amplitude, since the C64 can only detect the transition HIGH -&gt; LOW.</li>
+<li>If some pulse endAddress is 0 then the whole wave must not be present. This applies to DATA too.</li>
+<li>The XOR checksum (if it is set to 0 or 1) is a XOR of all bits in
+the byte XOR-ed with the value in this field as the start value.</li>
+<li>Finish Byte waves should be played after each byte EXCEPT last one.</li>
+<li>Finish Data waves should be ONLY played after last byte of data.</li>
+<li>When all the Data has finished there is an optional Trailer Tone, which is standard for the Repeated Blocks in C64 ROM Loader.</li>
+</ul>
+The replay procedure looks like this:
+<ol>
+<li>Pilot Tone</li>
+<li>Sync waves</li>
+<li>Data Bytes (with XOR and/or Finish Byte waves)</li>
+<li>Finish Data pulses</li>
+<li>Trailing Tone</li>
+</ol>
+The numbers in brackets [] represent the values for C64 ROM loader.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#DEPRECATED">Return to deprecated ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="C64TURBO"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 17 - C64 Turbo Tape Data Block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[00,01,02,03]</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">DWORD</td>
+<td>Length of the WHOLE block including the data (extension rule)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>ZERO bit pulse</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x06</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>ONE bit pulse</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x08</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Additional bits in bytes (bit-mapped)<br>
+&nbsp;&nbsp;&nbsp; bits 0-1: number of bits (0-3)<br>
+&nbsp;&nbsp;&nbsp; bit 2: play additional bit(s) BEFORE (0) or AFTER (1) the byte<br>
+&nbsp;&nbsp;&nbsp; bit 3: value of additional bit(s)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x09</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Number of lead-in bytes</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0B</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Lead-in byte</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0C</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Used bits in last byte (other bits should be 0) [8]<br>(e.g. if this is 6, then the bits used (x) in last byte are: xxxxxx00)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0D</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>General purpose (bit-mapped) [0]<br>
+&nbsp;&nbsp;&nbsp; bit 0: little (0) or big (1) endian format
+</td></tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x0E</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Number of trailing bytes</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x10</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Trailing byte</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x11</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Pause after this block in milliseconds (ms.)</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x13</td>
+<td align="center">N</td>
+<td align="center">BYTE[3]</td>
+<td>Length of following data</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x16</td>
+<td align="center">-</td>
+<td align="center">BYTE[N]</td>
+<td>Data as in .TAP files</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This block is made to support another type of encoding that is commonly
+used by the C64. Most of the commercial software uses this type of
+encoding, i.e. the Pilot tone is not made from one type of Wave only,
+but it is made from actual Data byte which is repeated many times. As
+the Sync value another, different, Data byte is sent to signal the
+start of the data. The Data Bits are made from ONE wave only and there
+is NO XOR checksum either! Trailing byte is played AFTER the DATA has
+ended.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#DEPRECATED">Return to deprecated ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="EMUINFO"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 34 - Emulation info</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">08</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>General emulation flags:<br>
+&nbsp;&nbsp;&nbsp; bit 0 : R-register emulation [1]<br>
+&nbsp;&nbsp;&nbsp; bit 1 : LDIR emulation [1]<br>
+&nbsp;&nbsp;&nbsp; bit 2 : high resolution colour emulation with true interrupt freq. [1]<br>
+&nbsp;&nbsp;&nbsp; bit 3,4 : video synchronisation : 1=high, 3=low, 0,2=normal [0]<br>
+&nbsp;&nbsp;&nbsp; bit 5 : fast loading when ROM load routine is used [1]<br>
+&nbsp;&nbsp;&nbsp; bit 6 : border emulation [1]<br>
+&nbsp;&nbsp;&nbsp; bit 7 : screen refresh mode (1: ON, 0: OFF) [1]<br>
+&nbsp;&nbsp;&nbsp; bit 8 : start playing the tape immediately [0]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If this is 0 then the emulator should only load the info blocks<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and WAIT when it encounters first DATA block<br>
+&nbsp;&nbsp;&nbsp; bit 9 : auto type LOAD"" or press ENTER when in 128k mode [0]
+</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x02</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Screen refresh delay : 1 - 255 (interrupts between refreshes) [1]<br>(used when screen refresh mode is ON)
+</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x03</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>Interrupt Frequency  : 0 - 999 Hz</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x05</td>
+<td align="center">-</td>
+<td align="center">BYTE[3]</td>
+<td>Reserved for future expansion</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This is a special block that would normally be generated only by
+emulators. For now it contains info on everything I could find that
+other formats support. Please inform me of any additions/corrections
+since this is a very important part for emulators.<br>
+<br>
+Those bits that are not used by the emulator that stored the info, should be left at their DEFAULT values.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#DEPRECATED">Return to deprecated ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="CUSTINFODPR"></a>
+<br>
+Some of the most common uses of the Custom info block (ID 35) have become standardized in the past revisions, although now they are deprecated:<br>
+<br>
+
+<ul>
+<li><strong>POKEs block</strong>
+<br>
+<br><br>
+The purpose of this custom block is to hold any amount of different trainers for the game.
+<br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">CHAR[10]</td>
+<td>"POKEs" + 11 spaces (custom block ID)</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x10</td>
+<td align="center">-</td>
+<td align="center">DWORD</td>
+<td>Length of data that follow</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x14</td>
+<td align="center">L</td>
+<td align="center">BYTE</td>
+<td>General description endAddress</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15</td>
+<td align="center">-</td>
+<td align="center">CHAR[L]</td>
+<td>General description in ASCII format</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15+L</td>
+<td align="center">N</td>
+<td align="center">BYTE</td>
+<td>Number of trainers</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15+L+1</td>
+<td align="center">-</td>
+<td align="center">TRAINER[N]</td>
+<td>Trainer definitions</td>
+</tr>
+</tbody></table>
+
+<br><br>
+
+Each trainer can have its own description and any number of POKEs.<br>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4"><strong><font color="#ffffff" size="+2">TRAINER structure format</font></strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center" width="10%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#ffff90">
+<td align="center">0x00</td>
+<td align="center">L</td>
+<td align="center">BYTE</td>
+<td>Trainer description endAddress</td>
+</tr>
+<tr bgcolor="#ffff90">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">CHAR[L]</td>
+<td>Trainer description in ASCII format</td>
+</tr>
+<tr bgcolor="#ffff90">
+<td align="center">0x01+L</td>
+<td align="center">N</td>
+<td align="center">BYTE</td>
+<td>Number of pokes in this trainer</td>
+</tr>
+<tr bgcolor="#ffff90">
+<td align="center">0x01+L+1</td>
+<td align="center">-</td>
+<td align="center">POKE[N]</td>
+<td>POKEs definitions</td>
+</tr>
+</tbody></table>
+
+<br><br>
+For each POKE entry you can supply the memory page number and/or the
+original value of the address (if you want to restore it some way
+through the game). Normally you would enter these pokes with the help
+of some freezer-type tool like Multiface, but hopefully in the future
+the emulators will support this block directly, in which case you could
+use the 'User inserts the POKE value' feature. You can specify the
+point at which to insert the POKEs in the 'General description' field.<br>
+<br>
+NOTE: All ASCII Descriptions can use more than one line. Please use
+only up to 30 characters per line and separate the lines by one CR (13
+dec).
+<br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4"><strong><font color="#ffffff" size="+2">POKE structure format</font></strong></td>
+</tr>
+<tr bgcolor="#8080d0">
+<td align="center" width="8%"><font color="#ffffff"><strong>Offset</strong></font></td>
+<td align="center" width="8%"><font color="#ffffff"><strong>Value</strong></font></td>
+<td align="center" width="15%"><font color="#ffffff"><strong>Type</strong></font></td>
+<td align="center"><font color="#ffffff"><strong>Description</strong></font></td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>POKE type:<br>
+&nbsp;&nbsp;&nbsp; bit 0-2 : memory page number<br>
+&nbsp;&nbsp;&nbsp; bit 3 : ignore memory page number<br>
+&nbsp;&nbsp;&nbsp; bit 4 : user inserts the POKE value<br>
+&nbsp;&nbsp;&nbsp; bit 5 : unknown original value
+</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td align="center">0x01</td>
+<td align="center">-</td>
+<td align="center">WORD</td>
+<td>POKE address</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td align="center">0x03</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>POKE value (leave 0 if 'user inserts' bit set)</td>
+</tr>
+<tr bgcolor="#f7f7ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>POKE original value (leave 0 if 'unknown' bit set)</td>
+</tr>
+</tbody></table>
+<br><br>
+</li>
+
+<li><strong>Instructions block</strong>
+<br><br>This block can hold any general .TXT file, with the main
+purpose of storing the instructions to the program or game that is in
+the tape.<br>
+<br>
+To ensure consistency with all other ASCII texts in this format please
+use a single CR character (13 dec, 0D hex) to separate lines; also
+please use only up to 80 characters per line.
+<br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">CHAR[10]</td>
+<td>"Instructions" + 4 spaces (custom block ID)</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x10</td>
+<td align="center">L</td>
+<td align="center">DWORD</td>
+<td>Length of the following data</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x14</td>
+<td align="center">-</td>
+<td align="center">BYTE[L]</td>
+<td>Instructions text in ASCII format</td>
+</tr>
+</tbody></table>
+<br><br>
+</li>
+
+<li><strong>Spectrum screen block</strong>
+<br><br>If the game on the tape is not an original and lacks the
+original loading screen then you can supply it separately within this
+block. This is also very handy when you want the loading screen stored
+separately because the original is either encrypted (like with the
+'Speedlock' or 'Alkatraz' loaders) or it is corrupted by some on-screen
+info (like the 'Bleepload' loader). Of course not only loading screens
+can be stored here... you can use it to store maps or any other picture
+that is in Spectrum Video format (that's why the Description is there
+for), but because the Loading Screen will be the most common you can
+just set the description endAddress field to 0 when you use it for that.
+Also the border colour can be specified. <br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">CHAR[10]</td>
+<td>"Spectrum Screen" + 1 spaces (custom block ID)</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x10</td>
+<td align="center">-</td>
+<td align="center">DWORD</td>
+<td>Length of data that follow</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x14</td>
+<td align="center">L</td>
+<td align="center">BYTE</td>
+<td>Description endAddress (if this is 0 then handle it as 'Loading Screen')</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15</td>
+<td align="center">-</td>
+<td align="center">CHAR[L]</td>
+<td>Description of the picture in ASCII format</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15+L</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>BORDER Colour in Spectrum colour format (0=black, 1=blue, ...)</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15+L+1</td>
+<td align="center">-</td>
+<td align="center">BYTE[6912]</td>
+<td>Screen in standard Spectrum video format</td>
+</tr>
+</tbody></table>
+<br><br>
+</li>
+
+<li><strong>ZX-Edit document block</strong>
+<br><br>
+This block can hold files created with the new utility called
+ZX-Editor. This utility gives documents the look and feel of
+ZX-Spectrum and its documents can contain text, graphics (with Spectrum
+attributes), different type faces, colours, etc. Normally these files
+use extension .ZED. Also the description is added, in case you want to
+use it for something else than 'Instructions' - you can use it for
+MAPs, etc.<br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">CHAR[10]</td>
+<td>"ZX-Edit document" (custom block ID)</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x10</td>
+<td align="center">-</td>
+<td align="center">DWORD</td>
+<td>Length of data that follow</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x14</td>
+<td align="center">L</td>
+<td align="center">BYTE</td>
+<td>Description endAddress (if this is 0 then handle it as 'Instructions')</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15</td>
+<td align="center">-</td>
+<td align="center">CHAR[L]</td>
+<td>Description of the document in ASCII format</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15+L</td>
+<td align="center">-</td>
+<td align="center">BYTE[]</td>
+<td>The ZX-Editor document (.ZED file)</td>
+</tr>
+</tbody></table>
+<br><br>
+</li>
+
+<li><strong>Picture block</strong>
+<br><br>
+Finally you can include any picture (in supported formats) in the TZX
+file too. So cover pictures, maps, etc. can now be included in full
+colour (or whatever the formats supports). The best way for utilities
+to use this block is to spawn an external viewer, or the authors can
+write their own viewers (yeah, right ;) ). For inlay cards and other
+pictures that have zillions of colours use the JPEG format, for more
+simple pictures (drawing, maps, etc.) use the GIF format. <br><br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#ffc0c0">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">CHAR[10]</td>
+<td>"Picture" + 9 spaces (custom block ID)</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x10</td>
+<td align="center">-</td>
+<td align="center">DWORD</td>
+<td>Length of data that follow</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x14</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Picture format:<br>
+&nbsp;&nbsp;&nbsp; 00 - GIF<br>
+&nbsp;&nbsp;&nbsp; 01 - JPEG</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x15</td>
+<td align="center">L</td>
+<td align="center">BYTE</td>
+<td>Description endAddress (if this is 0 then handle it as 'Inlay Card')</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x16</td>
+<td align="center">-</td>
+<td align="center">CHAR[L]</td>
+<td>Description of the document in ASCII format</td>
+</tr>
+<tr bgcolor="#c0ffc0">
+<td align="center">0x16+L</td>
+<td align="center">-</td>
+<td align="center">BYTE[]</td>
+<td>The picture itself</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#DEPRECATED">Return to deprecated ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+<a name="SNAPSHOT"></a>
+<br>
+<table align="center" bgcolor="#000000" border="0" cellpadding="2" cellspacing="1" width="70%">
+<tbody><tr bgcolor="#80a0ff">
+<td colspan="4" align="center"><strong><font color="#ffffff" size="+2">ID 40 - Snapshot block</font></strong></td>
+</tr>
+<tr bgcolor="#fff000">
+<td colspan="4" align="center"><strong><font color="#606060" size="-2">endAddress: </font><font color="#ff6060" size="-2">[01,02,03]+04</font></strong></td>
+</tr>
+<tr bgcolor="#ffdf90">
+<td align="center" width="8%"><strong>Offset</strong></td>
+<td align="center" width="8%"><strong>Value</strong></td>
+<td align="center" width="15%"><strong>Type</strong></td>
+<td align="center"><strong>Description</strong></td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x00</td>
+<td align="center">-</td>
+<td align="center">BYTE</td>
+<td>Snapshot type:<br>
+&nbsp;&nbsp;&nbsp; 00: .Z80 format<br>
+&nbsp;&nbsp;&nbsp; 01: .SNA format<br>
+</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x01</td>
+<td align="center">L</td>
+<td align="center">BYTE[3]</td>
+<td>Snapshot endAddress</td>
+</tr>
+<tr bgcolor="#c0f0ff">
+<td align="center">0x04</td>
+<td align="center">-</td>
+<td align="center">BYTE[L]</td>
+<td>Snapshot itself</td>
+</tr>
+</tbody></table>
+
+<br><br>
+This would enable one to snapshot the game at the start and still have
+all the tape blocks (level data, etc.) in the same file. Only .Z80 and
+.SNA snapshots are supported for compatibility reasons!<br>
+The emulator should take care of that the snapshot is not taken while
+the actual Tape loading is taking place (which doesn't do much sense).
+And when an emulator encounters the snapshot block it should load it
+and then continue with the next block.<br>
+<br>
+<p align="right"><a href="http://www.worldofspectrum.org/TZXformat.html#DEPRECATED">Return to deprecated ID list</a> - <a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></p>
+<br><br>
+
+</td></tr>
+</tbody></table>
+<br></p><p align="right"><font size="+2"><a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></font></p>
+<br><br>
+
+<a name="HISTORY"></a>
+<br>
+<p><table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="12" width="100%"><tbody><tr>
+<td align="center" bgcolor="#ff7848" width="10%"><font color="white" size="+2"><b>
+7.
+</b></font></td><td><font size="+2">
+Revision history
+</font></td></tr></tbody></table>
+<br>
+<table border="0" width="100%"><tbody><tr><td width="10%"></td>
+<td>
+
+<strong>Revision 1.20</strong>
+<br>
+<ul>
+<li>The following blocks have been deprecated and should not appear in
+TZX files v1.20 and above: C64 blocks (ID 16 and ID 17), Emulation Info (ID 34), Snapshot
+block (ID 40). These block IDs are now reserved.
+All Custom info (ID 35) types standardized up to Revision 1.13 are now deprecated.</li>
+<li>The following new blocks have been introduced: ID 18, ID 19, ID 2B. Newly added blocks follow the general extension rule.</li>
+<li>Added new entries to the hardware ID list: 00/1E-2D, 01/12-17, 02/06-0A, 03/06-0C, 06/03, 0B/03, 10/00-03</li>
+</ul>
+<br>
+
+<strong>Revision 1.13</strong>
+<br>
+<ul>
+<li>The following new blocks have been introduced: ID 16, ID 17</li>
+<li>Added new entries to the hardware ID list: 00/1C,1D</li>
+</ul>
+<br>
+
+<strong>Revision 1.12</strong>
+<br>
+<ul>
+<li>Added the following fields to the 'Archive info' (ID 32) block:
+<ul>
+<li>05 - Game/Utility Type</li>
+<li>06 - Price</li>
+<li>07 - Protection Scheme / Loader</li>
+<li>08 - Origin</li>
+</ul></li>
+<li>Added two new types of 'Custom info' (ID 35) block:
+<ul>
+<li>'ZX-Edit document' - for .ZED files generated by the great ZX-Editor!</li>
+<li>'Picture ' - for .GIF and .JPEG (.JPG) pictures</li>
+</ul></li>
+<li>Added new entries to the hardware ID list: 00/1A,1B</li>
+</ul>
+<br>
+
+<strong>Revision 1.10</strong>
+<br>
+<ul>
+<li>The following new blocks have been introduced: ID 24, ID 25, ID 26, ID 27, ID 28, ID 40</li>
+<li>Allowed multiple lines in the 'Archive info' (ID 32) block.
+Also added the following field:
+<ul>
+<li>04 - Language</li>
+</ul></li>
+<li>First three types of 'Custom info' (ID 35) block standardized:
+<ul>
+<li>'POKEs'</li>
+<li>'Instructions'</li>
+<li>'Screen'</li>
+</ul></li>
+</ul>
+<br>
+
+<strong>Revision 1.02</strong>
+<br>
+<ul>
+<li>Added new entries to the hardware ID list: 00/15-19</li>
+</ul>
+<br>
+
+<strong>Revision 1.01</strong>
+<br>
+<ul>
+<li>The Length of ASCII ID in 'Custom Info' block (ID 35) should be 16 and not 15 bytes
+ - even Tomaz Kac doesn't remember if it concerns only  documentation or also the implementation;
+   to be sure consider the block ID 35 as newly added in revision 1.01
+</li>
+</ul>
+<br>
+
+</td></tr>
+</tbody></table>
+<br></p><p align="right"><font size="+2"><a href="http://www.worldofspectrum.org/TZXformat.html#INDEX">Return to index</a></font></p>
+<br><br>
+<hr>
+<p>
+<a href="http://validator.w3.org/check?uri=referer"><img src="./TZX technical specifications_files/valid-html40" border="0" alt="Valid HTML 4.0 Transitional" height="31" width="88"></a>
+This document has passed W3C HTML 4.0 Validation.
+</p>
+
+</body></html>

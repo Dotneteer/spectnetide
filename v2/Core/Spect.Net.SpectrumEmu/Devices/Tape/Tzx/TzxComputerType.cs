@@ -1,0 +1,55 @@
+﻿namespace Spect.Net.SpectrumEmu.Devices.Tape.Tzx
+{
+    /// <summary>
+    /// Identified computer types
+    /// </summary>
+    public enum TzxComputerType: byte
+    {
+        ZxSpectrum16 = 0x00,
+        ZxSpectrum48OrPlus = 0x01,
+        ZxSpectrum48Issue1 = 0x02,
+        ZxSpectrum128 = 0x03,
+        ZxSpectrum128P2 = 0x04,
+        ZxSpectrum128P2AOr3 = 0x05,
+        Tc2048 = 0x06,
+        Ts2068 = 0x07,
+        Pentagon128 = 0x08,
+        SamCoupe = 0x09,
+        DidaktikM = 0x0A,
+        DidaktikGama = 0x0B,
+        Zx80 = 0x0C,
+        Zx81 = 0x0D,
+        ZxSpectrum128Spanish = 0x0E,
+        ZxSpectrumArabic = 0x0F,
+        Tk90X = 0x10,
+        Tk95 = 0x11,
+        Byte = 0x12,
+        Elwro800D3 = 0x13,
+        ZsScorpion256 = 0x14,
+        AmstradCpc464 = 0x15,
+        AmstradCpc664 = 0x16,
+        AmstradCpc6128 = 0x17,
+        AmstradCpc464P = 0x18,
+        AmstradCpc6128P = 0x19,
+        JupiterAce = 0x1A,
+        Enterprise = 0x1B,
+        Commodore64 = 0x1C,
+        Commodore128 = 0x1D,
+        InvesSpectrumP = 0x1E,
+        Profi = 0x1F,
+        GrandRomMax = 0x20,
+        Kay1024 = 0x21,
+        IceFelixHc91 = 0x22,
+        IceFelixHc2000 = 0x23,
+        AmaterskeRadioMistrum = 0x24,
+        Quorum128 = 0x25,
+        MicroArtAtm = 0x26,
+        MicroArtAtmTurbo2 = 0x27,
+        Chrome = 0x28,
+        ZxBadaloc = 0x29,
+        Ts1500 = 0x2A,
+        Lambda = 0x2B,
+        Tk65 = 0x2C,
+        Zx97 = 0x2D
+    }
+}

@@ -1,0 +1,4 @@
+﻿; Tests no include file
+.org #8000
+nop
+nop

@@ -1,0 +1,7 @@
+﻿ld a,c
+ld a,d
+ld a,e
+ld a,h
+ld a,l
+nop
+.comparebin "./Memory.bin", 1
