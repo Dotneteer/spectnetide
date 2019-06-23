@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="Z80Asm"
+	DisplayName="Z80 Assembly File"
+	PageTemplate="tool"
+	Description="Z80 assembly code file"
+	xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" ItemType="Z80Asm" />
+    </Rule.DataSource>
+
+    <StringProperty Name="Identity" DisplayName="File Name" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="Intrinsic" ItemType="Z80Asm" PersistedName="Identity" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="FullPath" DisplayName="Full Path" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="Intrinsic" ItemType="Z80Asm" PersistedName="FullPath" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="Visible" Visible="False" />
+    <StringProperty Name="DependentUpon" Visible="false" />
+    <StringProperty Name="Link" Visible="false" />
+</Rule>

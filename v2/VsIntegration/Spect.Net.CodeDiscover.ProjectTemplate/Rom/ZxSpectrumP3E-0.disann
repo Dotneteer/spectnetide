@@ -1,0 +1,518 @@
+﻿{
+  "Labels": {
+    "0": "START",
+    "4": "START_DEL",
+    "40": "CALL_ROM3",
+    "174": "CALL_ROM3_2",
+    "56": "MASKABLE_INT",
+    "102": "NMI",
+    "112": "NMI_2",
+    "116": "DISK_MOT_TO",
+    "163": "DISK_MOT_TO_2",
+    "189": "SWAP_ORIG",
+    "205": "STOO_ORIG",
+    "222": "YOUNGER_ORIG",
+    "231": "REGNUOY_ORIG",
+    "247": "ONERR_ORIG",
+    "271": "INITIALIZE",
+    "273": "INIT_2",
+    "304": "INIT_3",
+    "310": "INIT_4",
+    "357": "INF_LOOP",
+    "359": "INIT_6",
+    "432": "NEW_CMD",
+    "952": "INIT_CHN_INFO"
+  },
+  "Comments": {
+    "0": "+3 Startup address  ",
+    "4": "Delay for approx 0.2s",
+    "9": "go to test memory",
+    "12": "\"ED\"",
+    "40": "save HL, get return address",
+    "41": "save AF",
+    "42": "A=low byte of address to call",
+    "44": "HL=address of instruction to return to",
+    "45": "save",
+    "50": "HL=address to call in ROM 3",
+    "51": "restore AF",
+    "52": "jump on",
+    "56": "save HL",
+    "69": "call MASK-INT and KEY-INT in ROM 3",
+    "72": "restore HL",
+    "73": "disable interrupts again",
+    "77": "re-enable interrupts",
+    "102": "save AF & HL",
+    "109": "skip if no routine (NMIADD=0)",
+    "111": "else execute",
+    "112": "restore registers",
+    "116": "save AF & BC",
+    "126": "get page 7 (+3DOS workspace)",
+    "128": "check motor off timeout",
+    "132": "move on if already off",
+    "139": "only decrement every other time",
+    "145": "decrement motor off timeout",
+    "148": "move on if still should be on",
+    "161": "turn motor off",
+    "169": "page previous memory back in",
+    "171": "restore registers",
+    "174": "save ROM 3 address in TARGET",
+    "180": "stack YOUNGER address beneath TOS",
+    "182": "get HL=target address in ROM 3",
+    "185": "restore HL & save target address on stack",
+    "186": "jump to SWAP - pages in ROM 3, returns to target routine which returns to YOUNGER where ROM 0 is paged back and jump made back to RETADDR",
+    "189": "save AF & BC",
+    "194": "get copy of last OUT to $7ffd",
+    "197": "change ROM 0<->1 or ROM 2<->3",
+    "199": "disable interrupts",
+    "203": "page new ROM",
+    "208": "get copy of last OUT to $1ffd",
+    "211": "change ROM 0<->2 or ROM 1<->3",
+    "216": "page new ROM",
+    "218": "re-enable interrupts",
+    "219": "restore registers",
+    "222": "swap ROM 0<->3 or ROM 1<->2",
+    "225": "save HL",
+    "226": "get return address from system vars",
+    "229": "restore return address & HL",
+    "231": "save HL",
+    "235": "place $5b34 as return address",
+    "236": "save AF & BC",
+    "238": "swap ROM 0<->2 or ROM 1<->3 and return here",
+    "241": "save HL",
+    "242": "get return address from system vars",
+    "245": "restore return address & HL",
+    "247": "disable interrupts",
+    "252": "ensure ROM 0 or 1 is paged",
+    "262": "ensure ROM 1 is paged",
+    "267": "enable interrupts",
+    "268": "jump to error handler in ROM 1",
+    "271": "8 pages to clear",
+    "279": "page next RAM page to $c000",
+    "292": "clear it",
+    "295": "back for more pages",
+    "298": "an address in top 16K of ROM",
+    "301": "memory paging address",
+    "304": "E=8 bits to test, D=bit 0",
+    "307": "get next page to segment 3",
+    "309": "save A'=page",
+    "310": "test to see if bit can be set",
+    "314": "jump if memory not re-read correctly",
+    "317": "test to see if bit can be reset",
+    "321": "jump if memory not re-read correctly",
+    "327": "loop back to test other bits",
+    "333": "loop back to test other pages",
+    "344": "select AY register 14 (RS232/AUX)",
+    "349": "set all RS232/AUX lines high",
+    "351": "move on, with page 7 at $c000",
+    "360": "A' clear to show reset, not NEW",
+    "361": "set stack within page 5    ",
+    "367": "select AY register $07",
+    "372": "initialise AY chip (?)",
+    "383": "copy paging subroutines to system vars",
+    "387": "place RST 8 instruction at RAMRST",
+    "393": "set P RAMT to 64K",
+    "396": "prepare to copy chars A-U from ROM 3",
+    "399": "to UDG area",
+    "404": "execute a LDDR from ROM 3 to copy them",
+    "408": "store address of first UDG",
+    "415": "set RASP and PIP",
+    "419": "set RAMTOP below UDGs",
+    "425": "reset bit 7 of FLAGS3 (??)",
+    "430": "set DUMPLF",
+    "435": "set CHARS",
+    "438": "set interrupt mode 1",
+    "440": "IY points to ERR_NR",
+    "444": "set \"+3 BASIC mode\"",
+    "451": "set \"print to Centronics\"",
+    "453": "set \"print expanded tokens\"",
+    "458": "set BAUD",
+    "462": "clear SERFL",
+    "465": "clear COL",
+    "468": "clear TVPARS",
+    "474": "???",
+    "479": "set WIDTH",
+    "485": "set RCSTART",
+    "488": "set RCSTEP",
+    "493": "set LODDRV to \"T\"",
+    "496": "set SAVDRV to \"T\"",
+    "502": "set CHANS immediately after system vars",
+    "512": "copy initial channel information",
+    "956": "\"K\": keyboard/lower screen channel",
+    "961": "\"S\": main screen channel",
+    "966": "\"X\": workspace channel",
+    "971": "\"P\": printer channel",
+    "972": "end of channel information",
+    "944": "$13&$0&\"19\"&$13&$1&\"87\"",
+    "516": "set DATADD after CHANS",
+    "520": "set PROG after DATADD",
+    "523": "set VARS",
+    "526": "store end of variables marker",
+    "529": "set E_LINE after VARS",
+    "532": "store end of line marker",
+    "535": "store end of E_LINE marker",
+    "538": "set WORKSP after ELINE",
+    "541": "set STKBOT",
+    "544": "set STKEND",
+    "549": "set ATTR_P",
+    "552": "set ATTR_T",
+    "555": "set BORDCR",
+    "559": "set editor's P_FLAG",
+    "564": "white border",
+    "569": "set REPDEL and REPPER",
+    "572": "set two bytes of KSTATE to $ff",
+    "587": "copy initial stream addresses to STRMS"
+  },
+  "PrefixComments": {
+    "12": "Editor ROM ID",
+    "16": "RST 10: call the RST 10 routine in ROM 3 to print a character",
+    "24": "RST 18: call the RST 18 routine in ROM 3 to collect a character",
+    "32": "RST 20: call the RST 20 routine in ROM 3 to collect next character",
+    "40": "RST 28 : Call a routine in ROM 3, then return to ROM 0. The address following the RST 28 instruction is called, then control is returned to the instruction following the address",
+    "56": "The maskable interrupt routine, called every 50ms while in IM1",
+    "102": "NMI routine",
+    "116": "Disk motor timeout subroutine: Called by maskable interrupt to turn off disk motor when timeout occurs",
+    "174": "Continuation of RST 28: call a routine in ROM 3",
+    "189": "Here follows the five paging subroutines which are copied into the system variables on startup. Enter at SWAP to change ROM 0<->3 or ROM 1<->2",
+    "205": "Enter at STOO with interrupts disabled and AF/BC stacked to change ROM 0<->2 or ROM 1<->3",
+    "222": "Enter at YOUNGER with return address in RETADDR to swap ROM 0<->3 or ROM 1<->2 and return there",
+    "231": "Enter at REGNUOY with return address in RETADDR to swap ROM 0<->2 or ROM 1<->3 and return there",
+    "247": "Enter at ONERR to page in Syntax ROM (ROM 1) and jump to error handler",
+    "271": "Test memory at startup & initialise",
+    "353": "Apparently unused section, possibly originally intended to flag a memory error",
+    "359": "More initialisation (with page 7 at $c000)",
+    "432": "The NEW command enters here",
+    "944": "Text used for the test display",
+    "952": "Here is the initial channel information, copied to CHANS"
+  },
+  "Literals": {
+    "23386": [
+      "RETADDR"
+    ],
+    "23728": [
+      "NMIADD"
+    ],
+    "23388": [
+      "BANKM"
+    ],
+    "23399": [
+      "BANK678"
+    ],
+    "23384": [
+      "TARGET"
+    ],
+    "23329": [
+      "YOUNGER"
+    ],
+    "23389": [
+      "RAMRST"
+    ],
+    "23732": [
+      "P_RAMT"
+    ],
+    "23675": [
+      "UDG"
+    ],
+    "23608": [
+      "RAPS"
+    ],
+    "23730": [
+      "RAMTOP"
+    ],
+    "23398": [
+      "FLAGS3"
+    ],
+    "23419": [
+      "DUMPLF"
+    ],
+    "23606": [
+      "CHARS"
+    ],
+    "23610": [
+      "ERR_NR"
+    ],
+    "23391": [
+      "BAUD"
+    ],
+    "23393": [
+      "SERFL"
+    ],
+    "23395": [
+      "COL"
+    ],
+    "23397": [
+      "TVPARS"
+    ],
+    "23396": [
+      "WIDTH"
+    ],
+    "23413": [
+      "RCSTART"
+    ],
+    "23415": [
+      "RCSTEP"
+    ],
+    "23417": [
+      "LODDRV"
+    ],
+    "23418": [
+      "SAVDRV"
+    ],
+    "23631": [
+      "CHANS"
+    ],
+    "23639": [
+      "DATADD"
+    ],
+    "23635": [
+      "PROGS"
+    ],
+    "23627": [
+      "VARS"
+    ],
+    "23641": [
+      "E_LINE"
+    ],
+    "23649": [
+      "WORKSP"
+    ],
+    "23651": [
+      "STKBOT"
+    ],
+    "23653": [
+      "STKEND"
+    ],
+    "23693": [
+      "ATTR_P"
+    ],
+    "23695": [
+      "ATTR_T"
+    ],
+    "23624": [
+      "BORD_CR"
+    ],
+    "60435": [
+      "ed_P_FLAG"
+    ],
+    "23561": [
+      "REPDEL"
+    ]
+  },
+  "LiteralReplacements": {
+    "45": "RETADDR",
+    "104": "NMIADD",
+    "121": "BANKM",
+    "153": "BANK678",
+    "158": "BANK678",
+    "166": "BANKM",
+    "174": "TARGET",
+    "177": "YOUNGER",
+    "182": "TARGET",
+    "194": "BANKM",
+    "200": "BANKM",
+    "208": "BANK678",
+    "213": "BANK678",
+    "226": "RETADDR",
+    "242": "RETADDR",
+    "254": "BANK678",
+    "264": "BANKM",
+    "377": "SWAP_ORIG",
+    "387": "RAMRST",
+    "393": "P_RAMT",
+    "408": "UDG",
+    "415": "RAPS",
+    "419": "RAMTOP",
+    "422": "FLAGS3",
+    "427": "DUMPLF",
+    "435": "CHARS",
+    "440": "ERR_NR",
+    "448": "FLAGS3",
+    "458": "BAUD",
+    "462": "SERFL",
+    "465": "COL",
+    "468": "TVPARS",
+    "479": "WIDTH",
+    "485": "RCSTART",
+    "488": "RCSTEP",
+    "493": "LODDRV",
+    "496": "SAVDRV",
+    "502": "CHANS",
+    "505": "INIT_CHN_INFO",
+    "516": "DATADD",
+    "520": "PROGS",
+    "523": "VARS",
+    "529": "E_LINE",
+    "538": "WORKSP",
+    "541": "STKBOT",
+    "544": "STKEND",
+    "549": "ATTR_P",
+    "552": "ATTR_T",
+    "555": "BORD_CR",
+    "559": "ed_P_FLAG",
+    "569": "REPDEL"
+  },
+  "MemorySections": [
+    {
+      "StartAddress": 0,
+      "EndAddress": 11,
+      "SectionType": 1,
+      "Lenght": 12
+    },
+    {
+      "StartAddress": 12,
+      "EndAddress": 13,
+      "SectionType": 2,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 14,
+      "EndAddress": 15,
+      "SectionType": 0,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 16,
+      "EndAddress": 19,
+      "SectionType": 1,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 20,
+      "EndAddress": 23,
+      "SectionType": 0,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 24,
+      "EndAddress": 27,
+      "SectionType": 1,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 28,
+      "EndAddress": 31,
+      "SectionType": 0,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 32,
+      "EndAddress": 35,
+      "SectionType": 1,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 36,
+      "EndAddress": 39,
+      "SectionType": 0,
+      "Lenght": 4
+    },
+    {
+      "StartAddress": 40,
+      "EndAddress": 78,
+      "SectionType": 1,
+      "Lenght": 39
+    },
+    {
+      "StartAddress": 79,
+      "EndAddress": 101,
+      "SectionType": 0,
+      "Lenght": 23
+    },
+    {
+      "StartAddress": 102,
+      "EndAddress": 943,
+      "SectionType": 1,
+      "Lenght": 842
+    },
+    {
+      "StartAddress": 944,
+      "EndAddress": 951,
+      "SectionType": 2,
+      "Lenght": 8
+    },
+    {
+      "StartAddress": 952,
+      "EndAddress": 953,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 954,
+      "EndAddress": 955,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 956,
+      "EndAddress": 956,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 957,
+      "EndAddress": 958,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 959,
+      "EndAddress": 960,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 961,
+      "EndAddress": 961,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 962,
+      "EndAddress": 963,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 964,
+      "EndAddress": 965,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 966,
+      "EndAddress": 966,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 967,
+      "EndAddress": 968,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 969,
+      "EndAddress": 970,
+      "SectionType": 3,
+      "Lenght": 2
+    },
+    {
+      "StartAddress": 971,
+      "EndAddress": 971,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 972,
+      "EndAddress": 972,
+      "SectionType": 2,
+      "Lenght": 1
+    },
+    {
+      "StartAddress": 973,
+      "EndAddress": 16383,
+      "SectionType": 1,
+      "Lenght": 15411
+    }
+  ],
+  "DisassemblyFlags": 4
+}

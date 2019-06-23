@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImageManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                           xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
+  <Symbols>
+    <String Name="Resources" Value="/ZXSpectrumCodeDiscover;Component/" />
+    <Guid Name="ImagesGuid" Value="a9d5b7d1-2f7d-45c2-b8cf-9205db07de5b" />
+    <ID Name="ProjectIcon" Value="0" />
+    <ID Name="DisassAnnIcon" Value="1" />
+    <ID Name="RomIcon" Value="2" />
+    <ID Name="TzxIcon" Value="3" />
+    <ID Name="VmStateIcon" Value="4" />
+    <ID Name="Z80AsmIcon" Value="5" />
+    <ID Name="TapIcon" Value="6" />
+    <ID Name="TapeFolder" Value="7" />
+    <ID Name="Z80CodeFolder" Value="8" />
+    <ID Name="SpConfIcon" Value="9" />
+    <ID Name="Z80TestIcon" Value="10" />
+    <ID Name="FloppyIcon" Value="11" />
+  </Symbols>
+  <Images>
+    <Image Guid="$(ImagesGuid)" ID="$(ProjectIcon)">
+      <Source Uri="$(Resources)/Images/CodeDiscoveryProjectIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(DisassAnnIcon)">
+      <Source Uri="$(Resources)/Images/DisassAnnIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(RomIcon)">
+      <Source Uri="$(Resources)/Images/RomIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(TzxIcon)">
+      <Source Uri="$(Resources)/Images/TzxIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(VmStateIcon)">
+      <Source Uri="$(Resources)/Images/VmStateIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(Z80AsmIcon)">
+      <Source Uri="$(Resources)/Images/Z80AsmIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(TapIcon)">
+      <Source Uri="$(Resources)/Images/TapIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(TapeFolder)">
+      <Source Uri="$(Resources)/Images/TapeFolderIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(Z80CodeFolder)">
+      <Source Uri="$(Resources)/Images/Z80FolderIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(SpConfIcon)">
+      <Source Uri="$(Resources)/Images/SpConfIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(Z80TestIcon)">
+      <Source Uri="$(Resources)/Images/Z80TestIcon.xaml" />
+    </Image>
+    <Image Guid="$(ImagesGuid)" ID="$(FloppyIcon)">
+        <Source Uri="$(Resources)/Images/FloppyIcon.xaml" />
+    </Image>
+  </Images>
+  <ImageLists />
+</ImageManifest>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="Vfdd"
+	DisplayName="Vfdd"
+	PageTemplate="tool"
+	Description="Virtual floppy disk drive"
+	xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" ItemType="Vfdd" />
+    </Rule.DataSource>
+
+    <StringProperty Name="Identity" DisplayName="File Name" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="Intrinsic" ItemType="Vfdd" PersistedName="Identity" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="FullPath" DisplayName="Full Path" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="Intrinsic" ItemType="Vfdd" PersistedName="FullPath" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="Visible" Visible="False" />
+    <StringProperty Name="DependentUpon" Visible="false" />
+    <StringProperty Name="Link" Visible="false" />
+</Rule>

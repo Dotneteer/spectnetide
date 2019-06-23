@@ -46,6 +46,13 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string PACKAGE_GUID_STRING = "3690768a-3808-4afd-b5ff-db8b521e61f8";
 
+        /// <summary>
+        /// The GUID for this project type.  It is unique with the project file extension and
+        /// appears under the VS registry hive's Projects key.
+        /// </summary>
+        public const string SPECTRUM_PROJECT_TYPE_GUID = "f16d4249-6279-474e-8826-742e7ff7445c";
+
+
         public static Z80AsmLanguageService Z80AsmLanguage { get; private set; }
 
         /// <summary>

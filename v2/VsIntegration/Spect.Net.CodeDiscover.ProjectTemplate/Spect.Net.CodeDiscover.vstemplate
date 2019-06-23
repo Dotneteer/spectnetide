@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>ZX Spectrum Code Discovery Project</Name>
+    <Description>A template for creating a ZX Spectrum Code Discovery project.</Description>
+    <Icon>Spect.Net.CodeDiscover.ico</Icon>
+    <ProjectType>ZX Spectrum</ProjectType>
+    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <SortOrder>1</SortOrder>
+    <TemplateID>{4c594af1-d995-471b-a476-7ba0ed962d9b}</TemplateID>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>SpectrumCodeDiscovery</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <CreateInPlace>true</CreateInPlace>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="Spect.Net.CodeDiscover.z80cdproj" ReplaceParameters="true">
+      <!-- 
+      These are the items which will show up when a new project is created using the custom project system.
+      Items referenced in here must also be referenced in the project file.
+      -->
+      <ProjectItem OpenInEditor="false">Annotations.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">.z80settings</ProjectItem>
+      <ProjectItem OpenInEditor="false" ReplaceParameters="true">Rom\ZxSpectrum.spconf</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-0.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-1.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-0.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-1.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-2.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-3.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-0.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-1.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-2.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-3.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-4.rom</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum48.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-0.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrum128-1.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-0.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-1.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-2.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumP3E-3.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-0.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-1.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-2.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-3.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Rom\ZxSpectrumNext-4.disann</ProjectItem>
+      <ProjectItem OpenInEditor="false">Z80CodeFiles\Code.z80asm</ProjectItem>
+      <ProjectItem OpenInEditor="false">Z80UnitTests\UnitTest.z80test</ProjectItem>
+      <ProjectItem OpenInEditor="false">TapeFiles\Welcome.tzx</ProjectItem>
+    </Project>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>Spect.Net.ProjectWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
+    <FullClassName>Spect.Net.ProjectWizard.SpectrumProjectWizard</FullClassName>
+  </WizardExtension>
+</VSTemplate>

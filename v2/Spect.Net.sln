@@ -50,6 +50,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.ProjectWizard", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.Wpf", "Core\Spect.Net.Wpf\Spect.Net.Wpf.csproj", "{A288CE42-5FBE-46C9-81F5-C85221A68DF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CodeDiscover.ProjectTemplate", "VsIntegration\Spect.Net.CodeDiscover.ProjectTemplate\Spect.Net.CodeDiscover.ProjectTemplate.csproj", "{E33BCC87-665D-4A13-986C-98C1ABDB7FDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.CodeDiscover.ProjectType", "VsIntegration\Spect.Net.CodeDiscover.ProjectType\Spect.Net.CodeDiscover.ProjectType.csproj", "{1DDEE870-3E1E-4833-9576-C29D6CEAEE1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +128,14 @@ Global
 		{A288CE42-5FBE-46C9-81F5-C85221A68DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A288CE42-5FBE-46C9-81F5-C85221A68DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A288CE42-5FBE-46C9-81F5-C85221A68DF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E33BCC87-665D-4A13-986C-98C1ABDB7FDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E33BCC87-665D-4A13-986C-98C1ABDB7FDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E33BCC87-665D-4A13-986C-98C1ABDB7FDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E33BCC87-665D-4A13-986C-98C1ABDB7FDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DDEE870-3E1E-4833-9576-C29D6CEAEE1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DDEE870-3E1E-4833-9576-C29D6CEAEE1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DDEE870-3E1E-4833-9576-C29D6CEAEE1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DDEE870-3E1E-4833-9576-C29D6CEAEE1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,6 +158,8 @@ Global
 		{2314354B-C31C-4BF7-B2F6-10DF76A10967} = {D18D297C-1469-4ABB-A658-20369A0EC476}
 		{7F2DC1EA-D3D4-43A9-8F69-95E90014A828} = {D18D297C-1469-4ABB-A658-20369A0EC476}
 		{A288CE42-5FBE-46C9-81F5-C85221A68DF4} = {7F8FB20F-F9E6-4BB0-B67F-223C0EBBFCD2}
+		{E33BCC87-665D-4A13-986C-98C1ABDB7FDE} = {D18D297C-1469-4ABB-A658-20369A0EC476}
+		{1DDEE870-3E1E-4833-9576-C29D6CEAEE1E} = {D18D297C-1469-4ABB-A658-20369A0EC476}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C179A551-7272-4A51-A0F2-3E1E8A7E405B}

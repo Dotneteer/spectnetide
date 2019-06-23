@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+    <ContentType
+        Name="DisassAnn" 
+        DisplayName="Disassembly Annotation file" 
+        ItemType="DisassAnn">
+    </ContentType>
+
+    <ContentType
+        Name="Z80Asm" 
+        DisplayName="Z80 Assembly code file" 
+        ItemType="Z80Asm">
+    </ContentType>
+
+    <ContentType
+        Name="Z80Test" 
+        DisplayName="Z80 Test Language code file" 
+        ItemType="Z80Test">
+    </ContentType>
+
+    <ContentType
+        Name="Rom" 
+        DisplayName="ZX Spectrum ROM file" 
+        ItemType="Rom">
+    </ContentType>
+
+    <ContentType
+        Name="Tzx" 
+        DisplayName="ZX Spectrum TZX tape file" 
+        ItemType="Tzx">
+    </ContentType>
+
+    <ContentType
+        Name="Tap" 
+        DisplayName="ZX Spectrum TAP tape file" 
+        ItemType="Tap">
+    </ContentType>
+
+    <ContentType
+        Name="Vfdd" 
+        DisplayName="ZX Spectrum Virtual FDD file" 
+        ItemType="Vfdd">
+    </ContentType>
+
+    <ContentType
+        Name="SpConf" 
+        DisplayName="ZX Spectrum configuration file" 
+        ItemType="SpConf">
+    </ContentType>
+
+    <ContentType
+        Name="VmState" 
+        DisplayName="ZX Spectrum virtual machine state file" 
+        ItemType="VmState">
+    </ContentType>
+
+    <ContentType
+        Name="Text"
+        DisplayName="Text file"
+        ItemType="None">
+    </ContentType>
+
+    <ItemType Name="None" DisplayName="Does not participate in build"/>
+    <ItemType Name="DisassAnn" DisplayName="Disassembly Annotation file"/>
+    <ItemType Name="Z80Asm" DisplayName="Z80 Assembly code file"/>
+    <ItemType Name="Z80Test" DisplayName="Z80 Test Language code file"/>
+    <ItemType Name="Rom" DisplayName="ZX Spectrum ROM file"/>
+    <ItemType Name="Tzx" DisplayName="ZX Spectrum TZX tape file"/>
+    <ItemType Name="Tap" DisplayName="ZX Spectrum TAP tape file"/>
+    <ItemType Name="Vfdd" DisplayName="ZX Spectrum Virtual FDD file"/>
+    <ItemType Name="SpConf" DisplayName="ZX Spectrum configuration file"/>
+    <ItemType Name="VmState" DisplayName="ZX Spectrum virtual machine state file"/>
+
+    <FileExtension Name=".txt" ContentType="Text"/>
+    <FileExtension Name=".disann" ContentType="DisassAnn" />
+    <FileExtension Name=".z80asm" ContentType="Z80Asm"/>
+    <FileExtension Name=".z80test" ContentType="Z80Test"/>
+    <FileExtension Name=".rom" ContentType="Rom" />
+    <FileExtension Name=".tzx" ContentType="Tzx" />
+    <FileExtension Name=".tap" ContentType="Tap" />
+    <FileExtension Name=".vfdd" ContentType="vfdd" />
+    <FileExtension Name=".spconf" ContentType="SpConf" />
+    <FileExtension Name=".vmstate" ContentType="VmState" />
+
+</ProjectSchemaDefinitions>

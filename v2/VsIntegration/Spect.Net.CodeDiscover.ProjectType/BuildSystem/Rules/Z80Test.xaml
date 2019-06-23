@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="Z80Test"
+	DisplayName="Z80 Test Language File"
+	PageTemplate="tool"
+	Description="Z80 Test Language code file"
+	xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" ItemType="Z80Test" />
+    </Rule.DataSource>
+
+    <StringProperty Name="Identity" DisplayName="File Name" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="Intrinsic" ItemType="Z80Test" PersistedName="Identity" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="FullPath" DisplayName="Full Path" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="Intrinsic" ItemType="Z80Test" PersistedName="FullPath" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="Visible" Visible="False" />
+    <StringProperty Name="DependentUpon" Visible="false" />
+    <StringProperty Name="Link" Visible="false" />
+</Rule>
