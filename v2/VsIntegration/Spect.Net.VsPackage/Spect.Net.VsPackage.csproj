@@ -59,7 +59,7 @@
     <Compile Include="LanguageServices\Z80Asm\Z80AsmClassifierProvider.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmLanguageService.cs" />
-    <Compile Include="LanguageServices\Z80Asm\Z80AssemblyAuthoringScope.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
     <Compile Include="MyConfiguredProject.cs" />
     <Compile Include="MyUnconfiguredProject.cs" />
     <Compile Include="ProjectProperties.cs" />
@@ -72,6 +72,13 @@
     <Compile Include="SpectNetPackage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\Z80AsmIcon.png" />
+    <Resource Include="Images\Z80TestIcon.png" />
+    <Resource Include="Images\DisassAnnIcon.png" />
+    <Resource Include="Images\SpConfIcon.png" />
+    <Resource Include="Images\RomIcon.png" />
+    <Resource Include="Images\TzxIcon.png" />
+    <Resource Include="Images\TapIcon.png" />
     <Content Include="ProjectIcons.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -299,25 +306,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\DisassAnnIcon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\FloppyIcon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\RomIcon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\SpConfIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -329,25 +318,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\TapIcon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\TzxIcon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\VmStateIcon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Z80AsmIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
@@ -358,12 +329,7 @@
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Z80TestIcon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="AfterBuild">

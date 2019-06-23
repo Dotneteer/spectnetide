@@ -4,6 +4,7 @@ using System.Threading;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.LanguageServices.Z80Asm;
+using Spect.Net.VsPackage.LanguageServices.Z80Test;
 using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage
@@ -37,8 +38,22 @@ namespace Spect.Net.VsPackage
         ShowMatchingBrace = true, 
         ShowSmartIndent = true)]
     [ProvideLanguageExtension(typeof(Z80AsmLanguageService), ".z80asm")]
-    [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
 
+    [ProvideLanguageService(
+        typeof(Z80TestLanguageService),
+        Z80TestLanguageService.LANGUAGE_NAME,
+        101,
+        ShowDropDownOptions = true,
+        DefaultToInsertSpaces = true,
+        EnableCommenting = true,
+        AutoOutlining = true,
+        MatchBraces = true,
+        MatchBracesAtCaret = true,
+        ShowMatchingBrace = true,
+        ShowSmartIndent = true)]
+    [ProvideLanguageExtension(typeof(Z80TestLanguageService), ".z80test")]
+
+    [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     public sealed class SpectNetPackage : AsyncPackage
     {
         /// <summary>

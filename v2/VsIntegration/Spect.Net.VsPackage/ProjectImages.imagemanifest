@@ -23,22 +23,32 @@
       <Source Uri="$(Resources)/Images/CodeDiscoveryProjectIcon.xaml" />
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(DisassAnnIcon)">
-      <Source Uri="$(Resources)/Images/DisassAnnIcon.xaml" />
+      <Source Uri="$(Resources)/Images/DisassAnnIcon.png" >
+        <Size Value="32"/>
+      </Source>
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(RomIcon)">
-      <Source Uri="$(Resources)/Images/RomIcon.xaml" />
+      <Source Uri="$(Resources)/Images/RomIcon.png" >
+        <Size Value="32"/>
+      </Source>
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(TzxIcon)">
-      <Source Uri="$(Resources)/Images/TzxIcon.xaml" />
+      <Source Uri="$(Resources)/Images/TapIcon.png" >
+        <Size Value="32"/>
+      </Source>
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(VmStateIcon)">
       <Source Uri="$(Resources)/Images/VmStateIcon.xaml" />
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(Z80AsmIcon)">
-      <Source Uri="$(Resources)/Images/Z80AsmIcon.xaml" />
+      <Source Uri="$(Resources)/Images/Z80AsmIcon.png">
+        <Size Value="32"/>
+      </Source>
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(TapIcon)">
-      <Source Uri="$(Resources)/Images/TapIcon.xaml" />
+      <Source Uri="$(Resources)/Images/TapIcon.png">
+        <Size Value="32"/>
+      </Source>
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(TapeFolder)">
       <Source Uri="$(Resources)/Images/TapeFolderIcon.xaml" />
@@ -47,10 +57,14 @@
       <Source Uri="$(Resources)/Images/Z80FolderIcon.xaml" />
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(SpConfIcon)">
-      <Source Uri="$(Resources)/Images/SpConfIcon.xaml" />
+      <Source Uri="$(Resources)/Images/SpConfIcon.png" >
+        <Size Value="32"/>
+      </Source>
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(Z80TestIcon)">
-      <Source Uri="$(Resources)/Images/Z80TestIcon.xaml" />
+      <Source Uri="$(Resources)/Images/Z80TestIcon.png" >
+        <Size Value="32"/>
+      </Source>
     </Image>
     <Image Guid="$(ImagesGuid)" ID="$(FloppyIcon)">
         <Source Uri="$(Resources)/Images/FloppyIcon.xaml" />

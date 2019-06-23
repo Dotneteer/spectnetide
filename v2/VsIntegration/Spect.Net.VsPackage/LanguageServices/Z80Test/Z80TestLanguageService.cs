@@ -2,23 +2,23 @@
 using Microsoft.VisualStudio.Package;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
+namespace Spect.Net.VsPackage.LanguageServices.Z80Test
 {
     /// <summary>
-    /// This class implements the language service that can handle the Z80 Assembly
+    /// This class implements the language service that can handle the Z80 Unit Test
     /// language.
     /// </summary>
-    [Guid("DDE2DE44-3565-4DF0-A28F-3315A841191C")]
-    public class Z80AsmLanguageService: LanguageService
+    [Guid("0B174026-E645-423A-8B07-74C10233E8DE")]
+    public class Z80TestLanguageService: LanguageService
     {
-        public const string LANGUAGE_NAME = "Z80Assembler";
+        public const string LANGUAGE_NAME = "Z80UnitTest";
 
         /// <summary>
         /// Cache language preferences here
         /// </summary>
         private LanguagePreferences _preferences;
 
-        public Z80AsmLanguageService(object site)
+        public Z80TestLanguageService(object site)
         {
             SetSite(site);
         }
@@ -27,7 +27,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         {
             if (_preferences == null)
             {
-                _preferences = new LanguagePreferences(Site, typeof(Z80AsmLanguageService).GUID, Name);
+                _preferences = new LanguagePreferences(Site, typeof(Z80TestLanguageService).GUID, Name);
                 if (_preferences != null)
                 {
                     _preferences.Init();
@@ -59,7 +59,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         }
 
         /// <summary>
-        /// Signs that Z80Assembler does not use a scanner
+        /// Signs that Z80UnitTest does not use a scanner
         /// </summary>
         /// <param name="buffer">Text lines in the buffer</param>
         public override IScanner GetScanner(IVsTextLines buffer)
@@ -80,7 +80,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         /// </summary>
         public override string GetFormatFilterList()
         {
-            return "Z80 Assembly File (*.z80asm)|*.z80asm";
+            return "Z80 Test File (*.z80test)|*.z80test";
         }
 
         /// <summary>

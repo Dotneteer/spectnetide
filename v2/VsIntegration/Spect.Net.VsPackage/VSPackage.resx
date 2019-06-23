@@ -120,6 +120,9 @@
   <data name="100" xml:space="preserve">
     <value>Z80 Assembler Language</value>
   </data>
+  <data name="101" xml:space="preserve">
+    <value>Z80 Unit Test Language</value>
+  </data>
   <data name="110" xml:space="preserve">
     <value>Spect.NET IDE for ZX Spectrum</value>
   </data>
