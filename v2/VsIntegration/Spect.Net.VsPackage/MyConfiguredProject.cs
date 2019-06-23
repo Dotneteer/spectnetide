@@ -16,7 +16,7 @@ namespace ZXSpectrumCodeDiscover
     using Microsoft.VisualStudio.ProjectSystem;
 
     [Export]
-    [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
+    [AppliesTo(MyUnconfiguredProject.UNIQUE_CAPABILITY)]
     internal class MyConfiguredProject
     {
         [Import, SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "MEF")]

@@ -3,7 +3,7 @@
                            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                            xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
   <Symbols>
-    <String Name="Resources" Value="/ZXSpectrumCodeDiscover;Component/" />
+    <String Name="Resources" Value="/Spect.Net.VsPackage;Component/" />
     <Guid Name="ImagesGuid" Value="a9d5b7d1-2f7d-45c2-b8cf-9205db07de5b" />
     <ID Name="ProjectIcon" Value="0" />
     <ID Name="DisassAnnIcon" Value="1" />

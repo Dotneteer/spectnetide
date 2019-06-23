@@ -12,7 +12,6 @@
         <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[15.0, 17.0)" />
     </Installation>
     <Dependencies>
-        <Dependency d:Source="Project" d:ProjectName="Spect.Net.CodeDiscover.ProjectType" Version="[2.0.0,3.0)" DisplayName="|Spect.Net.CodeDiscover.ProjectType;VSIXNameProjectOutputGroup|" Id="|Spect.Net.CodeDiscover.ProjectType;VSIXIdentifierProjectOutputGroup|" />
     </Dependencies>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,17.0)" DisplayName="Visual Studio core editor" />
@@ -22,5 +21,9 @@
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Spect.Net.ProjectWizard" Path="|Spect.Net.ProjectWizard|" AssemblyName="|Spect.Net.ProjectWizard;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="_VsixDependencies\Newtonsoft.Json.dll" AssemblyName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" />
+        <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="Spect.Net.CodeDiscover.ProjectTemplate" d:TargetPath="|Spect.Net.CodeDiscover.ProjectTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+        <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Spect.Net.DisassAnnTemplate" d:TargetPath="|Spect.Net.DisassAnnTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+        <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Spect.Net.Z80AsmTemplate" d:TargetPath="|Spect.Net.Z80AsmTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+        <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Spect.Net.Z80TestTemplate" d:TargetPath="|Spect.Net.Z80TestTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     </Assets>
 </PackageManifest>

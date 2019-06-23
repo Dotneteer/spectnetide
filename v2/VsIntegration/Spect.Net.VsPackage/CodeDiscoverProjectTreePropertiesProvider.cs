@@ -7,7 +7,7 @@ namespace ZXSpectrumCodeDiscover
     /// Updates nodes in the project tree by overriding property values calculated so far by lower priority providers.
     /// </summary>
     [Export(typeof(IProjectTreePropertiesProvider))]
-    [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
+    [AppliesTo(MyUnconfiguredProject.UNIQUE_CAPABILITY)]
     public class CodeDiscoverProjectTreePropertiesProvider : IProjectTreePropertiesProvider
     {
         /// <summary>

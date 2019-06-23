@@ -9,6 +9,8 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 ***************************************************************************/
 
+using Spect.Net.VsPackage;
+
 namespace ZXSpectrumCodeDiscover
 {
     using System.ComponentModel.Composition;
@@ -18,16 +20,26 @@ namespace ZXSpectrumCodeDiscover
     using Microsoft.VisualStudio.Shell.Interop;
 
     [Export]
-    [AppliesTo(UniqueCapability)]
-    [ProjectTypeRegistration(VsPackage.ProjectTypeGuid, "ZX Spectrum Code Discovery", "#2", ProjectExtension, Language, VsPackage.PackageGuid, PossibleProjectExtensions = ProjectExtension, ProjectTemplatesDir = @"..\..\Templates\Projects\MyCustomProject")]
-    [ProvideProjectItem(VsPackage.ProjectTypeGuid, "My Items", @"..\..\Templates\ProjectItems\MyCustomProject", 500)]
+    [AppliesTo(UNIQUE_CAPABILITY)]
+    [ProjectTypeRegistration(
+        SpectNetPackage.SPECTRUM_PROJECT_TYPE_GUID, 
+        "ZX Spectrum Code Discovery", "#2", 
+        PROJECT_EXTENSION, 
+        LANGUAGE,
+        SpectNetPackage.SPECTRUM_PROJECT_TYPE_GUID, 
+        PossibleProjectExtensions = PROJECT_EXTENSION, 
+        ProjectTemplatesDir = @"..\..\Templates\Projects\MyCustomProject")]
+    [ProvideProjectItem(
+        SpectNetPackage.SPECTRUM_PROJECT_TYPE_GUID, 
+        "My Items", @"..\..\Templates\ProjectItems\MyCustomProject", 
+        500)]
     internal class MyUnconfiguredProject
     {
         /// <summary>
         /// The file extension used by your project type.
         /// This does not include the leading period.
         /// </summary>
-        internal const string ProjectExtension = "z80cdproj";
+        internal const string PROJECT_EXTENSION = "z80cdproj";
 
         /// <summary>
         /// A project capability that is present in your project type and none others.
@@ -37,9 +49,9 @@ namespace ZXSpectrumCodeDiscover
         /// <remarks>
         /// This value should be kept in sync with the capability as actually defined in your .targets.
         /// </remarks>
-        internal const string UniqueCapability = "Spect.Net.CodeDiscover";
+        internal const string UNIQUE_CAPABILITY = "Spect.Net.CodeDiscover";
 
-        internal const string Language = "ZX Spectrum";
+        internal const string LANGUAGE = "ZX Spectrum";
 
         [ImportingConstructor]
         public MyUnconfiguredProject(UnconfiguredProject unconfiguredProject)
