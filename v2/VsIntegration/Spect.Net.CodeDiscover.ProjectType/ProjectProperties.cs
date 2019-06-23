@@ -1,14 +1,9 @@
+using System.ComponentModel.Composition;
+using Microsoft.VisualStudio.ProjectSystem;
+using Microsoft.VisualStudio.ProjectSystem.Properties;
+
 namespace ZXSpectrumCodeDiscover
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.VisualStudio.ProjectSystem;
-    using Microsoft.VisualStudio.ProjectSystem.Properties;
-
     [Export]
     internal partial class ProjectProperties : StronglyTypedPropertyAccess
     {
