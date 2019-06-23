@@ -181,8 +181,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         public Z80BreakpointClassifierFormat()
         {
             DisplayName = "Z80 Asm - Breakpoint";
-            BackgroundColor = Colors.Red;
-            BackgroundOpacity = 0.4;
+            BackgroundColor = Colors.DarkRed;
         }
     }
 
@@ -199,7 +198,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         public Z80CurrentBreakpointClassifierFormat()
         {
             DisplayName = "Z80 Asm - Current breakpoint";
-            BackgroundColor = Colors.Orange;
+            BackgroundColor = Colors.OrangeRed;
 
         }
     }
