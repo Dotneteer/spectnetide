@@ -26,6 +26,11 @@
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 
+    <!-- ZX Basic file types -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ZxBasic.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
     <!-- Z80 Unit Test file types -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\Z80Test.xaml;">
       <Context>File;BrowseObject</Context>

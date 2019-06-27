@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>ZX BASIC Program</Name>
+    <Description>This file contains ZX BASIC program code</Description>
+    <Icon>Spect.Net.ZxBasicTemplate.ico</Icon>
+    <TemplateID>086bc5c0-9f81-46fc-8f6a-093719228000</TemplateID>
+    <ProjectType>ZX Spectrum</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Program.zxbas</DefaultName>
+    <AppliesTo>Spect.Net.CodeDiscover</AppliesTo>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="false">Program.zxbas</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

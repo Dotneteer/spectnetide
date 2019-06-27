@@ -11,6 +11,7 @@
     $romItems$
 
     <Z80Asm Include="Z80CodeFiles\Code.z80asm" />
+    <ZxBasic Include="ZxBasicFiles\Program.zxbas" />
     <Z80Test Include="Z80UnitTests\UnitTest.z80test" />
     <Tzx Include="TapeFiles\Welcome.tzx" />
   </ItemGroup>

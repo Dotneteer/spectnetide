@@ -9,11 +9,11 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{E33BCC87-665D-4A13-986C-98C1ABDB7FDE}</ProjectGuid>
+    <ProjectGuid>{075E5409-6330-431E-BF56-36DA111896A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Spect.Net.CodeDiscover</RootNamespace>
-    <AssemblyName>Spect.Net.CodeDiscover</AssemblyName>
+    <RootNamespace>Spect.Net.ZxBasicTemplate</RootNamespace>
+    <AssemblyName>Spect.Net.ZxBasicTemplate</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
@@ -57,44 +57,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".z80settings" />
-    <None Include="Annotations.disann" />
-    <None Include="Rom\ZxSpectrum.spconf" />
-    <None Include="Rom\ZxSpectrum128-0.disann" />
-    <None Include="Rom\ZxSpectrum128-0.rom" />
-    <None Include="Rom\ZxSpectrum128-1.disann" />
-    <None Include="Rom\ZxSpectrum128-1.rom" />
-    <None Include="Rom\ZxSpectrum48.disann" />
-    <None Include="Rom\ZxSpectrum48.rom" />
-    <None Include="Rom\ZxSpectrumNext-0.disann" />
-    <None Include="Rom\ZxSpectrumNext-0.rom" />
-    <None Include="Rom\ZxSpectrumNext-1.disann" />
-    <None Include="Rom\ZxSpectrumNext-1.rom" />
-    <None Include="Rom\ZxSpectrumNext-2.disann" />
-    <None Include="Rom\ZxSpectrumNext-2.rom" />
-    <None Include="Rom\ZxSpectrumNext-3.disann" />
-    <None Include="Rom\ZxSpectrumNext-3.rom" />
-    <None Include="Rom\ZxSpectrumNext-4.disann" />
-    <None Include="Rom\ZxSpectrumNext-4.rom" />
-    <None Include="Rom\ZxSpectrumP3E-0.disann" />
-    <None Include="Rom\ZxSpectrumP3E-0.rom" />
-    <None Include="Rom\ZxSpectrumP3E-1.disann" />
-    <None Include="Rom\ZxSpectrumP3E-1.rom" />
-    <None Include="Rom\ZxSpectrumP3E-2.disann" />
-    <None Include="Rom\ZxSpectrumP3E-2.rom" />
-    <None Include="Rom\ZxSpectrumP3E-3.disann" />
-    <None Include="Rom\ZxSpectrumP3E-3.rom" />
-    <None Include="Spect.Net.CodeDiscover.z80cdproj" />
-    <None Include="TapeFiles\Welcome.tzx" />
-    <None Include="Z80CodeFiles\Code.z80asm" />
-    <None Include="Z80UnitTests\UnitTest.z80test" />
-    <None Include="ZxBasicFiles\Program.zxbas" />
+    <None Include="Program.zxbas" />
+    <None Include="Spect.Net.ZxBasicTemplate.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Spect.Net.CodeDiscover.ico" />
-    <VSTemplate Include="Spect.Net.CodeDiscover.vstemplate" />
+    <VSTemplate Include="Spect.Net.ZxBasicTemplate.vstemplate" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
