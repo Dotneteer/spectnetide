@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Spect.Net.TestParser.Generated;
 using Spect.Net.TestParser.SyntaxTree;
@@ -12,7 +14,7 @@ namespace Spect.Net.TestParser
     /// <summary>
     /// This visitor class processes the elements of the AST parsed by ANTLR
     /// </summary>
-    public class Z80TestVisitor: Z80TestBaseVisitor<object>
+    public class Z80TestVisitor: Z80TestParserBaseVisitor<object>
     {
         /// <summary>
         /// Access the compilation results through this object

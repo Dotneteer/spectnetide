@@ -59,6 +59,11 @@
     <Compile Include="LanguageServices\Z80Asm\Z80AsmClassifierProvider.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmLanguageService.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestClassificationFormats.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestClassificationTypes.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestClassifier.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestClassifierProvider.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
     <Compile Include="MyConfiguredProject.cs" />
     <Compile Include="MyUnconfiguredProject.cs" />
@@ -148,6 +153,10 @@
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bf64583f-fc84-4897-8a78-465a57ab73ac}</Project>
       <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.TestParser\Spect.Net.TestParser.csproj">
+      <Project>{bf0ce3fe-6516-4377-a6e4-51151f4d5185}</Project>
+      <Name>Spect.Net.TestParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
       <Project>{a2ae0e5e-e717-4a81-ab9b-e7c7b29fad4e}</Project>
