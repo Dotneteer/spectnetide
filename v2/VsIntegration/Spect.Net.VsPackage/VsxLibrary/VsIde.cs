@@ -31,7 +31,7 @@ namespace Spect.Net.VsPackage.VsxLibrary
         /// <summary>
         /// Gets a ToolWindows object used as a shortcut for finding tool windows.
         /// </summary>
-        public static ToolWindows ToolWindows =>
+        public static EnvDTE80.ToolWindows ToolWindows =>
             DteInstance.ToolWindows;
 
         #endregion

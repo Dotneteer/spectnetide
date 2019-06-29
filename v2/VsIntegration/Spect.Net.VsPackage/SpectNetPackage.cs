@@ -3,9 +3,12 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.VsPackage.Commands;
 using Spect.Net.VsPackage.Debugging;
 using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using Spect.Net.VsPackage.LanguageServices.Z80Test;
+using Spect.Net.VsPackage.ToolWindows.Keyboard;
+using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Output;
 using Task = System.Threading.Tasks.Task;
@@ -20,14 +23,21 @@ namespace Spect.Net.VsPackage
     /// recreated every time a new solution is opened. The VM is stopped and cleaned up
     /// whenever the solution is closed.
     /// </remarks>
-    [Guid(PACKAGE_GUID_STRING)]
+    [Guid(PACKAGE_GUID)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration(
         "#110", 
         "#112", 
         "2.0.0", 
         IconResourceID = 400)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
 
+    // --- Tool windows
+    [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
+
+    // --- Language Services
     [ProvideLanguageService(
         typeof(Z80AsmLanguageService), 
         Z80AsmLanguageService.LANGUAGE_NAME, 
@@ -55,20 +65,24 @@ namespace Spect.Net.VsPackage
         ShowMatchingBrace = true,
         ShowSmartIndent = true)]
     [ProvideLanguageExtension(typeof(Z80TestLanguageService), ".z80test")]
-
-    [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
+   
     public sealed class SpectNetPackage : VsxAsyncPackage
     {
         /// <summary>
         /// SpectNetPackage GUID string.
         /// </summary>
-        public const string PACKAGE_GUID_STRING = "3690768a-3808-4afd-b5ff-db8b521e61f8";
+        public const string PACKAGE_GUID = "3690768a-3808-4afd-b5ff-db8b521e61f8";
 
         /// <summary>
         /// The GUID for this project type.  It is unique with the project file extension and
         /// appears under the VS registry hive's Projects key.
         /// </summary>
         public const string SPECTRUM_PROJECT_TYPE_GUID = "f16d4249-6279-474e-8826-742e7ff7445c";
+
+        /// <summary>
+        /// The GUID for the command set of this package.
+        /// </summary>
+        public const string COMMAND_SET_GUID = "234580c4-8a2c-4ae1-8e4f-5bc708b188fe";
 
         /// <summary>
         /// The singleton instance of this class, set in InitializeAsync
@@ -111,6 +125,24 @@ namespace Spect.Net.VsPackage
 
             // --- Main thread initialization part
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            // --- Initialize package commands here
+            InitializeCommands();
+        }
+
+        /// <summary>
+        /// Initializes all commands that can be used within SpectNetIDE
+        /// </summary>
+        private void InitializeCommands()
+        {
+            // ReSharper disable ObjectCreationAsStatement
+
+            // --- Main menu commands
+            new ShowSpectrumEmulatorCommand();
+            SpectrumEmulatorToolWindow.InitializeToolbarCommands();
+            new ShowSpectrumKeyboardCommand();
+
+            // ReSharper restore ObjectCreationAsStatement
         }
 
         /// <devdoc>
