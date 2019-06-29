@@ -3,8 +3,11 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.VsPackage.Debugging;
 using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using Spect.Net.VsPackage.LanguageServices.Z80Test;
+using Spect.Net.VsPackage.VsxLibrary;
+using Spect.Net.VsPackage.VsxLibrary.Output;
 using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage
@@ -54,7 +57,7 @@ namespace Spect.Net.VsPackage
     [ProvideLanguageExtension(typeof(Z80TestLanguageService), ".z80test")]
 
     [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
-    public sealed class SpectNetPackage : AsyncPackage
+    public sealed class SpectNetPackage : VsxAsyncPackage
     {
         /// <summary>
         /// SpectNetPackage GUID string.
@@ -67,8 +70,21 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string SPECTRUM_PROJECT_TYPE_GUID = "f16d4249-6279-474e-8826-742e7ff7445c";
 
+        /// <summary>
+        /// The singleton instance of this class, set in InitializeAsync
+        /// </summary>
+        public static SpectNetPackage Default { get; private set; }
 
+        /// <summary>
+        /// An instance of the Z80 Assembly language service
+        /// </summary>
         public static Z80AsmLanguageService Z80AsmLanguage { get; private set; }
+
+        /// <summary>
+        /// This object is responsible to watch breakpoint changes while the package
+        /// is loaded
+        /// </summary>
+        public BreakpointChangeWatcher BreakpointChangeWatcher { get; private set; }
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -79,8 +95,38 @@ namespace Spect.Net.VsPackage
         /// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            await base.InitializeAsync(cancellationToken, progress);
+
+            // --- Background initialization part
+            Default = this;
             Z80AsmLanguage = new Z80AsmLanguageService(this);
+            BreakpointChangeWatcher = new BreakpointChangeWatcher();
+            BreakpointChangeWatcher.BreakpointsChanged += async (sender, args) =>
+            {
+                await OutputWindow.General.WriteLineAsync(
+                    $"Added: {args.Added.Count}, modified: {args.Modified.Count} deleted: {args.Deleted.Count}");
+            };
+            BreakpointChangeWatcher.Start();
+
+
+            // --- Main thread initialization part
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+        }
+
+        /// <devdoc>
+        /// This method will be called by Visual Studio in response to a package close
+        /// (disposing will be true in this case).  The default implementation revokes all
+        /// services and calls Dispose() on any created services that implement IDisposable.
+        /// </devdoc>
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (disposing)
+            {
+                #pragma warning disable 4014
+                BreakpointChangeWatcher.Stop();
+                #pragma warning restore 4014
+            }
         }
     }
 }
