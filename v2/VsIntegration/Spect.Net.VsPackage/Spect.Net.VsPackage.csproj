@@ -52,6 +52,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeDiscoverProjectTreePropertiesProvider.cs" />
+    <Compile Include="Commands\ShowDisassemblyCommand.cs" />
+    <Compile Include="Commands\ShowRegistersCommand.cs" />
     <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />
     <Compile Include="Commands\ShowSpectrumKeyboardCommand.cs" />
     <Compile Include="Debugging\BreakpointChangeWatcher.cs" />
@@ -79,11 +81,21 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SpectNetPackage.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">
+      <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\Keyboard\KeyboardToolWindow.cs" />
     <Compile Include="ToolWindows\Keyboard\KeyboardToolWindowControl.xaml.cs">
       <DependentUpon>KeyboardToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Keyboard\KeyboardToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\Registers\RegistersToolWindow.cs" />
+    <Compile Include="ToolWindows\Registers\RegistersToolWindowControl.xaml.cs">
+      <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Registers\RegistersToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
@@ -126,6 +138,7 @@
     <VSCTCompile Include="SpectNetPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
+    <Content Include="Resources\ToolWindow1Command.png" />
     <Content Include="_VsixDependencies\Newtonsoft.Json.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -368,7 +381,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ToolWindows\Keyboard\KeyboardToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Registers\RegistersToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

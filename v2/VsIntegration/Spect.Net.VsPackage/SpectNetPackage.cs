@@ -7,7 +7,9 @@ using Spect.Net.VsPackage.Commands;
 using Spect.Net.VsPackage.Debugging;
 using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using Spect.Net.VsPackage.LanguageServices.Z80Test;
+using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.Keyboard;
+using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Output;
@@ -36,6 +38,8 @@ namespace Spect.Net.VsPackage
     // --- Tool windows
     [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(RegistersToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
 
     // --- Language Services
     [ProvideLanguageService(
@@ -141,6 +145,8 @@ namespace Spect.Net.VsPackage
             new ShowSpectrumEmulatorCommand();
             SpectrumEmulatorToolWindow.InitializeToolbarCommands();
             new ShowSpectrumKeyboardCommand();
+            new ShowRegistersCommand();
+            new ShowDisassemblyCommand();
 
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -155,9 +161,7 @@ namespace Spect.Net.VsPackage
             base.Dispose(disposing);
             if (disposing)
             {
-                #pragma warning disable 4014
-                BreakpointChangeWatcher.Stop();
-                #pragma warning restore 4014
+                _ = BreakpointChangeWatcher.Stop();
             }
         }
     }
