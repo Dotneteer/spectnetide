@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Spect.Net.VsPackage.VsxLibrary
 {
@@ -83,6 +84,16 @@ namespace Spect.Net.VsPackage.VsxLibrary
                     new Dictionary<int, object>() { { instanceId, window } };
             }
             return window;
+        }
+
+        /// <summary>
+        /// Forces the update of command UI
+        /// </summary>
+        public static void UpdateCommandUi()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var uiShell = (IVsUIShell) GetGlobalService(typeof(SVsUIShell));
+            uiShell?.UpdateCommandUI(0);
         }
     }
 }

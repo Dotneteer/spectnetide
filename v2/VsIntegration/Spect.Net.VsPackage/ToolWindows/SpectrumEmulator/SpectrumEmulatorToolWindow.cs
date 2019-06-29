@@ -43,7 +43,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1081)]
         public class StartVmCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("START");
             }
@@ -58,7 +58,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1082)]
         public class StopVmCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("STOP");
             }
@@ -73,7 +73,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1083)]
         public class PauseVmCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("PAUSE");
             }
@@ -88,7 +88,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1084)]
         public class ResetVmCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("RESET");
             }
@@ -103,7 +103,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1085)]
         public class StartDebugVmCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("DEBUG");
             }
@@ -118,7 +118,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1086)]
         public class StepIntoCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("STEP INTO");
             }
@@ -133,7 +133,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1087)]
         public class StepOverCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("STEP OVER");
             }
@@ -148,7 +148,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1091)]
         public class StepOutCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("STEP OUT");
             }
@@ -163,7 +163,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1088)]
         public class SaveVmStateCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("SAVE STATE");
             }
@@ -178,14 +178,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1089)]
         public class LoadVmStateCommand : SpectNetCommandBase
         {
-            /// <summary>
-            /// This flags indicates that the command UI should be 
-            /// updated when the command has been completed --
-            /// with failure or success
-            /// </summary>
-            //public override bool UpdateUiWhenComplete => true;
+            public override bool UpdateUiWhenComplete => true;
 
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("LOAD VM STATE");
             }
@@ -200,7 +195,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1090)]
         public class AddVmStateCommand : SpectNetCommandBase
         {
-            protected override void OnExecute()
+            protected override void ExecuteOnMainThread()
             {
                 VsxDialogs.Show("ADD VM STATE");
             }

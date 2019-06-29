@@ -1,16 +1,16 @@
-﻿using System;
-using System.Reflection;
-using Microsoft.VisualStudio;
+﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
+using System;
+using System.Reflection;
 
 namespace Spect.Net.VsPackage.VsxLibrary.Command
 {
     /// <summary>
     /// This class implements a command that shows a singleton tool window
     /// </summary>
-    public abstract class ShowToolWindowCommandBase: SpectNetCommandBase
+    public abstract class ShowToolWindowCommandBase : SpectNetCommandBase
     {
         /// <summary>
         /// Type of tool window to display
@@ -30,9 +30,10 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         }
 
         /// <summary>
-        /// Override this method to execute the command
+        /// Override this method to define how to prepare the command on the
+        /// main thread of Visual Studio
         /// </summary>
-        protected override void OnExecute()
+        protected override void ExecuteOnMainThread()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (ToolWindowType == null) return;
