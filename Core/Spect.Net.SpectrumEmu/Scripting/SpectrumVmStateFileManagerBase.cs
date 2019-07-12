@@ -15,7 +15,7 @@ namespace Spect.Net.SpectrumEmu.Scripting
         /// <summary>
         /// Main Execution cycle loop in Spectrum 48 ROM-0/Spectrum 128 ROM-1
         /// </summary>
-        public const ushort SP48_MAIN_EXEC_ADDR = 0x12a9;
+        public const ushort SP48_MAIN_EXEC_ADDR = 0x12ac;
 
         /// <summary>
         /// Main Waiting Loop in Spectrum 128 ROM-0
