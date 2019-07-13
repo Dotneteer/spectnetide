@@ -52,6 +52,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeDiscoverProjectTreePropertiesProvider.cs" />
+    <Compile Include="Commands\CompileAllZ80TestCommand.cs" />
+    <Compile Include="Commands\SetAsActiveProjectCommand.cs" />
     <Compile Include="Commands\SetAsDefaultAnnotationFileCommand.cs" />
     <Compile Include="Commands\SetAsDefaultCodeFileCommand.cs" />
     <Compile Include="Commands\SetAsDefaultTapeFileCommand.cs" />
@@ -130,7 +132,9 @@
     <Compile Include="VsxLibrary\Command\ShowToolWindowCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\SingleProjectItemCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\SpectNetCommandBase.cs" />
-    <Compile Include="VsxLibrary\Command\Z80ProgramCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\ProjectCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\SpectrumProgramCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\Z80TestCommandBase.cs" />
     <Compile Include="VsxLibrary\Output\MissingOutputPaneHandling.cs" />
     <Compile Include="VsxLibrary\Output\OutputPaneAttributes.cs" />
     <Compile Include="VsxLibrary\Output\OutputPaneDefinition.cs" />

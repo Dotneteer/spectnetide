@@ -7,7 +7,7 @@
     {
         public const string SOLUTION_FOLDER = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
         public const string CODE_DISCOVERY_PROJECT = "{F16D4249-6279-474E-8826-742E7FF7445C}";
-        public const string PROJECT_EXT = "..z80cdproj";
+        public const string PROJECT_EXT = ".z80cdproj";
         public const string DISANN_ITEM = ".disann";
         public const string ROM_ITEM = ".rom";
         public const string TZX_ITEM = ".tzx";

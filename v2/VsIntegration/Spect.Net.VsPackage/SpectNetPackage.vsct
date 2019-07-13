@@ -681,6 +681,20 @@
         </Strings>
       </Button>
 
+      <!-- Set Active Project command -->
+      <Button guid="COMMAND_SET_GUID" id="SetActiveProjectCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
+        <Icon guid="ImageCatalogGuid" id="StartupApplication" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Set as active project</ButtonText>
+          <CommandName>SetAsActiveProject</CommandName>
+        </Strings>
+      </Button>
+
+
       <!-- Unit Test Explorer Toolbar buttons -->
       <Button guid="COMMAND_SET_GUID" id="TestCompileAll" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbarStartGroup" />
@@ -753,18 +767,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidSpectNetPackageCmdSet" id="cmdidToolWindow1Command" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
-        <Icon guid="guidImages2" id="bmpPic1" />
-        <Strings>
-          <ButtonText>ToolWindow1</ButtonText>
-        </Strings>
-      </Button>
     </Buttons>
-
-    <Bitmaps>
-      <Bitmap guid="guidImages2" href="Resources\ToolWindow1Command.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
-    </Bitmaps>
   </Commands>
 
   <KeyBindings>
@@ -816,6 +819,7 @@
       <IDSymbol name="MountDriveBCommandId" value="0x0819" />
       <IDSymbol name="EjectDiskCommandId" value="0x0820" />
       <IDSymbol name="WriteProtectionCommandId" value="0x0821" />
+      <IDSymbol name="SetActiveProjectCommandId" value="0x0822" />
 
       <!-- Emulator tool window -->
       <IDSymbol name="SpectrumEmulatorToolWindowCommandId" value="0x1000" />
@@ -888,47 +892,6 @@
       <!-- Watch memory tool window -->
       <IDSymbol name="WatchMemoryCommandId" value="0x1C00" />
 
-
-    </GuidSymbol>
-  
-    <GuidSymbol value="{3690768a-3808-4afd-b5ff-db8b521e61f8}" name="guidSpectNetPackage" />
-  
-    <GuidSymbol value="{292bdb22-c850-43cb-86c3-02816510eca6}" name="guidSpectNetPackageCmdSet">
-      <IDSymbol value="4128" name="MyMenuGroup" />
-      <IDSymbol value="256" name="cmdidCommand1" />
-      <IDSymbol value="4129" name="cmdidToolWindow1Command" />
-    </GuidSymbol>
-  
-    <GuidSymbol value="{5d2d3640-7f3f-47cb-ad04-4754e2d91c53}" name="guidImages">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
-  
-    <GuidSymbol value="{9875bbc0-7e86-44d1-b393-c79c3bd63407}" name="guidSpectNetPackageCmdSet1">
-      <IDSymbol value="4128" name="MyMenuGroup" />
-      <IDSymbol value="256" name="cmdidCommand1" />
-    </GuidSymbol>
-  
-    <GuidSymbol value="{c625099d-24ff-4802-b2ad-90d793b941c0}" name="guidImages1">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
-  
-    <GuidSymbol value="{a4f7163f-12a3-422e-bfe5-83f0ba54df94}" name="guidImages2">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

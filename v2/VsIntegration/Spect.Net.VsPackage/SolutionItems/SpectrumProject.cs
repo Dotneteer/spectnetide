@@ -269,6 +269,16 @@ namespace Spect.Net.VsPackage.SolutionItems
         }
 
         /// <summary>
+        /// Checks if the project contains the specified 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public bool ContainsFile(string filename)
+        {
+            return ProjectItems.Any(p => p.Filename == filename);
+        }
+
+        /// <summary>
         /// Sets the default tape item to the specified one
         /// </summary>
         /// <param name="command">The command entity</param>

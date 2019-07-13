@@ -1,13 +1,15 @@
-﻿using System;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Threading;
+using Microsoft.VisualStudio;
 using Task = System.Threading.Tasks.Task;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
@@ -25,9 +27,9 @@ namespace Spect.Net.VsPackage.SolutionItems
         public const string PRIVATE_FOLDER = ".SpectNetIde";
 
         /// <summary>
-        /// The name of the settings file within the project folder
+        /// The name of the solution settings file
         /// </summary>
-        public const string SETTINGS_FILE = ".projsettings";
+        public const string SETTINGS_FILE = ".spectrumsettings";
 
         /// <summary>
         /// Check period waiting time in milleseconds
@@ -40,6 +42,8 @@ namespace Spect.Net.VsPackage.SolutionItems
 
         private readonly IVsSolution _solutionService;
         private readonly SolutionEvents _solutionEvents;
+        private readonly SelectionEvents _selectionEvents;
+        private string _activeProjectFile;
 
         /// <summary>
         /// Gets the solution directory
@@ -59,69 +63,52 @@ namespace Spect.Net.VsPackage.SolutionItems
             _solutionService = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
             _solutionEvents = SpectNetPackage.Default.ApplicationObject.Events.SolutionEvents;
             _solutionEvents.Opened += OnSolutionOpened;
+            _selectionEvents = SpectNetPackage.Default.ApplicationObject.Events.SelectionEvents;
+            _selectionEvents.OnChange += _selectionEvents_OnChange;
             Projects = new ReadOnlyCollection<SpectrumProject>(HierarchyItems);
             _isCollecting = false;
             Start();
         }
 
-        /// <summary>
-        /// Starts watching breakpoint changes
-        /// </summary>
-        private void Start()
+        private void _selectionEvents_OnChange()
         {
-            if (_changeWatcherTask != null) return;
-            _cancellationSource = new CancellationTokenSource();
-            _changeWatcherTask = SpectNetPackage.Default.JoinableTaskFactory.StartOnIdle(
-                () => CollectInBackgroundAsync(_cancellationSource.Token),
-                VsTaskRunContext.UIThreadIdlePriority);
-        }
-
-        /// <summary>
-        /// Stops watching breakpoint changes
-        /// </summary>
-        /// <returns></returns>
-        private async Task StopAsync()
-        {
-            _cancellationSource.Cancel();
-            await _changeWatcherTask;
-            _cancellationSource = null;
-            _changeWatcherTask = null;
-        }
-
-        private async Task CollectInBackgroundAsync(CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                CollectProjects();
-                await Task.Delay(WATCH_PERIOD, token);
-            }
-        }
-
-        /// <summary>
-        /// Collects project information every time a solution has been opened.
-        /// </summary>
-        private void OnSolutionOpened()
-        {
-            CollectProjects();
+            //var proj = GetSelectedProject();
         }
 
         /// <summary>
         /// The current ZX Spectrum project
         /// </summary>
-        // TODO: Use the settings that store the startup project
         public SpectrumProject CurrentProject => Projects.FirstOrDefault();
 
         /// <summary>
-        /// The project item that represents the current TZX file
+        /// Gets the active project
         /// </summary>
-        public TzxProjectItem CurrentTzxItem =>
-            CurrentProject?.TzxProjectItems.FirstOrDefault();
+        public SpectrumProject ActiveProject
+        {
+            get
+            {
+                var active = GetProjectOfFile(_activeProjectFile);
+                return active ?? (Projects.Count == 0 ? null : Projects[0]);
+            }
+        }
 
         /// <summary>
-        /// The project item that represents the current TAP file
+        /// Tests if the specified file is in the active project
         /// </summary>
-        public TapProjectItem CurrentTapItem =>
-            CurrentProject?.TapProjectItems.FirstOrDefault();
+        /// <param name="filename">Filename to test</param>
+        /// <returns>True, if the file is within the active project</returns>
+        public bool IsFileInActiveProject(string filename)
+        {
+            return GetProjectOfFile(filename) == ActiveProject;
+        }
+
+        /// <summary>
+        /// Gets the project that contains the specified file
+        /// </summary>
+        /// <param name="filename">Filename to get the host project for</param>
+        /// <returns>The host project instance, if exists; otherwise, null</returns>
+        public SpectrumProject GetProjectOfFile(string filename)
+            => Projects.FirstOrDefault(p => p.Root.FileName == filename || p.ContainsFile(filename));
 
         /// <summary>
         /// Scans the solution for Spectrum Code Discovery projects
@@ -146,14 +133,82 @@ namespace Spect.Net.VsPackage.SolutionItems
                             break;
                     }
                 }
+
                 HierarchyItems = collectedItems;
                 Projects = new ReadOnlyCollection<SpectrumProject>(HierarchyItems);
-                //LoadSolutionSettings();
-
+                var contents = File.ReadAllText(Path.Combine(SolutionDir, PRIVATE_FOLDER, SETTINGS_FILE));
+                var settings = JsonConvert.DeserializeObject<SpectrumSolutionSettings>(contents);
+                _activeProjectFile = settings.DefaultProject;
+                SetVisuals();
+            }
+            catch
+            {
+                // --- This exception is intentionally ignored.
             }
             finally
             {
                 _isCollecting = false;
+            }
+        }
+
+        /// <summary>
+        /// Sets the active project file
+        /// </summary>
+        /// <param name="projectfile">Name of the active project file</param>
+        public void SetActiveProject(string projectfile)
+        {
+            _activeProjectFile = projectfile;
+            var settings = new SpectrumSolutionSettings
+            {
+                DefaultProject = _activeProjectFile
+            };
+            var contents = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            File.WriteAllText(Path.Combine(SolutionDir, PRIVATE_FOLDER, SETTINGS_FILE), contents);
+
+            // --- Set the visual properties
+            SetVisuals();
+        }
+
+        /// <summary>
+        /// Sets the visual style of the active project to bold, while the others
+        /// in the category to normal.
+        /// </summary>
+        private void SetVisuals()
+        {
+            if (_activeProjectFile == null) return;
+
+            // --- Get the solution service
+            var solSrv = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
+
+            // --- Get the solution explorer window
+            var shell = (IVsUIShell)Package.GetGlobalService(typeof(SVsUIShell));
+            var solutionExplorer = new Guid(ToolWindowGuids80.SolutionExplorer);
+            shell.FindToolWindow(0, ref solutionExplorer, out var frame);
+
+            // --- Get solution explorer's DocView
+            frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out var obj);
+            var window = (IVsUIHierarchyWindow2)obj;
+
+            // --- Remove the Bold flag from all files
+            foreach (var project in Projects)
+            {
+                var fileFullName = project.Root.FileName;
+                if (string.IsNullOrEmpty(fileFullName)) continue;
+                solSrv.GetProjectOfUniqueName(project.Root.UniqueName, out var projectHierarchy);
+                if (projectHierarchy.ParseCanonicalName(fileFullName, out var projectItemId) == VSConstants.S_OK)
+                {
+                    window.SetItemAttribute((IVsUIHierarchy)projectHierarchy, projectItemId,
+                        (uint)__VSHIERITEMATTRIBUTE.VSHIERITEMATTRIBUTE_Bold, false);
+                }
+            }
+
+            // --- Add Bold flag to the current default file
+            var activeProject = GetProjectOfFile(_activeProjectFile);
+            solSrv.GetProjectOfUniqueName(activeProject.Root.UniqueName, out var activeHierarchy);
+            if (activeHierarchy.ParseCanonicalName(_activeProjectFile, out var activeItemId) == VSConstants.S_OK)
+            {
+                window.SetItemAttribute((IVsUIHierarchy) activeHierarchy, activeItemId,
+                    (uint) __VSHIERITEMATTRIBUTE.VSHIERITEMATTRIBUTE_Bold, true);
             }
         }
 
@@ -266,8 +321,55 @@ namespace Spect.Net.VsPackage.SolutionItems
         public override void Dispose()
         {
             _solutionEvents.Opened -= OnSolutionOpened;
+            _selectionEvents.OnChange -= _selectionEvents_OnChange;
             _ = StopAsync();
             base.Dispose();
+        }
+
+        /// <summary>
+        /// Starts solution structure collection
+        /// </summary>
+        private void Start()
+        {
+            if (_changeWatcherTask != null) return;
+            _cancellationSource = new CancellationTokenSource();
+            _changeWatcherTask = SpectNetPackage.Default.JoinableTaskFactory.StartOnIdle(
+                () => CollectInBackgroundAsync(_cancellationSource.Token),
+                VsTaskRunContext.UIThreadIdlePriority);
+        }
+
+        /// <summary>
+        /// Stops solution structure collection
+        /// </summary>
+        /// <returns></returns>
+        private async Task StopAsync()
+        {
+            _cancellationSource.Cancel();
+            await _changeWatcherTask;
+            _cancellationSource = null;
+            _changeWatcherTask = null;
+        }
+
+        /// <summary>
+        /// Collects solution structure in the background
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        private async Task CollectInBackgroundAsync(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                CollectProjects();
+                await Task.Delay(WATCH_PERIOD, token);
+            }
+        }
+
+        /// <summary>
+        /// Collects project information every time a solution has been opened.
+        /// </summary>
+        private void OnSolutionOpened()
+        {
+            CollectProjects();
         }
     }
 }

@@ -167,11 +167,12 @@ namespace Spect.Net.VsPackage
             new ShowRegistersCommand();
             new ShowDisassemblyCommand();
 
-
             // --- Solution Explorer commands
             new SetAsDefaultCodeFileCommand();
             new SetAsDefaultAnnotationFileCommand();
             new SetAsDefaultTapeFileCommand();
+            new SetAsActiveProjectCommand();
+            new CompileAllZ80TestsCommand();
             // ReSharper restore ObjectCreationAsStatement
         }
 

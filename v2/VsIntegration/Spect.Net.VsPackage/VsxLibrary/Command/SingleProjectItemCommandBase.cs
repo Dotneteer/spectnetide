@@ -92,6 +92,12 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         }
 
         /// <summary>
+        /// Tests if the file behind the command is in the active project
+        /// </summary>
+        public bool IsInActiveProject 
+            => SpectNetPackage.Default.Solution.IsFileInActiveProject(ItemPath);
+
+        /// <summary>
         /// This method checks if there is only a single item selected in Solution Explorer.
         /// </summary>
         /// <param name="allowProject">Signs if project selection is allowed</param>
