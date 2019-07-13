@@ -14,6 +14,11 @@ namespace Spect.Net.VsPackage.Debugging
     /// </summary>
     public class BreakpointChangeWatcher
     {
+        /// <summary>
+        /// Check period waiting time in milleseconds
+        /// </summary>
+        public const int WATCH_PERIOD = 100;
+
         private CancellationTokenSource _cancellationSource;
         private JoinableTask _changeWatcherTask;
 
@@ -33,7 +38,7 @@ namespace Spect.Net.VsPackage.Debugging
         /// Stops watching breakpoint changes
         /// </summary>
         /// <returns></returns>
-        public async Task Stop()
+        public async Task StopAsync()
         {
             _cancellationSource.Cancel();
             await _changeWatcherTask;
@@ -62,7 +67,7 @@ namespace Spect.Net.VsPackage.Debugging
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(50, cancellationToken);
+                await Task.Delay(WATCH_PERIOD, cancellationToken);
                 loopCount++;
                 var currentCount = SpectNetPackage.Default.ApplicationObject.DTE.Debugger.Breakpoints?.Count ?? 0;
 

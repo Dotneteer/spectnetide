@@ -379,6 +379,7 @@
         <Icon guid="ImageCatalogGuid" id="Code" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Set as default code file</ButtonText>
           <CommandName>SetAsDefaultCodeFile</CommandName>
@@ -391,6 +392,7 @@
         <Icon guid="ImageCatalogGuid" id="Compile" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Compile Z80 program</ButtonText>
           <CommandName>CompileZ80Program</CommandName>
@@ -403,6 +405,7 @@
         <Icon guid="ImageCatalogGuid" id="Compile" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Compile Z80 program</ButtonText>
           <CommandName>RunZ80Program</CommandName>
@@ -415,6 +418,7 @@
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Run Z80 program</ButtonText>
           <CommandName>RunZ80Program</CommandName>
@@ -427,6 +431,7 @@
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Run Z80 program</ButtonText>
           <CommandName>RunZ80Program</CommandName>
@@ -439,6 +444,7 @@
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Debug Z80 program</ButtonText>
           <CommandName>DebugZ80Program</CommandName>
@@ -451,6 +457,7 @@
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Debug Z80 program</ButtonText>
           <CommandName>DebugZ80Program</CommandName>
@@ -463,6 +470,7 @@
         <Icon guid="ImageCatalogGuid" id="Upload" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Inject Z80 program</ButtonText>
           <CommandName>InjectZ80Program</CommandName>
@@ -475,6 +483,7 @@
         <Icon guid="ImageCatalogGuid" id="Upload" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Inject Z80 program</ButtonText>
           <CommandName>InjectZ80Program</CommandName>
@@ -487,6 +496,7 @@
         <Icon guid="ImageCatalogGuid" id="Export" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Export Z80 program...</ButtonText>
           <CommandName>ExportZ80Program</CommandName>
@@ -499,6 +509,7 @@
         <Icon guid="ImageCatalogGuid" id="Export" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Export Z80 program...</ButtonText>
           <CommandName>ExportZ80Program</CommandName>
@@ -511,6 +522,7 @@
         <Icon guid="ImageCatalogGuid" id="AutoTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Compile Z80 unit tests</ButtonText>
           <CommandName>CompileZ80UnitTests</CommandName>
@@ -523,6 +535,7 @@
         <Icon guid="ImageCatalogGuid" id="AutoTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Compile all Z80 unit tests</ButtonText>
           <CommandName>CompileAllZ80UnitTests</CommandName>
@@ -535,6 +548,7 @@
         <Icon guid="ImageCatalogGuid" id="RunTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Run Z80 unit tests</ButtonText>
           <CommandName>RunZ80UnitTests</CommandName>
@@ -547,6 +561,7 @@
         <Icon guid="ImageCatalogGuid" id="RunTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Run all Z80 unit tests</ButtonText>
           <CommandName>RunAllZ80UnitTests</CommandName>
@@ -559,6 +574,7 @@
         <Icon guid="ImageCatalogGuid" id="RunTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Load VM State file</ButtonText>
           <CommandName>LoadVmStateFile</CommandName>
@@ -591,6 +607,7 @@
         <Icon guid="ImageCatalogGuid" id="TapeDrive" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Set as default tape file</ButtonText>
           <CommandName>SetAsDefaultTapeFile</CommandName>
@@ -603,6 +620,7 @@
         <Icon guid="ImageCatalogGuid" id="Comment" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Set as default annotation file</ButtonText>
           <CommandName>SetAsDefaultAnnotationFile</CommandName>
@@ -615,6 +633,7 @@
         <Icon guid="ImageCatalogGuid" id="FloppyDrive" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Insert into drive A:</ButtonText>
           <CommandName>MountAsDriveA</CommandName>
@@ -627,6 +646,7 @@
         <Icon guid="ImageCatalogGuid" id="FloppyDrive" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Insert into drive B:</ButtonText>
           <CommandName>MountAsDriveB</CommandName>
@@ -640,6 +660,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Eject Disk</ButtonText>
           <CommandName>EjectDisk</CommandName>
@@ -653,6 +674,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Make write protected</ButtonText>
           <CommandName>WriteProtection</CommandName>

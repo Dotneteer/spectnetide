@@ -52,10 +52,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeDiscoverProjectTreePropertiesProvider.cs" />
+    <Compile Include="Commands\SetAsDefaultAnnotationFileCommand.cs" />
+    <Compile Include="Commands\SetAsDefaultCodeFileCommand.cs" />
+    <Compile Include="Commands\SetAsDefaultTapeFileCommand.cs" />
     <Compile Include="Commands\ShowDisassemblyCommand.cs" />
     <Compile Include="Commands\ShowRegistersCommand.cs" />
     <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />
     <Compile Include="Commands\ShowSpectrumKeyboardCommand.cs" />
+    <Compile Include="CustomEditors\SpectrumConfEditorViewModel.cs" />
     <Compile Include="Debugging\BreakpointChangeWatcher.cs" />
     <Compile Include="Debugging\BreakpointsChangedEventArgs.cs" />
     <Compile Include="ImageMonikers.cs" />
@@ -80,6 +84,27 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SolutionItems\AnnotationProjectItem.cs" />
+    <Compile Include="SolutionItems\ItemHierarchyBase.cs" />
+    <Compile Include="SolutionItems\ProjectItemRenamedEventArgs.cs" />
+    <Compile Include="SolutionItems\SolutionStructure.cs" />
+    <Compile Include="SolutionItems\SpectrumProjectConfigSerializer.cs" />
+    <Compile Include="SolutionItems\ProgramItemBase.cs" />
+    <Compile Include="SolutionItems\SpectrumProject.cs" />
+    <Compile Include="SolutionItems\SpectrumProjectConfigItem.cs" />
+    <Compile Include="SolutionItems\SpectrumProjectItemBase.cs" />
+    <Compile Include="SolutionItems\SpectrumProjectSettings.cs" />
+    <Compile Include="SolutionItems\SpectrumRomProjectItem.cs" />
+    <Compile Include="SolutionItems\SpectrumSolutionSettings.cs" />
+    <Compile Include="SolutionItems\TapeProjectItemBase.cs" />
+    <Compile Include="SolutionItems\TapProjectItem.cs" />
+    <Compile Include="SolutionItems\TzxProjectItem.cs" />
+    <Compile Include="SolutionItems\UnusedProjectItem.cs" />
+    <Compile Include="SolutionItems\VmStateProjectItem.cs" />
+    <Compile Include="SolutionItems\VsHierarchyTypes.cs" />
+    <Compile Include="SolutionItems\Z80CodeProjectItem.cs" />
+    <Compile Include="SolutionItems\Z80TestProjectItem.cs" />
+    <Compile Include="SolutionItems\ZxBasicProjectItem.cs" />
     <Compile Include="SpectNetPackage.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">
@@ -103,7 +128,9 @@
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
     <Compile Include="VsxLibrary\Command\ShowToolWindowCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\SingleProjectItemCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\SpectNetCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\Z80ProgramCommandBase.cs" />
     <Compile Include="VsxLibrary\Output\MissingOutputPaneHandling.cs" />
     <Compile Include="VsxLibrary\Output\OutputPaneAttributes.cs" />
     <Compile Include="VsxLibrary\Output\OutputPaneDefinition.cs" />
@@ -142,6 +169,8 @@
     <Content Include="_VsixDependencies\Newtonsoft.Json.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
+      <TargetPath>Newtonsoft.Json.dll</TargetPath>
+      <VSIXSubPath>..</VSIXSubPath>
     </Content>
     <None Include="app.config" />
     <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
@@ -166,7 +195,13 @@
       <Version>4.6.6</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.200" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.1.3132" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.2.3073">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\SpectNetIde.ico">

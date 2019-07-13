@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.Commands;
 using Spect.Net.VsPackage.Debugging;
 using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using Spect.Net.VsPackage.LanguageServices.Z80Test;
+using Spect.Net.VsPackage.SolutionItems;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.Keyboard;
 using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.VsxLibrary;
-using Spect.Net.VsPackage.VsxLibrary.Output;
+using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage
@@ -33,7 +35,8 @@ namespace Spect.Net.VsPackage
         "2.0.0", 
         IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(PACKAGE_GUID, PackageAutoLoadFlags.BackgroundLoad)]
 
     // --- Tool windows
     [ProvideToolWindow(typeof(SpectrumEmulatorToolWindow), Transient = true)]
@@ -105,6 +108,21 @@ namespace Spect.Net.VsPackage
         public BreakpointChangeWatcher BreakpointChangeWatcher { get; private set; }
 
         /// <summary>
+        /// Gets the current solution structure
+        /// </summary>
+        public SolutionStructure Solution { get; private set; }
+
+        /// <summary>
+        /// Gets the current ZX Spectrum project
+        /// </summary>
+        public SpectrumProject CurrentProject => Solution?.CurrentProject;
+
+        /// <summary>
+        /// Gets the current project root
+        /// </summary>
+        public Project CurrentRoot => CurrentProject?.Root;
+
+        /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
@@ -126,12 +144,13 @@ namespace Spect.Net.VsPackage
             };
             BreakpointChangeWatcher.Start();
 
-
             // --- Main thread initialization part
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
             // --- Initialize package commands here
             InitializeCommands();
+            Solution = new SolutionStructure();
+            Solution.CollectProjects();
         }
 
         /// <summary>
@@ -148,6 +167,11 @@ namespace Spect.Net.VsPackage
             new ShowRegistersCommand();
             new ShowDisassemblyCommand();
 
+
+            // --- Solution Explorer commands
+            new SetAsDefaultCodeFileCommand();
+            new SetAsDefaultAnnotationFileCommand();
+            new SetAsDefaultTapeFileCommand();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -161,7 +185,7 @@ namespace Spect.Net.VsPackage
             base.Dispose(disposing);
             if (disposing)
             {
-                _ = BreakpointChangeWatcher.Stop();
+                _ = BreakpointChangeWatcher.StopAsync();
             }
         }
     }
