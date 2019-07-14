@@ -23,6 +23,11 @@ namespace Spect.Net.Assembler.Assembler
         public bool IsLoopScope { get; set; } = true;
 
         /// <summary>
+        /// Indicates that this scope is for a proc
+        /// </summary>
+        public bool IsProcScope { get; set; } = false;
+
+        /// <summary>
         /// The current loop counter in the scope
         /// </summary>
         public int LoopCounter { get; set; } = 0;
@@ -37,6 +42,12 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public Dictionary<string, AssemblySymbolInfo> Symbols { get; } =
             new Dictionary<string, AssemblySymbolInfo>(StringComparer.InvariantCultureIgnoreCase);
+
+        /// <summary>
+        /// Local symbol bookings
+        /// </summary>
+        public HashSet<string> LocalSymbolBookings { get; } 
+            = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// The list of fixups to carry out as the last phase of the compilation

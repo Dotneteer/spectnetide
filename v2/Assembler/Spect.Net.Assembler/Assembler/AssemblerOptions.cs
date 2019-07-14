@@ -35,7 +35,6 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Signs that PROC labels and symbols are not locals by default
         /// </summary>
-        /// <remarks>This option is needed for proper handling of ZX BASIC</remarks>
         public bool ProcExplicitLocalsOnly { get; set; } = false;
     }
 }

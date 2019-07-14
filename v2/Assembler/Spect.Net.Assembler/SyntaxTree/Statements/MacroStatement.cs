@@ -14,11 +14,6 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public List<string> Arguments { get; }
 
-        public MacroStatement(List<string> arguments)
-        {
-            Arguments = arguments;
-        }
-
         /// <summary>
         /// Type of end statement
         /// </summary>
@@ -32,7 +27,8 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         public MacroStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.MacroStatementContext context)
         {
             Arguments = new List<string>();
-            foreach (var id in context.IDENTIFIER())
+            var paramIds = context.IDENTIFIER();
+            foreach (var id in paramIds)
             {
                 visitorContext.AddIdentifier(id);
                 Arguments.Add(id.NormalizeToken());

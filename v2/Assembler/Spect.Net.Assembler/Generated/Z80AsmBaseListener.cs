@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\dotne\source\repos\spectnetide\Assembler\AntlrZ80AsmParserGenerator\ParserGenerator\Z80Asm.g4 by ANTLR 4.6.4
+// Generated from C:\Users\dotne\source\repos\spectnetide\v2\Assembler\AntlrZ80AsmParserGenerator\ParserGenerator\Z80Asm.g4 by ANTLR 4.6.4
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -36,259 +36,49 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 [System.CLSCompliant(false)]
 public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// <summary>
-	/// Enter a parse tree produced by the <c>RealLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRealLiteral([NotNull] Z80AsmParser.RealLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>RealLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRealLiteral([NotNull] Z80AsmParser.RealLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>BinLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBinLiteral([NotNull] Z80AsmParser.BinLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>BinLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBinLiteral([NotNull] Z80AsmParser.BinLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>OctalLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterOctalLiteral([NotNull] Z80AsmParser.OctalLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>OctalLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitOctalLiteral([NotNull] Z80AsmParser.OctalLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>CharLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCharLiteral([NotNull] Z80AsmParser.CharLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>CharLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCharLiteral([NotNull] Z80AsmParser.CharLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>BoolLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBoolLiteral([NotNull] Z80AsmParser.BoolLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>BoolLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBoolLiteral([NotNull] Z80AsmParser.BoolLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>StringLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterStringLiteral([NotNull] Z80AsmParser.StringLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>StringLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitStringLiteral([NotNull] Z80AsmParser.StringLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>DecimalLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDecimalLiteral([NotNull] Z80AsmParser.DecimalLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>DecimalLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDecimalLiteral([NotNull] Z80AsmParser.DecimalLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>CurCounterLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCurCounterLiteral([NotNull] Z80AsmParser.CurCounterLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>CurCounterLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCurCounterLiteral([NotNull] Z80AsmParser.CurCounterLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>HexLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterHexLiteral([NotNull] Z80AsmParser.HexLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>HexLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitHexLiteral([NotNull] Z80AsmParser.HexLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>CurAddrLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCurAddrLiteral([NotNull] Z80AsmParser.CurAddrLiteralContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>CurAddrLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCurAddrLiteral([NotNull] Z80AsmParser.CurAddrLiteralContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>AndExpr</c>
+	/// Enter a parse tree produced by the <c>FunctionInvocationExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAndExpr([NotNull] Z80AsmParser.AndExprContext context) { }
+	public virtual void EnterFunctionInvocationExpr([NotNull] Z80AsmParser.FunctionInvocationExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>AndExpr</c>
+	/// Exit a parse tree produced by the <c>FunctionInvocationExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAndExpr([NotNull] Z80AsmParser.AndExprContext context) { }
+	public virtual void ExitFunctionInvocationExpr([NotNull] Z80AsmParser.FunctionInvocationExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>BuiltInFunctionExpr</c>
+	/// Enter a parse tree produced by the <c>UnaryPlusExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBuiltInFunctionExpr([NotNull] Z80AsmParser.BuiltInFunctionExprContext context) { }
+	public virtual void EnterUnaryPlusExpr([NotNull] Z80AsmParser.UnaryPlusExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>BuiltInFunctionExpr</c>
+	/// Exit a parse tree produced by the <c>UnaryPlusExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBuiltInFunctionExpr([NotNull] Z80AsmParser.BuiltInFunctionExprContext context) { }
+	public virtual void ExitUnaryPlusExpr([NotNull] Z80AsmParser.UnaryPlusExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>RelExpr</c>
+	/// Enter a parse tree produced by the <c>TernaryExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRelExpr([NotNull] Z80AsmParser.RelExprContext context) { }
+	public virtual void EnterTernaryExpr([NotNull] Z80AsmParser.TernaryExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>RelExpr</c>
+	/// Exit a parse tree produced by the <c>TernaryExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRelExpr([NotNull] Z80AsmParser.RelExprContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>XorExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterXorExpr([NotNull] Z80AsmParser.XorExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>XorExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitXorExpr([NotNull] Z80AsmParser.XorExprContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>MultExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterMultExpr([NotNull] Z80AsmParser.MultExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>MultExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitMultExpr([NotNull] Z80AsmParser.MultExprContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>LogicalNotExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLogicalNotExpr([NotNull] Z80AsmParser.LogicalNotExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>LogicalNotExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLogicalNotExpr([NotNull] Z80AsmParser.LogicalNotExprContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>SymbolExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>SymbolExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context) { }
+	public virtual void ExitTernaryExpr([NotNull] Z80AsmParser.TernaryExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>AddExpr</c>
@@ -306,49 +96,34 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitAddExpr([NotNull] Z80AsmParser.AddExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>MinMaxExpr</c>
+	/// Enter a parse tree produced by the <c>SymbolExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context) { }
+	public virtual void EnterSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>MinMaxExpr</c>
+	/// Exit a parse tree produced by the <c>SymbolExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context) { }
+	public virtual void ExitSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>FunctionInvocationExpr</c>
+	/// Enter a parse tree produced by the <c>UnaryMinusExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFunctionInvocationExpr([NotNull] Z80AsmParser.FunctionInvocationExprContext context) { }
+	public virtual void EnterUnaryMinusExpr([NotNull] Z80AsmParser.UnaryMinusExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>FunctionInvocationExpr</c>
+	/// Exit a parse tree produced by the <c>UnaryMinusExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFunctionInvocationExpr([NotNull] Z80AsmParser.FunctionInvocationExprContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>BracketedExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBracketedExpr([NotNull] Z80AsmParser.BracketedExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>BracketedExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBracketedExpr([NotNull] Z80AsmParser.BracketedExprContext context) { }
+	public virtual void ExitUnaryMinusExpr([NotNull] Z80AsmParser.UnaryMinusExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>EquExpr</c>
@@ -366,19 +141,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitEquExpr([NotNull] Z80AsmParser.EquExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>OrExpr</c>
+	/// Enter a parse tree produced by the <c>XorExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterOrExpr([NotNull] Z80AsmParser.OrExprContext context) { }
+	public virtual void EnterXorExpr([NotNull] Z80AsmParser.XorExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>OrExpr</c>
+	/// Exit a parse tree produced by the <c>XorExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitOrExpr([NotNull] Z80AsmParser.OrExprContext context) { }
+	public virtual void ExitXorExpr([NotNull] Z80AsmParser.XorExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>MacroParamExpr</c>
@@ -396,19 +171,109 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitMacroParamExpr([NotNull] Z80AsmParser.MacroParamExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>UnaryPlusExpr</c>
+	/// Enter a parse tree produced by the <c>BinaryNotExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterUnaryPlusExpr([NotNull] Z80AsmParser.UnaryPlusExprContext context) { }
+	public virtual void EnterBinaryNotExpr([NotNull] Z80AsmParser.BinaryNotExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>UnaryPlusExpr</c>
+	/// Exit a parse tree produced by the <c>BinaryNotExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitUnaryPlusExpr([NotNull] Z80AsmParser.UnaryPlusExprContext context) { }
+	public virtual void ExitBinaryNotExpr([NotNull] Z80AsmParser.BinaryNotExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>MultExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMultExpr([NotNull] Z80AsmParser.MultExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>MultExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMultExpr([NotNull] Z80AsmParser.MultExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BracketedExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBracketedExpr([NotNull] Z80AsmParser.BracketedExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BracketedExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBracketedExpr([NotNull] Z80AsmParser.BracketedExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>LogicalNotExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLogicalNotExpr([NotNull] Z80AsmParser.LogicalNotExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>LogicalNotExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLogicalNotExpr([NotNull] Z80AsmParser.LogicalNotExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>OrExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterOrExpr([NotNull] Z80AsmParser.OrExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>OrExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitOrExpr([NotNull] Z80AsmParser.OrExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>AndExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAndExpr([NotNull] Z80AsmParser.AndExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>AndExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAndExpr([NotNull] Z80AsmParser.AndExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ShiftExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterShiftExpr([NotNull] Z80AsmParser.ShiftExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ShiftExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitShiftExpr([NotNull] Z80AsmParser.ShiftExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>LiteralExpr</c>
@@ -441,124 +306,64 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitParenthesizedExpr([NotNull] Z80AsmParser.ParenthesizedExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>ShiftExpr</c>
+	/// Enter a parse tree produced by the <c>MinMaxExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterShiftExpr([NotNull] Z80AsmParser.ShiftExprContext context) { }
+	public virtual void EnterMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>ShiftExpr</c>
+	/// Exit a parse tree produced by the <c>MinMaxExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitShiftExpr([NotNull] Z80AsmParser.ShiftExprContext context) { }
+	public virtual void ExitMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>TernaryExpr</c>
+	/// Enter a parse tree produced by the <c>BuiltInFunctionExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterTernaryExpr([NotNull] Z80AsmParser.TernaryExprContext context) { }
+	public virtual void EnterBuiltInFunctionExpr([NotNull] Z80AsmParser.BuiltInFunctionExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>TernaryExpr</c>
+	/// Exit a parse tree produced by the <c>BuiltInFunctionExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitTernaryExpr([NotNull] Z80AsmParser.TernaryExprContext context) { }
+	public virtual void ExitBuiltInFunctionExpr([NotNull] Z80AsmParser.BuiltInFunctionExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>UnaryMinusExpr</c>
+	/// Enter a parse tree produced by the <c>RelExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterUnaryMinusExpr([NotNull] Z80AsmParser.UnaryMinusExprContext context) { }
+	public virtual void EnterRelExpr([NotNull] Z80AsmParser.RelExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>UnaryMinusExpr</c>
+	/// Exit a parse tree produced by the <c>RelExpr</c>
 	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitUnaryMinusExpr([NotNull] Z80AsmParser.UnaryMinusExprContext context) { }
+	public virtual void ExitRelExpr([NotNull] Z80AsmParser.RelExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>BinaryNotExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBinaryNotExpr([NotNull] Z80AsmParser.BinaryNotExprContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>BinaryNotExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBinaryNotExpr([NotNull] Z80AsmParser.BinaryNotExprContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>IsConditionInvoke</c>
+	/// Enter a parse tree produced by the <c>TextOfInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsConditionInvoke([NotNull] Z80AsmParser.IsConditionInvokeContext context) { }
+	public virtual void EnterTextOfInvoke([NotNull] Z80AsmParser.TextOfInvokeContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>IsConditionInvoke</c>
+	/// Exit a parse tree produced by the <c>TextOfInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsConditionInvoke([NotNull] Z80AsmParser.IsConditionInvokeContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>IsReg16Invoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsReg16Invoke([NotNull] Z80AsmParser.IsReg16InvokeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>IsReg16Invoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsReg16Invoke([NotNull] Z80AsmParser.IsReg16InvokeContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>DefInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDefInvoke([NotNull] Z80AsmParser.DefInvokeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>DefInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDefInvoke([NotNull] Z80AsmParser.DefInvokeContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>IsReg16StdInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsReg16StdInvoke([NotNull] Z80AsmParser.IsReg16StdInvokeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>IsReg16StdInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsReg16StdInvoke([NotNull] Z80AsmParser.IsReg16StdInvokeContext context) { }
+	public virtual void ExitTextOfInvoke([NotNull] Z80AsmParser.TextOfInvokeContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>IsIndexedAddrInvoke</c>
@@ -576,64 +381,34 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitIsIndexedAddrInvoke([NotNull] Z80AsmParser.IsIndexedAddrInvokeContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>IsReg8StdSpecInvoke</c>
+	/// Enter a parse tree produced by the <c>IsReg16IdxInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsReg8StdSpecInvoke([NotNull] Z80AsmParser.IsReg8StdSpecInvokeContext context) { }
+	public virtual void EnterIsReg16IdxInvoke([NotNull] Z80AsmParser.IsReg16IdxInvokeContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>IsReg8StdSpecInvoke</c>
+	/// Exit a parse tree produced by the <c>IsReg16IdxInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsReg8StdSpecInvoke([NotNull] Z80AsmParser.IsReg8StdSpecInvokeContext context) { }
+	public virtual void ExitIsReg16IdxInvoke([NotNull] Z80AsmParser.IsReg16IdxInvokeContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>IsCportInvoke</c>
+	/// Enter a parse tree produced by the <c>IsReg16Invoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsCportInvoke([NotNull] Z80AsmParser.IsCportInvokeContext context) { }
+	public virtual void EnterIsReg16Invoke([NotNull] Z80AsmParser.IsReg16InvokeContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>IsCportInvoke</c>
+	/// Exit a parse tree produced by the <c>IsReg16Invoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsCportInvoke([NotNull] Z80AsmParser.IsCportInvokeContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>IsReg8Invoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsReg8Invoke([NotNull] Z80AsmParser.IsReg8InvokeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>IsReg8Invoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsReg8Invoke([NotNull] Z80AsmParser.IsReg8InvokeContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>IsExprInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsExprInvoke([NotNull] Z80AsmParser.IsExprInvokeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>IsExprInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsExprInvoke([NotNull] Z80AsmParser.IsExprInvokeContext context) { }
+	public virtual void ExitIsReg16Invoke([NotNull] Z80AsmParser.IsReg16InvokeContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>IsReg8IdxInvoke</c>
@@ -651,21 +426,6 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitIsReg8IdxInvoke([NotNull] Z80AsmParser.IsReg8IdxInvokeContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>IsReg16IdxInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsReg16IdxInvoke([NotNull] Z80AsmParser.IsReg16IdxInvokeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>IsReg16IdxInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsReg16IdxInvoke([NotNull] Z80AsmParser.IsReg16IdxInvokeContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>IsReg8StdInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -679,6 +439,51 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIsReg8StdInvoke([NotNull] Z80AsmParser.IsReg8StdInvokeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>IsReg8StdSpecInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIsReg8StdSpecInvoke([NotNull] Z80AsmParser.IsReg8StdSpecInvokeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>IsReg8StdSpecInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIsReg8StdSpecInvoke([NotNull] Z80AsmParser.IsReg8StdSpecInvokeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DefInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDefInvoke([NotNull] Z80AsmParser.DefInvokeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DefInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDefInvoke([NotNull] Z80AsmParser.DefInvokeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>IsConditionInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIsConditionInvoke([NotNull] Z80AsmParser.IsConditionInvokeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>IsConditionInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIsConditionInvoke([NotNull] Z80AsmParser.IsConditionInvokeContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>IsRegIndirectInvoke</c>
@@ -696,19 +501,214 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitIsRegIndirectInvoke([NotNull] Z80AsmParser.IsRegIndirectInvokeContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>TextOfInvoke</c>
+	/// Enter a parse tree produced by the <c>IsReg8Invoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterTextOfInvoke([NotNull] Z80AsmParser.TextOfInvokeContext context) { }
+	public virtual void EnterIsReg8Invoke([NotNull] Z80AsmParser.IsReg8InvokeContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>TextOfInvoke</c>
+	/// Exit a parse tree produced by the <c>IsReg8Invoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitTextOfInvoke([NotNull] Z80AsmParser.TextOfInvokeContext context) { }
+	public virtual void ExitIsReg8Invoke([NotNull] Z80AsmParser.IsReg8InvokeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>IsReg16StdInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIsReg16StdInvoke([NotNull] Z80AsmParser.IsReg16StdInvokeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>IsReg16StdInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIsReg16StdInvoke([NotNull] Z80AsmParser.IsReg16StdInvokeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>IsExprInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIsExprInvoke([NotNull] Z80AsmParser.IsExprInvokeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>IsExprInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIsExprInvoke([NotNull] Z80AsmParser.IsExprInvokeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>IsCportInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIsCportInvoke([NotNull] Z80AsmParser.IsCportInvokeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>IsCportInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIsCportInvoke([NotNull] Z80AsmParser.IsCportInvokeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>StringLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStringLiteral([NotNull] Z80AsmParser.StringLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>StringLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStringLiteral([NotNull] Z80AsmParser.StringLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BinLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBinLiteral([NotNull] Z80AsmParser.BinLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BinLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBinLiteral([NotNull] Z80AsmParser.BinLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>HexLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHexLiteral([NotNull] Z80AsmParser.HexLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>HexLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHexLiteral([NotNull] Z80AsmParser.HexLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BoolLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBoolLiteral([NotNull] Z80AsmParser.BoolLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BoolLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBoolLiteral([NotNull] Z80AsmParser.BoolLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>RealLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRealLiteral([NotNull] Z80AsmParser.RealLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>RealLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRealLiteral([NotNull] Z80AsmParser.RealLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CurCounterLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCurCounterLiteral([NotNull] Z80AsmParser.CurCounterLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CurCounterLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCurCounterLiteral([NotNull] Z80AsmParser.CurCounterLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CharLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCharLiteral([NotNull] Z80AsmParser.CharLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CharLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCharLiteral([NotNull] Z80AsmParser.CharLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>OctalLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterOctalLiteral([NotNull] Z80AsmParser.OctalLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>OctalLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitOctalLiteral([NotNull] Z80AsmParser.OctalLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DecimalLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDecimalLiteral([NotNull] Z80AsmParser.DecimalLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DecimalLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDecimalLiteral([NotNull] Z80AsmParser.DecimalLiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CurAddrLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCurAddrLiteral([NotNull] Z80AsmParser.CurAddrLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CurAddrLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCurAddrLiteral([NotNull] Z80AsmParser.CurAddrLiteralContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.compileUnit"/>.
@@ -815,6 +815,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitStatement([NotNull] Z80AsmParser.StatementContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIterationTest([NotNull] Z80AsmParser.IterationTestContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIterationTest([NotNull] Z80AsmParser.IterationTestContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -839,32 +852,6 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMacroEndMarker([NotNull] Z80AsmParser.MacroEndMarkerContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLoopStatement([NotNull] Z80AsmParser.LoopStatementContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.procStatement"/>.
@@ -893,6 +880,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitProcEndMarker([NotNull] Z80AsmParser.ProcEndMarkerContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.loopEndMarker"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLoopEndMarker([NotNull] Z80AsmParser.LoopEndMarkerContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.repeatStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -904,32 +904,6 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitRepeatStatement([NotNull] Z80AsmParser.RepeatStatementContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.untilStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitUntilStatement([NotNull] Z80AsmParser.UntilStatementContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.whileStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWhileStatement([NotNull] Z80AsmParser.WhileStatementContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.whileEndMarker"/>.
@@ -956,19 +930,6 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIfStatement([NotNull] Z80AsmParser.IfStatementContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterElifStatement([NotNull] Z80AsmParser.ElifStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Z80AsmParser.elifStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitElifStatement([NotNull] Z80AsmParser.ElifStatementContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.elseStatement"/>.
@@ -1099,6 +1060,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStructEndMarker([NotNull] Z80AsmParser.StructEndMarkerContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.localStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLocalStatement([NotNull] Z80AsmParser.LocalStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.localStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLocalStatement([NotNull] Z80AsmParser.LocalStatementContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.macroOrStructInvocation"/>.

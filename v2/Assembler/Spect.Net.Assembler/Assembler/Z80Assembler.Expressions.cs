@@ -23,16 +23,34 @@ namespace Spect.Net.Assembler.Assembler
         /// Gets the value of the specified symbol
         /// </summary>
         /// <param name="symbol">Symbol name</param>
-        /// <param name="scopeSymbolNames">Additional symbol name segments</param>
         /// <param name="startFromGlobal">Should resolution start from global scope?</param>
         /// <returns>
         /// Null, if the symbol cannot be found; otherwise, the symbol's value
         /// </returns>
-        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) GetSymbolValue(string symbol, List<string> scopeSymbolNames = null, bool startFromGlobal = false)
+        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) GetSymbolValue(string symbol, bool startFromGlobal = false)
         {
-            return (scopeSymbolNames == null || scopeSymbolNames.Count == 0) && !startFromGlobal
-                ? CurrentModule.ResolveSimpleSymbol(symbol)
-                : CurrentModule.ResolveCompoundSymbol(symbol, scopeSymbolNames, startFromGlobal);
+            (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) resolved;
+            if (startFromGlobal)
+            {
+                // --- Most be a compound symbol
+                resolved = CurrentModule.ResolveCompoundSymbol(symbol, true);
+            }
+            else if (symbol.Contains("."))
+            {
+                resolved = CurrentModule.ResolveCompoundSymbol(symbol, false);
+                if (resolved.ExprValue == null)
+                {
+                    resolved = CurrentModule.ResolveSimpleSymbol(symbol);
+                }
+            }
+            else
+            {
+                resolved = CurrentModule.ResolveSimpleSymbol(symbol);
+            }
+            return resolved;
+            //return !symbol.Contains(".") && !startFromGlobal
+            //    ? CurrentModule.ResolveSimpleSymbol(symbol)
+            //    : CurrentModule.ResolveCompoundSymbol(symbol, startFromGlobal);
         }
 
         /// <summary>
@@ -96,14 +114,19 @@ namespace Spect.Net.Assembler.Assembler
         /// Adds a symbol to the current scope
         /// </summary>
         /// <param name="symbol"></param>
+        /// <param name="line">Assembly line</param>
         /// <param name="value"></param>
-        public void AddSymbol(string symbol, ExpressionValue value)
+        public void AddSymbol(string symbol, SourceLineBase line, ExpressionValue value)
         {
             Dictionary<string, AssemblySymbolInfo> GetSymbols() =>
                 CurrentModule.LocalScopes.Count > 0
                     ? CurrentModule.LocalScopes.Peek().Symbols
                     : CurrentModule.Symbols;
 
+            if (symbol == "__SET_ATTR2")
+            {
+                var x = 1;
+            }
             var currentScopeIsTemporary = CurrentModule.LocalScopes.Count != 0 
                 && CurrentModule.LocalScopes.Peek().IsTemporaryScope;
             var symbolIsTemporary = symbol.StartsWith("`");
@@ -124,13 +147,50 @@ namespace Spect.Net.Assembler.Assembler
             else
             {
                 // --- Create a new temporary scope
-                CurrentModule.LocalScopes.Push(new SymbolScope() { IsTemporaryScope = true });
+                CurrentModule.LocalScopes.Push(new SymbolScope { IsTemporaryScope = true });
                 if (symbolIsTemporary)
                 {
                     // --- Temporary symbol should go into the new temporary scope
                     lookup = GetSymbols();
                 }
             }
+
+            if (CurrentModule.LocalScopes.Count > 0)
+            {
+                // --- We are in a local scope, get the next non-temporary scope
+                var localScopes = CurrentModule.LocalScopes;
+                var scope = localScopes.Peek();
+                if (scope.IsTemporaryScope)
+                {
+                    var tmpScope = localScopes.Pop();
+                    scope = localScopes.Count > 0 ? localScopes.Peek() : null;
+                    localScopes.Push(tmpScope);
+                }
+
+                if (scope?.LocalSymbolBookings.Count > 0)
+                {
+                    // --- We already booked local symbols
+                    if (!scope.LocalSymbolBookings.Contains(symbol))
+                    {
+                        lookup = CurrentModule.Symbols;
+                    }
+                }
+                else
+                {
+                    if (_options.ProcExplicitLocalsOnly)
+                    {
+                        lookup = CurrentModule.Symbols;
+                    }
+                }
+            }
+
+            // --- Check for already defined symbols
+            if (lookup.TryGetValue(symbol, out var symbolInfo) && symbolInfo.Type == SymbolType.Label)
+            {
+                ReportError(Errors.Z0040, line, symbol);
+                return;
+            }
+
             lookup.Add(symbol, AssemblySymbolInfo.CreateLabel(symbol, value));
         }
 

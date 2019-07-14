@@ -12,6 +12,7 @@ using Spect.Net.Assembler.SyntaxTree.Expressions;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 using Spect.Net.Assembler.SyntaxTree.Pragmas;
 using Spect.Net.Assembler.SyntaxTree.Statements;
+// ReSharper disable StringLiteralTypo
 
 namespace Spect.Net.Assembler
 {
@@ -66,6 +67,11 @@ namespace Spect.Net.Assembler
         /// The current label
         /// </summary>
         public string CurrentLabel { get; set; }
+
+        /// <summary>
+        /// Indicates if the current label has a colon
+        /// </summary>
+        public bool CurrentLabelColon { get; set; }
 
         /// <summary>
         /// The current comment
@@ -306,6 +312,7 @@ namespace Spect.Net.Assembler
         public override object VisitAsmline(Z80AsmParser.AsmlineContext context)
         {
             CurrentLabel = null;
+            CurrentLabelColon = false;
             CurrentComment = null;
             LabelSpan = null;
             KeywordSpan = null;
@@ -345,6 +352,7 @@ namespace Spect.Net.Assembler
             if (labelCtx != null)
             {
                 CurrentLabel = labelCtx.GetChild(0).NormalizeToken();
+                CurrentLabelColon = labelCtx.COLON() != null;
                 LabelSpan = new TextSpan(labelCtx.Start.StartIndex, labelCtx.Start.StopIndex + 1);
             }
 
@@ -385,8 +393,61 @@ namespace Spect.Net.Assembler
             }
             else if (mainInstructionPart == null && (CurrentLabel != null || CurrentComment != null))
             {
-                // --- Either a label only or a comment only line
                 mainInstructionPart = new NoInstructionLine();
+                if (CurrentLabel != null && !CurrentLabelColon)
+                {
+                    var statementFound = true;
+                    switch (CurrentLabel.ToLower())
+                    {
+                        case "continue":
+                            mainInstructionPart = new ContinueStatement();
+                            break;
+                        case "break":
+                            mainInstructionPart = new BreakStatement();
+                            break;
+                        case "endm":
+                        case "mend":
+                            mainInstructionPart = new MacroEndStatement();
+                            break;
+                        case "endl":
+                        case "lend":
+                            mainInstructionPart = new LoopEndStatement();
+                            break;
+                        case "proc":
+                            mainInstructionPart = new ProcStatement();
+                            break;
+                        case "endp":
+                        case "pend":
+                            mainInstructionPart = new ProcEndStatement();
+                            break;
+                        case "repeat":
+                            mainInstructionPart = new RepeatStatement();
+                            break;
+                        case "endw":
+                        case "wend":
+                            mainInstructionPart = new WhileEndStatement();
+                            break;
+                        case "ends":
+                            mainInstructionPart = new StructEndStatement();
+                            break;
+                        case "else":
+                            mainInstructionPart = new ElseStatement();
+                            break;
+                        case "endif":
+                            mainInstructionPart = new IfEndStatement();
+                            break;
+
+                        default:
+                            statementFound = false;
+                            break;
+                    }
+
+                    if (statementFound)
+                    {
+                        KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
+                        CurrentLabel = null;
+                    }
+                }
             }
 
             return mainInstructionPart is SourceLineBase sourceLine
@@ -402,6 +463,14 @@ namespace Spect.Net.Assembler
         {
             KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
             var mnemonic = context.GetChild(0).NormalizeToken();
+            if (context.STRING() != null)
+            {
+                AddString(context.STRING());
+            }
+            else if (context.FSTRING() != null)
+            {
+                AddString(context.FSTRING());
+            }
             return mnemonic == "#INCLUDE" 
                 ? (object) new IncludeDirective(this, context) 
                 : new Directive(this, context);
@@ -549,6 +618,52 @@ namespace Spect.Net.Assembler
 
         #region Statement handling
 
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="Z80AsmParser.iterationTest"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public override object VisitIterationTest(Z80AsmParser.IterationTestContext context)
+        {
+            IToken token = null;
+            StatementBase stmt = null;
+            if (context.LOOP() != null || context.IDENTIFIER()?.GetText().ToLower() == "loop")
+            {
+                token = context.LOOP()?.Symbol;
+                stmt = new LoopStatement(this, context.expr());
+            }
+            else if (context.WHILE() != null || context.IDENTIFIER()?.GetText().ToLower() == "while")
+            {
+                token = context.WHILE()?.Symbol;
+                stmt = new WhileStatement(this, context.expr());
+            }
+            else if (context.UNTIL() != null || context.IDENTIFIER()?.GetText().ToLower() == "until")
+            {
+                token = context.UNTIL()?.Symbol;
+                stmt = new UntilStatement(this, context.expr());
+            }
+            else if (context.ELIF() != null || context.IDENTIFIER()?.GetText().ToLower() == "elif")
+            {
+                token = context.ELIF()?.Symbol;
+                stmt = new ElifStatement(this, context.expr());
+            }
+            else
+            {
+                return null;
+            }
+
+            if (token == null)
+            {
+                token = context.IDENTIFIER().Symbol;
+            }
+            KeywordSpan = new TextSpan(token.StartIndex, token.StopIndex + 1);
+            return stmt;
+        }
+
         public override object VisitStatement(Z80AsmParser.StatementContext context)
         {
             KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
@@ -586,9 +701,6 @@ namespace Spect.Net.Assembler
         public override object VisitModuleEndMarker(Z80AsmParser.ModuleEndMarkerContext context) 
             => new ModuleEndStatement();
 
-        public override object VisitLoopStatement(Z80AsmParser.LoopStatementContext context) 
-            => new LoopStatement(this, context);
-
         public override object VisitLoopEndMarker(Z80AsmParser.LoopEndMarkerContext context) 
             => new LoopEndStatement();
 
@@ -601,20 +713,11 @@ namespace Spect.Net.Assembler
         public override object VisitRepeatStatement(Z80AsmParser.RepeatStatementContext context) 
             => new RepeatStatement();
 
-        public override object VisitUntilStatement(Z80AsmParser.UntilStatementContext context) 
-            => new UntilStatement(this, context);
-
-        public override object VisitWhileStatement(Z80AsmParser.WhileStatementContext context) 
-            => new WhileStatement(this, context);
-
         public override object VisitWhileEndMarker(Z80AsmParser.WhileEndMarkerContext context) 
             => new WhileEndStatement();
 
         public override object VisitIfStatement(Z80AsmParser.IfStatementContext context) 
             => new IfStatement(this, context);
-
-        public override object VisitElifStatement(Z80AsmParser.ElifStatementContext context) 
-            => new ElifStatement(this, context);
 
         public override object VisitElseStatement(Z80AsmParser.ElseStatementContext context) 
             => new ElseStatement();
@@ -633,6 +736,9 @@ namespace Spect.Net.Assembler
 
         public override object VisitContinueStatement(Z80AsmParser.ContinueStatementContext context) 
             => new ContinueStatement();
+
+        public override object VisitLocalStatement(Z80AsmParser.LocalStatementContext context)
+            => new LocalStatement(this, context);
 
         #endregion
 
@@ -694,7 +800,7 @@ namespace Spect.Net.Assembler
                     break;
 
                 case Z80AsmParser.SymbolExprContext ctx:
-                    if (ctx.ChildCount != 0 && ctx.symbol()?.IDENTIFIER()?.Length != 0)
+                    if (ctx.ChildCount != 0 && ctx.symbol()?.IDENTIFIER() != null)
                     {
                         AddIdentifier(ctx);
                         expr = new IdentifierNode(ctx.symbol());
@@ -1063,6 +1169,7 @@ namespace Spect.Net.Assembler
             line.LastPosition = LastPosition;
             line.ParserException = context.exception;
             line.Label = CurrentLabel;
+            line.LabelColon = CurrentLabelColon;
             line.LabelSpan = LabelSpan;
             line.KeywordSpan = KeywordSpan;
             line.NumberSpans = NumberSpans;

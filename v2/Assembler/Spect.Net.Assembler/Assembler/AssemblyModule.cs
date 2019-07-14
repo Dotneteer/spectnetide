@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Spect.Net.Assembler.SyntaxTree.Expressions;
 // ReSharper disable IdentifierTypo
 
@@ -105,14 +106,15 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Resolves a compound symbol through modules
         /// </summary>
-        /// <param name="symbol">First segment of the symbol</param>
-        /// <param name="scopeSymbolNames">Last segment of the symbol</param>
+        /// <param name="fullSymbol">Symbol with name segments</param>
         /// <param name="startFromGlobal">Should resolution start from global scope?</param>
         /// <returns></returns>
-        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) ResolveCompoundSymbol(string symbol, 
-            IEnumerable<string> scopeSymbolNames,
+        public (ExpressionValue ExprValue, IHasUsageInfo UsageInfo) ResolveCompoundSymbol(string fullSymbol, 
             bool startFromGlobal)
         {
+            var symbolParts = fullSymbol.Split('.');
+            var symbol = symbolParts[0];
+            var scopeSymbolNames = symbolParts.Skip(1);
             var symbolSegments = new List<string> { symbol };
             symbolSegments.AddRange(scopeSymbolNames);
 

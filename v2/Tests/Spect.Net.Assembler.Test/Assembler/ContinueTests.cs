@@ -8,15 +8,19 @@ namespace Spect.Net.Assembler.Test.Assembler
     public class ContinueTests: AssemblerTestBed
     {
         [TestMethod]
-        public void ContinueRaisesErrorInGlobalScope()
+        [DataRow(".continue")]
+        [DataRow("continue")]
+        [DataRow(".CONTINUE")]
+        [DataRow("CONTINUE")]
+        public void ContinueRaisesErrorInGlobalScope(string stmt)
         {
             // --- Arrange
             var compiler = new Z80Assembler();
 
             // --- Act
-            var output = compiler.Compile(@"
+            var output = compiler.Compile($@"
                 ld a,b
-                .continue
+                {stmt}
                 ");
 
             // --- Assert

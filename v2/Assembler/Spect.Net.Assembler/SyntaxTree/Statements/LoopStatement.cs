@@ -24,9 +24,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public ExpressionNode Expression { get; }
 
-        public LoopStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.LoopStatementContext context)
+        public LoopStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.ExprContext context)
         {
-            Expression = visitorContext.GetExpression(context.expr());
+            Expression = visitorContext.GetExpression(context);
         }
     }
 }

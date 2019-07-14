@@ -1,5 +1,9 @@
 grammar Z80Asm;
 
+options {
+    superClass=Z80AsmBaseParser;
+}
+
 /*
  * Parser Rules
  */
@@ -18,13 +22,14 @@ lineBody
 	:	pragma 
 	|	operation 
 	|	macroParam 
-	|	statement 
 	|	macroOrStructInvocation 
+	|	statement
 	|	fieldAssignment
 	;
 
 label
-	:	IDENTIFIER COLON?
+	:	IDENTIFIER COLON
+	|	IDENTIFIER{!this.exprStart()}?
 	;
 
 comment
@@ -67,21 +72,19 @@ directive
 	|	ELSE
 	|	IF expr
 	|	INCLUDE (STRING | FSTRING)
+	|	LINEDIR expr COMMA? STRING
 	;	
 
 statement
-	:	macroStatement
+	:	iterationTest
+	|	macroStatement
 	|	macroEndMarker
-	|	loopStatement
 	|	loopEndMarker
+	|	whileEndMarker
 	|	procStatement
 	|	procEndMarker
 	|	repeatStatement
-	|	untilStatement
-	|	whileStatement
-	|	whileEndMarker
 	|	ifStatement
-	|	elifStatement
 	|	elseStatement
 	|	endifStatement
 	|	forStatement
@@ -92,20 +95,20 @@ statement
 	|	moduleEndMarker
 	|	structStatement
 	|	structEndMarker
+	|	localStatement
 	;
 
+iterationTest: (LOOP | WHILE | UNTIL | ELIF | IDENTIFIER
+	{this.p("loop", "while", "until", "elif")}?
+	) expr;
 macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
 macroEndMarker: ENDMACRO ;
-loopStatement: LOOP expr ;
-loopEndMarker: ENDLOOP ;
 procStatement: PROC;
-procEndMarker: ENDPROC;
+procEndMarker: ENDPROC ;
+loopEndMarker: ENDLOOP ;
 repeatStatement: REPEAT ;
-untilStatement: UNTIL expr ;
-whileStatement: WHILE expr ;
 whileEndMarker: ENDWHILE ;
 ifStatement: IFSTMT expr | IFUSED symbol | IFNUSED symbol ;
-elifStatement: ELIF expr ;
 elseStatement: ELSESTMT ;
 endifStatement: ENDIFSTMT ;
 forStatement: FOR IDENTIFIER ASSIGN expr TO expr (STEP expr)? ;
@@ -116,6 +119,7 @@ moduleStatement: MODULE IDENTIFIER? ;
 moduleEndMarker: ENDMOD ;
 structStatement: STRUCT ;
 structEndMarker: ENDST ;
+localStatement: LOCAL IDENTIFIER (COMMA IDENTIFIER)* ;
 
 macroOrStructInvocation: IDENTIFIER LPAR macroArgument (COMMA macroArgument)* RPAR	;
 macroArgument: operand? ;
@@ -357,11 +361,11 @@ literal
 	;
 
 symbol
-	: DCOLON? IDENTIFIER ( DOT IDENTIFIER)*
+	: DCOLON? IDENTIFIER
 	;
 
 macroParam
-	: '{{' IDENTIFIER '}}'
+	: LDBRAC IDENTIFIER RDBRAC
 	;
 
 regs
@@ -584,6 +588,7 @@ INCLUDE	: '#include' ;
 IF		: '#if' ;
 IFMOD	: '#ifmod' ;
 IFNMOD	: '#ifnmod' ;
+LINEDIR	: '#line';
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
@@ -619,35 +624,36 @@ COMPAREBIN
 
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;
-ENDMACRO: '.endm' | '.ENDM' | 'endm' | 'ENDM' | '.mend' | '.MEND' | 'mend' | 'MEND' ;
-PROC	: '.proc' | '.PROC' | 'proc' | 'PROC' ;
-ENDPROC	: '.endp' | '.ENDP' | 'endp' | 'ENDP' | '.pend' | '.PEND' | 'pend' | 'PEND' ;
-LOOP	: '.loop' | '.LOOP' | 'loop' | 'LOOP' ;
-ENDLOOP	: '.endl' | '.ENDL' | 'endl' | 'ENDL' | '.lend' | '.LEND' | 'lend' | 'LEND' ;
-REPEAT	: '.repeat' | '.REPEAT' | 'repeat' | 'REPEAT' ;
-UNTIL	: '.until' | '.UNTIL' | 'until' | 'UNTIL' ;
-WHILE	: '.while' | '.WHILE' | 'while' | 'WHILE' ;
-ENDWHILE: '.endw' | '.ENDW' | 'endw' | 'ENDW' | '.wend' | '.WEND' | 'wend' | 'WEND' ;
+ENDMACRO: '.endm' | '.ENDM' | '.mend' | '.MEND' ;
+PROC	: '.proc' | '.PROC' ;
+ENDPROC	: '.endp' | '.ENDP' | '.pend' | '.PEND' ;
+LOOP	: '.loop' | '.LOOP' ;
+ENDLOOP	: '.endl' | '.ENDL' | '.lend' | '.LEND' ;
+REPEAT	: '.repeat' | '.REPEAT' ;
+UNTIL	: '.until' | '.UNTIL' ;
+WHILE	: '.while' | '.WHILE' ;
+ENDWHILE: '.endw' | '.ENDW' | '.wend' | '.WEND' ;
 IFSTMT	: '.if' | '.IF' | 'if' | 'IF' ;
 IFUSED	: '.ifused' | '.IFUSED' | 'ifused' | 'IFUSED' ;
 IFNUSED	: '.ifnused' | '.IFNUSED' | 'ifnused' | 'IFNUSED' ;
-ELIF	: '.elif' | '.ELIF' | 'elif' | 'ELIF' ;
-ELSESTMT: '.else' | '.ELSE' | 'else' | 'ELSE' ;
-ENDIFSTMT: '.endif' | '.ENDIF' | 'endif' | 'ENDIF' ;
+ELIF	: '.elif' | '.ELIF' ;
+ELSESTMT: '.else' | '.ELSE' ;
+ENDIFSTMT: '.endif' | '.ENDIF' ;
 FOR		: '.for' | '.FOR' | 'for' | 'FOR' ;
 TO		: '.to' | '.TO' | 'to' | 'TO' ;
 STEP	: '.step' | '.STEP' | 'step' | 'STEP' ;
 FORNEXT	: '.next' | '.NEXT' ;
 NEXT	: 'next' | 'NEXT' ;
-BREAK	: '.break' | 'break' | '.BREAK' | 'BREAK' ;
-CONTINUE: '.continue' | 'continue' | '.CONTINUE' | 'CONTINUE' ;
+BREAK	: '.break' | '.BREAK' ;
+CONTINUE: '.continue' | '.CONTINUE' ;
 MODULE	: '.module' | '.MODULE' | 'module' | 'MODULE' | '.scope' | '.SCOPE' | 'scope' | 'SCOPE' ;
 ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE' 
 		  | '.endscope' | '.ENDSCOPE' | 'endscope' | 'ENDSCOPE'
 		  | '.moduleend' | '.MODULEEND' | 'moduleend' | 'MODULEEND'
 		  | '.scopeend' | '.SCOPEEND' | 'scopeend' | 'SCOPEEND' ;
 STRUCT	: '.struct' | '.STRUCT' | 'struct' | 'STRUCT' ;
-ENDST	: '.ends' | '.ENDS' | 'ends' | 'ENDS' ;
+ENDST	: '.ends' | '.ENDS' ;
+LOCAL	: '.local' | '.LOCAL' | 'local' | 'LOCAL' ;
 
 // --- Built-in function names
 TEXTOF	: 'textof' | 'TEXTOF' ;
@@ -706,7 +712,7 @@ FALSE	: 'false' | '.false' | 'FALSE' | '.FALSE' ;
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
 IDSTART	: '_' | '@' | '`' | 'A'..'Z' | 'a'..'z'	;
-IDCONT	: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+IDCONT	: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' | '.' ;
 
 CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
 NONEARG	: '$<none>$' ;

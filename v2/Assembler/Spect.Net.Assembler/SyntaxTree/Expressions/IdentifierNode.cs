@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Spect.Net.Assembler.Generated;
 
@@ -21,11 +19,6 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         public string SymbolName { get; set; }
 
         /// <summary>
-        /// Symbol names within scopes
-        /// </summary>
-        public List<string> ScopeSymbolNames { get; set; }
-
-        /// <summary>
         /// This property signs if an expression is ready to be evaluated,
         /// namely, all subexpression values are known
         /// </summary>
@@ -33,7 +26,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>True, if the expression is ready; otherwise, false</returns>
         public override bool ReadyToEvaluate(IEvaluationContext evalContext)
         {
-            var result = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal).ExprValue != null;
+            var result = evalContext.GetSymbolValue(SymbolName, StartFromGlobal).ExprValue != null;
             if (!result)
             {
                 AddError(FullSymbolName);
@@ -48,7 +41,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         /// <returns>Evaluated expression value</returns>
         public override ExpressionValue Evaluate(IEvaluationContext evalContext)
         {
-            var (exprValue, usageInfo) = evalContext.GetSymbolValue(SymbolName, ScopeSymbolNames, StartFromGlobal);
+            var (exprValue, usageInfo) = evalContext.GetSymbolValue(SymbolName, StartFromGlobal);
             if (exprValue != null)
             {
                 if (usageInfo != null)
@@ -71,11 +64,6 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
                 var sb = new StringBuilder();
                 if (StartFromGlobal) sb.Append("::");
                 sb.Append(SymbolName);
-                if (ScopeSymbolNames != null && ScopeSymbolNames.Count > 0)
-                {
-                    sb.Append(".");
-                    sb.Append(string.Join(".", ScopeSymbolNames));
-                }
                 return sb.ToString();
             }
         }
@@ -83,8 +71,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         public IdentifierNode(Z80AsmParser.SymbolContext context) : base(context)
         {
             StartFromGlobal = context.GetChild(0).GetText() == "::";
-            SymbolName = context.IDENTIFIER()[0].NormalizeToken();
-            ScopeSymbolNames = context.IDENTIFIER().Skip(1).Select(i => i.NormalizeToken()).ToList();
+            SymbolName = context.IDENTIFIER()?.NormalizeToken();
         }
     }
 }

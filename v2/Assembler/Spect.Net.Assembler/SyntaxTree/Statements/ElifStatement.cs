@@ -13,9 +13,9 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
         /// </summary>
         public ExpressionNode Expression { get; }
 
-        public ElifStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.ElifStatementContext context)
+        public ElifStatement(IZ80AsmVisitorContext visitorContext, Z80AsmParser.ExprContext context)
         {
-            Expression = visitorContext.GetExpression(context.expr());
+            Expression = visitorContext.GetExpression(context);
         }
     }
 }
