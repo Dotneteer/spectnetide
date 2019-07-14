@@ -72,7 +72,11 @@ namespace Spect.Net.VsPackage
         ShowMatchingBrace = true,
         ShowSmartIndent = true)]
     [ProvideLanguageExtension(typeof(Z80TestLanguageService), ".z80test")]
-   
+    [ProvideProjectFactory(typeof(ZxSpectrumProjectFactory), 
+        "ZX Spectrum Code Discovery Project",
+        "ZX Spectrum Project Files (*.z80dcproj);*.z80cdproj", "z80cdproj", "z80cdproj",
+        @"ProjectTemplates\ZX Spectrum", LanguageVsTemplate = "ZX Spectrum Code Discovery Project")]
+    
     public sealed class SpectNetPackage : VsxAsyncPackage
     {
         /// <summary>
@@ -90,6 +94,11 @@ namespace Spect.Net.VsPackage
         /// The GUID for the command set of this package.
         /// </summary>
         public const string COMMAND_SET_GUID = "234580c4-8a2c-4ae1-8e4f-5bc708b188fe";
+
+        /// <summary>
+        /// The GUID used by the project factory
+        /// </summary>
+        public const string PROJECT_FACTORY_GUID = "7F8C1ABC-9735-4A03-A7A7-9867750FDF50";
 
         /// <summary>
         /// The singleton instance of this class, set in InitializeAsync
@@ -167,12 +176,21 @@ namespace Spect.Net.VsPackage
             new ShowRegistersCommand();
             new ShowDisassemblyCommand();
 
-            // --- Solution Explorer commands
+            // --- Solution Explorer project commands
+            new SetAsActiveProjectCommand();
+            new RunDefaultProgramCommand();
+            new CompileDefaultCodeCommand();
+            new DebugDefaultProgramCommand();
+            new InjectDefaultProgramCommand();
+            new ExportDefaultProgramCommand();
+            new CompileAllUnitTestsCommand();
+            new RunAllUnitTestsCommand();
+
+            // --- Solution Explorer item commands
             new SetAsDefaultCodeFileCommand();
             new SetAsDefaultAnnotationFileCommand();
             new SetAsDefaultTapeFileCommand();
-            new SetAsActiveProjectCommand();
-            new CompileAllZ80TestsCommand();
+            new CompileCodeCommand();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -189,5 +207,13 @@ namespace Spect.Net.VsPackage
                 _ = BreakpointChangeWatcher.StopAsync();
             }
         }
+    }
+
+    /// <summary>
+    /// This class is used to register the ZX Spectrum project factory
+    /// </summary>
+    [Guid(SpectNetPackage.PROJECT_FACTORY_GUID)]
+    public class ZxSpectrumProjectFactory
+    {
     }
 }

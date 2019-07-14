@@ -52,7 +52,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeDiscoverProjectTreePropertiesProvider.cs" />
-    <Compile Include="Commands\CompileAllZ80TestCommand.cs" />
+    <Compile Include="Commands\CompileAllUnitTestsCommand.cs" />
+    <Compile Include="Commands\CompileDefaultCodeCommand.cs" />
+    <Compile Include="Commands\CompileCodeCommand.cs" />
+    <Compile Include="Commands\DebugProgramCommand.cs" />
+    <Compile Include="Commands\DebugDefaultProgramCommand.cs" />
+    <Compile Include="Commands\ExportDefaultProgramCommand.cs" />
+    <Compile Include="Commands\ExportProgramCommand.cs" />
+    <Compile Include="Commands\InjectDefaultProgramCommand.cs" />
+    <Compile Include="Commands\RunAllUnitTestsCommand.cs" />
+    <Compile Include="Commands\RunProgramCommand.cs" />
+    <Compile Include="Commands\RunDefaultProgramCommand.cs" />
     <Compile Include="Commands\SetAsActiveProjectCommand.cs" />
     <Compile Include="Commands\SetAsDefaultAnnotationFileCommand.cs" />
     <Compile Include="Commands\SetAsDefaultCodeFileCommand.cs" />
@@ -129,12 +139,15 @@
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
+    <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />
+    <Compile Include="Commands\InjectProgramCommand.cs" />
     <Compile Include="VsxLibrary\Command\ShowToolWindowCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\SingleProjectItemCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\SpectNetCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ProjectCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\SpectrumProgramCommandBase.cs" />
-    <Compile Include="VsxLibrary\Command\Z80TestCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\UnitTestCommandBase.cs" />
     <Compile Include="VsxLibrary\Output\MissingOutputPaneHandling.cs" />
     <Compile Include="VsxLibrary\Output\OutputPaneAttributes.cs" />
     <Compile Include="VsxLibrary\Output\OutputPaneDefinition.cs" />

@@ -7,7 +7,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
     /// <summary>
     /// This class represents a command that can be executed on a Z80 Unit Test file
     /// </summary>
-    public abstract class Z80TestCommandBase : SingleProjectItemCommandBase
+    public abstract class UnitTestCommandBase : SingleProjectItemCommandBase
     {
         /// <summary>
         /// This command accepts only Z80 code files
@@ -20,9 +20,8 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             };
 
         /// <summary>
-        /// Override this method to define the status query action
+        /// Allows this command only within the active project
         /// </summary>
-        /// <param name="mc"></param>
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
             base.OnQueryStatus(mc);

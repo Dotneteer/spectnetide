@@ -3,14 +3,11 @@
 namespace Spect.Net.VsPackage.Commands
 {
     /// <summary>
-    /// Run Z80 tests command
+    /// This command compiles all unit test cases within the active project.
     /// </summary>
     [CommandId(0x0816)]
-    public class CompileAllZ80TestsCommand : Z80TestCommandBase
+    public class CompileAllUnitTestsCommand : UnitTestCommandBase
     {
-        /// <summary>
-        /// Override this property to allow project item selection
-        /// </summary>
         public override bool AllowProjectItem => true;
     }
 }
