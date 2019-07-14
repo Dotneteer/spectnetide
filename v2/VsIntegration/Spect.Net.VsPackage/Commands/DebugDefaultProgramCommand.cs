@@ -8,6 +8,5 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0807)]
     public class DebugDefaultProgramCommand : DebugProgramCommand
     {
-        public override bool AllowProjectItem => true;
     }
 }

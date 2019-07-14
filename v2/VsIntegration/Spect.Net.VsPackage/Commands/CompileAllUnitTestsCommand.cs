@@ -8,6 +8,5 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0816)]
     public class CompileAllUnitTestsCommand : UnitTestCommandBase
     {
-        public override bool AllowProjectItem => true;
     }
 }

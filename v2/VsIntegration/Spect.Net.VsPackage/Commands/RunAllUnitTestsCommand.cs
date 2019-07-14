@@ -8,9 +8,5 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0815)]
     public class RunAllUnitTestsCommand : UnitTestCommandBase
     {
-        /// <summary>
-        /// Override this property to allow project item selection
-        /// </summary>
-        public override bool AllowProjectItem => true;
     }
 }

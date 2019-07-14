@@ -10,11 +10,6 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
     public abstract class ProjectCommandBase : SingleProjectItemCommandBase
     {
         /// <summary>
-        /// We need to allow project items.
-        /// </summary>
-        public override bool AllowProjectItem => true;
-
-        /// <summary>
         /// This command accepts only Z80 code files
         /// </summary>
         public override IEnumerable<string> ItemExtensionsAccepted =>

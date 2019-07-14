@@ -14,7 +14,6 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
     public abstract class SpectNetCommandBase: IDisposable
     {
         private readonly CancellationTokenSource _disposalTokenSource = new CancellationTokenSource();
-
         protected JoinableTaskFactory JoinableTaskFactory { get; }
         protected JoinableTaskCollection JoinableTaskCollection { get; }
 

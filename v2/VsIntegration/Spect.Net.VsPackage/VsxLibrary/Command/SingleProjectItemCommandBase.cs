@@ -24,11 +24,6 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         public abstract IEnumerable<string> ItemExtensionsAccepted { get; }
 
         /// <summary>
-        /// Override this property to allow project item selection
-        /// </summary>
-        public virtual bool AllowProjectItem => false;
-
-        /// <summary>
         /// Override this method to define the status query action
         /// </summary>
         /// <param name="mc"></param>
@@ -44,7 +39,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// <param name="hierarchy"></param>
         /// <param name="itemId"></param>
         public void GetItem(out IVsHierarchy hierarchy, out uint itemId) =>
-            IsSingleItemSelection(AllowProjectItem, out hierarchy, out itemId);
+            IsSingleItemSelection(out hierarchy, out itemId);
 
         /// <summary>
         /// Gets the full path of the item; or null, if there is no .z80asm item selected.
@@ -53,8 +48,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         {
             get
             {
-                var singleItem = IsSingleItemSelection(AllowProjectItem,
-                    out var hierarchy, out var itemId);
+                var singleItem = IsSingleItemSelection(out var hierarchy, out var itemId);
                 if (!singleItem) return null;
 
                 // ReSharper disable once SuspiciousTypeConversion.Global
@@ -77,8 +71,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         {
             get
             {
-                var singleItem = IsSingleItemSelection(AllowProjectItem,
-                    out var hierarchy, out var itemId);
+                var singleItem = IsSingleItemSelection(out var hierarchy, out var itemId);
                 if (!singleItem) return null;
 
                 hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_ExtObject, out var objProj);
@@ -100,13 +93,12 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// <summary>
         /// This method checks if there is only a single item selected in Solution Explorer.
         /// </summary>
-        /// <param name="allowProject">Signs if project selection is allowed</param>
         /// <param name="hierarchy">The selected hierarchy</param>
         /// <param name="itemid">The selected item in the hierarchy</param>
         /// <returns>
         /// True, if only a single item is selected; otherwise, false
         /// </returns>
-        public static bool IsSingleItemSelection(bool allowProject, out IVsHierarchy hierarchy, out uint itemid)
+        public static bool IsSingleItemSelection(out IVsHierarchy hierarchy, out uint itemid)
         {
             hierarchy = null;
             itemid = VSConstants.VSITEMID_NIL;
@@ -137,9 +129,6 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
 
                 // --- Multiple items are selected
                 if (multiItemSelect != null) return false;
-
-                // --- There is a hierarchy root node selected, thus it is not a single item inside a project
-                if (itemid == VSConstants.VSITEMID_ROOT && !allowProject) return false;
 
                 // --- No hierarchy, no selection
                 hierarchy = Marshal.GetObjectForIUnknown(hierarchyPtr) as IVsHierarchy;

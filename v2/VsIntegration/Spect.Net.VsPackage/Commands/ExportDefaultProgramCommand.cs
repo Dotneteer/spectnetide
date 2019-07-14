@@ -8,6 +8,5 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0808)]
     public class ExportDefaultProgramCommand : ExportProgramCommand
     {
-        public override bool AllowProjectItem => true;
     }
 }

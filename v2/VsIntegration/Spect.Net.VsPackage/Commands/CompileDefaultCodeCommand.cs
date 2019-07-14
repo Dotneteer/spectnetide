@@ -9,8 +9,6 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0811)]
     public class CompileDefaultCodeCommand : CompileCodeCommand
     {
-        public override bool AllowProjectItem => true;
-
         /// <summary>
         /// The item is allowed only when there is a default code file selected
         /// </summary>

@@ -32,7 +32,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// </remarks>
         public void GetCodeItem(out IVsHierarchy hierarchy, out uint itemId)
         {
-            IsSingleItemSelection(AllowProjectItem, out hierarchy, out itemId);
+            IsSingleItemSelection(out hierarchy, out itemId);
             if (itemId != VSConstants.VSITEMID_ROOT) return;
 
             // --- We have a project item, let's query the default code file

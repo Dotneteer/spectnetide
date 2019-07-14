@@ -16,5 +16,7 @@
         public const string ZX_BASIC_ITEM = ".zxbas";
         public const string TEST_ITEM = ".z80test";
         public const string SP_CONF_ITEM = ".spconf";
+        public const string VM_STATE_ITEM = ".vmstate";
+        public const string FLOPPY_ITEM = ".vfdd";
     }
 }

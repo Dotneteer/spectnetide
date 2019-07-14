@@ -9,6 +9,5 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0812)]
     public class InjectDefaultProgramCommand : InjectProgramCommand
     {
-        public override bool AllowProjectItem => true;
     }
 }

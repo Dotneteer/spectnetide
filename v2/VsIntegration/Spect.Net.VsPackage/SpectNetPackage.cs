@@ -188,9 +188,21 @@ namespace Spect.Net.VsPackage
 
             // --- Solution Explorer item commands
             new SetAsDefaultCodeFileCommand();
-            new SetAsDefaultAnnotationFileCommand();
-            new SetAsDefaultTapeFileCommand();
+            new RunProgramCommand();
+            new DebugProgramCommand();
             new CompileCodeCommand();
+            new InjectProgramCommand();
+            new ExportProgramCommand();
+            new CompileUnitTestCommand();
+            new RunUnitTestCommand();
+            new LoadVmStateCommand();
+            new SetAsDefaultTapeFileCommand();
+            new SetAsDefaultAnnotationFileCommand();
+            new InsertDriveACommand();
+            new InsertDriveBCommand();
+            new EjectFloppyCommand();
+            new WriteProtectFloppyCommand();
+
             // ReSharper restore ObjectCreationAsStatement
         }
 

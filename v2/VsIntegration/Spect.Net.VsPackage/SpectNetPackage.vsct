@@ -402,21 +402,8 @@
         </Strings>
       </Button>
 
-      <!-- Compile Default Program command -->
-      <Button guid="COMMAND_SET_GUID" id="CompileDefaultCodeCommandId" priority="0x0102" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
-        <Icon guid="ImageCatalogGuid" id="Compile" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Compile code</ButtonText>
-          <CommandName>ComplileDefaultSpectrumCode</CommandName>
-        </Strings>
-      </Button>
-
       <!-- Debug Default Program command -->
-      <Button guid="COMMAND_SET_GUID" id="DebugDefaultProgramCommandId" priority="0x0103" type="Button">
+      <Button guid="COMMAND_SET_GUID" id="DebugDefaultProgramCommandId" priority="0x0102" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -425,6 +412,19 @@
         <Strings>
           <ButtonText>Debug program</ButtonText>
           <CommandName>DebugDefaultSpectrumProgram</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Compile Default Program command -->
+      <Button guid="COMMAND_SET_GUID" id="CompileDefaultCodeCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
+        <Icon guid="ImageCatalogGuid" id="Compile" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Compile code</ButtonText>
+          <CommandName>ComplileDefaultSpectrumCode</CommandName>
         </Strings>
       </Button>
 
@@ -467,7 +467,7 @@
         </Strings>
       </Button>
 
-      <!-- Run All Z80 Tests command -->
+      <!-- Run All Unit Tests command -->
       <Button guid="COMMAND_SET_GUID" id="RunAllUnitTestsCommandId" priority="0x0107" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
         <Icon guid="ImageCatalogGuid" id="RunTest" />
@@ -496,106 +496,106 @@
         </Strings>
       </Button>
 
-      <!-- Compile Z80 Program command -->
-      <Button guid="COMMAND_SET_GUID" id="CompileZ80ProgramCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
-        <Icon guid="ImageCatalogGuid" id="Compile" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Compile Z80 program</ButtonText>
-          <CommandName>CompileZ80Program</CommandName>
-        </Strings>
-      </Button>
-
-      <!-- Run Z80 Program command -->
-      <Button guid="COMMAND_SET_GUID" id="RunZ80ProgramCommandId" priority="0x0101" type="Button">
+      <!-- Run Program command -->
+      <Button guid="COMMAND_SET_GUID" id="RunProgramCommandId" priority="0x0101" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="Run" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Run Z80 program</ButtonText>
-          <CommandName>RunZ80Program</CommandName>
+          <ButtonText>Run program</ButtonText>
+          <CommandName>RunSpectrumProgram</CommandName>
         </Strings>
       </Button>
 
-      <!-- Debug Z80 Program command -->
-      <Button guid="COMMAND_SET_GUID" id="DebugZ80ProgramCommandId" priority="0x0102" type="Button">
+      <!-- Debug Program command -->
+      <Button guid="COMMAND_SET_GUID" id="DebugProgramCommandId" priority="0x0102" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Debug Z80 program</ButtonText>
-          <CommandName>DebugZ80Program</CommandName>
+          <ButtonText>Debug program</ButtonText>
+          <CommandName>DebugSpectrumProgram</CommandName>
         </Strings>
       </Button>
 
-      <!-- Inject Z80 Program command -->
-      <Button guid="COMMAND_SET_GUID" id="InjectZ80ProgramCommandId" priority="0x0103" type="Button">
+      <!-- Compile Code command -->
+      <Button guid="COMMAND_SET_GUID" id="CompileCodeCommandId" priority="0x0103" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
+        <Icon guid="ImageCatalogGuid" id="Compile" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Compile code</ButtonText>
+          <CommandName>CompileSpectrumCode</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Inject Program command -->
+      <Button guid="COMMAND_SET_GUID" id="InjectProgramCommandId" priority="0x0104" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="Upload" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Inject Z80 program</ButtonText>
-          <CommandName>InjectZ80Program</CommandName>
+          <ButtonText>Inject program</ButtonText>
+          <CommandName>InjectSpectrumProgram</CommandName>
         </Strings>
       </Button>
 
-      <!-- Export Z80 Program command -->
-      <Button guid="COMMAND_SET_GUID" id="ExportZ80ProgramCommandId" priority="0x0104" type="Button">
+      <!-- Export Program command -->
+      <Button guid="COMMAND_SET_GUID" id="ExportProgramCommandId" priority="0x0105" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="Export" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Export Z80 program...</ButtonText>
-          <CommandName>ExportZ80Program</CommandName>
+          <ButtonText>Export program...</ButtonText>
+          <CommandName>ExportSpectrumProgram</CommandName>
         </Strings>
       </Button>
 
-      <!-- Compile Z80 Tests command -->
-      <Button guid="COMMAND_SET_GUID" id="CompileZ80TestCommandId" priority="0x0100" type="Button">
+      <!-- Compile Unit Tests command -->
+      <Button guid="COMMAND_SET_GUID" id="CompileUnitTestCommandId" priority="0x0106" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="AutoTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Compile Z80 unit tests</ButtonText>
-          <CommandName>CompileZ80UnitTests</CommandName>
+          <ButtonText>Compile unit tests</ButtonText>
+          <CommandName>CompileUnitTests</CommandName>
         </Strings>
       </Button>
 
-      <!-- Run Z80 Tests command -->
-      <Button guid="COMMAND_SET_GUID" id="RunZ80TestCommandId" priority="0x0101" type="Button">
+      <!-- Run Tests command -->
+      <Button guid="COMMAND_SET_GUID" id="RunUnitTestCommandId" priority="0x0107" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="RunTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Run Z80 unit tests</ButtonText>
-          <CommandName>RunZ80UnitTests</CommandName>
+          <ButtonText>Run unit tests</ButtonText>
+          <CommandName>RunUnitTests</CommandName>
         </Strings>
       </Button>
 
       <!-- Load VM State File command -->
-      <Button guid="COMMAND_SET_GUID" id="LoadVmStateFileCommandId" priority="0x0101" type="Button">
+      <Button guid="COMMAND_SET_GUID" id="LoadVmStateFileCommandId" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_ITEM_VIEW" />
         <Icon guid="ImageCatalogGuid" id="RunTest" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Load VM State file</ButtonText>
+          <ButtonText>Load virtual machine state</ButtonText>
           <CommandName>LoadVmStateFile</CommandName>
         </Strings>
       </Button>
@@ -661,7 +661,7 @@
         <CommandFlag>TextChanges</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Eject Disk</ButtonText>
+          <ButtonText>Eject from drive</ButtonText>
           <CommandName>EjectDisk</CommandName>
         </Strings>
       </Button>
@@ -809,21 +809,21 @@
       <IDSymbol name="TestItemGroup" value="0x0904" />
 
       <!-- Individual commands -->
-      <IDSymbol name="RunZ80ProgramCommandId" value="0x0800" />
-      <IDSymbol name="DebugZ80ProgramCommandId" value="0x0801" />
-      <IDSymbol name="ExportZ80ProgramCommandId" value="0x0802" />
+      <IDSymbol name="RunProgramCommandId" value="0x0800" />
+      <IDSymbol name="DebugProgramCommandId" value="0x0801" />
+      <IDSymbol name="ExportProgramCommandId" value="0x0802" />
       <IDSymbol name="SetDefaultTapeFileCommandId" value="0x0803" />
       <IDSymbol name="SetDefaultAnnotationFileCommandId" value="0x0804" />
       <IDSymbol name="SetDefaultCodeFileCommandId" value="0x0805" />
       <IDSymbol name="RunDefaultProgramCommandId" value="0x0806" />
       <IDSymbol name="DebugDefaultProgramCommandId" value="0x0807" />
       <IDSymbol name="ExportDefaultProgramCommandId" value="0x0808" />
-      <IDSymbol name="CompileZ80ProgramCommandId" value="0x0809" />
-      <IDSymbol name="InjectZ80ProgramCommandId" value="0x0810" />
+      <IDSymbol name="CompileCodeCommandId" value="0x0809" />
+      <IDSymbol name="InjectProgramCommandId" value="0x0810" />
       <IDSymbol name="CompileDefaultCodeCommandId" value="0x0811" />
       <IDSymbol name="InjectDefaultProgramCommandId" value="0x0812" />
-      <IDSymbol name="RunZ80TestCommandId" value="0x0813" />
-      <IDSymbol name="CompileZ80TestCommandId" value="0x0814" />
+      <IDSymbol name="RunUnitTestCommandId" value="0x0813" />
+      <IDSymbol name="CompileUnitTestCommandId" value="0x0814" />
       <IDSymbol name="RunAllUnitTestsCommandId" value="0x0815" />
       <IDSymbol name="CompileAllUnitTestCommandId" value="0x0816" />
       <IDSymbol name="LoadVmStateFileCommandId" value="0x0817" />

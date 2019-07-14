@@ -8,9 +8,5 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x0806)]
     public class RunDefaultProgramCommand : RunProgramCommand
     {
-        /// <summary>
-        /// Allows the project node to run the default Z80 code file
-        /// </summary>
-        public override bool AllowProjectItem => true;
     }
 }
