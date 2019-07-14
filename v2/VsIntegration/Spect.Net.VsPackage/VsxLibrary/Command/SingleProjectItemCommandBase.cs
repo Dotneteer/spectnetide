@@ -29,7 +29,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// <param name="mc"></param>
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
-            mc.Visible = SpectNetPackage.Default.CurrentProject != null
+            mc.Visible = SpectNetPackage.Default.ActiveProject != null
                 && ItemPath != null;
         }
 

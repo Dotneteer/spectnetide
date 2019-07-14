@@ -422,7 +422,7 @@ namespace Spect.Net.VsPackage.SolutionItems
             }
 
             // --- Obtain the project and its items
-            var project = SpectNetPackage.Default.CurrentRoot;
+            var project = SpectNetPackage.Default.ActiveRoot;
             var projectItems = project.ProjectItems;
             var currentIndex = 0;
             var find = true;
@@ -521,7 +521,7 @@ namespace Spect.Net.VsPackage.SolutionItems
             projectItems.AddFromFileCopy(filename);
 
             // --- Refresh the solution's content
-            SpectNetPackage.Default.CurrentProject.CollectItems();
+            SpectNetPackage.Default.ActiveProject.CollectItems();
         }
 
         #endregion
@@ -622,10 +622,6 @@ namespace Spect.Net.VsPackage.SolutionItems
             where TItem : SpectrumProjectItemBase
         {
             GetHierarchyByIdentity(item?.Identity, out var hierarchy, out var itemId);
-            if (hierarchy == null)
-            {
-                return;
-            }
             SetVisuals(hierarchy, itemId, categoryItems);
         }
 
@@ -677,6 +673,9 @@ namespace Spect.Net.VsPackage.SolutionItems
                         (uint)__VSHIERITEMATTRIBUTE.VSHIERITEMATTRIBUTE_Bold, false);
                 }
             }
+
+            // --- No default item
+            if (hierarchy == null) return;
 
             // --- Add Bold flag to the current default file
             window.SetItemAttribute((IVsUIHierarchy)hierarchy, itemId,

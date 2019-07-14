@@ -36,7 +36,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             if (itemId != VSConstants.VSITEMID_ROOT) return;
 
             // --- We have a project item, let's query the default code file
-            var currentProject = SpectNetPackage.Default.CurrentProject;
+            var currentProject = SpectNetPackage.Default.ActiveProject;
             currentProject.GetHierarchyByIdentity(currentProject.DefaultProgramItem.Identity,
                 out hierarchy, out itemId);
         }

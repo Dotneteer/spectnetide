@@ -42,7 +42,6 @@ namespace Spect.Net.VsPackage.SolutionItems
 
         private readonly IVsSolution _solutionService;
         private readonly SolutionEvents _solutionEvents;
-        private readonly SelectionEvents _selectionEvents;
         private string _activeProjectFile;
 
         /// <summary>
@@ -63,22 +62,10 @@ namespace Spect.Net.VsPackage.SolutionItems
             _solutionService = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
             _solutionEvents = SpectNetPackage.Default.ApplicationObject.Events.SolutionEvents;
             _solutionEvents.Opened += OnSolutionOpened;
-            _selectionEvents = SpectNetPackage.Default.ApplicationObject.Events.SelectionEvents;
-            _selectionEvents.OnChange += _selectionEvents_OnChange;
             Projects = new ReadOnlyCollection<SpectrumProject>(HierarchyItems);
             _isCollecting = false;
             Start();
         }
-
-        private void _selectionEvents_OnChange()
-        {
-            //var proj = GetSelectedProject();
-        }
-
-        /// <summary>
-        /// The current ZX Spectrum project
-        /// </summary>
-        public SpectrumProject CurrentProject => Projects.FirstOrDefault();
 
         /// <summary>
         /// Gets the active project
@@ -221,7 +208,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         public string GetRomResourceName(string romName, int page = -1)
         {
             var fullRomName = page == -1 ? romName : $"{romName}-{page}";
-            var romItem = CurrentProject.RomProjectItems.FirstOrDefault(ri =>
+            var romItem = ActiveProject.RomProjectItems.FirstOrDefault(ri =>
                 string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
                     StringComparison.InvariantCultureIgnoreCase) == 0);
             return romItem?.Filename;
@@ -236,7 +223,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         public string GetAnnotationResourceName(string romName, int page = -1)
         {
             var fullRomName = page == -1 ? romName : $"{romName}-{page}";
-            var annItem = CurrentProject.AnnotationProjectItems.FirstOrDefault(ri =>
+            var annItem = ActiveProject.AnnotationProjectItems.FirstOrDefault(ri =>
                 string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
                     StringComparison.InvariantCultureIgnoreCase) == 0);
             return annItem?.Filename;
@@ -251,7 +238,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         public string LoadRomAnnotation(string romName, int page = -1)
         {
             var fullRomName = page == -1 ? romName : $"{romName}-{page}";
-            var annItem = CurrentProject.AnnotationProjectItems.FirstOrDefault(ri =>
+            var annItem = ActiveProject.AnnotationProjectItems.FirstOrDefault(ri =>
                 string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
                 StringComparison.InvariantCultureIgnoreCase) == 0);
             return annItem != null ? File.ReadAllText(annItem.Filename) : null;
@@ -266,7 +253,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         public byte[] LoadRomBytes(string romName, int page = -1)
         {
             var fullRomName = page == -1 ? romName : $"{romName}-{page}";
-            var romItem = CurrentProject.RomProjectItems.FirstOrDefault(ri =>
+            var romItem = ActiveProject.RomProjectItems.FirstOrDefault(ri =>
                 string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
                     StringComparison.InvariantCultureIgnoreCase) == 0);
             if (romItem == null) return null;
@@ -321,7 +308,6 @@ namespace Spect.Net.VsPackage.SolutionItems
         public override void Dispose()
         {
             _solutionEvents.Opened -= OnSolutionOpened;
-            _selectionEvents.OnChange -= _selectionEvents_OnChange;
             _ = StopAsync();
             base.Dispose();
         }

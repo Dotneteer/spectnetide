@@ -14,6 +14,7 @@ using Spect.Net.VsPackage.ToolWindows.Keyboard;
 using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.VsxLibrary;
+using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
 using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 using Task = System.Threading.Tasks.Task;
 
@@ -76,7 +77,7 @@ namespace Spect.Net.VsPackage
         "ZX Spectrum Code Discovery Project",
         "ZX Spectrum Project Files (*.z80dcproj);*.z80cdproj", "z80cdproj", "z80cdproj",
         @"ProjectTemplates\ZX Spectrum", LanguageVsTemplate = "ZX Spectrum Code Discovery Project")]
-    
+    [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
     public sealed class SpectNetPackage : VsxAsyncPackage
     {
         /// <summary>
@@ -106,6 +107,12 @@ namespace Spect.Net.VsPackage
         public static SpectNetPackage Default { get; private set; }
 
         /// <summary>
+        /// Gets the options of this package
+        /// </summary>
+        public SpectNetOptionsGrid Options
+            => GetDialogPage(typeof(SpectNetOptionsGrid)) as SpectNetOptionsGrid;
+
+        /// <summary>
         /// An instance of the Z80 Assembly language service
         /// </summary>
         public static Z80AsmLanguageService Z80AsmLanguage { get; private set; }
@@ -124,12 +131,33 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// Gets the current ZX Spectrum project
         /// </summary>
-        public SpectrumProject CurrentProject => Solution?.CurrentProject;
+        public SpectrumProject ActiveProject => Solution?.ActiveProject;
 
         /// <summary>
         /// Gets the current project root
         /// </summary>
-        public Project CurrentRoot => CurrentProject?.Root;
+        public Project ActiveRoot => ActiveProject?.Root;
+
+        /// <summary>
+        /// Indicates if compilation is in progress.
+        /// </summary>
+        public bool CompilationInProgress { get; set; }
+
+        /// <summary>
+        /// The error list provider accessible from this package
+        /// </summary>
+        public ErrorListWindow ErrorList { get; private set; }
+
+        /// <summary>
+        /// Gets the task list provider for this package.
+        /// </summary>
+        public TaskListWindow TaskList { get; private set; }
+
+
+        /// <summary>
+        /// Provides debug information while running the Spectrum virtual machine
+        /// </summary>
+        public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -156,10 +184,13 @@ namespace Spect.Net.VsPackage
             // --- Main thread initialization part
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            // --- Initialize package commands here
+            // --- Initialize the package here
             InitializeCommands();
             Solution = new SolutionStructure();
-            Solution.CollectProjects();
+            ErrorList = new ErrorListWindow();
+            TaskList = new TaskListWindow();
+            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
+
         }
 
         /// <summary>

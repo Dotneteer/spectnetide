@@ -23,7 +23,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task ExecuteAsync()
         {
-            SpectNetPackage.Default.CurrentProject.SetDefaultAnnotationItem(this);
+            SpectNetPackage.Default.ActiveProject.SetDefaultAnnotationItem(this);
             return Task.FromResult(0);
         }
 
