@@ -9,10 +9,5 @@
         /// Audio samples to build the audio stream
         /// </summary>
         float[] AudioSamples { get; }
-
-        /// <summary>
-        /// Index of the next audio sample
-        /// </summary>
-        int NextSampleIndex { get; }
     }
 }

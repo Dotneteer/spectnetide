@@ -1,15 +1,16 @@
 // ReSharper disable InconsistentNaming
 
 using System;
+using DotnetSpectrumEngine.Core.Abstraction.Cpu;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
-using Spect.Net.SpectrumEmu.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
     /// <summary>
     /// This interface represents a Z80Cpu
     /// </summary>
-    public interface IZ80Cpu : IClockBoundDevice
+    public interface IZ80Cpu : IDevice
     {
 
         /// <summary>

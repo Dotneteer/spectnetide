@@ -1,6 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 
 using System;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 
 namespace Spect.Net.SpectrumEmu.Cpu
@@ -876,8 +877,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// H is set if borrow from bit 12; otherwise, it is reset.
         /// P/V is set if overflow; otherwise, it is reset.
         /// N is set.
-        //  C is set if borrow; otherwise, it is reset.
-
+        ///  C is set if borrow; otherwise, it is reset.
         /// =================================
         /// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
         /// =================================

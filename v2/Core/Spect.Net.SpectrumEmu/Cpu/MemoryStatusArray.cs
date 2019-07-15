@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 
 namespace Spect.Net.SpectrumEmu.Cpu
 {
@@ -7,7 +8,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
     /// indicates the status of a particular memory address
     /// within the 64K memory space
     /// </summary>
-    public class MemoryStatusArray
+    public class MemoryStatusArray : IMemoryStatusArray
     {
         private readonly BitArray _memoryBits = new BitArray(ushort.MaxValue + 1);
 

@@ -9,8 +9,8 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     public sealed class ScreenDeviceInfo : 
         DeviceInfoBase<IScreenDevice, IScreenConfiguration, IScreenFrameProvider>
     {
-        public ScreenDeviceInfo(IScreenConfiguration configurationData = default(IScreenConfiguration), 
-            IScreenFrameProvider provider = default(IScreenFrameProvider)) : 
+        public ScreenDeviceInfo(IScreenConfiguration configurationData = default, 
+            IScreenFrameProvider provider = default) : 
             base(provider, configurationData)
         {
         }

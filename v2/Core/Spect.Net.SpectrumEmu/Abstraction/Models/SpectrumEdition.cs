@@ -1,5 +1,4 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Devices.Floppy;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Models
 {

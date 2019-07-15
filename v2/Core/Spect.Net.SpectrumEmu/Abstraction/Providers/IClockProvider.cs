@@ -18,12 +18,5 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// Retrieves the current counter value of the clock.
         /// </summary>
         long GetCounter();
-
-        /// <summary>
-        /// Waits until the specified counter value is reached
-        /// </summary>
-        /// <param name="counterValue">Counter value to reach</param>
-        /// <param name="token">Token that can cancel the wait cycle</param>
-        void WaitUntil(long counterValue, CancellationToken token);
     }
 }

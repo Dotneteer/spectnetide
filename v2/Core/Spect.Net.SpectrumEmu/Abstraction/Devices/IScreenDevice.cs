@@ -5,7 +5,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     /// <summary>
     /// This interface represents the device that renders the screen
     /// </summary>
-    public interface IScreenDevice : ISpectrumBoundDevice, IFrameBoundDevice
+    public interface IScreenDevice : ISpectrumBoundDevice, IRenderFrameBoundDevice
     {
         /// <summary>
         /// Gest the parameters of the display

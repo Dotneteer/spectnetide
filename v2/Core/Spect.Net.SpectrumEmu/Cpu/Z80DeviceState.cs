@@ -1,5 +1,6 @@
 ﻿// ReSharper disable InconsistentNaming
 
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 
 namespace Spect.Net.SpectrumEmu.Cpu

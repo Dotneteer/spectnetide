@@ -7,7 +7,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// This class describes configuration information for the I/O ports.
     /// </summary>
     public sealed class PortDeviceInfo:
-        DeviceInfoBase<IPortDevice, IPortConfiguration, IPortProvider>
+        DeviceInfoBase<IPortDevice, IPortConfiguration, INoProvider>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.

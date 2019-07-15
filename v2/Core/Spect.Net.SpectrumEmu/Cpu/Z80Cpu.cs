@@ -5,8 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using DotnetSpectrumEngine.Core.Abstraction.Cpu;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+using Spect.Net.SpectrumEmu.Abstraction.TestSupport;
 
 // ReSharper disable ConvertToAutoProperty
 
@@ -227,17 +230,17 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// <summary>
         /// Gets the current execution flow status
         /// </summary>
-        public MemoryStatusArray ExecutionFlowStatus { get; }
+        public IMemoryStatusArray ExecutionFlowStatus { get; }
 
         /// <summary>
         /// Gets the current memory read status
         /// </summary>
-        public MemoryStatusArray MemoryReadStatus { get; }
+        public IMemoryStatusArray MemoryReadStatus { get; }
 
         /// <summary>
         /// Gets the current memory write status
         /// </summary>
-        public MemoryStatusArray MemoryWriteStatus { get; }
+        public IMemoryStatusArray MemoryWriteStatus { get; }
 
         /// <summary>
         /// Increments the internal clock with the specified delay ticks
@@ -844,36 +847,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         {
             _registers.R = (byte)(((_registers.R + 1) & 0x7F) | (_registers.R & 0x80));
             ClockP1();
-        }
-
-        /// <summary>
-        /// Signs if the current instruction uses any of the indexed address modes
-        /// </summary>
-        public enum OpIndexMode
-        {
-            /// <summary>Indexed address mode is not used</summary>
-            None = 0,
-
-            /// <summary>Indexed address with IX register</summary>
-            IX,
-
-            /// <summary>Indexed address with IY register</summary>
-            IY
-        }
-
-        /// <summary>
-        /// Operation Prefix Mode
-        /// </summary>
-        public enum OpPrefixMode : byte
-        {
-            /// <summary>No operation prefix</summary>
-            None = 0,
-
-            /// <summary>Extended mode (0xED prefix)</summary>
-            Extended,
-
-            /// <summary>Bit operations mode (0xCB prefix)</summary>
-            Bit
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 // ReSharper disable InconsistentNaming
 

@@ -19,15 +19,5 @@
         /// <param name="romIndex">Index of the ROM, by default, 0</param>
         /// <returns>Address, if found; otherwise, null</returns>
         ushort? GetKnownAddress(string key, int romIndex = 0);
-
-        /// <summary>
-        /// Gets a property of the ROM (depends on virtual machine model)
-        /// </summary>
-        /// <typeparam name="TProp">Property type</typeparam>
-        /// <param name="key">Property key</param>
-        /// <param name="value">Property value if found</param>
-        /// <param name="romIndex">Index of the ROM, by default, 0</param>
-        /// <returns>True, if found; otherwise, false</returns>
-        bool GetProperty<TProp>(string key, out TProp value, int romIndex = 0);
     }
 }

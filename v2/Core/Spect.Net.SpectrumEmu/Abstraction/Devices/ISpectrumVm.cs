@@ -3,6 +3,7 @@ using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Screen;
+using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Machine;
 
 
@@ -11,7 +12,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     /// <summary>
     /// This interface represents a Spectrum virtual machine
     /// </summary>
-    public interface ISpectrumVm : IFrameBoundDevice
+    public interface ISpectrumVm : IRenderFrameBoundDevice
     {
         /// <summary>
         /// The Z80 CPU of the machine
@@ -39,19 +40,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         int CurrentFrameTact { get; }
 
         /// <summary>
-        /// The length of the physical frame in clock counts
-        /// </summary>
-        double PhysicalFrameClockCount { get; }
-
-        /// <summary>
         /// The number of frame tact at which the interrupt signal is generated
         /// </summary>
         int InterruptTact { get; }
-
-        /// <summary>
-        /// The CPU tact at which the last execution cycle started
-        /// </summary>
-        long LastExecutionStartTact { get; }
 
         /// <summary>
         /// Gets or sets the value of the contention accummulated since the start of 
@@ -101,20 +92,14 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IKeyboardDevice KeyboardDevice { get; }
 
         /// <summary>
-        /// The tape device attached to the VM
+        /// The tape device attached to the VM.
         /// </summary>
-        ITapeDevice TapeDevice { get; }
+        ITapeLoadDevice TapeDevice { get; }
 
         /// <summary>
         /// Debug info provider object
         /// </summary>
         ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
-
-        /// <summary>
-        /// This property indicates if the machine currently runs the
-        /// maskable interrupt method.
-        /// </summary>
-        bool RunsInMaskableInterrupt { get; }
 
         /// <summary>
         /// Allows to set a clock frequency multiplier value (1, 2, 4, or 8).
@@ -187,14 +172,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         INextFeatureSetDevice NextDevice { get; }
 
         /// <summary>
-        /// The optional DivIDE device
-        /// </summary>
-        IDivIdeDevice DivIdeDevice { get; }
-
-        /// <summary>
         /// The tape device attached to the VM
         /// </summary>
-        ITapeProvider TapeProvider { get; }
+        ITapeLoadProvider TapeLoadProvider { get; }
 
         /// <summary>
         /// Gets the reason why the execution cycle of the SpectrumEngine completed.

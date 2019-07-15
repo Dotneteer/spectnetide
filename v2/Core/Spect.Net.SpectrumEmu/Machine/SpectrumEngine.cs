@@ -38,7 +38,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         private int _frameTacts;
         private bool _frameCompleted;
         private readonly List<ISpectrumBoundDevice> _spectrumDevices = new List<ISpectrumBoundDevice>();
-        private readonly List<IFrameBoundDevice> _frameBoundDevices;
+        private readonly List<IRenderFrameBoundDevice> _frameBoundDevices;
         private readonly List<ICpuOperationBoundDevice> _cpuBoundDevices;
         private ushort? _lastBreakpoint;
 
@@ -414,7 +414,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Prepare bound devices
             _frameBoundDevices = _spectrumDevices
-                .OfType<IFrameBoundDevice>()
+                .OfType<IRenderFrameBoundDevice>()
                 .ToList();
             _cpuBoundDevices = _spectrumDevices
                 .OfType<ICpuOperationBoundDevice>()

@@ -7,7 +7,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Configuration
     /// This class describes configuration information for the memory.
     /// </summary>
     public sealed class MemoryDeviceInfo: 
-        DeviceInfoBase<IMemoryDevice, IMemoryConfiguration, IMemoryProvider>
+        DeviceInfoBase<IMemoryDevice, IMemoryConfiguration, INoProvider>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
