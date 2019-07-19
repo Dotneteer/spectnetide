@@ -1,5 +1,4 @@
-﻿using System;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 
 namespace Spect.Net.TestParser.SyntaxTree.Expressions
 {

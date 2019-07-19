@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Cpu;
-using Spect.Net.SpectrumEmu.Scripting;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
@@ -41,8 +41,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.IsInterruptBlocked.ShouldBeFalse();
             (z80.StateFlags & Z80StateFlags.Nmi).ShouldBe(Z80StateFlags.None);
             z80.InterruptMode.ShouldBe((byte)0);
-            z80.PrefixMode.ShouldBe(Z80Cpu.OpPrefixMode.None);
-            z80.IndexMode.ShouldBe(Z80Cpu.OpIndexMode.None);
+            z80.PrefixMode.ShouldBe(OpPrefixMode.None);
+            z80.IndexMode.ShouldBe(OpIndexMode.None);
             z80.Tacts.ShouldBe(0L);
         }
 
@@ -91,8 +91,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.BlockInterrupt();
             z80.IFF1 = true;
             z80.IFF2 = true;
-            z80.PrefixMode = Z80Cpu.OpPrefixMode.Bit;
-            z80.IndexMode = Z80Cpu.OpIndexMode.IY;
+            z80.PrefixMode = OpPrefixMode.Bit;
+            z80.IndexMode = OpIndexMode.IY;
             z80.SetInterruptMode(2);
             z80.SetTacts(1000);
 
@@ -118,8 +118,8 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             z80.IsInterruptBlocked.ShouldBeFalse();
             z80.IFF1.ShouldBeFalse();
             z80.IFF2.ShouldBeFalse();
-            z80.PrefixMode.ShouldBe(Z80Cpu.OpPrefixMode.None);
-            z80.IndexMode.ShouldBe(Z80Cpu.OpIndexMode.None);
+            z80.PrefixMode.ShouldBe(OpPrefixMode.None);
+            z80.IndexMode.ShouldBe(OpIndexMode.None);
             z80.InterruptMode.ShouldBe((byte)0);
             z80.Tacts.ShouldBe(0);
             (z80.StateFlags & Z80StateFlags.Reset).ShouldBe(Z80StateFlags.None);
@@ -162,7 +162,7 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
         {
             var z80 = new Z80Cpu(new Z80TestMemoryDevice(), new Z80TestPortDevice())
             {
-                StackDebugSupport = new ScriptingStackDebugSupport()
+                StackDebugSupport = new DefaultStackDebugSupport()
             };
             return z80;
         }
@@ -276,105 +276,6 @@ namespace Spect.Net.SpectrumEmu.Test.Cpu
             public void OnAttachedToVm(ISpectrumVm hostVm)
             {
             }
-        }
-
-        private class Z80SimpleMemoryDevice : IMemoryDevice
-        {
-            private readonly byte[] _buffer = new byte[1024];
-
-            public Z80SimpleMemoryDevice()
-            {
-                for (var i = 0; i < _buffer.Length; i++)
-                {
-                    _buffer[i] = 0x00;
-                }
-            }
-
-            public byte Read(ushort addr, bool suppressContention) => _buffer[addr];
-
-            public void Write(ushort addr, byte value, bool supressContention = false)
-
-            {
-                _buffer[addr] = value;
-            }
-
-            public void ContentionWait(ushort addr)
-            {
-            }
-
-            public byte[] CloneMemory() => null;
-
-            public void CopyRom(byte[] buffer)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void SelectRom(int romIndex)
-            {
-                throw new NotImplementedException();
-            }
-
-            public int GetSelectedRomIndex()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void PageIn(int slot, int bank, bool bank16Mode = true)
-            {
-                throw new NotImplementedException();
-            }
-
-            public int GetSelectedBankIndex(int slot, bool bank16Mode = true)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool UsesShadowScreen { get; set; }
-
-            public bool IsInAllRamMode => false;
-
-            public bool IsIn8KMode => false;
-
-            public byte[] GetRomBuffer(int romIndex)
-            {
-                throw new NotImplementedException();
-            }
-
-            public byte[] GetRamBank(int bankIndex, bool bank16Mode = true)
-            {
-                throw new NotImplementedException();
-            }
-
-            public (bool IsInRom, int Index, ushort Address) GetAddressLocation(ushort addr)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsRamBankPagedIn(int index, out ushort baseAddress)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Reset()
-            {
-            }
-
-            IDeviceState IDevice.GetState()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void RestoreState(IDeviceState state)
-            {
-                throw new NotImplementedException();
-            }
-
-            public ISpectrumVm HostVm { get; set; }
-
-            public void OnAttachedToVm(ISpectrumVm hostVm)
-            {
-            }
-
         }
     }
 }

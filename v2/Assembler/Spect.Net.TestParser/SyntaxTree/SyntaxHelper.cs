@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 
 namespace Spect.Net.TestParser.SyntaxTree
 {

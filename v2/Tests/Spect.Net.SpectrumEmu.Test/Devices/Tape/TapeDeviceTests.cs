@@ -2,7 +2,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Abstraction.TestSupport;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
@@ -18,7 +20,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
 
             // --- Assert
@@ -30,7 +32,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = 0x0038;
 
@@ -46,7 +48,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
 
@@ -62,7 +64,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             var invoked = false;
@@ -80,7 +82,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
 
@@ -96,7 +98,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             var invoked = false;
@@ -114,7 +116,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
@@ -134,7 +136,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
@@ -154,7 +156,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -174,7 +176,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -194,7 +196,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(new EmptyTapeContentProvider());
+            var provider = new FakeTapeProvider();
+            var td = new TapeDevice(null, provider);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
@@ -213,7 +216,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -234,7 +237,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -255,7 +258,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = 0x0038;
             td.SetTapeMode();
@@ -273,7 +276,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -291,7 +294,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
@@ -309,7 +312,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = 0x0038;
             td.SetTapeMode();
@@ -327,7 +330,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.LoadBytesRoutineAddress;
             td.SetTapeMode();
@@ -345,7 +348,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -363,7 +366,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -384,7 +387,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -404,7 +407,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -424,7 +427,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -452,7 +455,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -482,7 +485,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -512,7 +515,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -542,7 +545,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -572,7 +575,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -607,7 +610,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -641,7 +644,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
             td.SetTapeMode();
@@ -675,7 +678,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
@@ -697,7 +700,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
@@ -716,7 +719,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
@@ -735,7 +738,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
             tacts += TapeDataBlockPlayer.BIT_0_PL;
@@ -761,7 +764,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
@@ -783,7 +786,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
@@ -802,7 +805,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
 
@@ -821,7 +824,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
             tacts += TapeDataBlockPlayer.BIT_1_PL;
@@ -847,7 +850,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
 
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
@@ -871,7 +874,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             (var debugCpu, var tacts, var pulse) = EmitHeaderWithSync(vm, td);
             tacts += TapeDataBlockPlayer.BIT_1_PL;
@@ -894,7 +897,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
 
@@ -916,7 +919,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
             (var debugCpu, var tacts, var pulse) = EmitHeaderAndData(vm, td, testData);
@@ -940,7 +943,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
             (var debugCpu, var tacts, var pulse) = EmitHeaderAndData(vm, td, testData);
@@ -960,7 +963,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
             (var debugCpu, var tacts, var pulse) = EmitHeaderAndData(vm, td, testData);
@@ -980,7 +983,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var td = new TapeDevice(null);
+            var td = new TapeDevice(null, null);
             td.OnAttachedToVm(vm);
             var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
 
@@ -1005,8 +1008,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeSaveToTapeProvider();
-            var td = new TapeDevice(saveProvider);
+            var provider = new FakeTapeProvider();
+            var td = new TapeDevice(provider, provider);
             td.OnAttachedToVm(vm);
             vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
 
@@ -1015,30 +1018,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
 
             // --- Assert
             td.CurrentMode.ShouldBe(TapeOperationMode.Save);
-            saveProvider.CreateTapeFileInvoked.ShouldBeTrue();
-        }
-
-        [TestMethod]
-        public void FinalizeTapeFileIsInvokedWhenLeavingSaveMode()
-        {
-            // --- Arrange
-            var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeSaveToTapeProvider();
-            var td = new TapeDevice(saveProvider);
-            td.OnAttachedToVm(vm);
-            vm.Cpu.Registers.PC = td.SaveBytesRoutineAddress;
-            td.SetTapeMode();
-            var before = td.CurrentMode;
-
-            // --- Act
-            var debugCpu = vm.Cpu as IZ80CpuTestSupport;
-            debugCpu.SetTacts(2 * TapeDevice.SAVE_STOP_SILENCE);
-            td.SetTapeMode();
-
-            // --- Assert
-            before.ShouldBe(TapeOperationMode.Save);
-            td.CurrentMode.ShouldBe(TapeOperationMode.Passive);
-            saveProvider.FinalizeTapeFileInvoked.ShouldBeTrue();
+            provider.CreateTapeFileInvoked.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -1046,8 +1026,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeSaveToTapeProvider();
-            var td = new TapeDevice(saveProvider);
+            var provider = new FakeTapeProvider();
+            var td = new TapeDevice(provider, provider);
             td.OnAttachedToVm(vm);
             var testData = new byte[] { 0x90, 0x02, 0x05, 0xAA, 0xFF, 0x63 };
 
@@ -1057,7 +1037,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             // --- Assert
             td.CurrentMode.ShouldBe(TapeOperationMode.Save);
             td.SavePhase.ShouldBe(SavePhase.None);
-            saveProvider.SaveTzxBlockInvoked.ShouldBeTrue();
+            provider.SaveTzxBlockInvoked.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -1065,8 +1045,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeSaveToTapeProvider();
-            var td = new TapeDevice(saveProvider);
+            var provider = new FakeTapeProvider();
+            var td = new TapeDevice(provider, provider);
             td.OnAttachedToVm(vm);
             var testData = new byte[]
             {
@@ -1081,7 +1061,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             // --- Assert
             td.CurrentMode.ShouldBe(TapeOperationMode.Save);
             td.SavePhase.ShouldBe(SavePhase.None);
-            saveProvider.SuggestedName.ShouldBe("Border");
+            provider.SuggestedName.ShouldBe("Border");
         }
 
         [TestMethod]
@@ -1089,8 +1069,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeSaveToTapeProvider();
-            var td = new TapeDevice(saveProvider);
+            var provider = new FakeTapeProvider();
+            var td = new TapeDevice(provider, provider);
             td.OnAttachedToVm(vm);
             var testData = new byte[]
             {
@@ -1103,7 +1083,7 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             // --- Assert
             td.CurrentMode.ShouldBe(TapeOperationMode.Save);
             td.SavePhase.ShouldBe(SavePhase.None);
-            saveProvider.SuggestedName.ShouldBeNull();
+            provider.SuggestedName.ShouldBeNull();
         }
 
         [TestMethod]
@@ -1111,8 +1091,8 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
             // --- Arrange
             var vm = new SpectrumTapeDeviceTestMachine();
-            var saveProvider = new FakeSaveToTapeProvider();
-            var td = new TapeDevice(saveProvider);
+            var provider = new FakeTapeProvider();
+            var td = new TapeDevice(provider, provider);
             td.OnAttachedToVm(vm);
             var testData = new byte[]
             {
@@ -1121,15 +1101,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
                 0x4F, 0x00, 0x6F, 0x80, 0x4F, 0x00, 0xC3
             };
             EmitFullDataBlock(vm, td, testData);
-            var before = saveProvider.SuggestedName;
-            saveProvider.Reset();
+            var before = provider.SuggestedName;
+            provider.Reset();
 
             // --- Act
             EmitFullDataBlock(vm, td, testData);
 
             // --- Assert
             before.ShouldBe("Border");
-            saveProvider.SuggestedName.ShouldBeNull();
+            provider.SuggestedName.ShouldBeNull();
         }
 
         private (IZ80CpuTestSupport, int, bool) EmitHeaderWithSync(ISpectrumVm vm, TapeDevice td)
@@ -1196,66 +1176,11 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
         {
         }
 
-        private class EmptyTapeContentProvider : VmComponentProviderBase, ITapeProvider
-        {
-            /// <summary>
-            /// Tha tape set to load the content from
-            /// </summary>
-            public string TapeSetName { get; set; }
-
-            /// <summary>
-            /// Gets a binary reader that provider TZX content
-            /// </summary>
-            /// <returns></returns>
-            public BinaryReader GetTapeContent()
-            {
-                return new BinaryReader(Stream.Null);
-            }
-
-            /// <summary>
-            /// Creates a tape file with the specified name
-            /// </summary>
-            /// <returns></returns>
-            public void CreateTapeFile()
-            {
-                throw new System.NotImplementedException();
-            }
-
-            /// <summary>
-            /// This method sets the name of the file according to the 
-            /// Spectrum SAVE HEADER information
-            /// </summary>
-            /// <param name="name"></param>
-            public void SetName(string name)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            /// <summary>
-            /// Appends the TZX block to the tape file
-            /// </summary>
-            /// <param name="block"></param>
-            public void SaveTapeBlock(ITapeDataSerialization block)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            /// <summary>
-            /// The tape provider can finalize the tape when all 
-            /// TZX blocks are written.
-            /// </summary>
-            public void FinalizeTapeFile()
-            {
-                throw new System.NotImplementedException();
-            }
-        }
-
-        private class FakeSaveToTapeProvider : VmComponentProviderBase, ITapeProvider
+        private class FakeTapeProvider : VmComponentProviderBase, ITapeLoadProvider, ITapeSaveProvider
         {
             public bool CreateTapeFileInvoked { get; private set; }
             public bool SaveTzxBlockInvoked { get; private set; }
             public string SuggestedName { get; private set; }
-            public bool FinalizeTapeFileInvoked { get; private set; }
 
             public override void Reset()
             {
@@ -1263,17 +1188,12 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             }
 
             /// <summary>
-            /// Tha tape set to load the content from
-            /// </summary>
-            public string TapeSetName { get; set; }
-
-            /// <summary>
             /// Gets a binary reader that provider TZX content
             /// </summary>
             /// <returns>BinaryReader instance to obtain the content from</returns>
             public BinaryReader GetTapeContent()
             {
-                throw new System.NotImplementedException();
+                return new BinaryReader(new MemoryStream());
             }
 
             public void CreateTapeFile()
@@ -1289,11 +1209,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             public void SaveTapeBlock(ITapeDataSerialization block)
             {
                 SaveTzxBlockInvoked = true;
-            }
-
-            public void FinalizeTapeFile()
-            {
-                FinalizeTapeFileInvoked = true;
             }
         }
     }

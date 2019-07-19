@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
     public class ContentionTestBed
     {
-        private static TestPixelRenderer s_pixelRenderer;
-        private static SpectrumAdvancedTestMachine s_spectrum;
+        private static TestPixelRenderer s_PixelRenderer;
+        private static SpectrumAdvancedTestMachine s_Spectrum;
 
         protected void ExecuteContentionTest(List<byte> ops, int codeAddress,
             int tactsFromFirstPixel, int expectedLength, Action<SpectrumAdvancedTestMachine> initAction = null)
@@ -48,11 +48,11 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
         private SpectrumAdvancedTestMachine CreateTestmachine()
         {
-            if (s_pixelRenderer == null)
+            if (s_PixelRenderer == null)
             {
-                s_pixelRenderer = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
+                s_PixelRenderer = new TestPixelRenderer(SpectrumModels.ZxSpectrum48Pal.Screen);
             }
-            return s_spectrum ?? (s_spectrum = new SpectrumAdvancedTestMachine(s_pixelRenderer));
+            return s_Spectrum ?? (s_Spectrum = new SpectrumAdvancedTestMachine(s_PixelRenderer));
         }
 
         private List<byte> InitNopsForTact(int baseTacts, int tactToReach, ushort codeAddr)

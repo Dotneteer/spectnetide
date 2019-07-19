@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Devices.Tape;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tap;
 
 // ReSharper disable PossibleNullReferenceException

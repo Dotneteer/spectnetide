@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
 namespace Spect.Net.SpectrumEmu.Test.Cpu.IndexedBitOps

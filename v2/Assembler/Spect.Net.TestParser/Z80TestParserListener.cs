@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using Antlr4.Runtime;
 using Spect.Net.TestParser.Generated;
-using Spect.Net.TestParser.SyntaxTree;
 
 namespace Spect.Net.TestParser
 {

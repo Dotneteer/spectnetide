@@ -39,12 +39,11 @@ public partial class Z80TestParser : Parser {
 		CloseBrace=34, Semicolon=35, Comma=36, Colon=37, AngleL=38, AngleR=39, 
 		Ellipse=40, BracketL=41, BracketR=42, ReachL=43, ReachR=44, MemrL=45, 
 		MemrR=46, MemwL=47, MemwR=48, Qmark=49, Or=50, And=51, Xor=52, Equal=53, 
-		NotEqual=54, LessThanO=55, GtreaterThanO=56, ShiftL=57, ShitfR=58, Plus=59, 
+		NotEqual=54, LessThanO=55, GreatherThanO=56, ShiftL=57, ShiftR=58, Plus=59, 
 		Minus=60, Mult=61, Div=62, Mod=63, Tilde=64, Exclm=65, ParenL=66, ParenR=67, 
 		Reg8Bit=68, Reg8BitIdx=69, Reg8BitSpec=70, Reg16Bit=71, Reg16BitIdx=72, 
 		Reg16BitSpec=73, FlagSpec=74, DECNUM=75, HEXNUM=76, BINNUM=77, CHAR=78, 
-		STRING=79, IDENTIFIER=80, IDSTART=81, IDCONT=82, ErrorCharacter=83, GreatherThanO=84, 
-		ShiftR=85;
+		STRING=79, IDENTIFIER=80, IDSTART=81, IDCONT=82, ErrorCharacter=83;
 	public const int
 		RULE_compileUnit = 0, RULE_testSet = 1, RULE_sp48Mode = 2, RULE_sourceContext = 3, 
 		RULE_callstub = 4, RULE_testOptions = 5, RULE_testOption = 6, RULE_dataBlock = 7, 
@@ -92,12 +91,11 @@ public partial class Z80TestParser : Parser {
 		"ACT", "ASSERT", "PORTMOCK", "BREAKPOINT", "OpenBrace", "CloseBrace", 
 		"Semicolon", "Comma", "Colon", "AngleL", "AngleR", "Ellipse", "BracketL", 
 		"BracketR", "ReachL", "ReachR", "MemrL", "MemrR", "MemwL", "MemwR", "Qmark", 
-		"Or", "And", "Xor", "Equal", "NotEqual", "LessThanO", "GtreaterThanO", 
-		"ShiftL", "ShitfR", "Plus", "Minus", "Mult", "Div", "Mod", "Tilde", "Exclm", 
+		"Or", "And", "Xor", "Equal", "NotEqual", "LessThanO", "GreatherThanO", 
+		"ShiftL", "ShiftR", "Plus", "Minus", "Mult", "Div", "Mod", "Tilde", "Exclm", 
 		"ParenL", "ParenR", "Reg8Bit", "Reg8BitIdx", "Reg8BitSpec", "Reg16Bit", 
 		"Reg16BitIdx", "Reg16BitSpec", "FlagSpec", "DECNUM", "HEXNUM", "BINNUM", 
-		"CHAR", "STRING", "IDENTIFIER", "IDSTART", "IDCONT", "ErrorCharacter", 
-		"GreatherThanO", "ShiftR"
+		"CHAR", "STRING", "IDENTIFIER", "IDSTART", "IDCONT", "ErrorCharacter"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -1010,7 +1008,9 @@ public partial class Z80TestParser : Parser {
 			case Equal:
 			case NotEqual:
 			case LessThanO:
+			case GreatherThanO:
 			case ShiftL:
+			case ShiftR:
 			case Plus:
 			case Minus:
 			case Mult:
@@ -1032,8 +1032,6 @@ public partial class Z80TestParser : Parser {
 			case BINNUM:
 			case CHAR:
 			case IDENTIFIER:
-			case GreatherThanO:
-			case ShiftR:
 				{
 				State = 218; byteSet();
 				}
@@ -3279,7 +3277,7 @@ public partial class Z80TestParser : Parser {
 					{
 					State = 495;
 					_la = _input.La(1);
-					if ( !(((((_la - 38)) & ~0x3f) == 0 && ((1L << (_la - 38)) & ((1L << (AngleL - 38)) | (1L << (AngleR - 38)) | (1L << (LessThanO - 38)) | (1L << (GreatherThanO - 38)))) != 0)) ) {
+					if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AngleL) | (1L << AngleR) | (1L << LessThanO) | (1L << GreatherThanO))) != 0)) ) {
 					_errHandler.RecoverInline(this);
 					} else {
 						if (_input.La(1) == TokenConstants.Eof) {
@@ -3830,15 +3828,15 @@ public partial class Z80TestParser : Parser {
 			case Equal:
 			case NotEqual:
 			case LessThanO:
+			case GreatherThanO:
 			case ShiftL:
+			case ShiftR:
 			case Plus:
 			case Minus:
 			case Mult:
 			case Div:
 			case Mod:
 			case ParenR:
-			case GreatherThanO:
-			case ShiftR:
 				EnterOuterAlt(_localctx, 5);
 				{
 				}
@@ -4256,7 +4254,7 @@ public partial class Z80TestParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3W\x25C\x4\x2\t\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3U\x25C\x4\x2\t\x2"+
 		"\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4\t\t"+
 		"\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10\t"+
 		"\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -4316,15 +4314,15 @@ public partial class Z80TestParser : Parser {
 		"$\x2&\x2(\x2*\x2,\x2.\x2\x30\x2\x32\x2\x34\x2\x36\x2\x38\x2:\x2<\x2>\x2"+
 		"@\x2\x42\x2\x44\x2\x46\x2H\x2J\x2L\x2N\x2P\x2R\x2T\x2V\x2X\x2Z\x2\\\x2"+
 		"^\x2`\x2\x62\x2\x64\x2\x66\x2h\x2j\x2l\x2n\x2p\x2\x2\b\x4\x2\'\'**\x3"+
-		"\x2\x37\x38\x5\x2()\x39\x39VV\x4\x2;;WW\x3\x2=>\x3\x2?\x41\x27A\x2u\x3"+
-		"\x2\x2\x2\x4z\x3\x2\x2\x2\x6\x92\x3\x2\x2\x2\b\x95\x3\x2\x2\x2\n\xA1\x3"+
-		"\x2\x2\x2\f\xA5\x3\x2\x2\x2\xE\xB4\x3\x2\x2\x2\x10\xB6\x3\x2\x2\x2\x12"+
-		"\xC5\x3\x2\x2\x2\x14\xC7\x3\x2\x2\x2\x16\xDA\x3\x2\x2\x2\x18\xDF\x3\x2"+
-		"\x2\x2\x1A\xE2\x3\x2\x2\x2\x1C\xEE\x3\x2\x2\x2\x1E\xFA\x3\x2\x2\x2 \xFF"+
-		"\x3\x2\x2\x2\"\x10E\x3\x2\x2\x2$\x118\x3\x2\x2\x2&\x123\x3\x2\x2\x2(\x127"+
-		"\x3\x2\x2\x2*\x134\x3\x2\x2\x2,\x136\x3\x2\x2\x2.\x15C\x3\x2\x2\x2\x30"+
-		"\x167\x3\x2\x2\x2\x32\x17D\x3\x2\x2\x2\x34\x18B\x3\x2\x2\x2\x36\x18F\x3"+
-		"\x2\x2\x2\x38\x193\x3\x2\x2\x2:\x195\x3\x2\x2\x2<\x19E\x3\x2\x2\x2>\x1A2"+
+		"\x2\x37\x38\x4\x2()\x39:\x3\x2;<\x3\x2=>\x3\x2?\x41\x27A\x2u\x3\x2\x2"+
+		"\x2\x4z\x3\x2\x2\x2\x6\x92\x3\x2\x2\x2\b\x95\x3\x2\x2\x2\n\xA1\x3\x2\x2"+
+		"\x2\f\xA5\x3\x2\x2\x2\xE\xB4\x3\x2\x2\x2\x10\xB6\x3\x2\x2\x2\x12\xC5\x3"+
+		"\x2\x2\x2\x14\xC7\x3\x2\x2\x2\x16\xDA\x3\x2\x2\x2\x18\xDF\x3\x2\x2\x2"+
+		"\x1A\xE2\x3\x2\x2\x2\x1C\xEE\x3\x2\x2\x2\x1E\xFA\x3\x2\x2\x2 \xFF\x3\x2"+
+		"\x2\x2\"\x10E\x3\x2\x2\x2$\x118\x3\x2\x2\x2&\x123\x3\x2\x2\x2(\x127\x3"+
+		"\x2\x2\x2*\x134\x3\x2\x2\x2,\x136\x3\x2\x2\x2.\x15C\x3\x2\x2\x2\x30\x167"+
+		"\x3\x2\x2\x2\x32\x17D\x3\x2\x2\x2\x34\x18B\x3\x2\x2\x2\x36\x18F\x3\x2"+
+		"\x2\x2\x38\x193\x3\x2\x2\x2:\x195\x3\x2\x2\x2<\x19E\x3\x2\x2\x2>\x1A2"+
 		"\x3\x2\x2\x2@\x1AD\x3\x2\x2\x2\x42\x1BA\x3\x2\x2\x2\x44\x1BC\x3\x2\x2"+
 		"\x2\x46\x1BE\x3\x2\x2\x2H\x1C0\x3\x2\x2\x2J\x1C2\x3\x2\x2\x2L\x1C4\x3"+
 		"\x2\x2\x2N\x1C6\x3\x2\x2\x2P\x1C8\x3\x2\x2\x2R\x1D0\x3\x2\x2\x2T\x1D8"+

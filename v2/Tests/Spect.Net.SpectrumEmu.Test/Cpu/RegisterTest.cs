@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
+
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Spect.Net.SpectrumEmu.Test.Cpu

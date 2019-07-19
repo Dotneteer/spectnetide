@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Keyboard;
 
 namespace Spect.Net.SpectrumEmu.Test.Keyboard
 {
@@ -104,7 +104,7 @@ namespace Spect.Net.SpectrumEmu.Test.Keyboard
         {
             // --- Arrange
             var machine = new SpectrumKeyboardTestMachine();
-            machine.KeyboardDevice.SetStatus(key, true);
+            machine.KeyboardDevice.SetStatus(new KeyStatus(key, true));
 
             // --- Act
             machine.CallIntoRom(SpectrumKeyboardTestMachine.KEY_SCAN);

@@ -1,5 +1,4 @@
-﻿using Spect.Net.RomResources;
-using Spect.Net.SpectrumEmu.Scripting;
+﻿using Spect.Net.SpectrumEmu.Providers;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
@@ -15,7 +14,7 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
 
         public void InitRom(string romResourceName)
         {
-            var osInfo = new ResourceRomProvider(typeof(RomResourcesPlaceHolder).Assembly)
+            var osInfo = new DefaultRomProvider()
                 .LoadRomBytes(romResourceName);
             osInfo.CopyTo(Memory, 0);
         }

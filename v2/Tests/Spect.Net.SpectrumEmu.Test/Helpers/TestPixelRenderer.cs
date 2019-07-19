@@ -1,7 +1,6 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Configuration;
-using Spect.Net.SpectrumEmu.Abstraction.Models;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {

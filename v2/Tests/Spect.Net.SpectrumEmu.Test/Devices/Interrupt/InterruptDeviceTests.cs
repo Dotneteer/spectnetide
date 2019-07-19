@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
-using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
 namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
@@ -34,15 +33,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
                 0x20, 0xFB,       // JR NZ,DECLB
                 0x76              // HALT
             });
-            var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
             spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
-
-            // === Display some extra information about the duration of the frame execution
-            var duration = (spectrum.Clock.GetCounter() - startTime)
-                / (double)spectrum.Clock.GetFrequency();
-            Console.WriteLine("Frame execution time: {0} second", duration);
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;
@@ -71,15 +64,9 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Interrupt
                 0x20, 0xFB,       // JR NZ,DECLB
                 0x76              // HALT
             });
-            var startTime = spectrum.Clock.GetCounter();
 
             // --- Act
             spectrum.ExecuteCycle(CancellationToken.None, new ExecuteCycleOptions(EmulationMode.UntilHalt));
-
-            // === Display some extra information about the duration of the frame execution
-            var duration = (spectrum.Clock.GetCounter() - startTime)
-                / (double)spectrum.Clock.GetFrequency();
-            Console.WriteLine("Frame execution time: {0} second", duration);
 
             // --- Assert
             var regs = spectrum.Cpu.Registers;

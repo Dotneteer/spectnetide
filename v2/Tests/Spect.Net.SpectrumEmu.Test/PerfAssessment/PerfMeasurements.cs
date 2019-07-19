@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Spect.Net.SpectrumEmu.Cpu;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 
 // ReSharper disable InconsistentNaming
 

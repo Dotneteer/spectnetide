@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.TestSupport;
 using Spect.Net.SpectrumEmu.Devices.Sound;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 

@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 using Spect.Net.SpectrumEmu.Test.Helpers;
 
 namespace Spect.Net.SpectrumEmu.Test.Devices.Port
