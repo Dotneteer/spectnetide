@@ -1,4 +1,6 @@
-﻿namespace Spect.Net.SpectrumEmu.Devices.Tape
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
+
+namespace Spect.Net.SpectrumEmu.Devices.Tape
 {
     /// <summary>
     /// Represents the standard speed data block in a TZX file

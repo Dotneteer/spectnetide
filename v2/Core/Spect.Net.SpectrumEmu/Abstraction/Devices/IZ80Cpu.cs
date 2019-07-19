@@ -12,6 +12,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     /// </summary>
     public interface IZ80Cpu : IDevice
     {
+        /// <summary>
+        /// Gets the current tact of the device -- the clock cycles since
+        /// the device was reset.
+        /// </summary>
+        long Tacts { get; }
 
         /// <summary>
         /// Gets the current set of registers

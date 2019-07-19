@@ -1,5 +1,5 @@
 ﻿using System;
-using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Keyboard;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {
@@ -17,7 +17,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// The first argument of the handler method is the Spectrum key code. The
         /// second argument indicates if the specified key is down (true) or up (false)
         /// </remarks>
-        void SetKeyStatusHandler(Action<SpectrumKeyCode, bool> statusHandler);
+        void SetKeyStatusHandler(Action<KeyStatus> statusHandler);
 
         /// <summary>
         /// Emulates queued key strokes as if those were pressed by the user

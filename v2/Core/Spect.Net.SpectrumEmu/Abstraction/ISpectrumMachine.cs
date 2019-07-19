@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 using Spect.Net.SpectrumEmu.Machine;
-using Spect.Net.SpectrumEmu.Scripting;
 
 namespace Spect.Net.SpectrumEmu.Abstraction
 {

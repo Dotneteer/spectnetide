@@ -1,4 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Machine;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Machine;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {

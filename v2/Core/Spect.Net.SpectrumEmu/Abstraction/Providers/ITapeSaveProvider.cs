@@ -1,4 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Devices.Tape;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Providers
 {

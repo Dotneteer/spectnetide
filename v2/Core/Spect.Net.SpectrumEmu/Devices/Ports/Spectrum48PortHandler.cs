@@ -15,7 +15,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         private IScreenDevice _screenDevice;
         private IBeeperDevice _beeperDevice;
         private IKeyboardDevice _keyboardDevice;
-        private ITapeDevice _tapeDevice;
+        private ITapeLoadDevice _tapeDevice;
         private bool _isUla3;
 
         private bool _bit3LastValue;
@@ -99,7 +99,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _beeperDevice.ProcessEarBitValue(false, (writeValue & 0x10) != 0);
             _tapeDevice.ProcessMicBit((writeValue & 0x08) != 0);
 
-            // --- Set the lates value of bit 3
+            // --- Set the latest value of bit 3
             _bit3LastValue = (writeValue & 0x08) != 0;
 
             // --- Manage bit 4 value

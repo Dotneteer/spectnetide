@@ -6,11 +6,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Abstraction.TestSupport;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
-using Spect.Net.SpectrumEmu.Devices.Floppy;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
@@ -35,8 +38,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         ISpectrumVmTestSupport,
         ISpectrumVmRunCodeSupport
     {
-        private int _frameTacts;
-        private bool _frameCompleted;
+        /// <summary>
+        /// The length of a CPU Frame in tacts
+        /// </summary>
+        public const int CPU_FRAME = 4196;
+
         private readonly List<ISpectrumBoundDevice> _spectrumDevices = new List<ISpectrumBoundDevice>();
         private readonly List<IRenderFrameBoundDevice> _frameBoundDevices;
         private readonly List<ICpuOperationBoundDevice> _cpuBoundDevices;
@@ -58,12 +64,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         public ExecutionCompletionReason ExecutionCompletionReason { get; private set; }
 
         /// <summary>
-        /// The length of the physical frame in clock counts
-        /// </summary>
-        public double PhysicalFrameClockCount { get; }
-
-        /// <summary>
-        /// Collection of RSpectrum devices
+        /// Collection of Spectrum devices
         /// </summary>
         public DeviceInfoCollection DeviceData { get; }
         
@@ -130,11 +131,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IPortDevice PortDevice { get; }
 
         /// <summary>
-        /// The clock used within the VM
-        /// </summary>
-        public IClockProvider Clock { get; }
-
-        /// <summary>
         /// The configuration of the screen
         /// </summary>
         public ScreenConfiguration ScreenConfiguration { get; }
@@ -192,22 +188,17 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The tape device attached to the VM
         /// </summary>
-        public ITapeDevice TapeDevice { get; }
+        public ITapeLoadDevice TapeDevice { get; }
 
         /// <summary>
-        /// The tape device attached to the VM
+        /// The tape load provider attached to the VM
         /// </summary>
-        public ITapeProvider TapeProvider { get; }
+        public ITapeLoadProvider TapeLoadProvider { get; }
 
         /// <summary>
-        /// The device that implements the Spectrum Next feature set
+        /// The tape save provider attached to the VM
         /// </summary>
-        public INextFeatureSetDevice NextDevice { get; }
-
-        /// <summary>
-        /// The optional DivIDE device
-        /// </summary>
-        public IDivIdeDevice DivIdeDevice { get; }
+        public ITapeSaveProvider TapeSaveProvider { get; }
 
         /// <summary>
         /// The configuration of the floppy
@@ -237,7 +228,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// #of tacts within the frame
         /// </summary>
-        public int FrameTacts => _frameTacts;
+        public int FrameTacts { get; private set; }
 
         /// <summary>
         /// Gets the current frame tact according to the CPU tick count
@@ -255,12 +246,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public int InterruptTact => ScreenConfiguration.InterruptTact;
 
         /// <summary>
-        /// This property indicates if the machine currently runs the
-        /// maskable interrupt method.
-        /// </summary>
-        public bool RunsInMaskableInterrupt { get; private set; }
-
-        /// <summary>
         /// Allows to set a clock frequency multiplier value (1, 2, 4, or 8).
         /// </summary>
         public int ClockMultiplier { get; }
@@ -272,10 +257,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             DeviceData = deviceData ?? throw new ArgumentNullException(nameof(deviceData));
             UlaIssue = ulaIssue == "3" ? "3" : "2";
-
-            // --- Check for Spectrum Next
-            var nextInfo = GetDeviceInfo<INextFeatureSetDevice>();
-            NextDevice = nextInfo?.Device;
 
             // --- Prepare the memory device
             var memoryInfo = GetDeviceInfo<IMemoryDevice>();
@@ -301,8 +282,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             ClockMultiplier = mult;
             Cpu = new Z80Cpu(MemoryDevice, 
                 PortDevice, 
-                cpuConfig?.SupportsNextOperations ?? false,
-                NextDevice)
+                cpuConfig?.SupportsNextOperations ?? false)
             {
                 UseGateArrayContention = MemoryConfiguration.ContentionType == MemoryContentionType.GateArray
             };
@@ -312,11 +292,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             RomProvider = (IRomProvider)romInfo.Provider;
             RomDevice = romInfo.Device ?? new SpectrumRomDevice();
             RomConfiguration = (IRomConfiguration)romInfo.ConfigurationData;
-
-            // --- Init the clock
-            var clockInfo = GetDeviceInfo<IClockDevice>();
-            Clock = (IClockProvider) clockInfo.Provider 
-                ?? throw new InvalidOperationException("The virtual machine needs a clock provider!");
 
             // --- Init the screen device
             var screenInfo = GetDeviceInfo<IScreenDevice>();
@@ -339,10 +314,12 @@ namespace Spect.Net.SpectrumEmu.Machine
             InterruptDevice = new InterruptDevice(InterruptTact);
 
             // --- Init the tape device
-            var tapeInfo = GetDeviceInfo<ITapeDevice>();
-            TapeProvider = (ITapeProvider) tapeInfo?.Provider;
-            TapeDevice = tapeInfo?.Device 
-                ?? new TapeDevice(TapeProvider);
+            var tapeSaveInfo = GetDeviceInfo<ITapeSaveDevice>();
+            TapeSaveProvider = (ITapeSaveProvider)tapeSaveInfo?.Provider;
+            var tapeLoadInfo = GetDeviceInfo<ITapeLoadDevice>();
+            TapeLoadProvider = (ITapeLoadProvider)tapeLoadInfo?.Provider;
+            TapeDevice = tapeLoadInfo?.Device
+                         ?? new TapeDevice(TapeLoadProvider, TapeSaveProvider);
 
             // === Init optional devices
             // --- Init the sound device
@@ -352,10 +329,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             SoundDevice = soundInfo == null
                 ? null
                 : soundInfo.Device ?? new SoundDevice();
-
-            // --- Init the DivIDE device
-            var divIdeInfo = GetDeviceInfo<IDivIdeDevice>();
-            DivIdeDevice = divIdeInfo?.Device;
 
             // --- Init the floppy device
             var floppyInfo = GetDeviceInfo<IFloppyDevice>();
@@ -367,21 +340,18 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Carry out frame calculations
             ResetUlaTact();
-            _frameTacts = ScreenConfiguration.ScreenRenderingFrameTactCount;
-            PhysicalFrameClockCount = Clock.GetFrequency() / (double)BaseClockFrequency * _frameTacts;
+            FrameTacts = ScreenConfiguration.ScreenRenderingFrameTactCount;
             FrameCount = 0;
             Overflow = 0;
-            _frameCompleted = true;
+            HasFrameCompleted = true;
             _lastBreakpoint = null;
-            RunsInMaskableInterrupt = false;
 
             // --- Attach providers
             AttachProvider(RomProvider);
-            AttachProvider(Clock);
             AttachProvider(pixelRenderer);
             AttachProvider(BeeperProvider);
             AttachProvider(KeyboardProvider);
-            AttachProvider(TapeProvider);
+            AttachProvider(TapeLoadProvider);
             AttachProvider(DebugInfoProvider);
             
             // --- Attach optional providers
@@ -402,8 +372,6 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Collect optional devices
             if (SoundDevice != null) _spectrumDevices.Add(SoundDevice);
-            if (NextDevice != null) _spectrumDevices.Add(NextDevice);
-            if (DivIdeDevice != null) _spectrumDevices.Add(DivIdeDevice);
             if (FloppyDevice != null) _spectrumDevices.Add(FloppyDevice);
 
             // --- Now, prepare devices to find each other
@@ -474,10 +442,9 @@ namespace Spect.Net.SpectrumEmu.Machine
             LastExecutionStartTact = 0L;
             ContentionAccumulated = 0L;
             LastExecutionContentionValue = 0L;
-            _frameCompleted = true;
+            HasFrameCompleted = true;
             Cpu.Reset();
             Cpu.ReleaseResetSignal();
-            RunsInMaskableInterrupt = false;
             foreach (var device in _spectrumDevices)
             {
                 device.Reset();
@@ -547,177 +514,133 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         /// <param name="token">Cancellation token</param>
         /// <param name="options">Execution options</param>
+        /// <param name="completeOnCpuFrame">The cycle should complete on CPU frame completion</param>
         /// <return>True, if the cycle completed; false, if it has been cancelled</return>
-        public bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options)
+        public bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options, bool completeOnCpuFrame = false)
         {
             ExecuteCycleOptions = options;
             ExecutionCompletionReason = ExecutionCompletionReason.None;
             LastExecutionStartTact = Cpu.Tacts;
             LastExecutionContentionValue = ContentionAccumulated;
 
-            // --- We use these variables to calculate wait time at the end of the frame
-            var cycleStartTime = Clock.GetCounter();
-            var cycleStartTact = Cpu.Tacts;
-            var cycleFrameCount = 0;
-
             // --- We use this variables to check whether to stop in Debug mode
             var executedInstructionCount = -1;
             var entryStepOutDepth = Cpu.StackDebugSupport.StepOutStackDepth;
 
-            // --- Loop #1: The main cycle that goes on until cancelled
-            while (!token.IsCancellationRequested)
+            // --- Check if we're just start running the next frame
+            if (HasFrameCompleted)
             {
-                if (_frameCompleted)
-                {
-                    // --- This counter helps us to calculate where we are in the frame after
-                    // --- each CPU operation cycle
-                    LastFrameStartCpuTick = Cpu.Tacts - Overflow;
+                // --- This counter helps us to calculate where we are in the frame after
+                // --- each CPU operation cycle
+                LastFrameStartCpuTick = Cpu.Tacts - Overflow;
 
-                    // --- Notify devices to start a new frame
-                    OnNewFrame();
-                    LastRenderedUlaTact = Overflow;
-                    _frameCompleted = false;
-                }
+                // --- Notify devices to start a new frame
+                OnNewFrame();
+                LastRenderedUlaTact = Overflow;
+                HasFrameCompleted = false;
+            }
 
-                // --- Loop #2: The physical frame cycle that goes on while CPU and ULA 
-                // --- processes everything within a physical frame (0.019968 second)
-                while (!_frameCompleted)
+            // --- The physical frame cycle that goes on while CPU and ULA 
+            // --- processes everything within a physical frame (0.019968 second)
+            while (!HasFrameCompleted)
+            {
+                // --- Check debug mode when a CPU instruction has been entirely executed
+                if (!Cpu.IsInOpExecution)
                 {
-                    // --- Check for leaving maskable interrupt mode
-                    if (RunsInMaskableInterrupt)
+                    // --- The next instruction is about to be executed
+                    executedInstructionCount++;
+
+                    // --- Check for cancellation
+                    if (token.IsCancellationRequested)
                     {
-                        if (Cpu.Registers.PC == 0x0052)
-                        {
-                            // --- We leave the maskable interrupt mode when the
-                            // --- current instruction completes
-                            RunsInMaskableInterrupt = false;
-                        }
+                        ExecutionCompletionReason = ExecutionCompletionReason.Cancelled;
+                        return false;
                     }
 
-                    // --- Check debug mode when a CPU instruction has been entirely executed
-                    if (!Cpu.IsInOpExecution)
+                    // --- Check for CPU frame completion
+                    if (completeOnCpuFrame && Cpu.Tacts > LastExecutionStartTact + CPU_FRAME)
                     {
-                        // --- Check for cancellation
-                        if (token.IsCancellationRequested)
-                        {
-                            ExecutionCompletionReason = ExecutionCompletionReason.Cancelled;
-                            return false;
-                        }
-
-                        // --- The next instruction is about to be executed
-                        executedInstructionCount++;
-
-                        // --- Check for timeout
-                        if (options.TimeoutTacts > 0 
-                            && cycleStartTact + options.TimeoutTacts < Cpu.Tacts)
-                        {
-                            ExecutionCompletionReason = ExecutionCompletionReason.Timeout;
-                            return false;
-                        }
-
-                        // --- Check for reaching the termination point
-                        if (options.EmulationMode == EmulationMode.UntilExecutionPoint)
-                        {
-                            if (options.TerminationPoint < 0x4000)
-                            {
-                                // --- ROM & address must match
-                                if (options.TerminationRom == MemoryDevice.GetSelectedRomIndex()
-                                    && options.TerminationPoint == Cpu.Registers.PC)
-                                {
-                                    // --- We reached the termination point within ROM
-                                    ExecutionCompletionReason = ExecutionCompletionReason.TerminationPointReached;
-                                    return true;
-                                }
-                            }
-                            else if (options.TerminationPoint == Cpu.Registers.PC)
-                            {
-                                // --- We reached the termination point within RAM
-                                ExecutionCompletionReason = ExecutionCompletionReason.TerminationPointReached;
-                                return true;
-                            }
-                        }
-
-                        // --- Check for entering maskable interrupt mode
-                        if (Cpu.MaskableInterruptModeEntered)
-                        {
-                            RunsInMaskableInterrupt = true;
-                        }
-
-                        // --- Check for a debugging stop point
-                        if (options.EmulationMode == EmulationMode.Debugger)
-                        {
-                            if (IsDebugStop(options, executedInstructionCount, entryStepOutDepth)
-                                && DebugConditionSatisfied())
-                            {
-                                // --- At this point, the cycle should be stopped because of debugging reasons
-                                // --- The screen should be refreshed
-                                ScreenDevice.OnFrameCompleted();
-                                ExecutionCompletionReason = ExecutionCompletionReason.BreakpointReached;
-                                return true;
-                            }
-                        }
-                    }
-
-                    // --- Check for interrupt signal generation
-                    InterruptDevice.CheckForInterrupt(CurrentFrameTact);
-
-                    // --- Run a single Z80 instruction
-                    Cpu.ExecuteCpuCycle();
-                    _lastBreakpoint = null;
-
-                    // --- Run a rendering cycle according to the current CPU tact count
-                    var lastTact = CurrentFrameTact;
-                    ScreenDevice.RenderScreen(LastRenderedUlaTact + 1, lastTact);
-                    LastRenderedUlaTact = lastTact;
-
-                    // --- Exit if the emulation mode specifies so
-                    if (options.EmulationMode == EmulationMode.UntilHalt 
-                        && (Cpu.StateFlags & Z80StateFlags.Halted) != 0)
-                    {
-                        ExecutionCompletionReason = ExecutionCompletionReason.Halted;
+                        ExecutionCompletionReason = ExecutionCompletionReason.CpuFrameCompleted;
                         return true;
                     }
 
-                    // --- Notify each CPU-bound device that the current operation has been completed
-                    foreach (var device in _cpuBoundDevices)
+                    // --- Check for several termination modes
+                    switch (options.EmulationMode)
                     {
-                        device.OnCpuOperationCompleted();
+                        // --- Check for reaching the termination point
+                        case EmulationMode.UntilExecutionPoint when options.TerminationPoint < 0x4000:
+                        {
+                            // --- ROM & address must match
+                            if (options.TerminationRom == MemoryDevice.GetSelectedRomIndex()
+                                && options.TerminationPoint == Cpu.Registers.PC)
+                            {
+                                // --- We reached the termination point within ROM
+                                ExecutionCompletionReason = ExecutionCompletionReason.TerminationPointReached;
+                                return true;
+                            }
+
+                            break;
+                        }
+
+                        // --- Check if we reached the termination point within RAM
+                        case EmulationMode.UntilExecutionPoint
+                            when options.TerminationPoint == Cpu.Registers.PC:
+
+                            ExecutionCompletionReason = ExecutionCompletionReason.TerminationPointReached;
+                            return true;
+
+                        // --- Check for a debugging stop point
+                        case EmulationMode.Debugger
+                            when IsDebugStop(options, executedInstructionCount, entryStepOutDepth)
+                                 && DebugConditionSatisfied():
+
+                            // --- At this point, the cycle should be stopped because of debugging reasons
+                            // --- The screen should be refreshed
+                            ExecutionCompletionReason = ExecutionCompletionReason.BreakpointReached;
+                            return true;
                     }
+                }
 
-                    // --- Decide whether this frame has been completed
-                    _frameCompleted = !Cpu.IsInOpExecution && CurrentFrameTact >= _frameTacts;
+                // --- Check for interrupt signal generation
+                InterruptDevice.CheckForInterrupt(CurrentFrameTact);
 
-                } // -- End Loop #2
+                // --- Run a single Z80 instruction
+                Cpu.ExecuteCpuCycle();
+                _lastBreakpoint = null;
 
-                // --- A physical frame has just been completed. Take care about screen refresh
-                cycleFrameCount++;
-                FrameCount++;
+                // --- Run a rendering cycle according to the current CPU tact count
+                var lastTact = CurrentFrameTact;
+                ScreenDevice.RenderScreen(LastRenderedUlaTact + 1, lastTact);
+                LastRenderedUlaTact = lastTact;
 
-                // --- Notify devices that the current frame completed
-                OnFrameCompleted();
-
-                // --- Exit if the emulation mode specifies so
-                if (options.EmulationMode == EmulationMode.UntilFrameEnds)
+                // --- Exit if the CPU is HALTed and the emulation mode specifies so
+                if (options.EmulationMode == EmulationMode.UntilHalt
+                    && (Cpu.StateFlags & Z80StateFlags.Halted) != 0)
                 {
-                    ExecutionCompletionReason = ExecutionCompletionReason.FrameCompleted;
+                    ExecutionCompletionReason = ExecutionCompletionReason.Halted;
                     return true;
                 }
 
-                // --- Wait while the frame time elapses
-                if (!ExecuteCycleOptions.FastVmMode)
+                // --- Notify each CPU-bound device that the current operation has been completed
+                foreach (var device in _cpuBoundDevices)
                 {
-                    var nextFrameCounter = cycleStartTime + cycleFrameCount * PhysicalFrameClockCount;
-                    Clock.WaitUntil((long)nextFrameCounter, token);
+                    device.OnCpuOperationCompleted();
                 }
 
-                // --- Start a new frame and carry on
-                Overflow = CurrentFrameTact % _frameTacts;
+                // --- Decide whether this frame has been completed
+                HasFrameCompleted = !Cpu.IsInOpExecution && CurrentFrameTact >= FrameTacts;
+            }
 
-            } // --- End Loop #1
+            // --- A physical frame has just been completed. Take care about screen refresh
+            FrameCount++;
+            Overflow = CurrentFrameTact % FrameTacts;
 
-            // --- The cycle has been interrupted by cancellation
-            ExecutionCompletionReason = ExecutionCompletionReason.Cancelled;
-            return false;
+            // --- Notify devices that the current frame completed
+            OnFrameCompleted();
+
+            // --- We exit the cycle when the render frame has completed
+            ExecutionCompletionReason = ExecutionCompletionReason.RenderFrameCompleted;
+            return true;
         }
 
         /// <summary>
@@ -737,39 +660,27 @@ namespace Spect.Net.SpectrumEmu.Machine
                 return false;
             }
 
-            // Check if the maskable interrupt routine breakpoints should be skipped
-            if (RunsInMaskableInterrupt)
+            switch (options.DebugStepMode)
             {
-                if (options.SkipInterruptRoutine) return false;
-            }
+                // --- In Step-Into mode we always stop when we're about to
+                // --- execute the next instruction
+                case DebugStepMode.StepInto:
+                    return executedInstructionCount > 0;
 
-            // --- In Step-Into mode we always stop when we're about to
-            // --- execute the next instruction
-            if (options.DebugStepMode == DebugStepMode.StepInto)
-            {
-                return executedInstructionCount > 0;
-            }
-
-            // --- In Stop-At-Breakpoint mode we stop only if a predefined
-            // --- breakpoint is reached
-            if (options.DebugStepMode == DebugStepMode.StopAtBreakpoint
-                && DebugInfoProvider.ShouldBreakAtAddress(Cpu.Registers.PC))
-            {
-                if (executedInstructionCount > 0
-                    || _lastBreakpoint == null
-                    || _lastBreakpoint != Cpu.Registers.PC)
-                {
+                // --- In Stop-At-Breakpoint mode we stop only if a predefined
+                // --- breakpoint is reached
+                case DebugStepMode.StopAtBreakpoint
+                    when DebugInfoProvider.ShouldBreakAtAddress(Cpu.Registers.PC) && (executedInstructionCount > 0
+                        || _lastBreakpoint == null
+                        || _lastBreakpoint != Cpu.Registers.PC):
                     // --- If we are paused at a breakpoint, we do not want
                     // --- to pause again and again, unless we step through
                     _lastBreakpoint = Cpu.Registers.PC;
                     return true;
-                }
-            }
 
-            // --- We're in Step-Over mode
-            if (options.DebugStepMode == DebugStepMode.StepOver)
-            {
-                if (DebugInfoProvider.ImminentBreakpoint != null)
+                // --- We're in Step-Over mode
+                case DebugStepMode.StepOver
+                    when DebugInfoProvider.ImminentBreakpoint != null:
                 {
                     // --- We also stop, if an imminent breakpoint is reached, and also remove
                     // --- this breakpoint
@@ -778,8 +689,10 @@ namespace Spect.Net.SpectrumEmu.Machine
                         DebugInfoProvider.ImminentBreakpoint = null;
                         return true;
                     }
+                    break;
                 }
-                else
+
+                case DebugStepMode.StepOver:
                 {
                     var imminentJustCreated = false;
 
@@ -799,13 +712,14 @@ namespace Spect.Net.SpectrumEmu.Machine
                     {
                         return true;
                     }
+                    break;
                 }
-            } else if (options.DebugStepMode == DebugStepMode.StepOut)
-            {
+
                 // --- We're in Step-Out mode and want to complete the current subroutine call
-                if (Cpu.StackDebugSupport.RetExecuted 
-                    && executedInstructionCount > 0 
-                    && entryStepOutStackDepth == Cpu.StackDebugSupport.StepOutStackDepth + 1)
+                case DebugStepMode.StepOut 
+                    when Cpu.StackDebugSupport.RetExecuted 
+                        && executedInstructionCount > 0 
+                        && entryStepOutStackDepth == Cpu.StackDebugSupport.StepOutStackDepth + 1:
                 {
                     if (Cpu.Registers.PC != Cpu.StackDebugSupport.StepOutAddress)
                     {
@@ -902,7 +816,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// This flag tells if the frame has just been completed.
         /// </summary>
-        public bool HasFrameCompleted => _frameCompleted;
+        public bool HasFrameCompleted { get; private set; }
 
         /// <summary>
         /// Writes a byte to the memory
@@ -921,7 +835,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             LastRenderedUlaTact = tacts;
             var cpuTest = Cpu as IZ80CpuTestSupport;
             cpuTest?.SetTacts(tacts);
-            _frameCompleted = tacts == 0;
+            HasFrameCompleted = tacts == 0;
         }
 
         /// <summary>
@@ -955,9 +869,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             var flags = MemoryDevice.Read(0x5C3B);
             flags |= 0x08;
             MemoryDevice.Write(0x5C3B, flags);
-
-            // --- Allow interrupts
-            RunsInMaskableInterrupt = false;
         }
 
         #endregion
@@ -1119,7 +1030,6 @@ namespace Spect.Net.SpectrumEmu.Machine
                 FrameCount = spectrum.FrameCount;
                 FrameTacts = spectrum.FrameTacts;
                 Overflow = spectrum.Overflow;
-                RunsInMaskableInterrupt = spectrum.RunsInMaskableInterrupt;
 
                 Z80CpuState = spectrum.Cpu?.GetState();
                 Z80CpuStateType = Z80CpuState?.GetType().AssemblyQualifiedName;
@@ -1154,9 +1064,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                 spectrum.LastFrameStartCpuTick = LastFrameStartCpuTick;
                 spectrum.LastRenderedUlaTact = LastRenderedUlaTact;
                 spectrum.FrameCount = FrameCount;
-                spectrum._frameTacts = FrameTacts;
+                spectrum.FrameTacts = FrameTacts;
                 spectrum.Overflow = Overflow;
-                spectrum.RunsInMaskableInterrupt = RunsInMaskableInterrupt;
 
                 spectrum.Cpu?.RestoreState(Z80CpuState);
                 spectrum.RomDevice?.RestoreState(RomDeviceState);

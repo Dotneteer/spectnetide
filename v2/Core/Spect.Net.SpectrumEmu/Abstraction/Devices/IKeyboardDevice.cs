@@ -1,4 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Devices.Keyboard;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices.Keyboard;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
@@ -8,11 +8,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
     public interface IKeyboardDevice : ISpectrumBoundDevice, IRenderFrameBoundDevice
     {
         /// <summary>
-        /// Sets the status of the specified Spectrum keyboard key
+        /// Sets the status of the specified Spectrum keyboard key.
         /// </summary>
-        /// <param name="key">Key code</param>
-        /// <param name="isDown">True, if the key is down; otherwise, false</param>
-        void SetStatus(SpectrumKeyCode key, bool isDown);
+        /// <param name="keyStatus">Status of the key to set</param>
+        void SetStatus(KeyStatus keyStatus);
 
         /// <summary>
         /// Gets the status of the specified Spectrum keyboard key.

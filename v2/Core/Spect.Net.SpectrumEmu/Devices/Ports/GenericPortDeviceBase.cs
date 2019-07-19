@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {

@@ -1,4 +1,4 @@
-using Spect.Net.SpectrumEmu.Devices.Screen;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {

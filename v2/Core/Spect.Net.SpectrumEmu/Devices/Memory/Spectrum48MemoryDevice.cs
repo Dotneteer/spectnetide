@@ -216,10 +216,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             public byte[] Memory { get; set; }
 
-            public Spectrum48MemoryDeviceState()
-            {
-            }
-
             public Spectrum48MemoryDeviceState(Spectrum48MemoryDevice device)
             {
                 Memory = CompressionHelper.CompressBytes(device._memory);

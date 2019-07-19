@@ -1,4 +1,5 @@
 ﻿using Spect.Net.EvalParser.SyntaxTree;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 
 namespace Spect.Net.SpectrumEmu.Machine
 {

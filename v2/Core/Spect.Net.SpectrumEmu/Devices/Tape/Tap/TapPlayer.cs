@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape.Tap
 {
@@ -72,11 +73,5 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape.Tap
         /// A tuple of the EAR bit and a flag that indicates it is time to move to the next block
         /// </returns>
         public bool GetEarBit(long currentTact) => _player.GetEarBit(currentTact);
-
-        /// <summary>
-        /// Moves the current block index to the next playable block
-        /// </summary>
-        /// <param name="currentTact">Tacts time to start the next block</param>
-        public void NextBlock(long currentTact) => _player.NextBlock(currentTact);
     }
 }

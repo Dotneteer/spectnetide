@@ -1,41 +1,29 @@
 ﻿namespace Spect.Net.SpectrumEmu.Machine
 {
     /// <summary>
-    /// This class represents the states of the virtual machine as 
-    /// managed by the SpectrumVmController
+    /// This enumeration represents the state of a ZX Spectrum virtual machine
     /// </summary>
     public enum VmState
     {
-        /// <summary>
-        /// The virtual machine has just been created, but has not run yet
-        /// </summary>
+        /// <summary>The machine is turned off</summary>
         None,
 
-        /// <summary>
-        /// The virtual machine is successfully started in the background
-        /// </summary>
+        /// <summary>The machine is starting (after On, Paused, or Stopped states)</summary>
+        Starting,
+
+        /// <summary>The machine has successfully started (after Starting)</summary>
         Running,
 
-        /// <summary>
-        /// The pause request has been sent to the virtual machine, 
-        /// now it prepares to get paused
-        /// </summary>
+        /// <summary>The machine is getting paused (after Running)</summary>
         Pausing,
 
-        /// <summary>
-        /// The virtual machine has been paused
-        /// </summary>
+        /// <summary>The machine has successfully paused (after Running)</summary>
         Paused,
 
-        /// <summary>
-        /// The stop request has been sent to the virtual machine, 
-        /// now it prepares to get stopped
-        /// </summary>
+        /// <summary>The machine is getting stopped (after Running)</summary>
         Stopping,
 
-        /// <summary>
-        /// The virtual machine has been stopped
-        /// </summary>
+        /// <summary>The machine has successfully stopped (after Stopping)</summary>
         Stopped
     }
 }

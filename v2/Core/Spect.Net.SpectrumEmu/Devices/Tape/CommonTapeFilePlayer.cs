@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
+using Spect.Net.SpectrumEmu.Abstraction.TestSupport;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tap;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
 namespace Spect.Net.SpectrumEmu.Devices.Tape
 {
     /// <summary>
-    /// This class recognizes .TZX and .TAP files, and playes back
+    /// This class recognizes .TZX and .TAP files, and plays back
     /// the content accordingly.
     /// </summary>
-    public class CommonTapeFilePlayer : ISupportsTapeBlockPlayback
+    public class CommonTapeFilePlayer : ISupportsTapeBlockPlayback, ITestablePlayer
     {
         private readonly BinaryReader _reader;
         private TapeBlockSetPlayer _player;
@@ -50,7 +52,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             }
             catch (Exception)
             {
-                // --- This exception is intentionally ingnored
+                // --- This exception is intentionally ignored
             }
 
             if (readerFound)
@@ -115,47 +117,5 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         /// <param name="currentTact">Tacts time to start the next block</param>
         public void NextBlock(long currentTact) => _player.NextBlock(currentTact);
-
-        /// <summary>
-        /// Tests if the specified file is a valid ZX Spectrum screen file
-        /// </summary>
-        /// <param name="filename">File name to check</param>
-        /// <returns></returns>
-        public static bool CheckScreenFile(string filename)
-        {
-            try
-            {
-                using (var reader = new BinaryReader(File.OpenRead(filename)))
-                {
-                    var player = new CommonTapeFilePlayer(reader);
-                    player.ReadContent();
-                    // --- Test if file is a screen file
-                    // --- Two data blocks
-                    if (player.DataBlocks.Count != 2)
-                    {
-                        return false;
-                    }
-
-                    // --- Block lenghts should be 19 and 6914
-                    var header = ((ITapeData) player.DataBlocks[0]).Data;
-                    if (header.Length != 19
-                        || ((ITapeData) player.DataBlocks[1]).Data.Length != 6914)
-                    {
-                        return false;
-                    }
-
-                    // --- Test header bytes
-                    return (header[0] == 0x00 && header[1] == 0x03 // --- Code header
-                                              && header[12] == 0x00 && header[13] == 0x1B // --- Length: 0x1B00
-                                              && header[14] == 0x00 && header[15] == 0x40 // --- Address: 0x4000
-                                              && header[16] == 0x00 && header[17] == 0x80); // --- Param2: 0x8000
-                }
-            }
-            catch (Exception)
-            {
-                // --- If we cannot read the file, we consider it an invalid screen file.
-                return false;
-            }
-        }
     }
 }

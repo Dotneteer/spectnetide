@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Abstraction.TestSupport;
 using Spect.Net.SpectrumEmu.Utility;
 
 namespace Spect.Net.SpectrumEmu.Devices.Screen
@@ -192,14 +194,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <param name="toTact">Last screen rendering tact</param>
         public void RenderScreen(int fromTact, int toTact)
         {
-            // --- Do not refresh the screen when in fast mode, or explicitly disabled
-            if (HostVm.ExecuteCycleOptions.DisableScreenRendering
-                || FrameCount > 2 && HostVm.ExecuteCycleOptions.FastVmMode
-                                  && HostVm.ExecuteCycleOptions.DisableScreenRendering)
-            {
-                return;
-            }
-
             // --- Adjust the tact boundaries
             fromTact = fromTact % ScreenConfiguration.ScreenRenderingFrameTactCount;
             toTact = toTact % ScreenConfiguration.ScreenRenderingFrameTactCount;

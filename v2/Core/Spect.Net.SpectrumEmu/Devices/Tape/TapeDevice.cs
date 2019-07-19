@@ -2,8 +2,11 @@
 
 using System;
 using System.Text;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Abstraction.TestSupport;
 using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
@@ -13,7 +16,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
     /// <summary>
     /// This class represents the cassette tape device in ZX Spectrum
     /// </summary>
-    public class TapeDevice : ICpuOperationBoundDevice, ITapeDevice, ITapeDeviceTestSupport
+    public class TapeDevice : ITapeLoadDevice, ITapeSaveDevice, ITapeDeviceTestSupport
     {
         private IZ80Cpu _cpu;
         private IBeeperDevice _beeperDevice;
@@ -63,11 +66,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public const ushort ERROR_ROM_ADDRESS = 0x0008;
 
         /// <summary>
-        /// The maximum distance between two scans of the EAR bit
-        /// </summary>
-        public const int MAX_TACT_JUMP = 10000;
-
-        /// <summary>
         /// The width tolerance of save pulses
         /// </summary>
         public const int SAVE_PULSE_TOLERANCE = 24;
@@ -78,14 +76,15 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         public const int MIN_PILOT_PULSE_COUNT = 3000;
 
         /// <summary>
-        /// Lenght of the data buffer to allocate for the SAVE operation
+        /// Length of the data buffer to allocate for the SAVE operation
         /// </summary>
         public const int DATA_BUFFER_LENGTH = 0x1_0000;
 
+        public ITapeLoadProvider TapeLoadLoadProvider { get; }
         /// <summary>
-        /// Gets the TZX tape content provider
+        /// Gets the tape save content provider
         /// </summary>
-        public ITapeProvider TapeProvider { get; }
+        public ITapeSaveProvider TapeSaveProvider { get; }
 
         /// <summary>
         /// The virtual machine that hosts the device
@@ -124,7 +123,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
 
             var romDevice = HostVm.RomDevice;
             LoadBytesRoutineAddress =
-                romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_ROUTINE_ADDRESS, 
+                romDevice.GetKnownAddress(SpectrumRomDevice.LOAD_BYTES_ROUTINE_ADDRESS,
                     HostVm.RomConfiguration.Spectrum48RomIndex) ?? 0;
             SaveBytesRoutineAddress =
                 romDevice.GetKnownAddress(SpectrumRomDevice.SAVE_BYTES_ROUTINE_ADDRESS,
@@ -141,10 +140,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Initializes the tape device for the specified host VM
         /// </summary>
-        /// <param name="tapeProvider">Tape content provider</param>
-        public TapeDevice(ITapeProvider tapeProvider)
+        /// <param name="tapeLoadLoadProvider">Tape content load provide</param>
+        /// <param name="tapeSaveProvider">Tape content save provider</param>
+        public TapeDevice(ITapeLoadProvider tapeLoadLoadProvider, ITapeSaveProvider tapeSaveProvider)
         {
-            TapeProvider = tapeProvider;
+            TapeSaveProvider = tapeSaveProvider;
+            TapeLoadLoadProvider = tapeLoadLoadProvider;
         }
 
         /// <summary>
@@ -152,7 +153,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// </summary>
         public void Reset()
         {
-            TapeProvider?.Reset();
+            TapeSaveProvider?.Reset();
             _tapePlayer = null;
             _currentMode = TapeOperationMode.Passive;
             _savePhase = SavePhase.None;
@@ -219,14 +220,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     }
                     return;
                 case TapeOperationMode.Save:
-                    if (_cpu.Registers.PC == ERROR_ROM_ADDRESS 
+                    if (_cpu.Registers.PC == ERROR_ROM_ADDRESS
                         || (int)(_cpu.Tacts - _lastMicBitActivityTact) > SAVE_STOP_SILENCE)
                     {
                         LeaveSaveMode();
                     }
                     return;
                 case TapeOperationMode.Load:
-                    if ((_tapePlayer?.Eof ?? false) || _cpu.Registers.PC == ERROR_ROM_ADDRESS) 
+                    if ((_tapePlayer?.Eof ?? true) || _cpu.Registers.PC == ERROR_ROM_ADDRESS)
                     {
                         LeaveLoadMode();
                         LoadCompleted?.Invoke(this, EventArgs.Empty);
@@ -243,7 +244,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private bool FastLoadFromTzx()
         {
             // --- Check, if we can load the current block in a fast way
-            if (!(TapeFilePlayer.CurrentBlock is ITapeData currentData) 
+            if (!(TapeFilePlayer.CurrentBlock is ITapeData currentData)
                 || TapeFilePlayer.PlayPhase == PlayPhase.Completed)
             {
                 // --- We cannot play this block
@@ -289,7 +290,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                 if (isVerify && regs.L != memory.Read(regs.IX))
                 {
                     // --- Verify failed
-                    regs.A = (byte) (memory.Read(regs.IX) ^ regs.L);
+                    regs.A = (byte)(memory.Read(regs.IX) ^ regs.L);
                     regs.F &= FlagsResetMask.Z;
                     regs.F &= FlagsResetMask.C;
                     regs.PC = LoadBytesInvalidHeaderAddress;
@@ -334,7 +335,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _pilotPulseCount = 0;
             _prevDataPulse = MicPulseType.None;
             _dataBlockCount = 0;
-            TapeProvider?.CreateTapeFile();
+            TapeSaveProvider?.CreateTapeFile();
             EnteredSaveMode?.Invoke(this, EventArgs.Empty);
         }
 
@@ -344,7 +345,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void LeaveSaveMode()
         {
             _currentMode = TapeOperationMode.Passive;
-            TapeProvider?.FinalizeTapeFile();
             LeftSaveMode?.Invoke(this, EventArgs.Empty);
         }
 
@@ -356,7 +356,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
             _currentMode = TapeOperationMode.Load;
             EnteredLoadMode?.Invoke(this, EventArgs.Empty);
 
-            var contentReader = TapeProvider?.GetTapeContent();
+            var contentReader = TapeLoadLoadProvider?.GetTapeContent();
             if (contentReader == null) return;
 
             // --- Play the content
@@ -368,13 +368,13 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         }
 
         /// <summary>
-        /// Leaves the load mode. Stops the device that playes EAR pulses
+        /// Leaves the load mode. Stops the device that plays EAR pulses
         /// </summary>
         private void LeaveLoadMode()
         {
             _currentMode = TapeOperationMode.Passive;
             _tapePlayer = null;
-            TapeProvider?.Reset();
+            TapeSaveProvider?.Reset();
             HostVm.BeeperDevice.SetTapeOverride(false);
             LeftLoadMode?.Invoke(this, EventArgs.Empty);
         }
@@ -539,7 +539,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                     }
                     else if (pulse == MicPulseType.TermSync)
                     {
-                        // --- We received the terminating pulse, the datablock has been completed
+                        // --- We received the terminating pulse, the data block has been completed
                         nextPhase = SavePhase.None;
                         _dataBlockCount++;
 
@@ -547,7 +547,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                         var dataBlock = new TzxStandardSpeedDataBlock
                         {
                             Data = _dataBuffer,
-                            DataLength = (ushort) _dataLength
+                            DataLength = (ushort)_dataLength
                         };
 
                         // --- If this is the first data block, extract the name from the header
@@ -557,12 +557,12 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
                             var sb = new StringBuilder(16);
                             for (var i = 2; i <= 11; i++)
                             {
-                                sb.Append((char) _dataBuffer[i]);
+                                sb.Append((char)_dataBuffer[i]);
                             }
                             var name = sb.ToString().TrimEnd();
-                            TapeProvider?.SetName(name);
+                            TapeSaveProvider?.SetName(name);
                         }
-                        TapeProvider?.SaveTapeBlock(dataBlock);
+                        TapeSaveProvider?.SaveTapeBlock(dataBlock);
                     }
                     break;
             }
@@ -586,7 +586,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// The TzxPlayer that can playback tape content
         /// </summary>
-        public CommonTapeFilePlayer TapeFilePlayer => _tapePlayer;
+        public ITestablePlayer TapeFilePlayer => _tapePlayer;
 
         /// <summary>
         /// The CPU tact of the last MIC bit activity

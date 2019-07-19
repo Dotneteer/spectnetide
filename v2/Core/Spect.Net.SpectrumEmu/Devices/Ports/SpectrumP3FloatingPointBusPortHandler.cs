@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Memory;
-using Spect.Net.SpectrumEmu.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {

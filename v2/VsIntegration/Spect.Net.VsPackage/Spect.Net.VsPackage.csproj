@@ -278,10 +278,6 @@
       <Project>{bf0ce3fe-6516-4377-a6e4-51151f4d5185}</Project>
       <Name>Spect.Net.TestParser</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Spect.Net.RomResources\Spect.Net.RomResources.csproj">
-      <Project>{a2ae0e5e-e717-4a81-ab9b-e7c7b29fad4e}</Project>
-      <Name>Spect.Net.RomResources</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
       <Project>{b2917190-2c03-45d6-9dec-c58ef0e4306c}</Project>
       <Name>Spect.Net.SpectrumEmu</Name>

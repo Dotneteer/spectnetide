@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Floppy;
 
 namespace Spect.Net.SpectrumEmu.Devices.Floppy
 {

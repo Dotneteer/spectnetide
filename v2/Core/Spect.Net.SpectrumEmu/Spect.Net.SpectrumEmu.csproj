@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,13 +7,46 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Roms\ZxSpectrum128\ZxSpectrum128-0.disann" />
+    <None Remove="Roms\ZxSpectrum128\ZxSpectrum128-0.rom" />
+    <None Remove="Roms\ZxSpectrum128\ZxSpectrum128-1.disann" />
+    <None Remove="Roms\ZxSpectrum128\ZxSpectrum128-1.rom" />
+    <None Remove="Roms\ZxSpectrum48\ZxSpectrum48.disann" />
+    <None Remove="Roms\ZxSpectrum48\ZxSpectrum48.rom" />
+    <None Remove="Roms\ZxSpectrumP3E\ZxSpectrumP3E-0.disann" />
+    <None Remove="Roms\ZxSpectrumP3E\ZxSpectrumP3E-0.rom" />
+    <None Remove="Roms\ZxSpectrumP3E\ZxSpectrumP3E-1.disann" />
+    <None Remove="Roms\ZxSpectrumP3E\ZxSpectrumP3E-1.rom" />
+    <None Remove="Roms\ZxSpectrumP3E\ZxSpectrumP3E-2.disann" />
+    <None Remove="Roms\ZxSpectrumP3E\ZxSpectrumP3E-2.rom" />
+    <None Remove="Roms\ZxSpectrumP3E\ZxSpectrumP3E-3.disann" />
+    <None Remove="Roms\ZxSpectrumP3E\ZxSpectrumP3E-3.rom" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Roms\ZxSpectrum128\ZxSpectrum128-0.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrum128\ZxSpectrum128-0.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrum128\ZxSpectrum128-1.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrum128\ZxSpectrum128-1.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrum48\ZxSpectrum48.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrum48\ZxSpectrum48.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-0.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-0.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-1.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-1.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-2.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-2.rom" />
+    <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-3.disann" />
+    <EmbeddedResource Include="Roms\ZxSpectrumP3E\ZxSpectrumP3E-3.rom" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj" />
     <ProjectReference Include="..\..\Assembler\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj" />
-    <ProjectReference Include="..\Spect.Net.RomResources\Spect.Net.RomResources.csproj" />
   </ItemGroup>
 
 </Project>

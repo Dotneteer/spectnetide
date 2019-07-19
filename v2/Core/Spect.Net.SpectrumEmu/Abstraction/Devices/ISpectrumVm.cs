@@ -1,11 +1,9 @@
 ﻿using System.Threading;
 using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Devices.Screen;
-using Spect.Net.SpectrumEmu.Devices.Tape;
-using Spect.Net.SpectrumEmu.Machine;
-
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
@@ -167,11 +165,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IAudioConfiguration SoundConfiguration { get; }
 
         /// <summary>
-        /// The device that implements the Spectrum Next feature set
-        /// </summary>
-        INextFeatureSetDevice NextDevice { get; }
-
-        /// <summary>
         /// The tape device attached to the VM
         /// </summary>
         ITapeLoadProvider TapeLoadProvider { get; }
@@ -201,8 +194,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// </summary>
         /// <param name="token">Cancellation token</param>
         /// <param name="options">Execution options</param>
+        /// <param name="completeOnCpuFrame">The cycle should complete on CPU frame completion</param>
         /// <return>True, if the cycle completed; false, if it has been cancelled</return>
-        bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options);
+        bool ExecuteCycle(CancellationToken token, ExecuteCycleOptions options, bool completeOnCpuFrame = false);
 
         /// <summary>
         /// Gets the device with the provided type

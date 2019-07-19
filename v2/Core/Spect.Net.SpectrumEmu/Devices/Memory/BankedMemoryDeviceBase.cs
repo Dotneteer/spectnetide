@@ -17,13 +17,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         protected int SelectedRomIndex;
 
         /// <summary>
-        /// Default initialization
-        /// </summary>
-        protected BankedMemoryDeviceBase()
-        {
-        }
-
-        /// <summary>
         /// Initializes the device with the specified number of ROM and ROM banks
         /// </summary>
         /// <param name="defaultRomCount">ROM count</param>
@@ -95,14 +88,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             for (var i = 0; i <= 3; i++)
             {
                 var cloneAddr = (ushort) (i * 0x4000);
-                var addrInfo = GetAddressLocation(cloneAddr);
-                if (addrInfo.IsInRom)
+                var (isInRom, index, _) = GetAddressLocation(cloneAddr);
+                if (isInRom)
                 {
-                    Roms[addrInfo.Index].CopyTo(clone, cloneAddr);
+                    Roms[index].CopyTo(clone, cloneAddr);
                 }
                 else
                 {
-                    RamBanks[addrInfo.Index].CopyTo(clone, cloneAddr);
+                    RamBanks[index].CopyTo(clone, cloneAddr);
                 }
             }
             return clone;
@@ -208,10 +201,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public byte[][] Roms { get; set; }
             public byte[][] RamBanks { get; set; }
             public int SelectedRomIndex { get; set; }
-
-            public BankedMemoryDeviceState()
-            {
-            }
 
             public BankedMemoryDeviceState(BankedMemoryDeviceBase device)
             {

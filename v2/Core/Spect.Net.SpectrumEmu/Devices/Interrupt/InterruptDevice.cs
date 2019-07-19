@@ -1,6 +1,6 @@
 ﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Cpu;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
-using Spect.Net.SpectrumEmu.Cpu;
 
 #pragma warning disable 67
 
@@ -162,10 +162,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
         {
             public bool InterruptRaised { get; set; }
             public bool InterruptRevoked { get; set; }
-
-            public InterruptDeviceState()
-            {
-            }
 
             public InterruptDeviceState(InterruptDevice device)
             {

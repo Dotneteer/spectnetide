@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Floppy;
 
 namespace Spect.Net.SpectrumEmu.Devices.Floppy
 {

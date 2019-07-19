@@ -1,3 +1,5 @@
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
+
 namespace Spect.Net.SpectrumEmu.Devices.Tape
 {
     /// <summary>

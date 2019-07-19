@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Utility;
 // ReSharper disable UseObjectOrCollectionInitializer
 
