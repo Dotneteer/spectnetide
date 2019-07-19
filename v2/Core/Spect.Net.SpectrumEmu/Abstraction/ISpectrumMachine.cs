@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
 using Spect.Net.SpectrumEmu.Abstraction.Machine;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.SpectrumEmu.Abstraction
@@ -120,6 +121,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// Gets the beeper samples of the current rendering frame
         /// </summary>
         AudioSamples BeeperSamples { get; }
+
+        /// <summary>
+        /// The beeper provider associated with the machine
+        /// </summary>
+        IBeeperProvider BeeperProvider { get; }
 
         /// <summary>
         /// Gets the sound (PSG) configuration of the machine

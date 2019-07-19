@@ -43,6 +43,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         private readonly IVsSolution _solutionService;
         private readonly SolutionEvents _solutionEvents;
         private string _activeProjectFile;
+        private string _lastCollectedActiveProject;
 
         /// <summary>
         /// Gets the solution directory
@@ -62,6 +63,9 @@ namespace Spect.Net.VsPackage.SolutionItems
             _solutionService = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
             _solutionEvents = SpectNetPackage.Default.ApplicationObject.Events.SolutionEvents;
             _solutionEvents.Opened += OnSolutionOpened;
+            _solutionEvents.AfterClosing += OnAfterClosing;
+            _solutionEvents.ProjectAdded += OnProjectAdded;
+            _solutionEvents.ProjectRemoved += OnProjectRemoved;
             Projects = new ReadOnlyCollection<SpectrumProject>(HierarchyItems);
             _isCollecting = false;
             Start();
@@ -78,6 +82,11 @@ namespace Spect.Net.VsPackage.SolutionItems
                 return active ?? (Projects.Count == 0 ? null : Projects[0]);
             }
         }
+
+        /// <summary>
+        /// This event is raised when the active ZX Spectrum project changes.
+        /// </summary>
+        public event EventHandler ActiveProjectChanged;
 
         /// <summary>
         /// Tests if the specified file is in the active project
@@ -104,6 +113,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         {
             if (_isCollecting) return;
             _isCollecting = true;
+            var oldActiveProject = _lastCollectedActiveProject;
             try
             {
                 var collectedItems = new List<SpectrumProject>();
@@ -135,6 +145,11 @@ namespace Spect.Net.VsPackage.SolutionItems
             finally
             {
                 _isCollecting = false;
+                _lastCollectedActiveProject = ActiveProject?.Root?.FileName;
+                if (oldActiveProject != _lastCollectedActiveProject)
+                {
+                    ActiveProjectChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -144,6 +159,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// <param name="projectfile">Name of the active project file</param>
         public void SetActiveProject(string projectfile)
         {
+            var oldActiveProject = ActiveProject?.Root?.FileName;
             _activeProjectFile = projectfile;
             var settings = new SpectrumSolutionSettings
             {
@@ -154,6 +170,11 @@ namespace Spect.Net.VsPackage.SolutionItems
 
             // --- Set the visual properties
             SetVisuals();
+            _lastCollectedActiveProject = ActiveProject?.Root?.FileName;
+            if (oldActiveProject != _lastCollectedActiveProject)
+            {
+                ActiveProjectChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -356,6 +377,30 @@ namespace Spect.Net.VsPackage.SolutionItems
         private void OnSolutionOpened()
         {
             CollectProjects();
+        }
+
+        /// <summary>
+        /// Handle the event when the solution has been closed
+        /// </summary>
+        private void OnAfterClosing()
+        {
+            _lastCollectedActiveProject = null;
+        }
+
+        /// <summary>
+        /// Handle the event when a project is removed
+        /// </summary>
+        /// <param name="project"></param>
+        private void OnProjectRemoved(Project project)
+        {
+        }
+
+        /// <summary>
+        /// Handle the event when a new project was added to the solution
+        /// </summary>
+        /// <param name="project"></param>
+        private void OnProjectAdded(Project project)
+        {
         }
     }
 }

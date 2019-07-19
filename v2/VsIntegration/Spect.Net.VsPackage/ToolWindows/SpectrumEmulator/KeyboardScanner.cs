@@ -5,17 +5,15 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Input;
-using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Devices.Keyboard;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Keyboard;
+using WindowsKeyboard=System.Windows.Input.Keyboard;
 
-// ReSharper disable InconsistentNaming
-
-namespace Spect.Net.Wpf.Providers
+namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
     /// <summary>
     /// This class is responsible for scanning the entire keyboard
     /// </summary>
-    public class KeyboardProvider: VmComponentProviderBase, IKeyboardProvider
+    public class KeyboardScanner
     {
         // --- Keyboard layout codes to define separate key mappings for each of them
         private const string ENG_US_LAYOUT = "00000409";
@@ -25,25 +23,6 @@ namespace Spect.Net.Wpf.Providers
         // --- You can create a default layout, provided you have non-implemented custom layout
         private const string DEFAULT_LAYOUT = "default";
 
-        // --- This method calls back the IKeyboardDevice of the Spectrum VM
-        // --- whenever the state of a key changes
-        private Action<SpectrumKeyCode, bool> _statusHandler;
-
-        // --- Stores the key strokes to emulate
-        private readonly Queue<EmulatedKeyStroke> _emulatedKeyStrokes = 
-            new Queue<EmulatedKeyStroke>();
-
-        /// <summary>
-        /// The component provider should be able to reset itself
-        /// </summary>
-        public override void Reset()
-        {
-            lock (_emulatedKeyStrokes)
-            {
-                _emulatedKeyStrokes.Clear();
-            }
-        }
-
         /// <summary>
         /// Maps Spectrum keys to the PC keyboard keys for Hungarian 101 keyboard layout
         /// </summary>
@@ -52,7 +31,7 @@ namespace Spect.Net.Wpf.Providers
         /// The value is a collection of physical keys. If any of them changes 
         /// its state, the Spectrum key changes, too.
         /// </remarks>
-        private static readonly Dictionary<SpectrumKeyCode, List<Key>> s_Hun101KeyMappings = 
+        private static readonly Dictionary<SpectrumKeyCode, List<Key>> s_Hun101KeyMappings =
             new Dictionary<SpectrumKeyCode, List<Key>>
             {
                 { SpectrumKeyCode.SShift, new List<Key> { Key.LeftShift, Key.RightShift,
@@ -227,18 +206,16 @@ namespace Spect.Net.Wpf.Providers
         /// <summary>
         /// Initiate scanning the entire keyboard
         /// </summary>
-        /// <param name="allowPhysicalKeyboard">
-        /// Indicates if scanning the physical keyboard is allowed
-        /// </param>
         /// <remarks>
         /// If the physical keyboard is not allowed, the device can use other
         /// ways to emulate the virtual machine's keyboard
         /// </remarks>
-        public void Scan(bool allowPhysicalKeyboard)
+        public List<KeyStatus> Scan()
         {
-            if (!ApplicationIsActivated() || !allowPhysicalKeyboard)
+            var result = new List<KeyStatus>();
+            if (!ApplicationIsActivated())
             {
-                return;
+                return result;
             }
 
             // --- Obtain the layout mappings for the current keyboard layout
@@ -252,123 +229,25 @@ namespace Spect.Net.Wpf.Providers
                 if (!s_LayoutMappings.TryGetValue(DEFAULT_LAYOUT, out layoutMappings))
                 {
                     // --- No default layout 
-                    return;
+                    return result;
                 }
             }
 
             // --- Check the state of the keys
             foreach (var keyInfo in layoutMappings)
             {
-                var keyState = keyInfo.Value.Any(Keyboard.IsKeyDown);
-                _statusHandler?.Invoke(keyInfo.Key, keyState);
-            }
-        }
-
-        /// <summary>
-        /// Emulates queued key strokes as if those were pressed by the user
-        /// </summary>
-        /// <returns>
-        /// True, if any key stroke has been emulated; otherwise, false
-        /// </returns>
-        public bool EmulateKeyStroke()
-        {
-            // --- Exit, if Spectrum virtual machine is not available
-            var spectrumVm = HostVm;
-            if (spectrumVm == null) return false;
-
-            var currentTact = spectrumVm.Cpu.Tacts;
-
-            // --- Exit, if no keystroke to emulate
-            lock (_emulatedKeyStrokes)
-            {
-                if (_emulatedKeyStrokes.Count == 0) return false;
+                var keyState = keyInfo.Value.Any(WindowsKeyboard.IsKeyDown);
+                result.Add(new KeyStatus(keyInfo.Key, keyState));
             }
 
-            // --- Check the next keystroke
-            EmulatedKeyStroke keyStroke;
-            lock (_emulatedKeyStrokes)
-            {
-                keyStroke = _emulatedKeyStrokes.Peek();
-            }
-
-            // --- Time has not come
-            if (keyStroke.StartTact > currentTact) return false;
-
-            if (keyStroke.EndTact < currentTact)
-            {
-                // --- End emulation of this very keystroke
-                _statusHandler?.Invoke(keyStroke.PrimaryCode, false);
-                if (keyStroke.SecondaryCode.HasValue)
-                {
-                    _statusHandler?.Invoke(keyStroke.SecondaryCode.Value, false);
-                }
-                lock (_emulatedKeyStrokes)
-                {
-                    _emulatedKeyStrokes.Dequeue();
-                }
-
-                // --- We emulated the release
-                return true;
-            }
-
-            // --- Emulate this very keystroke, and leave it in the queue
-            _statusHandler?.Invoke(keyStroke.PrimaryCode, true);
-            if (keyStroke.SecondaryCode.HasValue)
-            {
-                _statusHandler?.Invoke(keyStroke.SecondaryCode.Value, true);
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Adds an emulated keypress to the queue of the provider.
-        /// </summary>
-        /// <param name="keypress">Keystroke information</param>
-        /// <remarks>The provider can play back emulated key strokes</remarks>
-        public void QueueKeyPress(EmulatedKeyStroke keypress)
-        {
-            lock (_emulatedKeyStrokes)
-            {
-                if (_emulatedKeyStrokes.Count == 0)
-                {
-                    _emulatedKeyStrokes.Enqueue(keypress);
-                    return;
-                }
-
-                var last = _emulatedKeyStrokes.Peek();
-                if (last.PrimaryCode == keypress.PrimaryCode
-                    && last.SecondaryCode == keypress.SecondaryCode)
-                {
-                    // --- The same key has been clicked
-                    if (keypress.StartTact >= last.StartTact && keypress.StartTact <= last.EndTact)
-                    {
-                        // --- Old and new click ranges overlap, lengthen the old click
-                        last.EndTact = keypress.EndTact;
-                        return;
-                    }
-                }
-                _emulatedKeyStrokes.Enqueue(keypress);
-            }
-        }
-
-        /// <summary>
-        /// Sets the method that can handle the status change of a Spectrum keyboard key
-        /// </summary>
-        /// <param name="statusHandler">Key status handler method</param>
-        /// <remarks>
-        /// The first argument of the handler method is the Spectrum key code. The
-        /// second argument indicates if the specified key is down (true) or up (false)
-        /// </remarks>
-        public void SetKeyStatusHandler(Action<SpectrumKeyCode, bool> statusHandler)
-        {
-            _statusHandler = statusHandler;
+            return result;
         }
 
         /// <summary>
         /// Retrieves the name of the active input locale identifier 
         /// (formerly called the keyboard layout) for the system.
         /// </summary>
-        /// <param name="pwszKLID">
+        /// <param name="pwszKlid">
         /// The buffer (of at least KL_NAMELENGTH characters in length) 
         /// that receives the name of the input locale identifier, including 
         /// the terminating null character. This will be a copy of the string 
@@ -376,7 +255,7 @@ namespace Spect.Net.Wpf.Providers
         /// substitution took place.
         /// </param>
         [DllImport("user32.dll")]
-        private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);
+        private static extern long GetKeyboardLayoutName(StringBuilder pwszKlid);
 
         /// <summary>
         /// Retrieves a handle to the foreground window (the window with which 
@@ -420,4 +299,5 @@ namespace Spect.Net.Wpf.Providers
             return activeProcId == procId;
         }
     }
+
 }

@@ -187,6 +187,11 @@ namespace Spect.Net.VsPackage
             // --- Initialize the package here
             InitializeCommands();
             Solution = new SolutionStructure();
+            Solution.ActiveProjectChanged += async (sender, args) =>
+            {
+                await OutputWindow.General.WriteLineAsync(
+                    $"Active project: {Solution?.ActiveProject?.Root?.FileName}");
+            };
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
             DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();

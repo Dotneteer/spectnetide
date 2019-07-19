@@ -1,5 +1,5 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Models;
-using Spect.Net.SpectrumEmu.Devices.Screen;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
+using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.CustomEditors

@@ -41,6 +41,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -146,6 +147,11 @@
       <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Registers\RegistersToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\EmulatorViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\KeyboardScanner.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml.cs">
+      <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
@@ -233,6 +239,9 @@
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.2.3073">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="MvvmLightLibs">
+      <Version>5.4.1.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.2</Version>
@@ -458,6 +467,10 @@
     <Page Include="ToolWindows\Registers\RegistersToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
       <SubType>Designer</SubType>

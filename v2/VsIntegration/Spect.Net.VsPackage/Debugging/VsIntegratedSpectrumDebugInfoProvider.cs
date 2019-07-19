@@ -1,7 +1,7 @@
 ﻿using System;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.SpectrumEmu.Abstraction.Machine;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
-using Spect.Net.SpectrumEmu.Machine;
 
 namespace Spect.Net.VsPackage.Debugging
 {
