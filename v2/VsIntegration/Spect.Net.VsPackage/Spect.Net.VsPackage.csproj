@@ -98,6 +98,7 @@
     <Compile Include="LanguageServices\Z80Test\Z80TestClassifierProvider.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
+    <Compile Include="Machines\MachineCollection.cs" />
     <Compile Include="MyConfiguredProject.cs" />
     <Compile Include="MyUnconfiguredProject.cs" />
     <Compile Include="ProjectProperties.cs" />
@@ -107,6 +108,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SolutionItems\ActiveProjectChangedEventArgs.cs" />
     <Compile Include="SolutionItems\AnnotationProjectItem.cs" />
     <Compile Include="SolutionItems\ItemHierarchyBase.cs" />
     <Compile Include="SolutionItems\ProjectItemRenamedEventArgs.cs" />
@@ -149,6 +151,7 @@
     <Compile Include="ToolWindows\Registers\RegistersToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\EmulatorViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\KeyboardScanner.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\MachineInstanceChangedEventArgs.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml.cs">
       <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
     </Compile>
@@ -157,6 +160,8 @@
       <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumGenericToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
     <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />
@@ -175,6 +180,7 @@
     <Compile Include="VsxLibrary\Output\OutputPaneDefinition.cs" />
     <Compile Include="VsxLibrary\Output\OutputWindow.cs" />
     <Compile Include="VsxLibrary\Output\OutputWindowPane.cs" />
+    <Compile Include="VsxLibrary\Output\SpectNetIdeOutputPane.cs" />
     <Compile Include="VsxLibrary\Output\WindowsPaneNotFoundException.cs" />
     <Compile Include="VsxLibrary\ToolWindow\CaptionAttribute.cs" />
     <Compile Include="VsxLibrary\ToolWindow\ErrorListWindow.cs" />
@@ -473,8 +479,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -245,7 +245,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// <remarks>
         /// The task completes when the machine has completed its execution cycle.
         /// </remarks>
-        void StepInto();
+        Task StepInto();
 
         /// <summary>
         /// Executes the subsequent Z80 CALL, RST, or block instruction entirely.
@@ -253,7 +253,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// <remarks>
         /// The task completes when the machine has completed its execution cycle.
         /// </remarks>
-        void StepOver();
+        Task StepOver();
 
         /// <summary>
         /// Executes the subsequent Z80 CALL, RST, or block instruction entirely.
@@ -261,6 +261,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// <remarks>
         /// The task completes when the machine has completed its execution cycle.
         /// </remarks>
-        void StepOut();
+        Task StepOut();
     }
 }

@@ -1,9 +1,9 @@
-﻿using Spect.Net.Wpf.Mvvm;
-
-namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
+﻿namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
-    public class SpectrumEmulatorToolWindowViewModel: ViewModelBase
+    /// <summary>
+    /// This class represents the view model of the ZX Spectrum emulator
+    /// </summary>
+    public class SpectrumEmulatorToolWindowViewModel: SpectrumGenericToolWindowViewModel
     {
-        
     }
 }

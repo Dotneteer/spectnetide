@@ -1,8 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Command;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
@@ -38,123 +40,156 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         #region Tool Window Commands
 
         /// <summary>
+        /// This class is intended to be the base class of all ZX Spectrum emulator-
+        /// specific commands
+        /// </summary>
+        public abstract class SpectrumVmCommand : SpectNetCommandBase
+        {
+            /// <summary>
+            /// Gets the current ZX Spectrum machine
+            /// </summary>
+            public SpectrumMachine Machine => SpectNetPackage.Default.EmulatorViewModel.Machine;
+
+            /// <summary>
+            /// Gets the current ZX Spectrum machine state
+            /// </summary>
+            public VmState MachineState => SpectNetPackage.Default.EmulatorViewModel.MachineState;
+        }
+
+        /// <summary>
         /// Starts the ZX Spectrum virtual machine
         /// </summary>
         [CommandId(0x1081)]
-        public class StartVmCommand : SpectNetCommandBase
+        public class StartVmCommand : SpectrumVmCommand
         {
             protected override void ExecuteOnMainThread()
             {
-                VsxDialogs.Show("START");
+                Machine.Start();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = MachineState != VmState.Running;
         }
 
         /// <summary>
         /// Stops the ZX Spectrum virtual machine
         /// </summary>
         [CommandId(0x1082)]
-        public class StopVmCommand : SpectNetCommandBase
+        public class StopVmCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            /// <summary>
+            /// Override this method to define the async command body te execute on the
+            /// background thread
+            /// </summary>
+            protected override async Task ExecuteAsync()
             {
-                VsxDialogs.Show("STOP");
+                await Machine.Stop();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+            {
+                mc.Enabled = MachineState == VmState.Running 
+                    || MachineState == VmState.Paused;
+            }
         }
 
         /// <summary>
         /// Pauses the ZX Spectrum virtual machine
         /// </summary>
         [CommandId(0x1083)]
-        public class PauseVmCommand : SpectNetCommandBase
+        public class PauseVmCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            /// <summary>
+            /// Override this method to define the async command body te execute on the
+            /// background thread
+            /// </summary>
+            protected override async Task ExecuteAsync()
             {
-                VsxDialogs.Show("PAUSE");
+                await Machine.Pause();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = MachineState == VmState.Running;
         }
 
         /// <summary>
         /// Resets the ZX Spectrum virtual machine
         /// </summary>
         [CommandId(0x1084)]
-        public class ResetVmCommand : SpectNetCommandBase
+        public class ResetVmCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            /// <summary>
+            /// Override this method to define the async command body te execute on the
+            /// background thread
+            /// </summary>
+            protected override async Task ExecuteAsync()
             {
-                VsxDialogs.Show("RESET");
+                await Machine.Stop();
+                Machine.Start();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = MachineState == VmState.Running;
         }
 
         /// <summary>
         /// Starts the ZX Spectrum virtual machine in debug mode
         /// </summary>
         [CommandId(0x1085)]
-        public class StartDebugVmCommand : SpectNetCommandBase
+        public class StartDebugVmCommand : SpectrumVmCommand
         {
             protected override void ExecuteOnMainThread()
             {
-                VsxDialogs.Show("DEBUG");
+                Machine.StartDebug();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = MachineState != VmState.Running;
         }
 
         /// <summary>
         /// Steps into the next Z80 instruction in debug mode
         /// </summary>
         [CommandId(0x1086)]
-        public class StepIntoCommand : SpectNetCommandBase
+        public class StepIntoCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            protected override async Task ExecuteAsync()
             {
-                VsxDialogs.Show("STEP INTO");
+                await Machine.StepInto();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = MachineState == VmState.Paused;
         }
 
         /// <summary>
         /// Steps into the next Z80 instruction in debug mode
         /// </summary>
         [CommandId(0x1087)]
-        public class StepOverCommand : SpectNetCommandBase
+        public class StepOverCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            protected override async Task ExecuteAsync()
             {
-                VsxDialogs.Show("STEP OVER");
+                await Machine.StepOver();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = MachineState == VmState.Paused;
         }
 
         /// <summary>
         /// Steps out from the current Z80 subroutine call in debug mode
         /// </summary>
         [CommandId(0x1091)]
-        public class StepOutCommand : SpectNetCommandBase
+        public class StepOutCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            protected override async Task ExecuteAsync()
             {
-                VsxDialogs.Show("STEP OUT");
+                await Machine.StepOut();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = MachineState == VmState.Paused;
         }
 
         /// <summary>

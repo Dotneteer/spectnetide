@@ -3,9 +3,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Colors -->
+    <Color x:Key="CToolBackground">#FF202020</Color>
     <Color x:Key="Cz80HilitedText">#FFF89406</Color>
 
     <!-- Brushes -->
+    <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
     <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
 
     <!-- Component and control styles -->

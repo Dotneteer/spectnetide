@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -58,12 +57,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Initialize the Spectrum virtual machine dependencies when the user control is loaded
         /// </summary>
-        private async void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             Vm = DataContext as EmulatorViewModel;
             if (Vm == null) return;
 
-            Vm.Machine.VmStateChanged += OnVmStateChanged;
+            Vm.VmStateChanged += OnVmStateChanged;
 
             // --- Prepare the screen
             _colors = Spectrum48ScreenDevice.SpectrumColors.ToArray();
@@ -87,16 +86,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             }
 
             // --- Register messages this control listens to
-            Vm.Machine.KeyScanning += MachineOnKeyScanning;
-            Vm.Machine.CpuFrameCompleted += MachineOnCpuFrameCompleted;
-            Vm.Machine.RenderFrameCompleted += MachineOnRenderFrameCompleted;
-
-            // --- Now, the control is fully loaded and ready to work
-            if (DesignerProperties.GetIsInDesignMode(this)) return;
-
-            // --- Let's have a short delay before starting the virtual machine
-            await Task.Delay(500);
-            Vm.StartVmCommand.Execute(null);
+            Vm.KeyScanning += MachineOnKeyScanning;
+            Vm.CpuFrameCompleted += MachineOnCpuFrameCompleted;
+            Vm.RenderFrameCompleted += MachineOnRenderFrameCompleted;
         }
 
         private void MachineOnCpuFrameCompleted(object sender, CancelEventArgs e)
@@ -115,6 +107,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             {
                 Vm.Machine.BeeperProvider?.PauseSound();
                 Vm.Machine.VmStateChanged -= OnVmStateChanged;
+                Vm.CpuFrameCompleted -= MachineOnCpuFrameCompleted;
                 Vm.Machine.RenderFrameCompleted -= MachineOnRenderFrameCompleted;
             }
 
@@ -133,11 +126,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     {
                         case VmState.Stopped:
                             Vm.Machine.BeeperProvider?.KillSound();
-                            Vm.Machine.FastLoadCompleted -= OnFastLoadCompleted;
+                            Vm.FastLoadCompleted -= OnFastLoadCompleted;
                             break;
                         case VmState.Running:
                             Vm.Machine.BeeperProvider?.PlaySound();
-                            Vm.Machine.FastLoadCompleted += OnFastLoadCompleted;
+                            Vm.FastLoadCompleted += OnFastLoadCompleted;
                             break;
                         case VmState.Paused:
                             Vm.Machine.BeeperProvider?.PauseSound();

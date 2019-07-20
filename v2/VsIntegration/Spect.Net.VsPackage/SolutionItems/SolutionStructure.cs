@@ -10,7 +10,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio;
+using Spect.Net.VsPackage.Machines;
+using Spect.Net.VsPackage.VsxLibrary.Output;
 using Task = System.Threading.Tasks.Task;
+using SpectNetOutput = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
@@ -55,6 +58,11 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// </summary>
         public IReadOnlyList<SpectrumProject> Projects { get; private set; }
 
+        /// <summary>
+        /// The ZX Spectrum virtual machines belonging to the solution
+        /// </summary>
+        public MachineCollection Machines = new MachineCollection();
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SolutionStructure()
             : base(SpectNetPackage.Default.ApplicationObject.DTE.Solution,
@@ -86,7 +94,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// <summary>
         /// This event is raised when the active ZX Spectrum project changes.
         /// </summary>
-        public event EventHandler ActiveProjectChanged;
+        public event EventHandler<ActiveProjectChangedEventArgs> ActiveProjectChanged;
 
         /// <summary>
         /// Tests if the specified file is in the active project
@@ -145,11 +153,7 @@ namespace Spect.Net.VsPackage.SolutionItems
             finally
             {
                 _isCollecting = false;
-                _lastCollectedActiveProject = ActiveProject?.Root?.FileName;
-                if (oldActiveProject != _lastCollectedActiveProject)
-                {
-                    ActiveProjectChanged?.Invoke(this, EventArgs.Empty);
-                }
+                CheckActiveProjectChange(oldActiveProject);
             }
         }
 
@@ -170,11 +174,7 @@ namespace Spect.Net.VsPackage.SolutionItems
 
             // --- Set the visual properties
             SetVisuals();
-            _lastCollectedActiveProject = ActiveProject?.Root?.FileName;
-            if (oldActiveProject != _lastCollectedActiveProject)
-            {
-                ActiveProjectChanged?.Invoke(this, EventArgs.Empty);
-            }
+            CheckActiveProjectChange(oldActiveProject);
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// </summary>
         private void OnSolutionOpened()
         {
-            CollectProjects();
+            CreateMachines();
         }
 
         /// <summary>
@@ -385,6 +385,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         private void OnAfterClosing()
         {
             _lastCollectedActiveProject = null;
+            _ = Machines.DisposeMachinesAsync();
         }
 
         /// <summary>
@@ -393,6 +394,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// <param name="project"></param>
         private void OnProjectRemoved(Project project)
         {
+            _ = Machines.DisposeMachineAsync(project);
         }
 
         /// <summary>
@@ -401,6 +403,43 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// <param name="project"></param>
         private void OnProjectAdded(Project project)
         {
+            CreateMachines();
+        }
+
+        /// <summary>
+        /// Creates machines for all ZX Spectrum project
+        /// </summary>
+        private void CreateMachines()
+        {
+            // --- Get all projects within the solution
+            CollectProjects();
+
+            // --- Create a virtual machine for each project
+            foreach (var spectrumProject in Projects)
+            {
+                Machines.GetOrCreateMachine(spectrumProject.Root,
+                    spectrumProject.ModelName,
+                    spectrumProject.EditionName);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the active project has changed
+        /// </summary>
+        /// <param name="oldActiveProject">The file name of the old active project</param>
+        private void CheckActiveProjectChange(string oldActiveProject)
+        {
+            _lastCollectedActiveProject = ActiveProject?.Root?.FileName;
+            if (oldActiveProject == _lastCollectedActiveProject) return;
+
+            var oldProject = Projects.FirstOrDefault(p => p.Root.FileName == oldActiveProject);
+            var newProject = Projects.FirstOrDefault(p => p.Root.FileName == _lastCollectedActiveProject);
+            ActiveProjectChanged?.Invoke(this, 
+                new ActiveProjectChangedEventArgs(oldProject, newProject));
+            if (newProject == null) return;
+
+            var pane = SpectNetOutput.GetPane<SpectNetIdeOutputPane>();
+            pane.WriteLine($"New active project: {newProject.Root.FileName}");
         }
     }
 }

@@ -153,6 +153,10 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public TaskListWindow TaskList { get; private set; }
 
+        /// <summary>
+        /// Contains the view model for the singleton ZX Spectrum Emulator
+        /// </summary>
+        public EmulatorViewModel EmulatorViewModel { get; private set; }
 
         /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
@@ -180,22 +184,20 @@ namespace Spect.Net.VsPackage
                     $"Added: {args.Added.Count}, modified: {args.Modified.Count} deleted: {args.Deleted.Count}");
             };
             BreakpointChangeWatcher.Start();
+            EmulatorViewModel = new EmulatorViewModel();
 
             // --- Main thread initialization part
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
             // --- Initialize the package here
             InitializeCommands();
+
+            // --- Manage the solution and its events
             Solution = new SolutionStructure();
-            Solution.ActiveProjectChanged += async (sender, args) =>
-            {
-                await OutputWindow.General.WriteLineAsync(
-                    $"Active project: {Solution?.ActiveProject?.Root?.FileName}");
-            };
+            Solution.ActiveProjectChanged += OnActiveProjectChanged;
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
             DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
-
         }
 
         /// <summary>
@@ -253,6 +255,34 @@ namespace Spect.Net.VsPackage
             if (disposing)
             {
                 _ = BreakpointChangeWatcher.StopAsync();
+            }
+        }
+
+        /// <summary>
+        /// Handles the event when the active project changes within the solution
+        /// </summary>
+        private async void OnActiveProjectChanged(object sender, ActiveProjectChangedEventArgs e)
+        {
+            // --- Suspend the old machine
+            if (e.OldProject != null)
+            {
+                var oldMachine = Solution.Machines.GetMachine(e.OldProject.Root);
+                if (oldMachine != null)
+                {
+                    await oldMachine.Pause();
+                }
+            }
+
+            // --- Set the new machine
+            if (e.NewProject != null)
+            {
+                var newMachine = Solution.Machines.GetOrCreateMachine(e.NewProject.Root,
+                    e.NewProject.ModelName,
+                    e.NewProject.EditionName);
+                if (newMachine != null)
+                {
+                    EmulatorViewModel.SetMachine(newMachine);
+                }
             }
         }
     }

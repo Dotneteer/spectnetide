@@ -673,13 +673,15 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <remarks>
         /// The task completes when the machine has completed its execution cycle.
         /// </remarks>
-        public void StepInto()
+        public async Task StepInto()
         {
             if (MachineState != VmState.Paused) return;
+
             RunsInDebugMode = true;
             StartWithOptions(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepInto,
                 FastTapeMode));
+            await WaitForPause();
         }
 
         /// <summary>
@@ -688,7 +690,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <remarks>
         /// The task completes when the machine has completed its execution cycle.
         /// </remarks>
-        public void StepOver()
+        public async Task StepOver()
         {
             if (MachineState != VmState.Paused) return;
 
@@ -696,6 +698,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             StartWithOptions(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepOver,
                 true));
+            await WaitForPause();
         }
 
         /// <summary>
@@ -704,7 +707,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <remarks>
         /// The task completes when the machine has completed its execution cycle.
         /// </remarks>
-        public void StepOut()
+        public async Task StepOut()
         {
             if (MachineState != VmState.Paused) return;
 
@@ -712,6 +715,36 @@ namespace Spect.Net.SpectrumEmu.Machine
             StartWithOptions(new ExecuteCycleOptions(EmulationMode.Debugger,
                 DebugStepMode.StepOut,
                 true));
+            await WaitForPause();
+        }
+
+        /// <summary>
+        /// Waits while the machine pauses or stops
+        /// </summary>
+        public async Task WaitForPause()
+        {
+            try
+            {
+                ExecutionCompletionReason = await _completionTask;
+            }
+            catch (TaskCanceledException)
+            {
+                // --- Ok, run successfully cancelled
+                ExecutionCompletionReason = ExecutionCompletionReason.Cancelled;
+            }
+            catch (Exception ex)
+            {
+                // --- Some other exception raised
+                ExecutionCompletionReason = ExecutionCompletionReason.Exception;
+                ExceptionRaised?.Invoke(this, new VmExceptionArgs(ex));
+            }
+
+            if (ExecutionCompletionReason != ExecutionCompletionReason.Cancelled
+                && ExecutionCompletionReason != ExecutionCompletionReason.Exception
+                && MachineState != VmState.Stopped)
+            {
+                MachineState = VmState.Paused;
+            }
         }
 
         /// <summary>
