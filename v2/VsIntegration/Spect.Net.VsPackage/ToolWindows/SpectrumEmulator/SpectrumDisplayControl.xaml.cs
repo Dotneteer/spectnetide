@@ -187,6 +187,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             var widthFactor = (int)(width / _displayPars.ScreenWidth);
             var heightFactor = (int)height / _displayPars.ScreenLines;
             var scale = Math.Min(widthFactor, heightFactor);
+            if (scale < 1) scale = 1;
 
             Display.Width = _displayPars.ScreenWidth * scale;
             Display.Height = _displayPars.ScreenLines * scale;
@@ -226,6 +227,18 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             {
                 _bitmap.Unlock();
             }
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (Vm == null) return;
+            ResizeFor(e.NewSize.Width, e.NewSize.Height);
+        }
+
+        private void UserControl_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (Vm == null) return;
+            ResizeFor(ActualWidth, ActualHeight);
         }
     }
 }

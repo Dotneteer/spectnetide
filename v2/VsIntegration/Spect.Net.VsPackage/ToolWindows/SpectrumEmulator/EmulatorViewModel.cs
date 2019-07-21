@@ -1,8 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
@@ -215,28 +214,28 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Starts the Spectrum virtual machine in Step-Into mode
         /// </summary>
-        protected virtual void OnStepInto()
+        protected virtual async void OnStepInto()
         {
             Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            Machine.StepInto();
+            await Machine.StepInto();
         }
 
         /// <summary>
         /// Starts the Spectrum virtual machine in Step-Over mode
         /// </summary>
-        protected virtual void OnStepOver()
+        protected virtual async void OnStepOver()
         {
             Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            Machine.StepOver();
+            await Machine.StepOver();
         }
 
         /// <summary>
         /// Starts the Spectrum virtual machine in Step-Out mode
         /// </summary>
-        protected virtual void OnStepOut()
+        protected virtual async void OnStepOut()
         {
             Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            Machine.StepOut();
+            await Machine.StepOut();
         }
 
         #endregion

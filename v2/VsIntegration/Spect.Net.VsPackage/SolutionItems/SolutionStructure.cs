@@ -63,6 +63,17 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// </summary>
         public MachineCollection Machines = new MachineCollection();
 
+        /// <summary>
+        /// This event is raised when the solution has been opened, and solution structure
+        /// is collected.
+        /// </summary>
+        public event EventHandler SolutionOpened;
+
+        /// <summary>
+        /// This event is raised when the solution is about to close.
+        /// </summary>
+        public event EventHandler SolutionClosing;
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SolutionStructure()
             : base(SpectNetPackage.Default.ApplicationObject.DTE.Solution,
@@ -377,6 +388,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         private void OnSolutionOpened()
         {
             CreateMachines();
+            SolutionOpened?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -386,6 +398,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         {
             _lastCollectedActiveProject = null;
             _ = Machines.DisposeMachinesAsync();
+            SolutionClosing?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

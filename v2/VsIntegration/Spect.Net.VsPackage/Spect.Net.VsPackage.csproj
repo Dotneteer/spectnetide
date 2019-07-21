@@ -162,6 +162,7 @@
     <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
+    <Compile Include="ToolWindows\SpectrumToolWindowPane.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
     <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />
@@ -246,9 +247,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="MvvmLightLibs">
-      <Version>5.4.1.1</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.2</Version>
     </PackageReference>
@@ -288,6 +286,10 @@
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bf64583f-fc84-4897-8a78-465a57ab73ac}</Project>
       <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
+      <Project>{8a3267e6-6511-4c02-864f-d06bd7fa1542}</Project>
+      <Name>Spect.Net.EvalParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Assembler\Spect.Net.TestParser\Spect.Net.TestParser.csproj">
       <Project>{bf0ce3fe-6516-4377-a6e4-51151f4d5185}</Project>

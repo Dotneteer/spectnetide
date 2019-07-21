@@ -14,8 +14,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     [Guid("de41a21a-714d-495e-9b3f-830965f9332b")]
     [Caption("ZX Spectrum Emulator")]
     [ToolWindowToolbar(0x1010)]
-    public class SpectrumEmulatorToolWindow : 
-        ToolWindowPaneBase<SpectrumEmulatorToolWindowControl, SpectrumEmulatorToolWindowViewModel>
+    public class SpectrumEmulatorToolWindow :
+        SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl, SpectrumEmulatorToolWindowViewModel>
     {
         /// <summary>
         /// Invoke this method from the main thread to initialize toolbar commands.
