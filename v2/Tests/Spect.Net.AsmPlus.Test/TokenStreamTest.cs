@@ -7,7 +7,7 @@ namespace Spect.Net.AsmPlus.Test
     public class TokenStreamTest
     {
         [TestMethod]
-        [DataRow("}}.", new[] { TokenType.RdBrac, TokenType.Dot, TokenType.Eof }, new[] { "}}", ".", "" })]
+        [DataRow(".IF", new[] { TokenType.IfStmt }, new[] {".IF"})]
         public void ExperimentalWorks(string source, TokenType[] tokens, string[] texts)
         {
             // --- Arrange
@@ -334,7 +334,7 @@ namespace Spect.Net.AsmPlus.Test
         [DataRow("LDPIRX", TokenType.Ldpirx)]
         [DataRow("ldirscale", TokenType.Ldirscale)]
         [DataRow("LDIRSCALE", TokenType.Ldirscale)]
-        public void MnemonicsWorks(string source, TokenType token)
+        public void MnemonicsWork(string source, TokenType token)
         {
             // --- Arrange
             var ts = new TokenStream(source);
@@ -343,8 +343,173 @@ namespace Spect.Net.AsmPlus.Test
             var next = ts.GetNext(out var tokenText);
             next.ShouldBe(token);
             tokenText.ShouldBe(source);
-            next = ts.GetNext(out tokenText);
+            next = ts.GetNext(out _);
             next.ShouldBe(TokenType.Eof);
         }
+
+        [TestMethod]
+        [DataRow("a", TokenType.A)]
+        [DataRow("A", TokenType.A)]
+        [DataRow("b", TokenType.B)]
+        [DataRow("B", TokenType.B)]
+        [DataRow("c", TokenType.C)]
+        [DataRow("C", TokenType.C)]
+        [DataRow("d", TokenType.D)]
+        [DataRow("D", TokenType.D)]
+        [DataRow("e", TokenType.E)]
+        [DataRow("E", TokenType.E)]
+        [DataRow("h", TokenType.H)]
+        [DataRow("H", TokenType.H)]
+        [DataRow("l", TokenType.L)]
+        [DataRow("L", TokenType.L)]
+        [DataRow("i", TokenType.I)]
+        [DataRow("I", TokenType.I)]
+        [DataRow("r", TokenType.R)]
+        [DataRow("R", TokenType.R)]
+        [DataRow("xl", TokenType.Xl)]
+        [DataRow("XL", TokenType.Xl)]
+        [DataRow("xh", TokenType.Xh)]
+        [DataRow("XH", TokenType.Xh)]
+        [DataRow("yl", TokenType.Yl)]
+        [DataRow("YL", TokenType.Yl)]
+        [DataRow("yh", TokenType.Yh)]
+        [DataRow("YH", TokenType.Yh)]
+        [DataRow("ixl", TokenType.Xl)]
+        [DataRow("IXL", TokenType.Xl)]
+        [DataRow("IXl", TokenType.Xl)]
+        [DataRow("ixh", TokenType.Xh)]
+        [DataRow("IXH", TokenType.Xh)]
+        [DataRow("IXh", TokenType.Xh)]
+        [DataRow("iyl", TokenType.Yl)]
+        [DataRow("IYL", TokenType.Yl)]
+        [DataRow("IYl", TokenType.Yl)]
+        [DataRow("iyh", TokenType.Yh)]
+        [DataRow("IYH", TokenType.Yh)]
+        [DataRow("IYh", TokenType.Yh)]
+        [DataRow("bc", TokenType.Bc)]
+        [DataRow("BC", TokenType.Bc)]
+        [DataRow("de", TokenType.De)]
+        [DataRow("DE", TokenType.De)]
+        [DataRow("hl", TokenType.Hl)]
+        [DataRow("HL", TokenType.Hl)]
+        [DataRow("sp", TokenType.Sp)]
+        [DataRow("SP", TokenType.Sp)]
+        [DataRow("ix", TokenType.Ix)]
+        [DataRow("IX", TokenType.Ix)]
+        [DataRow("iy", TokenType.Iy)]
+        [DataRow("IY", TokenType.Iy)]
+        [DataRow("af", TokenType.Af)]
+        [DataRow("AF", TokenType.Af)]
+        [DataRow("af'", TokenType.Af_)]
+        [DataRow("AF'", TokenType.Af_)]
+        [DataRow("z", TokenType.Z)]
+        [DataRow("Z", TokenType.Z)]
+        [DataRow("nz", TokenType.Nz)]
+        [DataRow("NZ", TokenType.Nz)]
+        [DataRow("nc", TokenType.Nc)]
+        [DataRow("NC", TokenType.Nc)]
+        [DataRow("po", TokenType.Po)]
+        [DataRow("PO", TokenType.Po)]
+        [DataRow("pe", TokenType.Pe)]
+        [DataRow("PE", TokenType.Pe)]
+        [DataRow("p", TokenType.P)]
+        [DataRow("P", TokenType.P)]
+        [DataRow("m", TokenType.M)]
+        [DataRow("M", TokenType.M)]
+        public void RegsWork(string source, TokenType token)
+        {
+            // --- Arrange
+            var ts = new TokenStream(source);
+
+            // --- Act/Assert
+            var next = ts.GetNext(out var tokenText);
+            next.ShouldBe(token);
+            tokenText.ShouldBe(source);
+            next = ts.GetNext(out _);
+            next.ShouldBe(TokenType.Eof);
+        }
+
+        [TestMethod]
+        [DataRow("macro", TokenType.Macro)]
+        [DataRow("MACRO", TokenType.Macro)]
+        [DataRow(".macro", TokenType.Macro)]
+        [DataRow(".MACRO", TokenType.Macro)]
+        [DataRow("endm", TokenType.EndMacro)]
+        [DataRow("ENDM", TokenType.EndMacro)]
+        [DataRow(".endm", TokenType.EndMacro)]
+        [DataRow(".ENDM", TokenType.EndMacro)]
+        [DataRow(".proc", TokenType.Proc)]
+        [DataRow(".PROC", TokenType.Proc)]
+        [DataRow(".endp", TokenType.EndProc)]
+        [DataRow(".ENDP", TokenType.EndProc)]
+        [DataRow(".pend", TokenType.EndProc)]
+        [DataRow(".PEND", TokenType.EndProc)]
+        [DataRow(".loop", TokenType.Loop)]
+        [DataRow(".LOOP", TokenType.Loop)]
+        [DataRow(".endl", TokenType.EndLoop)]
+        [DataRow(".ENDL", TokenType.EndLoop)]
+        [DataRow(".lend", TokenType.EndLoop)]
+        [DataRow(".LEND", TokenType.EndLoop)]
+        [DataRow(".repeat", TokenType.Repeat)]
+        [DataRow(".REPEAT", TokenType.Repeat)]
+        [DataRow(".until", TokenType.Until)]
+        [DataRow(".UNTIL", TokenType.Until)]
+        [DataRow(".while", TokenType.While)]
+        [DataRow(".WHILE", TokenType.While)]
+        [DataRow(".endw", TokenType.EndWhile)]
+        [DataRow(".ENDW", TokenType.EndWhile)]
+        [DataRow(".wend", TokenType.EndWhile)]
+        [DataRow(".WEND", TokenType.EndWhile)]
+        [DataRow("if", TokenType.IfStmt)]
+        [DataRow("IF", TokenType.IfStmt)]
+        [DataRow(".if", TokenType.IfStmt)]
+        [DataRow(".IF", TokenType.IfStmt)]
+        [DataRow(".ifused", TokenType.IfUsed)]
+        [DataRow(".IFUSED", TokenType.IfUsed)]
+        [DataRow(".ifnused", TokenType.IfNused)]
+        [DataRow(".IFNUSED", TokenType.IfNused)]
+        [DataRow(".elif", TokenType.Elif)]
+        [DataRow(".ELIF", TokenType.Elif)]
+        [DataRow(".else", TokenType.ElseStmt)]
+        [DataRow(".ELSE", TokenType.ElseStmt)]
+        [DataRow(".endif", TokenType.EndIfStmt)]
+        [DataRow(".ENDIF", TokenType.EndIfStmt)]
+        [DataRow(".for", TokenType.For)]
+        [DataRow(".FOR", TokenType.For)]
+        [DataRow("for", TokenType.For)]
+        [DataRow("FOR", TokenType.For)]
+        [DataRow(".to", TokenType.To)]
+        [DataRow(".TO", TokenType.To)]
+        [DataRow("to", TokenType.To)]
+        [DataRow("TO", TokenType.To)]
+        [DataRow(".step", TokenType.Step)]
+        [DataRow(".STEP", TokenType.Step)]
+        [DataRow("step", TokenType.Step)]
+        [DataRow("STEP", TokenType.Step)]
+        [DataRow(".next", TokenType.ForNext)]
+        [DataRow(".NEXT", TokenType.ForNext)]
+        [DataRow("next", TokenType.ForNext)]
+        [DataRow("NEXT", TokenType.ForNext)]
+        [DataRow(".break", TokenType.Break)]
+        [DataRow(".BREAK", TokenType.Break)]
+        [DataRow("break", TokenType.Break)]
+        [DataRow("BREAK", TokenType.Break)]
+        [DataRow(".continue", TokenType.Continue)]
+        [DataRow(".CONTINUE", TokenType.Continue)]
+        [DataRow("continue", TokenType.Continue)]
+        [DataRow("CONTINUE", TokenType.Continue)]
+        public void StatementsWork(string source, TokenType token)
+        {
+            // --- Arrange
+            var ts = new TokenStream(source);
+
+            // --- Act/Assert
+            var next = ts.GetNext(out var tokenText);
+            next.ShouldBe(token);
+            tokenText.ShouldBe(source);
+            next = ts.GetNext(out _);
+            next.ShouldBe(TokenType.Eof);
+        }
+
     }
 }

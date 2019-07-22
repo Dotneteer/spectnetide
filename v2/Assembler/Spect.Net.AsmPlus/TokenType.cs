@@ -98,7 +98,6 @@
         IncBin,
         CompareBin,
 
-
         Nop, //
         Rlca, //
         Rrca, //
@@ -179,40 +178,40 @@
         Lddrx, //
         Pixeldn, //
         Pixelad, //
-        Setae,
-        Ldpirx,
-        Ldirscale,
+        Setae, //
+        Ldpirx, //
+        Ldirscale, //
 
-        Hreg,
+        Hreg, 
         Lreg,
-        A,
-        B,
-        C,
-        D,
-        E,
-        H,
-        L,
-        Xl,
-        Xh,
-        Yl,
-        Yh,
-        I,
-        R,
-        Bc,
-        De,
-        Hl,
-        Sp,
-        Ix,
-        Iy,
-        Af,
-        Af_,
-        Z,
-        Nz,
-        Nc,
-        Po,
-        Pe,
-        P,
-        M,
+        A, //
+        B, //
+        C, //
+        D, //
+        E, //
+        H, //
+        L, //
+        Xl, //
+        Xh, //
+        Yl, //
+        Yh, //
+        I, //
+        R, //
+        Bc, //
+        De, //
+        Hl, //
+        Sp, //
+        Ix, //
+        Iy, //
+        Af, //
+        Af_, //
+        Z, //
+        Nz, //
+        Nc, //
+        Po, //
+        Pe, //
+        P, //
+        M, //
 
         Plus, //
         Minus, //

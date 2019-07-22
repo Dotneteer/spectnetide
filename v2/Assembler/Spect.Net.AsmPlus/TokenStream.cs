@@ -385,6 +385,7 @@ namespace Spect.Net.AsmPlus
                         if (char.IsLetter(ch))
                         {
                             phase = Phase.KeywordLike;
+                            keywordLike = true;
                             break;
                         }
                         _pos--;
@@ -423,6 +424,11 @@ namespace Spect.Net.AsmPlus
                             phase = Phase.IdLike;
                             tokenOnEof = TokenType.Identifier;
                             break;
+                        }
+                        if (ch != '\'')
+                        {
+                            // --- This must be the last character of and ID (AF')
+                            _pos--;
                         }
                         endFound = true;
                         break;
@@ -463,6 +469,16 @@ namespace Spect.Net.AsmPlus
                 if (s_Mnemonics.TryGetValue(tokenText, out var mnemonic))
                 {
                     return mnemonic;
+                }
+
+                if (s_Regs.TryGetValue(tokenText, out var reg))
+                {
+                    return reg;
+                }
+
+                if (s_Statements.TryGetValue(tokenText, out var stmt))
+                {
+                    return stmt;
                 }
                 return TokenType.Error;
             }
@@ -715,6 +731,152 @@ namespace Spect.Net.AsmPlus
             { "LDPIRX", TokenType.Ldpirx},
             { "ldirscale", TokenType.Ldirscale},
             { "LDIRSCALE", TokenType.Ldirscale},
+        };
+
+        // --- Registers, flags, conditions, and their tokens
+        private static readonly Dictionary<string, TokenType> s_Regs = new Dictionary<string, TokenType>
+        {
+            { "a", TokenType.A },
+            { "A", TokenType.A },
+            { "b", TokenType.B },
+            { "B", TokenType.B },
+            { "c", TokenType.C },
+            { "C", TokenType.C },
+            { "d", TokenType.D },
+            { "D", TokenType.D },
+            { "e", TokenType.E },
+            { "E", TokenType.E },
+            { "h", TokenType.H },
+            { "H", TokenType.H },
+            { "l", TokenType.L },
+            { "L", TokenType.L },
+            { "i", TokenType.I },
+            { "I", TokenType.I },
+            { "r", TokenType.R },
+            { "R", TokenType.R },
+            { "xl", TokenType.Xl },
+            { "XL", TokenType.Xl },
+            { "xh", TokenType.Xh },
+            { "XH", TokenType.Xh },
+            { "yl", TokenType.Yl },
+            { "YL", TokenType.Yl },
+            { "yh", TokenType.Yh },
+            { "YH", TokenType.Yh },
+            { "ixl", TokenType.Xl },
+            { "IXL", TokenType.Xl },
+            { "IXl", TokenType.Xl },
+            { "ixh", TokenType.Xh },
+            { "IXH", TokenType.Xh },
+            { "IXh", TokenType.Xh },
+            { "iyl", TokenType.Yl },
+            { "IYL", TokenType.Yl },
+            { "IYl", TokenType.Yl },
+            { "iyh", TokenType.Yh },
+            { "IYH", TokenType.Yh },
+            { "IYh", TokenType.Yh },
+            { "bc", TokenType.Bc },
+            { "BC", TokenType.Bc },
+            { "de", TokenType.De },
+            { "DE", TokenType.De },
+            { "hl", TokenType.Hl },
+            { "HL", TokenType.Hl },
+            { "sp", TokenType.Sp },
+            { "SP", TokenType.Sp },
+            { "ix", TokenType.Ix },
+            { "IX", TokenType.Ix },
+            { "iy", TokenType.Iy },
+            { "IY", TokenType.Iy },
+            { "af", TokenType.Af },
+            { "AF", TokenType.Af },
+            { "af'", TokenType.Af_ },
+            { "AF'", TokenType.Af_ },
+            { "z", TokenType.Z },
+            { "Z", TokenType.Z },
+            { "nz", TokenType.Nz },
+            { "NZ", TokenType.Nz },
+            { "nc", TokenType.Nc },
+            { "NC", TokenType.Nc },
+            { "po", TokenType.Po },
+            { "PO", TokenType.Po },
+            { "pe", TokenType.Pe },
+            { "PE", TokenType.Pe },
+            { "p", TokenType.P },
+            { "P", TokenType.P },
+            { "m", TokenType.M },
+            { "M", TokenType.M },
+        };
+
+        // --- Statements and their tokens
+        private static readonly Dictionary<string, TokenType> s_Statements = new Dictionary<string, TokenType>
+        {
+            { "macro", TokenType.Macro },
+            { "MACRO", TokenType.Macro },
+            { ".macro", TokenType.Macro },
+            { ".MACRO", TokenType.Macro },
+            { "endm", TokenType.EndMacro },
+            { "ENDM", TokenType.EndMacro },
+            { ".endm", TokenType.EndMacro },
+            { ".ENDM", TokenType.EndMacro },
+            { ".proc", TokenType.Proc },
+            { ".PROC", TokenType.Proc },
+            { ".endp", TokenType.EndProc },
+            { ".ENDP", TokenType.EndProc },
+            { ".pend", TokenType.EndProc },
+            { ".PEND", TokenType.EndProc },
+            { ".loop", TokenType.Loop },
+            { ".LOOP", TokenType.Loop },
+            { ".endl", TokenType.EndLoop },
+            { ".ENDL", TokenType.EndLoop },
+            { ".lend", TokenType.EndLoop },
+            { ".LEND", TokenType.EndLoop },
+            { ".repeat", TokenType.Repeat },
+            { ".REPEAT", TokenType.Repeat },
+            { ".until", TokenType.Until },
+            { ".UNTIL", TokenType.Until },
+            { ".while", TokenType.While },
+            { ".WHILE", TokenType.While },
+            { ".endw", TokenType.EndWhile },
+            { ".ENDW", TokenType.EndWhile },
+            { ".wend", TokenType.EndWhile },
+            { ".WEND", TokenType.EndWhile },
+            { "if", TokenType.IfStmt },
+            { "IF", TokenType.IfStmt },
+            { ".if", TokenType.IfStmt },
+            { ".IF", TokenType.IfStmt },
+            { ".ifused", TokenType.IfUsed },
+            { ".IFUSED", TokenType.IfUsed },
+            { ".ifnused", TokenType.IfNused },
+            { ".IFNUSED", TokenType.IfNused },
+            { ".elif", TokenType.Elif },
+            { ".ELIF", TokenType.Elif },
+            { ".else", TokenType.ElseStmt },
+            { ".ELSE", TokenType.ElseStmt },
+            { ".endif", TokenType.EndIfStmt },
+            { ".ENDIF", TokenType.EndIfStmt },
+            { ".for", TokenType.For },
+            { ".FOR", TokenType.For },
+            { "for", TokenType.For },
+            { "FOR", TokenType.For },
+            { ".to", TokenType.To },
+            { ".TO", TokenType.To },
+            { "to", TokenType.To },
+            { "TO", TokenType.To },
+            { ".step", TokenType.Step },
+            { ".STEP", TokenType.Step },
+            { "step", TokenType.Step },
+            { "STEP", TokenType.Step },
+            { ".next", TokenType.ForNext },
+            { ".NEXT", TokenType.ForNext },
+            { "next", TokenType.ForNext },
+            { "NEXT", TokenType.ForNext },
+            { ".break", TokenType.Break },
+            { ".BREAK", TokenType.Break },
+            { "break", TokenType.Break },
+            { "BREAK", TokenType.Break },
+            { ".continue", TokenType.Continue },
+            { ".CONTINUE", TokenType.Continue },
+            { "continue", TokenType.Continue },
+            { "CONTINUE", TokenType.Continue },
         };
     }
 }
