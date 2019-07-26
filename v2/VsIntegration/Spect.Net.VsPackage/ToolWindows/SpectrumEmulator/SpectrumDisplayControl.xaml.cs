@@ -7,8 +7,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.SolutionItems;
 
 #pragma warning disable VSTHRD010
 
@@ -26,6 +28,13 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     /// </remarks>
     public partial class SpectrumDisplayControl
     {
+        private const string FILE_EXISTS_MESSAGE = "The exported tape file exists in the project. " +
+                                                   "Would you like to override it?";
+
+        private const string INVALID_FOLDER_MESSAGE = "The tape folder specified in the Options dialog " +
+                                                      "contains invalid characters or an absolute path. Go to the Options dialog and " +
+                                                      "fix the issue so that you can add the tape file to the project.";
+
         private ScreenConfiguration _displayPars;
         private WriteableBitmap _bitmap;
         private bool _isReloaded;
@@ -62,8 +71,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             Vm = DataContext as EmulatorViewModel;
             if (Vm == null) return;
 
-            Vm.VmStateChanged += OnVmStateChanged;
-
             // --- Prepare the screen
             _colors = Spectrum48ScreenDevice.SpectrumColors.ToArray();
             _displayPars = Vm.Machine.ScreenConfiguration;
@@ -86,15 +93,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             }
 
             // --- Register messages this control listens to
+            Vm.VmStateChanged += OnVmStateChanged;
             Vm.KeyScanning += MachineOnKeyScanning;
             Vm.CpuFrameCompleted += MachineOnCpuFrameCompleted;
             Vm.RenderFrameCompleted += MachineOnRenderFrameCompleted;
-        }
-
-        private void MachineOnCpuFrameCompleted(object sender, CancelEventArgs e)
-        {
-            // ReSharper disable once ExplicitCallerInfoArgument
-            Vm.RaisePropertyChanged("Machine");
+            Vm.LeftSaveMode += MachineOnLeftSaveMode;
         }
 
         /// <summary>
@@ -107,8 +110,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             {
                 Vm.Machine.BeeperProvider?.PauseSound();
                 Vm.Machine.VmStateChanged -= OnVmStateChanged;
+                Vm.KeyScanning -= MachineOnKeyScanning;
                 Vm.CpuFrameCompleted -= MachineOnCpuFrameCompleted;
-                Vm.Machine.RenderFrameCompleted -= MachineOnRenderFrameCompleted;
+                Vm.RenderFrameCompleted -= MachineOnRenderFrameCompleted;
+                Vm.LeftSaveMode -= MachineOnLeftSaveMode;
             }
 
             // --- Sign that the next time we load the control, it is a reload
@@ -151,6 +156,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             }
         }
 
+        private void MachineOnCpuFrameCompleted(object sender, CancelEventArgs e)
+        {
+            // ReSharper disable once ExplicitCallerInfoArgument
+            Vm.RaisePropertyChanged("Machine");
+        }
+
         /// <summary>
         /// Takes care of refreshing the screen
         /// </summary>
@@ -175,6 +186,21 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             {
                 Vm.Machine.BeeperProvider.PlaySound();
             });
+        }
+
+        /// <summary>
+        /// The virtual machine has just saved a file.
+        /// </summary>
+        private void MachineOnLeftSaveMode(object sender, SaveModeEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+                {
+                    SpectrumProject.AddFileToProject(
+                        SpectNetPackage.Default.Options.TapeFolder,
+                        e.FileName,
+                        INVALID_FOLDER_MESSAGE,
+                        FILE_EXISTS_MESSAGE);
+                });
         }
 
         /// <summary>

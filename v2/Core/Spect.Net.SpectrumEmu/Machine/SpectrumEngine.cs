@@ -188,7 +188,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The tape device attached to the VM
         /// </summary>
-        public ITapeLoadDevice TapeDevice { get; }
+        public ITapeLoadDevice TapeLoadDevice { get; }
+
+        /// <summary>
+        /// The tape save device attached to the VM.
+        /// </summary>
+        public ITapeSaveDevice TapeSaveDevice { get; }
 
         /// <summary>
         /// The tape load provider attached to the VM
@@ -318,8 +323,9 @@ namespace Spect.Net.SpectrumEmu.Machine
             TapeSaveProvider = (ITapeSaveProvider)tapeSaveInfo?.Provider;
             var tapeLoadInfo = GetDeviceInfo<ITapeLoadDevice>();
             TapeLoadProvider = (ITapeLoadProvider)tapeLoadInfo?.Provider;
-            TapeDevice = tapeLoadInfo?.Device
-                         ?? new TapeDevice(TapeLoadProvider, TapeSaveProvider);
+            var tapeDevice = new TapeDevice(TapeLoadProvider, TapeSaveProvider);
+            TapeLoadDevice = tapeDevice;
+            TapeSaveDevice = tapeDevice;
 
             // === Init optional devices
             // --- Init the sound device
@@ -368,7 +374,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);
             _spectrumDevices.Add(InterruptDevice);
-            _spectrumDevices.Add(TapeDevice);
+            _spectrumDevices.Add(TapeLoadDevice);
 
             // --- Collect optional devices
             if (SoundDevice != null) _spectrumDevices.Add(SoundDevice);
@@ -1049,7 +1055,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 BeeperDeviceStateType = BeeperDeviceState?.GetType().AssemblyQualifiedName;
                 SoundDeviceState = spectrum.SoundDevice?.GetState();
                 SoundDeviceStateType = SoundDeviceState?.GetType().AssemblyQualifiedName;
-                TapeDeviceState = spectrum.TapeDevice?.GetState();
+                TapeDeviceState = spectrum.TapeLoadDevice?.GetState();
                 TapeDeviceStateType = TapeDeviceState?.GetType().AssemblyQualifiedName;
             }
 
@@ -1076,7 +1082,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 spectrum.KeyboardDevice?.RestoreState(KeyboardDeviceState);
                 spectrum.BeeperDevice?.RestoreState(BeeperDeviceState);
                 spectrum.SoundDevice?.RestoreState(SoundDeviceState);
-                spectrum.TapeDevice?.RestoreState(TapeDeviceState);
+                spectrum.TapeLoadDevice?.RestoreState(TapeDeviceState);
             }
         }
 

@@ -26,5 +26,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Providers
         /// </summary>
         /// <param name="block">Tape block</param>
         void SaveTapeBlock(ITapeDataSerialization block);
+
+        /// <summary>
+        /// Gets the full file name when the file was saved.
+        /// </summary>
+        /// <returns>Full file name</returns>
+        string GetFullFileName();
     }
 }

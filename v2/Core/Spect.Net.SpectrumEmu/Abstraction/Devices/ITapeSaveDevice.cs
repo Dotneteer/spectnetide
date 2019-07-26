@@ -1,4 +1,5 @@
 ﻿using System;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 
 namespace Spect.Net.SpectrumEmu.Abstraction.Devices
 {
@@ -21,6 +22,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// Signs that the device has just left SAVE mode.
         /// </summary>
-        event EventHandler LeftSaveMode;
+        event EventHandler<SaveModeEventArgs> LeftSaveMode;
     }
 }

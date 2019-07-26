@@ -8,6 +8,7 @@ using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 using Spect.Net.SpectrumEmu.Abstraction.Machine;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
@@ -156,7 +157,8 @@ namespace Spect.Net.SpectrumEmu.Machine
             Breakpoints = new CodeBreakpoints(_spectrumVm.DebugInfoProvider);
 
             // --- Hook device events
-            _spectrumVm.TapeDevice.LoadCompleted += (s, e) => FastLoadCompleted?.Invoke(s, e);
+            _spectrumVm.TapeLoadDevice.LoadCompleted += (s, e) => FastLoadCompleted?.Invoke(s, e);
+            _spectrumVm.TapeSaveDevice.LeftSaveMode += (s, e) => LeftSaveMode?.Invoke(s, e);
 
             // --- Initialize machine state
             _clockProvider = GetProvider<IClockProvider>();
@@ -539,6 +541,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public event EventHandler<VmExceptionArgs> ExceptionRaised;
 
+        /// <summary>
+        /// This event fires when the virtual machine left the save mode.
+        /// </summary>
+        public event EventHandler<SaveModeEventArgs> LeftSaveMode;
+        
         #endregion
 
         #region Machine control methods

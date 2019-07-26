@@ -7,7 +7,6 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Abstraction.TestSupport;
-using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
 
@@ -109,7 +108,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         /// <summary>
         /// Signs that the device has just left SAVE mode
         /// </summary>
-        public event EventHandler LeftSaveMode;
+        public event EventHandler<SaveModeEventArgs> LeftSaveMode;
 
         /// <summary>
         /// Signs that the device has been attached to the Spectrum virtual machine
@@ -345,7 +344,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Tape
         private void LeaveSaveMode()
         {
             _currentMode = TapeOperationMode.Passive;
-            LeftSaveMode?.Invoke(this, EventArgs.Empty);
+            LeftSaveMode?.Invoke(this, new SaveModeEventArgs(TapeSaveProvider?.GetFullFileName()));
         }
 
         /// <summary>

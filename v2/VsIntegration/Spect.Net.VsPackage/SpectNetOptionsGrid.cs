@@ -27,6 +27,11 @@ namespace Spect.Net.VsPackage
         public string SaveFileFolder { get; set; } = null;
 
         [Category("Virtual machine")]
+        [DisplayName("Add saved files to project")]
+        [Description("Automatically adds saved files to the active project")]
+        public bool AddSavedFilesToProject { get; set; } = true;
+
+        [Category("Virtual machine")]
         [DisplayName("VM State save folder")]
         [Description("This is the default folder when saving virtual machine state (.vmstate) files")]
         public string VmStateSaveFileFolder { get; set; } = @"C:\Temp\VmState";
@@ -106,7 +111,6 @@ namespace Spect.Net.VsPackage
                      + "Run, Debug, or Inject.")]
         public bool GenerateForCompileOnly { get; set; } = true;
 
-
         [Category("Assembler Listing Output File")]
         [DisplayName("Add listing file to project")]
         [Description("Turn on this option to add output list file to the current project")]
@@ -160,7 +164,7 @@ namespace Spect.Net.VsPackage
 
         [Category("Export Z80 Code")]
         [DisplayName("Tape folder")]
-        [Description("Exported Z80 code files are added to this folder")]
+        [Description("Exported Z80 code files and saved files are added to this folder")]
         public string TapeFolder { get; set; } = @"TapeFiles";
 
         // --- Debugger options

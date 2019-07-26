@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 
@@ -18,46 +19,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// The current state of the virtual machine
         /// </summary>
         public VmState MachineState => Machine.MachineState;
-
-        /// <summary>
-        /// Initializes the ZX Spectrum virtual machine
-        /// </summary>
-        public RelayCommand StartVmCommand { get; set; }
-
-        /// <summary>
-        /// Pauses the virtual machine
-        /// </summary>
-        public RelayCommand PauseVmCommand { get; set; }
-
-        /// <summary>
-        /// Stops the ZX Spectrum virtual machine
-        /// </summary>
-        public RelayCommand StopVmCommand { get; set; }
-
-        /// <summary>
-        /// Resets the ZX Spectrum virtual machine
-        /// </summary>
-        public RelayCommand ResetVmCommand { get; set; }
-
-        /// <summary>
-        /// Starts the ZX Spectrum virtual machine in debug mode
-        /// </summary>
-        public RelayCommand DebugVmCommand { get; set; }
-
-        /// <summary>
-        /// Runs the ZX Spectrum virtual machine in Step-Into mode
-        /// </summary>
-        public RelayCommand StepIntoCommand { get; set; }
-
-        /// <summary>
-        /// Runs the ZX Spectrum virtual machine in Step-Over mode
-        /// </summary>
-        public RelayCommand StepOverCommand { get; set; }
-
-        /// <summary>
-        /// Runs the ZX Spectrum virtual machine in Step-Out mode
-        /// </summary>
-        public RelayCommand StepOutCommand { get; set; }
 
         /// <summary>
         /// This event is raised when the virtual machine instance has changed.
@@ -96,25 +57,15 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// This event fires when the virtual machine engine raised an exception.
         /// </summary>
         public event EventHandler<VmExceptionArgs> ExceptionRaised;
-        
+
+        /// <summary>
+        /// This event fires when the virtual machine left the save mode.
+        /// </summary>
+        public event EventHandler<SaveModeEventArgs> LeftSaveMode;
+
         #endregion
 
         #region Life cycle methods
-
-        /// <summary>
-        /// Initializes the view model
-        /// </summary>
-        public EmulatorViewModel()
-        {
-            StartVmCommand = new RelayCommand(OnStartVm);
-            PauseVmCommand = new RelayCommand(OnPauseVm);
-            StopVmCommand = new RelayCommand(OnStopVm);
-            ResetVmCommand = new RelayCommand(OnResetVm);
-            DebugVmCommand = new RelayCommand(OnDebugVm);
-            StepIntoCommand = new RelayCommand(OnStepInto);
-            StepOverCommand = new RelayCommand(OnStepOver);
-            StepOutCommand = new RelayCommand(OnStepOut);
-        }
 
         /// <summary>
         /// Sets the ZX Spectrum virtual machine
@@ -131,6 +82,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Machine.RenderFrameCompleted -= OnRenderFrameCompleted;
                 Machine.FastLoadCompleted -= OnFastLoadCompleted;
                 Machine.ExceptionRaised -= OnExceptionRaised;
+                Machine.LeftSaveMode -= OnLeftSaveMode;
             }
             Machine = machine;
             if (Machine != null)
@@ -141,6 +93,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Machine.RenderFrameCompleted += OnRenderFrameCompleted;
                 Machine.FastLoadCompleted += OnFastLoadCompleted;
                 Machine.ExceptionRaised += OnExceptionRaised;
+                Machine.LeftSaveMode += OnLeftSaveMode;
             }
             MachineInstanceChanged?.Invoke(this, 
                 new MachineInstanceChangedEventArgs(oldMachine, Machine));
@@ -160,82 +113,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Machine.RenderFrameCompleted -= OnRenderFrameCompleted;
                 Machine.FastLoadCompleted -= OnFastLoadCompleted;
                 Machine.ExceptionRaised -= OnExceptionRaised;
+                Machine.LeftSaveMode -= OnLeftSaveMode;
             }
-        }
-
-        #endregion
-
-        #region Virtual machine command handlers
-
-        /// <summary>
-        /// Starts the Spectrum virtual machine
-        /// </summary>
-        protected virtual void OnStartVm()
-        {
-            Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            Machine.Start();
-        }
-
-        /// <summary>
-        /// Pauses the Spectrum virtual machine
-        /// </summary>
-        protected virtual async void OnPauseVm()
-        {
-            await Machine.Pause();
-        }
-
-        /// <summary>
-        /// Stops the Spectrum virtual machine
-        /// </summary>
-        protected virtual async void OnStopVm()
-        {
-            await Machine.Stop();
-        }
-
-        /// <summary>
-        /// Resets the Spectrum virtual machine
-        /// </summary>
-        protected virtual async void OnResetVm()
-        {
-            await Machine.Stop();
-            Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            Machine.Start();
-        }
-
-        /// <summary>
-        /// Starts the Spectrum virtual machine in Debug mode
-        /// </summary>
-        protected virtual void OnDebugVm()
-        {
-            Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            Machine.StartDebug();
-        }
-
-        /// <summary>
-        /// Starts the Spectrum virtual machine in Step-Into mode
-        /// </summary>
-        protected virtual async void OnStepInto()
-        {
-            Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            await Machine.StepInto();
-        }
-
-        /// <summary>
-        /// Starts the Spectrum virtual machine in Step-Over mode
-        /// </summary>
-        protected virtual async void OnStepOver()
-        {
-            Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            await Machine.StepOver();
-        }
-
-        /// <summary>
-        /// Starts the Spectrum virtual machine in Step-Out mode
-        /// </summary>
-        protected virtual async void OnStepOut()
-        {
-            Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
-            await Machine.StepOut();
         }
 
         #endregion
@@ -288,6 +167,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private void OnExceptionRaised(object sender, VmExceptionArgs e)
         {
             ExceptionRaised?.Invoke(sender, e);
+        }
+
+        /// <summary>
+        /// Forwards the LeftSaveMode event to subscribers
+        /// </summary>
+        private void OnLeftSaveMode(object sender, SaveModeEventArgs e)
+        {
+            LeftSaveMode?.Invoke(sender, e);
         }
 
         #endregion

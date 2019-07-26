@@ -99,6 +99,8 @@
     <Compile Include="LanguageServices\Z80Test\Z80TestContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
     <Compile Include="Machines\MachineCollection.cs" />
+    <Compile Include="Machines\VsIntegratedTapeLoadProvider.cs" />
+    <Compile Include="Machines\VsIntegratedTapeSaveProvider.cs" />
     <Compile Include="MyConfiguredProject.cs" />
     <Compile Include="MyUnconfiguredProject.cs" />
     <Compile Include="ProjectProperties.cs" />

@@ -90,9 +90,14 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IKeyboardDevice KeyboardDevice { get; }
 
         /// <summary>
-        /// The tape device attached to the VM.
+        /// The tape load device attached to the VM.
         /// </summary>
-        ITapeLoadDevice TapeDevice { get; }
+        ITapeLoadDevice TapeLoadDevice { get; }
+
+        /// <summary>
+        /// The tape save device attached to the VM.
+        /// </summary>
+        ITapeSaveDevice TapeSaveDevice { get; }
 
         /// <summary>
         /// Debug info provider object

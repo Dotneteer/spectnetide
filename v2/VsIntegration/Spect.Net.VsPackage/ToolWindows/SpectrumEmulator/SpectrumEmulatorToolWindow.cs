@@ -64,6 +64,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             protected override void ExecuteOnMainThread()
             {
+                Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
                 Machine.Start();
             }
 
@@ -125,6 +126,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             protected override async Task ExecuteAsync()
             {
                 await Machine.Stop();
+                Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
                 Machine.Start();
             }
 
@@ -140,6 +142,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             protected override void ExecuteOnMainThread()
             {
+                Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
                 Machine.StartDebug();
             }
 
@@ -155,6 +158,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             protected override async Task ExecuteAsync()
             {
+                Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
                 await Machine.StepInto();
             }
 
@@ -170,6 +174,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             protected override async Task ExecuteAsync()
             {
+                Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
                 await Machine.StepOver();
             }
 
@@ -185,6 +190,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             protected override async Task ExecuteAsync()
             {
+                Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
                 await Machine.StepOut();
             }
 

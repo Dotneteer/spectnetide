@@ -42,7 +42,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _screenDevice = hostVm.ScreenDevice;
             _beeperDevice = hostVm.BeeperDevice;
             _keyboardDevice = hostVm.KeyboardDevice;
-            _tapeDevice = hostVm.TapeDevice;
+            _tapeDevice = hostVm.TapeLoadDevice;
             _bit3LastValue = true;
             _bit4LastValue = true;
             _bit4ChangedFrom0 = 0;

@@ -4,10 +4,13 @@ using System.Threading;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
+using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Commands;
 using Spect.Net.VsPackage.Debugging;
 using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using Spect.Net.VsPackage.LanguageServices.Z80Test;
+using Spect.Net.VsPackage.Machines;
 using Spect.Net.VsPackage.SolutionItems;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.Keyboard;
@@ -15,6 +18,7 @@ using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
+using Spect.Net.Wpf.Providers;
 using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 using Task = System.Threading.Tasks.Task;
 
@@ -177,6 +181,17 @@ namespace Spect.Net.VsPackage
             // --- Background initialization part
             Default = this;
             Z80AsmLanguage = new Z80AsmLanguageService(this);
+
+            // --- Special providers for the ZX Spectrum virtual machine
+            SpectrumMachine.Reset();
+            SpectrumMachine.RegisterDefaultProviders();
+            SpectrumMachine.RegisterProvider<IBeeperProvider>(() => new AudioWaveProvider());
+            SpectrumMachine.RegisterProvider<ISoundProvider>(() => new AudioWaveProvider(AudioProviderType.Psg));
+            SpectrumMachine.RegisterProvider<ITapeLoadProvider>(() => new VsIntegratedTapeLoadProvider());
+            SpectrumMachine.RegisterProvider<ITapeSaveProvider>(() => new VsIntegratedTapeSaveProvider());
+            EmulatorViewModel = new EmulatorViewModel();
+
+            // --- Initialize other services
             BreakpointChangeWatcher = new BreakpointChangeWatcher();
             BreakpointChangeWatcher.BreakpointsChanged += async (sender, args) =>
             {
@@ -184,7 +199,6 @@ namespace Spect.Net.VsPackage
                     $"Added: {args.Added.Count}, modified: {args.Modified.Count} deleted: {args.Deleted.Count}");
             };
             BreakpointChangeWatcher.Start();
-            EmulatorViewModel = new EmulatorViewModel();
 
             // --- Main thread initialization part
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);

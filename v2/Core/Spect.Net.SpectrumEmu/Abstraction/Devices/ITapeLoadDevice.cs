@@ -39,15 +39,5 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// Signs that the device has just left LOAD mode.
         /// </summary>
         event EventHandler LeftLoadMode;
-
-        /// <summary>
-        /// Signs that the device entered SAVE mode.
-        /// </summary>
-        event EventHandler EnteredSaveMode;
-
-        /// <summary>
-        /// Signs that the device has just left SAVE mode.
-        /// </summary>
-        event EventHandler LeftSaveMode;
     }
 }

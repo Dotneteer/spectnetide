@@ -103,6 +103,18 @@ namespace Spect.Net.VsPackage.SolutionItems
         }
 
         /// <summary>
+        /// Gets the project item that represents the active TZX file.
+        /// </summary>
+        public TzxProjectItem ActiveTzxItem =>
+            ActiveProject?.TzxProjectItems.FirstOrDefault();
+
+        /// <summary>
+        /// Gets the project item that represents the active TAP file.
+        /// </summary>
+        public TapProjectItem ActiveTapItem =>
+            ActiveProject?.TapProjectItems.FirstOrDefault();
+
+        /// <summary>
         /// This event is raised when the active ZX Spectrum project changes.
         /// </summary>
         public event EventHandler<ActiveProjectChangedEventArgs> ActiveProjectChanged;
