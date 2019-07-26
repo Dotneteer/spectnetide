@@ -34,6 +34,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             new SaveVmStateCommand();
             new LoadVmStateCommand();
             new AddVmStateCommand();
+            new ShowKeyboardCommand();
+            new ToggleShadowScreenCommand();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -243,6 +245,37 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = true;
+        }
+
+        /// <summary>
+        /// Displays the ZX Spectrum Emulator Keyboard
+        /// </summary>
+        [CommandId(0x1092)]
+        public class ShowKeyboardCommand : SpectNetCommandBase
+        {
+            protected override void ExecuteOnMainThread()
+            {
+                VsxDialogs.Show("Show Keyboard");
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Enabled = true;
+        }
+
+        /// <summary>
+        /// Enables/Disables the shadow screen
+        /// </summary>
+        [CommandId(0x1093)]
+        public class ToggleShadowScreenCommand : SpectNetCommandBase
+        {
+            protected EmulatorViewModel Evm => SpectNetPackage.Default.EmulatorViewModel;
+            protected override void ExecuteOnMainThread()
+            {
+                Evm.ShadowScreenEnabled = !Evm.ShadowScreenEnabled;
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Checked = Evm.ShadowScreenEnabled;
         }
 
         #endregion

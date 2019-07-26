@@ -759,6 +759,54 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// a reason.
         /// </summary>
         /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The reason why the execution completed.</returns>
+        public async Task RenderShadowScreen(CancellationToken cancellationToken)
+        {
+            var lastRunStart = _clockProvider.GetCounter();
+            var lastRenderFrameStart = lastRunStart;
+            _spectrumVm.ShadowScreenDevice.FrameCount = _spectrumVm.ScreenDevice.FrameCount;
+            var frameCount = 0;
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                var lastFrameEnd = _clockProvider.GetCounter();
+                LastRenderFrameTicks = lastFrameEnd - lastRenderFrameStart;
+                lastRenderFrameStart = lastFrameEnd;
+                frameCount++;
+
+                // --- Do additional task when render frame completed
+                var screenTacts = _spectrumVm.ScreenConfiguration.ScreenRenderingFrameTactCount;
+                _spectrumVm.ShadowScreenDevice.RenderScreen(0, screenTacts - 1);
+                _spectrumVm.ShadowScreenDevice.OnNewFrame();
+                var renderFrameArgs = new RenderFrameEventArgs(_spectrumVm.ShadowScreenDevice.GetPixelBuffer());
+                RenderFrameCompleted?.Invoke(this, renderFrameArgs);
+                if (renderFrameArgs.Cancel)
+                {
+                    return;
+                }
+
+                var waitInTicks = lastRunStart + frameCount * _physicalFrameClockCount
+                                  - _clockProvider.GetCounter() - _physicalFrameClockCount * 0.2;
+                var waitInMs = 1000.0 * waitInTicks / _clockProvider.GetFrequency();
+                if (waitInMs > 0)
+                {
+                    await Task.Delay((int) waitInMs, cancellationToken);
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    await Task.Delay(1, cancellationToken);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Starts the virtual machine and runs it until the execution cycle is completed for
+        /// a reason.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <param name="options">Virtual machine execution options</param>
         /// <returns>The reason why the execution completed.</returns>
         private async Task<ExecutionCompletionReason> StartAndRun(CancellationToken cancellationToken,
@@ -770,7 +818,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             var completed = false;
             while (!completed)
             {
-                Console.WriteLine("Next cycle starts");
                 // --- Execute a single CPU Frame
                 var lastCpuFrameStart = _clockProvider.GetCounter();
                 var cycleCompleted = _spectrumVm.ExecuteCycle(cancellationToken, options, true);
@@ -823,12 +870,9 @@ namespace Spect.Net.SpectrumEmu.Machine
                         // --- Wait for the next render frame, unless completed
                         if (!completed)
                         {
-                            var runInMs = LastRenderFrameTicks * 1000.0 /
-                                          _clockProvider.GetFrequency();
                             var waitInTicks = lastRunStart + frameCount * _physicalFrameClockCount
                                 - _clockProvider.GetCounter() - _physicalFrameClockCount * 0.2;
                             var waitInMs = 1000.0 * waitInTicks / _clockProvider.GetFrequency();
-                            Console.WriteLine($"Wait for next frame: {runInMs}");
                             if (waitInMs > 0)
                             {
                                 await Task.Delay((int)waitInMs, cancellationToken);

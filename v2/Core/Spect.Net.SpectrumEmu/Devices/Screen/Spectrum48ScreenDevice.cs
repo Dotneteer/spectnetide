@@ -88,7 +88,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Screen
         /// <summary>
         /// Gets the current frame count
         /// </summary>
-        public int FrameCount { get; private set; }
+        public int FrameCount { get; set; }
 
         /// <summary>
         /// Overflow from the previous frame, given in #of tacts 

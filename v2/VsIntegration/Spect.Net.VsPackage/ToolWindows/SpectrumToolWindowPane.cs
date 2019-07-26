@@ -35,7 +35,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (vm != null)
             {
                 vm.VmStateChanged += VmOnVmStateChanged;
-                ChangeCaption(vm.MachineState);
+                ChangeCaption();
             }
             _initializedWithSolution = true;
         }
@@ -49,7 +49,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             if (vm != null)
             {
                 vm.VmStateChanged += VmOnVmStateChanged;
-                ChangeCaption(vm.MachineState);
+                ChangeCaption();
             }
             _initializedWithSolution = true;
             OnSolutionOpened();
@@ -86,19 +86,19 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Changes the caption whenever the VM state changes
         /// </summary>
-        private void VmOnVmStateChanged(object sender, VmStateChangedEventArgs args)
+        private void VmOnVmStateChanged(object sender, VmStateChangedEventArgs e)
         {
-            ChangeCaption(args.NewState);
+            ChangeCaption();
         }
 
         /// <summary>
         /// Changes the caption according to machine state
         /// </summary>
-        /// <param name="state"></param>
-        protected void ChangeCaption(VmState state)
+        protected void ChangeCaption()
         {
+            var vm = SpectNetPackage.Default.EmulatorViewModel;
             var additional = string.Empty;
-            switch (state)
+            switch (vm.MachineState)
             {
                 case VmState.None:
                     additional = " (Not Started)";
@@ -110,7 +110,6 @@ namespace Spect.Net.VsPackage.ToolWindows
                     additional = " (Paused)";
                     break;
                 case VmState.Running:
-                    var vm = SpectNetPackage.Default.EmulatorViewModel;
                     if (vm.Machine.RunsInDebugMode)
                     {
                         additional = " (Debugging)";

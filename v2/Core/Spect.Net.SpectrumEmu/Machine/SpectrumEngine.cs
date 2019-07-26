@@ -141,6 +141,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IScreenDevice ScreenDevice { get; }
 
         /// <summary>
+        /// The ULA device for rendering the shadow WM screen
+        /// </summary>
+        public IScreenDevice ShadowScreenDevice { get; }
+
+        /// <summary>
         /// The ULA device that takes care of raising interrupts
         /// </summary>
         public IInterruptDevice InterruptDevice { get; }
@@ -228,7 +233,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// #of frames rendered
         /// </summary>
-        public int FrameCount { get; private set; }
+        public int FrameCount { get; set; }
 
         /// <summary>
         /// #of tacts within the frame
@@ -303,6 +308,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             var pixelRenderer = (IScreenFrameProvider) screenInfo.Provider;
             ScreenConfiguration = new ScreenConfiguration((IScreenConfiguration)screenInfo.ConfigurationData);
             ScreenDevice = screenInfo.Device ?? new Spectrum48ScreenDevice();
+            ShadowScreenDevice = new Spectrum48ScreenDevice();
 
             // --- Init the beeper device
             var beeperInfo = GetDeviceInfo<IBeeperDevice>();
@@ -371,6 +377,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(MemoryDevice);
             _spectrumDevices.Add(PortDevice);
             _spectrumDevices.Add(ScreenDevice);
+            _spectrumDevices.Add(ShadowScreenDevice);
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);
             _spectrumDevices.Add(InterruptDevice);

@@ -84,6 +84,11 @@
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbar" />
       </Group>
 
+      <!-- ZX Spectrum Emulator tool window toolbar state management other commands group -->
+      <Group guid="COMMAND_SET_GUID" id="EmulatorToolbarOtherGroup" priority="0x0100">
+        <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbar" />
+      </Group>
+
       <!-- TapeFileWindows menu group below the main menu -->
       <!--<Group guid="COMMAND_SET_GUID" id="TapeFileWindowsGroup" priority="0x00200">
         <Parent guid="COMMAND_SET_GUID" id="TopLevelMenu" />
@@ -260,7 +265,9 @@
         </Strings>
       </Button>
 
+      <!-- ==================================================================== -->
       <!-- Spectrum Emulator Toolbar buttons -->
+      <!-- ==================================================================== -->
       <Button guid="COMMAND_SET_GUID" id="EmulatorStart" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="Run" />
@@ -359,6 +366,25 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Add VM State to Project</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="COMMAND_SET_GUID" id="EmulatorShowKeyboard" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarOtherGroup" />
+        <Icon guid="ImageCatalogGuid" id="Keyboard" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Show ZX Spectrum Keyboard</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="COMMAND_SET_GUID" id="EmulatorShadowScreen" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarOtherGroup" />
+        <Icon guid="ImageCatalogGuid" id="Monitor" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Allow shadow screen when machine paused</ButtonText>
         </Strings>
       </Button>
 
@@ -839,6 +865,7 @@
       <IDSymbol name="EmulatorToolbarGroup" value="0x1020" />
       <IDSymbol name="EmulatorToolbarDebugGroup" value="0x1021" />
       <IDSymbol name="EmulatorToolbarStateGroup" value="0x1022" />
+      <IDSymbol name="EmulatorToolbarOtherGroup" value="0x1023" />
       <IDSymbol name="EmulatorStart" value="0x1081" />
       <IDSymbol name="EmulatorStop" value="0x1082" />
       <IDSymbol name="EmulatorPause" value="0x1083" />
@@ -850,6 +877,8 @@
       <IDSymbol name="EmulatorLoadState" value="0x1089" />
       <IDSymbol name="EmulatorAddState" value="0x1090" />
       <IDSymbol name="EmulatorStepOut" value="0x1091" />
+      <IDSymbol name="EmulatorShowKeyboard" value="0x1092" />
+      <IDSymbol name="EmulatorShadowScreen" value="0x1093" />
 
       <!-- Z80 Registers tool window -->
       <IDSymbol name="RegistersToolWindowCommandId" value="0x1100" />

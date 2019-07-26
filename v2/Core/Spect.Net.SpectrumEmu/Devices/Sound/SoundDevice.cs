@@ -93,7 +93,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// <summary>
         /// #of frames rendered
         /// </summary>
-        public int FrameCount { get; private set; }
+        public int FrameCount { get; set; }
 
         /// <summary>
         /// Overflow from the previous frame, given in #of tacts 

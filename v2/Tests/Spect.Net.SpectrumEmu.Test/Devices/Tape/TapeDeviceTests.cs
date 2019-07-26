@@ -1210,6 +1210,15 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Tape
             {
                 SaveTzxBlockInvoked = true;
             }
+
+            /// <summary>
+            /// Gets the full file name when the file was saved.
+            /// </summary>
+            /// <returns>Full file name</returns>
+            public string GetFullFileName()
+            {
+                return SuggestedName;
+            }
         }
     }
 }

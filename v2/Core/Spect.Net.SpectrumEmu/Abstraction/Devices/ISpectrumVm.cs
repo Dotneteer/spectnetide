@@ -75,6 +75,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IScreenDevice ScreenDevice { get; }
 
         /// <summary>
+        /// The ULA device for rendering the shadow WM screen
+        /// </summary>
+        IScreenDevice ShadowScreenDevice { get; }
+
+        /// <summary>
         /// The ULA device that takes care of raising interrupts
         /// </summary>
         IInterruptDevice InterruptDevice { get; }

@@ -13,6 +13,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
 
         private IZ80Cpu _cpu;
         private IScreenDevice _screenDevice;
+        private IScreenDevice _shadowScreenDevice;
         private IBeeperDevice _beeperDevice;
         private IKeyboardDevice _keyboardDevice;
         private ITapeLoadDevice _tapeDevice;
@@ -40,6 +41,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             _isUla3 = hostVm.UlaIssue == "3";
             _cpu = hostVm.Cpu;
             _screenDevice = hostVm.ScreenDevice;
+            _shadowScreenDevice = hostVm.ShadowScreenDevice;
             _beeperDevice = hostVm.BeeperDevice;
             _keyboardDevice = hostVm.KeyboardDevice;
             _tapeDevice = hostVm.TapeLoadDevice;
@@ -96,6 +98,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         public override void HandleWrite(ushort addr, byte writeValue)
         {
             _screenDevice.BorderColor = writeValue & 0x07;
+            _shadowScreenDevice.BorderColor = writeValue & 0x07;
             _beeperDevice.ProcessEarBitValue(false, (writeValue & 0x10) != 0);
             _tapeDevice.ProcessMicBit((writeValue & 0x08) != 0);
 

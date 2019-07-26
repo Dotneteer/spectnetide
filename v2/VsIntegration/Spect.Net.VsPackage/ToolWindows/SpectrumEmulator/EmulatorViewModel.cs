@@ -8,6 +8,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
     public class EmulatorViewModel: ViewModelBase, IDisposable
     {
+        private bool _shadowsScreenEnabled;
+
         #region ViewModel properties
 
         /// <summary>
@@ -19,6 +21,24 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// The current state of the virtual machine
         /// </summary>
         public VmState MachineState => Machine.MachineState;
+
+        public bool ShouldIndicateShadowScreen => MachineState == VmState.Paused && ShadowScreenEnabled;
+
+        /// <summary>
+        /// Indicates if the shadow screen is allowed
+        /// </summary>
+        public bool ShadowScreenEnabled
+        {
+            get => _shadowsScreenEnabled;
+            set
+            {
+                if (Set(ref _shadowsScreenEnabled, value))
+                {
+                    ShadowScreenModeChanged?.Invoke(this, EventArgs.Empty);
+                    RaisePropertyChanged(nameof(ShouldIndicateShadowScreen));
+                }
+            }
+        }
 
         /// <summary>
         /// This event is raised when the virtual machine instance has changed.
@@ -62,6 +82,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// This event fires when the virtual machine left the save mode.
         /// </summary>
         public event EventHandler<SaveModeEventArgs> LeftSaveMode;
+
+        /// <summary>
+        /// This event fires when the shadow screen mode changes.
+        /// </summary>
+        public event EventHandler ShadowScreenModeChanged;
 
         #endregion
 
@@ -126,6 +151,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         private void OnVmStateChanged(object sender, VmStateChangedEventArgs e)
         {
+            RaisePropertyChanged(nameof(ShouldIndicateShadowScreen));
             VmStateChanged?.Invoke(sender, e);
         }
 

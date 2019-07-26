@@ -5,10 +5,13 @@
     <!-- Colors -->
     <Color x:Key="CToolBackground">#FF202020</Color>
     <Color x:Key="Cz80HilitedText">#FFF89406</Color>
+    <Color x:Key="CEmuOverlay">#51A351</Color>
+
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
     <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
+    <SolidColorBrush x:Key="BEmuOvelay" Color="{StaticResource CEmuOverlay}"/>
 
     <!-- Component and control styles -->
     <Style x:Key="NotImplementedText" TargetType="TextBlock">
@@ -17,5 +20,16 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
+
+    <Style x:Key="EmuOverlayText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource BToolBackground}"/>
+        <Setter Property="Background" Value="{StaticResource BEmuOvelay}" />
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Padding" Value="8, 2"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
 
 </ResourceDictionary>

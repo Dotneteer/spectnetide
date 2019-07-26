@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -39,8 +41,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private WriteableBitmap _bitmap;
         private bool _isReloaded;
         private byte[] _lastBuffer;
+        private byte[] _savedBuffer;
         private int _cpuFrameCount;
         private uint[] _colors;
+        private CancellationTokenSource _cancellationSource;
+        private Task _shadowRenderingTask;
 
         /// <summary>
         /// The ZX Spectrum virtual machine view model utilized by this user control
@@ -61,6 +66,23 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             KeyboardScanner = new KeyboardScanner();
             _isReloaded = false;
             _lastBuffer = null;
+        }
+
+
+        /// <summary>
+        /// Resizes the Spectrum screen according to the specified parent area size
+        /// </summary>
+        public void ResizeFor(double width, double height)
+        {
+            if (Vm == null) return;
+
+            var widthFactor = (int)(width / _displayPars.ScreenWidth);
+            var heightFactor = (int)height / _displayPars.ScreenLines;
+            var scale = Math.Min(widthFactor, heightFactor);
+            if (scale < 1) scale = 1;
+
+            Display.Width = _displayPars.ScreenWidth * scale;
+            Display.Height = _displayPars.ScreenLines * scale;
         }
 
         /// <summary>
@@ -98,6 +120,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             Vm.CpuFrameCompleted += MachineOnCpuFrameCompleted;
             Vm.RenderFrameCompleted += MachineOnRenderFrameCompleted;
             Vm.LeftSaveMode += MachineOnLeftSaveMode;
+            Vm.ShadowScreenModeChanged += OnShadowScreenModeChanged;
         }
 
         /// <summary>
@@ -136,9 +159,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                         case VmState.Running:
                             Vm.Machine.BeeperProvider?.PlaySound();
                             Vm.FastLoadCompleted += OnFastLoadCompleted;
+                            StopShadowScreenRendering();
                             break;
                         case VmState.Paused:
                             Vm.Machine.BeeperProvider?.PauseSound();
+                            StartShadowScreenRendering();
                             break;
                     }
                 },
@@ -204,19 +229,19 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
-        /// Resizes the Spectrum screen according to the specified parent area size
+        /// Respond to the change of shadow screen mode
         /// </summary>
-        public void ResizeFor(double width, double height)
+        private void OnShadowScreenModeChanged(object sender, EventArgs e)
         {
-            if (Vm == null) return;
-
-            var widthFactor = (int)(width / _displayPars.ScreenWidth);
-            var heightFactor = (int)height / _displayPars.ScreenLines;
-            var scale = Math.Min(widthFactor, heightFactor);
-            if (scale < 1) scale = 1;
-
-            Display.Width = _displayPars.ScreenWidth * scale;
-            Display.Height = _displayPars.ScreenLines * scale;
+            if (Vm.MachineState != VmState.Paused) return;
+            if (Vm.ShadowScreenEnabled)
+            {
+                StartShadowScreenRendering();
+            }
+            else
+            {
+                StopShadowScreenRendering();
+            }
         }
 
         /// <summary>
@@ -265,6 +290,52 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             if (Vm == null) return;
             ResizeFor(ActualWidth, ActualHeight);
+        }
+
+        /// <summary>
+        /// Starts rendering the shadow screen, provided it is turned on
+        /// </summary>
+        private async void StartShadowScreenRendering()
+        {
+            if (!Vm.ShadowScreenEnabled || _shadowRenderingTask != null || _cancellationSource != null) return;
+            _savedBuffer = _lastBuffer.ToArray();
+            _cancellationSource = new CancellationTokenSource();
+            _shadowRenderingTask = Vm.Machine.RenderShadowScreen(_cancellationSource.Token);
+            try
+            {
+                await _shadowRenderingTask;
+            }
+            catch
+            {
+                // --- This exception is intentionally ignored
+            }
+            _shadowRenderingTask = null;
+        }
+
+        /// <summary>
+        /// Stops rendering the shadow screen
+        /// </summary>
+        private async void StopShadowScreenRendering()
+        {
+            if (_shadowRenderingTask == null || _cancellationSource == null) return;
+            _cancellationSource.Cancel();
+            try
+            {
+                await _shadowRenderingTask;
+            }
+            catch
+            {
+                // --- This exception is intentionally ignored
+            }
+            _shadowRenderingTask = null;
+            _cancellationSource = null;
+            Dispatcher.Invoke(() =>
+                {
+                    _lastBuffer = _savedBuffer.ToArray();
+                    RefreshSpectrumScreen(_lastBuffer);
+                },
+                DispatcherPriority.Send
+            );
         }
     }
 }

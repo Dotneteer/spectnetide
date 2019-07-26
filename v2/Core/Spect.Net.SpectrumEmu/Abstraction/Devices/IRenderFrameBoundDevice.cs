@@ -11,7 +11,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         /// <summary>
         /// #of frames rendered
         /// </summary>
-        int FrameCount { get; }
+        int FrameCount { get; set; }
 
         /// <summary>
         /// Overflow from the previous frame, given in #of tacts 
