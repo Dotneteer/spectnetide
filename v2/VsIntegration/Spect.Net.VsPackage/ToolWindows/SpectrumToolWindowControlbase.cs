@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
@@ -13,6 +15,15 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// </summary>
     public abstract class SpectrumToolWindowControlBase : UserControl
     {
+        public static readonly DependencyProperty ZoomAllowedProperty = DependencyProperty.Register(
+            "ZoomAllowed", typeof(bool), typeof(SpectrumToolWindowControlBase), new PropertyMetadata(default(bool)));
+
+        public bool ZoomAllowed
+        {
+            get => (bool)GetValue(ZoomAllowedProperty);
+            set => SetValue(ZoomAllowedProperty, value);
+        }
+
         /// <summary>
         /// Signs whether the control is loaded
         /// </summary>
@@ -29,7 +40,9 @@ namespace Spect.Net.VsPackage.ToolWindows
                 var emuVm = SpectNetPackage.Default.EmulatorViewModel;
                 emuVm.VmStateChanged += OnInternalVmStateChanged;
                 emuVm.MachineInstanceChanged += OnInternalMachineInstanceChanged;
+                SpectNetPackage.Default.Options.ZoomFactorChanged += OnZoomFactorChanged;
                 IsControlLoaded = true;
+                SetZoomFactor();
             };
             Unloaded += (s, e) =>
             {
@@ -37,6 +50,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                 var emuVm = SpectNetPackage.Default.EmulatorViewModel;
                 emuVm.VmStateChanged -= OnInternalVmStateChanged;
                 emuVm.MachineInstanceChanged -= OnInternalMachineInstanceChanged;
+                SpectNetPackage.Default.Options.ZoomFactorChanged -= OnZoomFactorChanged;
             };
         }
 
@@ -94,6 +108,57 @@ namespace Spect.Net.VsPackage.ToolWindows
                     // --- We intentionally ignore this exception
                 }
             }, priority);
+        }
+
+        /// <summary>
+        /// Respond to the event when zoom factor changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnZoomFactorChanged(object sender, ZoomFactorChangedEventArgs e)
+        {
+            SetZoomFactor();
+        }
+
+        /// <summary>
+        /// Sets the zoom factor
+        /// </summary>
+        private void SetZoomFactor()
+        {
+            if (!ZoomAllowed) return;
+            if (!(FindName("MainPanel") is Grid mainPanel)) return;
+
+            var scale = ConvertZoomFactor(SpectNetPackage.Default.Options.ToolWindowZoomFactor);
+            mainPanel.LayoutTransform = new ScaleTransform(scale, scale);
+            mainPanel.UseLayoutRounding = true;
+        }
+
+        /// <summary>
+        /// Converts the zoom factor to a double number
+        /// </summary>
+        private static double ConvertZoomFactor(ZoomFactor value)
+        {
+            switch (value)
+            {
+                case ZoomFactor.Zero50:
+                    return 0.5;
+                case ZoomFactor.Zero80:
+                    return 0.8;
+                case ZoomFactor.One:
+                    return 1.0;
+                case ZoomFactor.One20:
+                    return 1.2;
+                case ZoomFactor.One33:
+                    return 1.33;
+                case ZoomFactor.One50:
+                    return 1.5;
+                case ZoomFactor.Two:
+                    return 2.0;
+                case ZoomFactor.Two50:
+                    return 2.5;
+                default:
+                    return 1.0;
+            }
         }
     }
 }

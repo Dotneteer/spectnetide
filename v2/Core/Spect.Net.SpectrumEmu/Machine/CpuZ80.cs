@@ -406,6 +406,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         public bool IsInOpExecution => _cpu.IsInOpExecution;
 
         /// <summary>
+        /// Indicates if the CPU is halted.
+        /// </summary>
+        public bool Halted => (_cpu.StateFlags & Z80StateFlags.Halted) == Z80StateFlags.Halted;
+
+        /// <summary>
         /// Resets the CPU
         /// </summary>
         public void Reset()

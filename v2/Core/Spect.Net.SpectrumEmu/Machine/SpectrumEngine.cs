@@ -90,12 +90,6 @@ namespace Spect.Net.SpectrumEmu.Machine
         public long ContentionAccumulated { get; set; }
 
         /// <summary>
-        /// Gets the value of the contention accumulated when the 
-        /// execution cycle started
-        /// </summary>
-        public long LastExecutionContentionValue { get; private set; }
-
-        /// <summary>
         /// The current execution cycle options
         /// </summary>
         public ExecuteCycleOptions ExecuteCycleOptions { get; private set; }
@@ -454,7 +448,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             LastFrameStartCpuTick = 0;
             LastExecutionStartTact = 0L;
             ContentionAccumulated = 0L;
-            LastExecutionContentionValue = 0L;
             HasFrameCompleted = true;
             Cpu.Reset();
             Cpu.ReleaseResetSignal();
@@ -534,7 +527,6 @@ namespace Spect.Net.SpectrumEmu.Machine
             ExecuteCycleOptions = options;
             ExecutionCompletionReason = ExecutionCompletionReason.None;
             LastExecutionStartTact = Cpu.Tacts;
-            LastExecutionContentionValue = ContentionAccumulated;
 
             // --- We use this variables to check whether to stop in Debug mode
             var executedInstructionCount = -1;

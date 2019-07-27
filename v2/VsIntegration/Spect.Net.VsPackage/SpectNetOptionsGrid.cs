@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
+using Spect.Net.VsPackage.VsxLibrary;
+
 // ReSharper disable UnusedMember.Global
 
 namespace Spect.Net.VsPackage
@@ -12,6 +14,7 @@ namespace Spect.Net.VsPackage
     {
         private KeyboardLayoutTypeOptions _keyboardLayoutType = KeyboardLayoutTypeOptions.Default;
         private KeyboardFitTypeOptions _keyboardFitType = KeyboardFitTypeOptions.OriginalSize;
+        private ZoomFactor _zoomFactor = ZoomFactor.One;
         private byte _optimize = 1;
 
         // --- Virtual machine options
@@ -62,6 +65,22 @@ namespace Spect.Net.VsPackage
         [DisplayName("Virtual floppy disk folder")]
         [Description("Virtual floppy disk files are added to this folder")]
         public string VfddFolder { get; set; } = @"FloppyDisks";
+
+        [Category("Virtual machine")]
+        [DisplayName("Tool window zoom factor")]
+        [Description("Sets the zoom factor of ZX Spectrum related tool windows")]
+        [TypeConverter(typeof(TypedEnumConverter<ZoomFactor>))]
+        public ZoomFactor ToolWindowZoomFactor
+        {
+            get => _zoomFactor;
+            set
+            {
+                if (_zoomFactor == value) return;
+
+                _zoomFactor = value;
+                ZoomFactorChanged?.Invoke(this, new ZoomFactorChangedEventArgs(value));
+            }
+        } 
 
         // --- Run Z80 Code options
         [Category("Run Z80 Code")]
@@ -203,6 +222,7 @@ namespace Spect.Net.VsPackage
         [Category("Keyboard Tool")]
         [DisplayName("Keyboard layout")]
         [Description("You can select the type of keyboard layout to display in the Zx Spectrum Keyboard tool window.")]
+        [TypeConverter(typeof(TypedEnumConverter<KeyboardLayoutTypeOptions>))]
         public KeyboardLayoutTypeOptions KeyboardLayoutType
         {
             get => _keyboardLayoutType;
@@ -218,6 +238,7 @@ namespace Spect.Net.VsPackage
         [Category("Keyboard Tool")]
         [DisplayName("Keyboard display mode")]
         [Description("You can select the display type to use for the ZX Spectrum keyboard tool window.")]
+        [TypeConverter(typeof(TypedEnumConverter<KeyboardFitTypeOptions>))]
         public KeyboardFitTypeOptions KeyboardFitType
         {
             get => _keyboardFitType;
@@ -393,6 +414,11 @@ namespace Spect.Net.VsPackage
         /// Signs that the keyboard fit type has changed
         /// </summary>
         public event EventHandler<KeyboardFitTypeChangedEventArgs> KeyboardFitTypeChanged;
+
+        /// <summary>
+        /// Signs that the tool window zoom factor changes
+        /// </summary>
+        public event EventHandler<ZoomFactorChangedEventArgs> ZoomFactorChanged;
     }
 
     /// <summary>
@@ -411,7 +437,9 @@ namespace Spect.Net.VsPackage
     public enum KeyboardLayoutTypeOptions
     {
         Default = 0,
+        [Description("ZX Spectrum 48")]
         Spectrum48,
+        [Description("ZX Spectrum 128")]
         Spectrum128
     }
 
@@ -420,8 +448,33 @@ namespace Spect.Net.VsPackage
     /// </summary>
     public enum KeyboardFitTypeOptions
     {
+        [Description("Original size")]
         OriginalSize,
+        [Description("Fit to tool window")]
         Fit
+    }
+
+    /// <summary>
+    /// Preset zoom sizes
+    /// </summary>
+    public enum ZoomFactor
+    {
+        [Description("50%")]
+        Zero50,
+        [Description("80%")]
+        Zero80,
+        [Description("100%")]
+        One,
+        [Description("120%")]
+        One20,
+        [Description("133%")]
+        One33,
+        [Description("150%")]
+        One50,
+        [Description("200%")]
+        Two,
+        [Description("250%")]
+        Two50
     }
 
     /// <summary>
@@ -457,6 +510,23 @@ namespace Spect.Net.VsPackage
         public KeyboardFitTypeChangedEventArgs(KeyboardFitTypeOptions fitType)
         {
             FitType = fitType;
+        }
+    }
+
+    /// <summary>
+    /// Zoom factor changed event
+    /// </summary>
+    public class ZoomFactorChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Fit type set
+        /// </summary>
+        public ZoomFactor ZoomFactor { get; }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.EventArgs" /> class.</summary>
+        public ZoomFactorChangedEventArgs(ZoomFactor zoomFactor)
+        {
+            ZoomFactor = zoomFactor;
         }
     }
 }

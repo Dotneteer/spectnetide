@@ -49,10 +49,9 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         long ContentionAccumulated { get; set; }
 
         /// <summary>
-        /// Gets the value of the contention accummulated when the 
-        /// execution cycle started
+        /// The CPU tact at which the last execution cycle started
         /// </summary>
-        long LastExecutionContentionValue { get; }
+        long LastExecutionStartTact { get; }
 
         /// <summary>
         /// The current execution cycle options

@@ -1,4 +1,5 @@
-﻿using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
+﻿using System.Windows.Media;
+using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
 
 namespace Spect.Net.VsPackage.ToolWindows.Registers
 {
@@ -24,6 +25,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
         public RegistersToolWindowControl()
         {
             InitializeComponent();
+            Loaded += (s, e) => { Vm.Refresh(); };
+            PreviewKeyDown += (s, arg) => Vm?.HandleDebugKeys(arg);
         }
     }
 }

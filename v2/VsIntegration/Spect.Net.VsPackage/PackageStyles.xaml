@@ -5,7 +5,9 @@
 
     <!-- Colors -->
     <Color x:Key="CToolBackground">#FF202020</Color>
+    <Color x:Key="Cz80Text">#FF51c351</Color>
     <Color x:Key="Cz80HilitedText">#FFF89406</Color>
+    <Color x:Key="Cz80StatusText">#00AFFF</Color>
     <Color x:Key="CEmuOverlay">#51A351</Color>
     <Color x:Key="CDebugBackground">#FF202020</Color>
     <Color x:Key="CKeyboardBackground">#FF202020</Color>
@@ -15,15 +17,18 @@
     <Color x:Key="CWhite90">#f0f0ff</Color>
     <Color x:Key="CKeyHoverBackground">#FF405050</Color>
     <Color x:Key="CShiftKeyHoverBackground">#FF808080</Color>
-    <Color x:Key="Cz80Text">#FF51c351</Color>
     <Color x:Key="CMainButtonText">#FFF0F0F0</Color>
     <Color x:Key="CShiftText">#900000</Color>
     <Color x:Key="CExtShiftText">#F04040</Color>
+    <Color x:Key="CEvenRow">#FF202020</Color>
+    <Color x:Key="COddRow">#FF282828</Color>
 
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
+    <SolidColorBrush x:Key="Bz80Text" Color="{StaticResource Cz80Text}"/>
     <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
+    <SolidColorBrush x:Key="Bz80StatusText" Color="{StaticResource Cz80StatusText}"/>
     <SolidColorBrush x:Key="BEmuOverlay" Color="{StaticResource CEmuOverlay}"/>
     <SolidColorBrush x:Key="BDebugBackground" Color="{StaticResource CDebugBackground}"/>
     <SolidColorBrush x:Key="BKeyboardBackground" Color="{StaticResource CKeyboardBackground}"/>
@@ -33,10 +38,11 @@
     <SolidColorBrush x:Key="BWhite90" Color="{StaticResource CWhite90}"/>
     <SolidColorBrush x:Key="BKeyHoverBackground" Color="{StaticResource CKeyHoverBackground}"/>
     <SolidColorBrush x:Key="BShiftKeyHoverBackground" Color="{StaticResource CShiftKeyHoverBackground}"/>
-    <SolidColorBrush x:Key="Bz80Text" Color="{StaticResource Cz80Text}"/>
     <SolidColorBrush x:Key="BMainButtonText" Color="{StaticResource CMainButtonText}"/>
     <SolidColorBrush x:Key="BShiftText" Color="{StaticResource CShiftText}"/>
     <SolidColorBrush x:Key="BExtShiftText" Color="{StaticResource CExtShiftText}"/>
+    <SolidColorBrush x:Key="BDebugEvenRow" Color="{StaticResource CEvenRow}"/>
+    <SolidColorBrush x:Key="BDebugOddRow" Color="{StaticResource COddRow}"/>
 
     <!-- Component and control styles -->
     <Style x:Key="NotImplementedText" TargetType="TextBlock">
@@ -117,6 +123,23 @@
     <Style x:Key="Sp128SimpleButtonText" TargetType="TextBlock" BasedOn="{StaticResource Sp128ButtonText}">
         <Setter Property="FontSize" Value="24" />
     </Style>
+
+    <!-- Information display types -->
+    <Style x:Key="Z80Text" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+    </Style>
+
+    <Style x:Key="Z80HilitedText" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
+        <Setter Property="Foreground" Value="{StaticResource Bz80HilitedText}" />
+    </Style>
+
+    <Style x:Key="Z80StatusText" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
+        <Setter Property="Foreground" Value="{StaticResource Bz80StatusText}" />
+    </Style>
+
+
 
     <!-- Value converters -->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

@@ -168,6 +168,16 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         long LastRenderFrameTicks { get; }
 
         /// <summary>
+        /// The CPU tact at which the last execution cycle started
+        /// </summary>
+        long LastExecutionStartTact { get; }
+
+        /// <summary>
+        /// The current screen rendering frame tact
+        /// </summary>
+        int CurrentFrameTact { get; }
+
+        /// <summary>
         /// This event is raised when the state of the virtual machine has been changed.
         /// </summary>
         event EventHandler<VmStateChangedEventArgs> VmStateChanged;

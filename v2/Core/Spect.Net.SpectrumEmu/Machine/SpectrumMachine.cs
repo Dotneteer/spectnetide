@@ -398,6 +398,21 @@ namespace Spect.Net.SpectrumEmu.Machine
         public CpuZ80 Cpu { get; }
 
         /// <summary>
+        /// The CPU tact at which the last execution cycle started
+        /// </summary>
+        public long LastExecutionStartTact => _spectrumVm.LastExecutionStartTact;
+
+        /// <summary>
+        /// Gets the amounf of contention accumulated 
+        /// </summary>
+        public long ContentionAccumulated => _spectrumVm.ContentionAccumulated;
+
+        /// <summary>
+        /// The current screen rendering frame tact
+        /// </summary>
+        public int CurrentFrameTact => _spectrumVm.CurrentFrameTact;
+
+        /// <summary>
         /// Provides access to the individual ROM pages of the machine
         /// </summary>
         public IReadOnlyList<ReadOnlyMemorySlice> Roms { get; }
@@ -506,6 +521,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// The length of last render frame in ticks
         /// </summary>
         public long LastRenderFrameTicks { get; private set; }
+
+        /// <summary>
+        /// Gets the value of the contention accumulated when the 
+        /// execution cycle started
+        /// </summary>
+        public long LastExecutionContentionValue { get; private set; }
 
         #endregion
 
@@ -662,6 +683,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     break;
             }
             RunsInDebugMode = false;
+            LastExecutionContentionValue = 0L;
         }
 
         /// <summary>
@@ -812,6 +834,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         private async Task<ExecutionCompletionReason> StartAndRun(CancellationToken cancellationToken,
             ExecuteCycleOptions options)
         {
+            LastExecutionContentionValue = ContentionAccumulated;
             var lastRunStart = _clockProvider.GetCounter();
             var lastRenderFrameStart = lastRunStart;
             var frameCount = 0;

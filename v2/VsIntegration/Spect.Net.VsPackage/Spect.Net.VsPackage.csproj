@@ -168,6 +168,12 @@
       <DependentUpon>Sp128WideKeyControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
+    <Compile Include="ToolWindows\Registers\FlagsControl.xaml.cs">
+      <DependentUpon>FlagsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Registers\Register16Control.xaml.cs">
+      <DependentUpon>Register16Control.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\Registers\RegistersToolWindow.cs" />
     <Compile Include="ToolWindows\Registers\RegistersToolWindowControl.xaml.cs">
       <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
@@ -214,6 +220,7 @@
     <Compile Include="VsxLibrary\ToolWindow\ToolWindowAttribute.cs" />
     <Compile Include="VsxLibrary\ToolWindow\ToolWindowToolbarAttribute.cs" />
     <Compile Include="VsxLibrary\ToolWindow\ToolWindowPaneBase.cs" />
+    <Compile Include="VsxLibrary\TypedEnumConverter.cs" />
     <Compile Include="VsxLibrary\VsIde.cs" />
     <Compile Include="VsxLibrary\VsxAsyncPackage.cs" />
     <Compile Include="VsxLibrary\VsxConverter.cs" />
@@ -517,6 +524,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\Keyboard\Sp128WideKeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Registers\FlagsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Registers\Register16Control.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
