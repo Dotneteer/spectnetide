@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.ToolWindows.Keyboard;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Command;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
@@ -251,13 +252,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// Displays the ZX Spectrum Emulator Keyboard
         /// </summary>
         [CommandId(0x1092)]
-        public class ShowKeyboardCommand : SpectNetCommandBase
+        [ToolWindow(typeof(KeyboardToolWindow))]
+        public class ShowKeyboardCommand : ShowToolWindowCommandBase
         {
-            protected override void ExecuteOnMainThread()
-            {
-                VsxDialogs.Show("Show Keyboard");
-            }
-
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Enabled = true;
         }

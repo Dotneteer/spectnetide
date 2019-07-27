@@ -4,6 +4,7 @@ using System.Threading;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Commands;
@@ -257,6 +258,16 @@ namespace Spect.Net.VsPackage
 
             // ReSharper restore ObjectCreationAsStatement
         }
+
+        /// <summary>
+        /// Tests if the current model is a ZX Spectrum 48K
+        /// </summary>
+        /// <returns>True, if the current model = ZX Spectrum 48K; otherwise, false</returns>
+        public static bool IsSpectrum48Model()
+        {
+            return Default.Solution?.ActiveProject?.ModelName == SpectrumModels.ZX_SPECTRUM_48;
+        }
+
 
         /// <devdoc>
         /// This method will be called by Visual Studio in response to a package close

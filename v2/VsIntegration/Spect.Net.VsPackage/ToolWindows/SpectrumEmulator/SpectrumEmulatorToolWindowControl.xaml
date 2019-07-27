@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
              xmlns:spectrumEmulator="clr-namespace:Spect.Net.VsPackage.ToolWindows.SpectrumEmulator"
-             xmlns:ValueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf" 
+             xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf" 
     x:Class="Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.SpectrumEmulatorToolWindowControl"
              Focusable="True"
              mc:Ignorable="d"
@@ -17,7 +17,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\..\PackageStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <ValueConverters:BoolToVisibleConverter x:Key="BoolToVisibleConverter"/>
+            <valueConverters:BoolToVisibleConverter x:Key="BoolToVisibleConverter"/>
         </ResourceDictionary>
     </toolWindows:SpectrumToolWindowControlBase.Resources>
 

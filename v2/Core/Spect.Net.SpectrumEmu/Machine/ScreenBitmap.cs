@@ -29,6 +29,12 @@ namespace Spect.Net.SpectrumEmu.Machine
         }
 
         /// <summary>
+        /// Gets the pixel buffer of the machine
+        /// </summary>
+        /// <returns>Screen pixels</returns>
+        public byte[] GetPixelBuffer() => _screenDevice.GetPixelBuffer();
+
+        /// <summary>
         /// Gets the array of pixels that represent the line with the specified number
         /// </summary>
         /// <param name="lineNo">Zero-based line number</param>

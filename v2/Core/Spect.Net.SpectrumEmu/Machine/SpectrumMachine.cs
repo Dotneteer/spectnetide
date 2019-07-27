@@ -144,7 +144,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             }
             RamBanks = new ReadOnlyCollection<MemorySlice>(ramBanks);
 
-            Keyboard = new KeyboardEmulator(_spectrumVm.KeyboardDevice);
+            Keyboard = new KeyboardEmulator(_spectrumVm);
             ScreenConfiguration = _spectrumVm.ScreenConfiguration;
             ScreenRenderingTable = new ScreenRenderingTable(_spectrumVm.ScreenDevice);
             ScreenBitmap = new ScreenBitmap(_spectrumVm.ScreenDevice);

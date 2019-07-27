@@ -19,6 +19,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Keyboard
         public void SetVm(KeyboardToolWindowViewModel vm)
         {
             DataContext = Vm = vm;
+            Spectrum48Keyboard.SetVm(vm);
+            Spectrum128Keyboard.SetVm(vm);
+            Spectrum48Keyboard2.SetVm(vm);
+            Spectrum128Keyboard2.SetVm(vm);
         }
 
         public KeyboardToolWindowControl()

@@ -136,16 +136,38 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SpectNetPackage.cs" />
+    <Compile Include="ToolWindows\DependencyObjectEx.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\Keyboard\Sp48KeyboardControl.xaml.cs">
+      <DependentUpon>Sp48KeyboardControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\Sp128EnterKeyControl.xaml.cs">
+      <DependentUpon>Sp128EnterKeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\IKeyCodeProvider.cs" />
+    <Compile Include="ToolWindows\Keyboard\KeyboardToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\Keyboard\KeyboardToolWindow.cs" />
+    <Compile Include="ToolWindows\Keyboard\Sp128KeyboardControl.xaml.cs">
+      <DependentUpon>Sp128KeyboardControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\Keyboard\KeyboardToolWindowControl.xaml.cs">
       <DependentUpon>KeyboardToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\Keyboard\KeyboardToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\Keyboard\KeyPressHandler.cs" />
+    <Compile Include="ToolWindows\Keyboard\Sp128KeyControl.xaml.cs">
+      <DependentUpon>Sp128KeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\Sp48KeyControl.xaml.cs">
+      <DependentUpon>Sp48KeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\Sp128WideKeyControl.xaml.cs">
+      <DependentUpon>Sp128WideKeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
     <Compile Include="ToolWindows\Registers\RegistersToolWindow.cs" />
     <Compile Include="ToolWindows\Registers\RegistersToolWindowControl.xaml.cs">
       <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
@@ -470,9 +492,33 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ToolWindows\Keyboard\Sp48KeyboardControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp128EnterKeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp128KeyboardControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ToolWindows\Keyboard\KeyboardToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp128KeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp48KeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp128WideKeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\Registers\RegistersToolWindowControl.xaml">
       <SubType>Designer</SubType>

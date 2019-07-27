@@ -94,6 +94,7 @@
     <Compile Include="Providers\AudioWaveProvider.cs" />
     <Compile Include="Providers\DelegatingScreenFrameProvider.cs" />
     <Compile Include="ValueConverters\BoolToCollapsedConverter.cs" />
+    <Compile Include="ValueConverters\BoolToHiddenConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibleConverter.cs" />
   </ItemGroup>
   <ItemGroup>

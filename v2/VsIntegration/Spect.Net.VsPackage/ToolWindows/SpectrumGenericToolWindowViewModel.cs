@@ -1,4 +1,5 @@
-﻿using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
+﻿using System;
+using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.Wpf.Mvvm;
 
 // ReSharper disable IdentifierTypo
@@ -9,14 +10,12 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// This class is intended to be the base of all ZX Spectrum related tool window
     /// view models
     /// </summary>
-    public class SpectrumGenericToolWindowViewModel: EnhancedViewModelBase
+    public class SpectrumGenericToolWindowViewModel: EnhancedViewModelBase, IDisposable
     {
         /// <summary>
         /// The aggregated ZX Spectrum view model
         /// </summary>
         public EmulatorViewModel EmulatorViewModel => SpectNetPackage.Default.EmulatorViewModel;
-
-        #region Lifecycle methods
 
         /// <summary>
         /// Instantiates this view model
@@ -35,6 +34,12 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
         }
 
-        #endregion
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, 
+        /// or resetting unmanaged resources.
+        /// </summary>
+        public virtual void Dispose()
+        {
+        }
     }
 }

@@ -121,6 +121,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             Vm.RenderFrameCompleted += MachineOnRenderFrameCompleted;
             Vm.LeftSaveMode += MachineOnLeftSaveMode;
             Vm.ShadowScreenModeChanged += OnShadowScreenModeChanged;
+            Vm.MachineInstanceChanged += OnMachineInstanceChanged;
         }
 
         /// <summary>
@@ -245,6 +246,21 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
+        /// Responds to the event when machine instance changes.
+        /// </summary>
+        private void OnMachineInstanceChanged(object sender, MachineInstanceChangedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+                {
+                    _lastBuffer = e.NewMachine.ScreenBitmap.GetPixelBuffer();
+                    RefreshSpectrumScreen(_lastBuffer);
+                },
+                DispatcherPriority.Send
+            );
+        }
+
+
+        /// <summary>
         /// Refreshes the spectrum screen
         /// </summary>
         private void RefreshSpectrumScreen(IReadOnlyList<byte> currentBuffer)
@@ -286,7 +302,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             ResizeFor(e.NewSize.Width, e.NewSize.Height);
         }
 
-        private void UserControl_LayoutUpdated(object sender, EventArgs e)
+        private void OnLayoutUpdated(object sender, EventArgs e)
         {
             if (Vm == null) return;
             ResizeFor(ActualWidth, ActualHeight);
