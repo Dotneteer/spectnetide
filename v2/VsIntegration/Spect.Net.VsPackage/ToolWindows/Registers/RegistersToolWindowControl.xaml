@@ -37,6 +37,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <registers:FlagsControl Grid.Row="0" 
                                     RegName="F" 
@@ -244,6 +245,20 @@
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
+            <TextBlock Text="POS" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Indicates the pixel position within the raster line" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Grid.Column="1" Text="{Binding CurrentRasterPos}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
+        </Grid>
+        <Grid Row="13">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
             <TextBlock Text="PIX" Style="{DynamicResource Z80Text}" Foreground="{DynamicResource Bz80HilitedText}">
                 <TextBlock.ToolTip>
                     <ToolTip>
@@ -253,7 +268,7 @@
             </TextBlock>
             <TextBlock Grid.Column="1" Text="{Binding PixelOperation}" Margin="0,0,8,0" Style="{DynamicResource Z80StatusText}" />
         </Grid>
-        <Grid Row="13">
+        <Grid Row="14">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="36"/>
                 <ColumnDefinition Width="Auto" />

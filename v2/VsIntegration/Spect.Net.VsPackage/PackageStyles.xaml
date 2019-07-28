@@ -22,6 +22,7 @@
     <Color x:Key="CExtShiftText">#F04040</Color>
     <Color x:Key="CEvenRow">#FF202020</Color>
     <Color x:Key="COddRow">#FF282828</Color>
+    <Color x:Key="CRasterLine">#C0F00080</Color>
 
 
     <!-- Brushes -->
@@ -43,6 +44,7 @@
     <SolidColorBrush x:Key="BExtShiftText" Color="{StaticResource CExtShiftText}"/>
     <SolidColorBrush x:Key="BDebugEvenRow" Color="{StaticResource CEvenRow}"/>
     <SolidColorBrush x:Key="BDebugOddRow" Color="{StaticResource COddRow}"/>
+    <SolidColorBrush x:Key="BRasterLine" Color="{StaticResource CRasterLine}"/>
 
     <!-- Component and control styles -->
     <Style x:Key="NotImplementedText" TargetType="TextBlock">
@@ -52,6 +54,7 @@
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
 
+    <!-- ZX Spectrum Emulator styles -->
     <Style x:Key="EmuOverlayText" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{StaticResource BToolBackground}"/>
@@ -60,6 +63,15 @@
         <Setter Property="Padding" Value="8, 2"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
+    <Style x:Key="UlaRasterLine" TargetType="Line">
+        <Setter Property="Stroke" Value="{StaticResource BRasterLine}"/>
+    </Style>
+
+    <Style x:Key="SyncRectangle" TargetType="Rectangle">
+        <Setter Property="StrokeThickness" Value="0"/>
+        <Setter Property="Fill" Value="#18FFFFFF"/>
     </Style>
 
     <!-- ZX Spectrum 48K button styles -->
@@ -138,8 +150,6 @@
     <Style x:Key="Z80StatusText" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
         <Setter Property="Foreground" Value="{StaticResource Bz80StatusText}" />
     </Style>
-
-
 
     <!-- Value converters -->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

@@ -10,14 +10,64 @@
              Loaded="OnLoaded"
              Unloaded="OnUnloaded"
              Focusable="True" SizeChanged="OnSizeChanged" LayoutUpdated="OnLayoutUpdated">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <Border BorderThickness="4">
             <Image x:Name="Display"  
                    SnapsToDevicePixels="True"
                    UseLayoutRounding="True"
                    RenderOptions.BitmapScalingMode="NearestNeighbor" 
-                   HorizontalAlignment="Stretch" 
-                   VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5"/>
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" />
         </Border>
+        <Grid ZIndex="-10">
+            <Rectangle x:Name="SyncRectangle" Style="{StaticResource SyncRectangle}" Visibility="Hidden" 
+                       HorizontalAlignment="Left" VerticalAlignment="Top" >
+                <Rectangle.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Blanking/Sync area" />
+                    </ToolTip>
+                </Rectangle.ToolTip>
+
+            </Rectangle>
+        </Grid>
+        <Grid ZIndex="-5">
+            <Rectangle x:Name="NonVisibleRectangle" Style="{StaticResource SyncRectangle}" Visibility="Hidden" 
+                       HorizontalAlignment="Left" VerticalAlignment="Top" >
+                <Rectangle.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Non-visible area" />
+                    </ToolTip>
+                </Rectangle.ToolTip>
+            </Rectangle>
+        </Grid>
+        <Grid>
+            <Rectangle x:Name="DisplayRectangle" Style="{StaticResource SyncRectangle}" Visibility="Hidden" 
+                       HorizontalAlignment="Left" VerticalAlignment="Top" >
+                <Rectangle.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Display area" />
+                    </ToolTip>
+                </Rectangle.ToolTip>
+            </Rectangle>
+        </Grid>
+        <Line x:Name="RasterLine" Style="{StaticResource UlaRasterLine}" Visibility="Hidden" />
+        <Line x:Name="PixelLine" Style="{StaticResource UlaRasterLine}" Visibility="Hidden" />
+        <Rectangle x:Name="BeamRectangle" Stroke="Transparent" Fill="Transparent" 
+                   HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Rectangle.ToolTip>
+                <ToolTip>
+                    <TextBlock x:Name="BeamPosition" Text="" />
+                </ToolTip>
+            </Rectangle.ToolTip>
+        </Rectangle>
     </Grid>
 </UserControl>

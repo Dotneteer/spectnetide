@@ -9,6 +9,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     public class EmulatorViewModel: ViewModelBase, IDisposable
     {
         private bool _shadowsScreenEnabled;
+        private bool _ulaIndicationEnabled;
 
         #region ViewModel properties
 
@@ -22,6 +23,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         public VmState MachineState => Machine.MachineState;
 
+        /// <summary>
+        /// This property determines if shadow screen should be displayed
+        /// </summary>
         public bool ShouldIndicateShadowScreen => MachineState == VmState.Paused && ShadowScreenEnabled;
 
         /// <summary>
@@ -32,10 +36,24 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             get => _shadowsScreenEnabled;
             set
             {
-                if (Set(ref _shadowsScreenEnabled, value))
+                if (!Set(ref _shadowsScreenEnabled, value)) return;
+
+                ShadowScreenModeChanged?.Invoke(this, EventArgs.Empty);
+                RaisePropertyChanged(nameof(ShouldIndicateShadowScreen));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the shadow screen is allowed
+        /// </summary>
+        public bool UlaIndicationEnabled
+        {
+            get => _ulaIndicationEnabled;
+            set
+            {
+                if (Set(ref _ulaIndicationEnabled, value))
                 {
-                    ShadowScreenModeChanged?.Invoke(this, EventArgs.Empty);
-                    RaisePropertyChanged(nameof(ShouldIndicateShadowScreen));
+                    UlaIndicationModeChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -87,6 +105,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// This event fires when the shadow screen mode changes.
         /// </summary>
         public event EventHandler ShadowScreenModeChanged;
+
+        /// <summary>
+        /// This event fires when the ula indication mode changes.
+        /// </summary>
+        public event EventHandler UlaIndicationModeChanged;
 
         #endregion
 

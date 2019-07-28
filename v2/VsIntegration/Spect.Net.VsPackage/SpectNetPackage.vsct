@@ -388,6 +388,16 @@
         </Strings>
       </Button>
 
+      <Button guid="COMMAND_SET_GUID" id="EmulatorUlaIndication" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarOtherGroup" />
+        <Icon guid="ImageCatalogGuid" id="CurrentContextArrow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Display ULA render point</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- Tape File Explorer toolbar buttons -->
       <Button guid="COMMAND_SET_GUID" id="OpenTapeFile" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="TapeFileExplorerToolbarGroup" />
@@ -879,6 +889,7 @@
       <IDSymbol name="EmulatorStepOut" value="0x1091" />
       <IDSymbol name="EmulatorShowKeyboard" value="0x1092" />
       <IDSymbol name="EmulatorShadowScreen" value="0x1093" />
+      <IDSymbol name="EmulatorUlaIndication" value="0x1094" />
 
       <!-- Z80 Registers tool window -->
       <IDSymbol name="RegistersToolWindowCommandId" value="0x1100" />

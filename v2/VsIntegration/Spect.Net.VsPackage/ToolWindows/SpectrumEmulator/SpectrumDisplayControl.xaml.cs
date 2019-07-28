@@ -121,6 +121,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             Vm.RenderFrameCompleted += MachineOnRenderFrameCompleted;
             Vm.LeftSaveMode += MachineOnLeftSaveMode;
             Vm.ShadowScreenModeChanged += OnShadowScreenModeChanged;
+            Vm.UlaIndicationModeChanged += OnUlaIndicationModeChanged;
             Vm.MachineInstanceChanged += OnMachineInstanceChanged;
         }
 
@@ -138,6 +139,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Vm.CpuFrameCompleted -= MachineOnCpuFrameCompleted;
                 Vm.RenderFrameCompleted -= MachineOnRenderFrameCompleted;
                 Vm.LeftSaveMode -= MachineOnLeftSaveMode;
+                Vm.ShadowScreenModeChanged -= OnShadowScreenModeChanged;
+                Vm.UlaIndicationModeChanged += OnUlaIndicationModeChanged;
+                Vm.MachineInstanceChanged -= OnMachineInstanceChanged;
             }
 
             // --- Sign that the next time we load the control, it is a reload
@@ -156,15 +160,18 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                         case VmState.Stopped:
                             Vm.Machine.BeeperProvider?.KillSound();
                             Vm.FastLoadCompleted -= OnFastLoadCompleted;
+                            ShowUlaRaster();
                             break;
                         case VmState.Running:
                             Vm.Machine.BeeperProvider?.PlaySound();
                             Vm.FastLoadCompleted += OnFastLoadCompleted;
+                            ShowUlaRaster();
                             StopShadowScreenRendering();
                             break;
                         case VmState.Paused:
                             Vm.Machine.BeeperProvider?.PauseSound();
                             StartShadowScreenRendering();
+                            ShowUlaRaster();
                             break;
                     }
                 },
@@ -246,6 +253,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
+        /// Responds to the change of ULA indication mode
+        /// </summary>
+        private void OnUlaIndicationModeChanged(object sender, EventArgs e)
+        {
+            ShowUlaRaster();
+        }
+
+        /// <summary>
         /// Responds to the event when machine instance changes.
         /// </summary>
         private void OnMachineInstanceChanged(object sender, MachineInstanceChangedEventArgs e)
@@ -300,12 +315,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             if (Vm == null) return;
             ResizeFor(e.NewSize.Width, e.NewSize.Height);
+            ShowUlaRaster();
         }
 
         private void OnLayoutUpdated(object sender, EventArgs e)
         {
             if (Vm == null) return;
             ResizeFor(ActualWidth, ActualHeight);
+            ShowUlaRaster();
         }
 
         /// <summary>
@@ -352,6 +369,73 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 },
                 DispatcherPriority.Send
             );
+        }
+
+        private void ShowUlaRaster()
+        {
+            if (Vm.MachineState != VmState.Paused || !Vm.UlaIndicationEnabled)
+            {
+                // --- Hide ULA raster information
+                RasterLine.Visibility = Visibility.Collapsed;
+                PixelLine.Visibility = Visibility.Collapsed;
+                SyncRectangle.Visibility = Visibility.Collapsed;
+                NonVisibleRectangle.Visibility = Visibility.Collapsed;
+                DisplayRectangle.Visibility = Visibility.Collapsed;
+                BeamRectangle.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            // --- Display ULA raster information
+            var sc = Vm.Machine.ScreenConfiguration;
+            var screenLines = sc.ScreenLines;
+            var scale = Display.ActualHeight / screenLines;
+            var ulaTacts = sc.ScreenRenderingFrameTactCount;
+            var tact = Vm.Machine.CurrentFrameTact % ulaTacts;
+            var line = tact / sc.ScreenLineTime;
+            var pixel = tact % sc.ScreenLineTime * 2;
+            var screenWidth = sc.ScreenLineTime * 2;
+
+            RasterLine.X1 = (ActualWidth - Display.ActualWidth) / 2;
+            RasterLine.X2 = RasterLine.X1 + screenWidth * scale;
+            RasterLine.Y1 = RasterLine.Y2 = (ActualHeight - Display.ActualHeight) / 2 
+            + (line - sc.NonVisibleBorderTopLines) * scale;
+            RasterLine.StrokeThickness = scale;
+
+            PixelLine.X1 = PixelLine.X2 = (ActualWidth - Display.ActualWidth) / 2 + pixel * scale;
+            PixelLine.Y1 = RasterLine.Y1 - 4 * scale;
+            PixelLine.Y2 = RasterLine.Y1 + 4 * scale;
+            PixelLine.StrokeThickness = 2 * scale;
+
+            BeamRectangle.Margin = new Thickness(
+                (ActualWidth - Display.ActualWidth) / 2 + (pixel - 3) * scale,
+                (ActualHeight - Display.ActualHeight) / 2 + (line - sc.NonVisibleBorderTopLines - 3) * scale,
+                0,0);
+            BeamRectangle.Width = BeamRectangle.Height = 6 * scale;
+            BeamPosition.Text = $"({line}, {pixel / 2})";
+
+            SyncRectangle.Margin = new Thickness(
+                (ActualWidth - Display.ActualWidth) / 2,
+                (ActualHeight - Display.ActualHeight) / 2
+                - sc.NonVisibleBorderTopLines * scale, 4, 4);
+            SyncRectangle.Width = screenWidth * scale;
+            SyncRectangle.Height = sc.RasterLines * scale;
+
+            NonVisibleRectangle.Margin = SyncRectangle.Margin;
+            NonVisibleRectangle.Width = SyncRectangle.Width - sc.NonVisibleBorderRightTime * 2 * scale;
+            NonVisibleRectangle.Height = SyncRectangle.Height - sc.NonVisibleBorderBottomLines * scale;
+
+            DisplayRectangle.Margin = new Thickness(
+                (ActualWidth - Display.ActualWidth) / 2 + sc.BorderLeftPixels * scale,
+                (ActualHeight - Display.ActualHeight) / 2 + sc.BorderTopLines * scale, 0, 0);
+            DisplayRectangle.Width = sc.DisplayWidth * scale;
+            DisplayRectangle.Height = sc.DisplayLines * scale;
+
+            RasterLine.Visibility = Visibility.Visible;
+            PixelLine.Visibility = Visibility.Visible;
+            SyncRectangle.Visibility = Visibility.Visible;
+            NonVisibleRectangle.Visibility = Visibility.Visible;
+            DisplayRectangle.Visibility = Visibility.Visible;
+            BeamRectangle.Visibility = Visibility.Visible;
         }
     }
 }

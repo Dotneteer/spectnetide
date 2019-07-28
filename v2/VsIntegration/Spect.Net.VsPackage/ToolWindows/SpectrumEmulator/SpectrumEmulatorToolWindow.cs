@@ -37,6 +37,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             new AddVmStateCommand();
             new ShowKeyboardCommand();
             new ToggleShadowScreenCommand();
+            new ToggleUlaIndicationCommand();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -273,6 +274,22 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 
             protected override void OnQueryStatus(OleMenuCommand mc)
                 => mc.Checked = Evm.ShadowScreenEnabled;
+        }
+
+        /// <summary>
+        /// Enables/Disables the shadow screen
+        /// </summary>
+        [CommandId(0x1094)]
+        public class ToggleUlaIndicationCommand : SpectNetCommandBase
+        {
+            protected EmulatorViewModel Evm => SpectNetPackage.Default.EmulatorViewModel;
+            protected override void ExecuteOnMainThread()
+            {
+                Evm.UlaIndicationEnabled = !Evm.UlaIndicationEnabled;
+            }
+
+            protected override void OnQueryStatus(OleMenuCommand mc)
+                => mc.Checked = Evm.UlaIndicationEnabled;
         }
 
         #endregion

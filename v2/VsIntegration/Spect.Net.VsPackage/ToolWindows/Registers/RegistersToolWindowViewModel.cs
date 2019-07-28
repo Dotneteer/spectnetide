@@ -32,6 +32,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
         private int _frameCount;
         private string _currentUlaTact;
         private string _currentRasterLine;
+        private string _currentRasterPos;
         private string _pixelOp;
         private long _lastStepTacts;
         private string _contentionValue;
@@ -176,6 +177,12 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
             set => Set(ref _currentRasterLine, value);
         }
 
+        public string CurrentRasterPos
+        {
+            get => _currentRasterPos;
+            set => Set(ref _currentRasterPos, value);
+        }
+
         public string PixelOperation
         {
             get => _pixelOp;
@@ -285,6 +292,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
                 var currentTact = Machine.CurrentFrameTact % ulaTacts;
                 CurrentUlaTact = $"{currentTact}";
                 CurrentRasterLine = $"{currentTact / Machine.ScreenConfiguration.ScreenLineTime}";
+                CurrentRasterPos = $"{currentTact % Machine.ScreenConfiguration.ScreenLineTime}";
                 var rt = Machine.ScreenRenderingTable[currentTact];
                 PixelOperation = rt.Phase.ToString();
                 ContentionValue = rt.ContentionDelay.ToString();
@@ -293,6 +301,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
             {
                 CurrentUlaTact = "---";
                 CurrentRasterLine = "---";
+                CurrentRasterPos = "---";
                 PixelOperation = "---";
                 ContentionValue = "---";
             }
