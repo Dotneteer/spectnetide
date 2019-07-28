@@ -74,6 +74,17 @@ namespace Spect.Net.SpectrumEmu.Providers
         }
 
         /// <summary>
+        /// Gets the resource name for the specified ROM annotation
+        /// </summary>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>ROM annotation resource name</returns>
+        public string GetAnnotationResourceName(string romName, int page = -1)
+        {
+            return GetFullResourceName(ResourceAssembly, romName, ".disann", page);
+        }
+
+        /// <summary>
         /// Gets the full name of the resource
         /// </summary>
         /// <param name="asm">Resource assembly</param>

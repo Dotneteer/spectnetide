@@ -59,6 +59,16 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
+        /// Indicates that state has just been restored
+        /// </summary>
+        public bool JustRestoredState { get; set; }
+
+        /// <summary>
+        /// Indicates that tool windows should not be refreshed while the VM runs
+        /// </summary>
+        public bool NoToolRefreshMode { get; set; }
+
+        /// <summary>
         /// This event is raised when the virtual machine instance has changed.
         /// </summary>
         /// <remarks>

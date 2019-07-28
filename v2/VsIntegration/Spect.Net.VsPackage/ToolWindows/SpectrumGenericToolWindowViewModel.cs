@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
-using Spect.Net.Wpf.Mvvm;
+using System;
 
 // ReSharper disable IdentifierTypo
 
@@ -11,10 +11,17 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// This class is intended to be the base of all ZX Spectrum related tool window
     /// view models
     /// </summary>
-    public class SpectrumGenericToolWindowViewModel: EnhancedViewModelBase, IDisposable
+    public class SpectrumGenericToolWindowViewModel : SpectNetToolWindowViewModelBase
     {
         private bool _refreshInProgress;
         private int _screenRefreshCount;
+
+        // --- Constants used by commands
+        protected const string INV_SYNTAX = "Invalid command syntax";
+        protected const string INV_S48_COMMAND = "This command cannot be used for a Spectrum 48K model.";
+        protected const string INV_RUN_COMMAND = "This command can only be used when the virtual machine is running.";
+        protected const string INV_CONTEXT = "This command cannot be used in {0}.";
+        protected const string UNDEF_SYMBOL = "This command uses an undefined symbol ({0}).";
 
         /// <summary>
         /// The aggregated ZX Spectrum view model
@@ -32,6 +39,11 @@ namespace Spect.Net.VsPackage.ToolWindows
         public VmState MachineState => SpectNetPackage.Default.EmulatorViewModel.MachineState;
 
         /// <summary>
+        /// Gets the SpectrumVm
+        /// </summary>
+        public ISpectrumVm SpectrumVm => SpectNetPackage.Default.EmulatorViewModel.Machine.SpectrumVm;
+
+        /// <summary>
         /// Gets the #of times the screen has been refreshed
         /// </summary>
         public int ScreenRefreshCount
@@ -47,11 +59,28 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
             if (IsInDesignMode) return;
 
-            EmulatorViewModel.VmStateChanged += OnInternalVmStateChanged;
-            EmulatorViewModel.RenderFrameCompleted += OnInternalRenderFrameCompleted;
+            SpectNetPackage.Default.Solution.SolutionOpened += OnInternalSolutionOpened;
+            SpectNetPackage.Default.Solution.SolutionClosing += OnInternalSolutionClosing;
             // ReSharper disable once VirtualMemberCallInConstructor
             Initialize();
+        }
 
+        /// <summary>
+        /// Respond to the event when the solution is opened.
+        /// </summary>
+        private void OnInternalSolutionOpened(object sender, EventArgs e)
+        {
+            EmulatorViewModel.VmStateChanged += OnInternalVmStateChanged;
+            EmulatorViewModel.RenderFrameCompleted += OnInternalRenderFrameCompleted;
+            Initialize();
+            OnSolutionOpened();
+        }
+
+        /// <summary>
+        /// Respond to the event when the solution is closing
+        /// </summary>
+        private void OnInternalSolutionClosing(object sender, EventArgs e)
+        {
         }
 
         /// <summary>
@@ -60,8 +89,33 @@ namespace Spect.Net.VsPackage.ToolWindows
         private void OnInternalVmStateChanged(object sender, VmStateChangedEventArgs e)
         {
             OnVmStateChanged(e.OldState, e.NewState);
+            switch (MachineState)
+            {
+                case VmState.Running:
+                    if (Machine.IsFirstStart || EmulatorViewModel.JustRestoredState)
+                    {
+                        if (!EmulatorViewModel.NoToolRefreshMode) OnFirstStart();
+                    }
+                    if (!EmulatorViewModel.NoToolRefreshMode) OnStart();
+                    break;
+
+                case VmState.Paused:
+                    if (Machine.IsFirstPause || EmulatorViewModel.JustRestoredState)
+                    {
+                        if (!EmulatorViewModel.NoToolRefreshMode) OnFirstPaused();
+                    }
+                    if (!EmulatorViewModel.NoToolRefreshMode) OnPaused();
+                    break;
+
+                case VmState.Stopped:
+                    if (!EmulatorViewModel.NoToolRefreshMode) OnStopped();
+                    break;
+            }
         }
 
+        /// <summary>
+        /// Respond to the frame refreshed event
+        /// </summary>
         private void OnInternalRenderFrameCompleted(object sender, RenderFrameEventArgs e)
         {
             if (_refreshInProgress) return;
@@ -86,6 +140,20 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
+        /// Override this method to respond opening a solution
+        /// </summary>
+        protected virtual void OnSolutionOpened()
+        {
+        }
+
+        /// <summary>
+        /// Override this method to respond closing a solution
+        /// </summary>
+        protected virtual void OnSolutionClosing()
+        {
+        }
+
+        /// <summary>
         /// Override to define *any* virtual machine state changed
         /// </summary>
         protected virtual void OnVmStateChanged(VmState oldState, VmState newState)
@@ -100,12 +168,52 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
+        /// Override to handle the first start (from stopped state) 
+        /// of the virtual machine
+        /// </summary>
+        protected virtual void OnFirstStart()
+        {
+        }
+
+        /// <summary>
+        /// Override to handle the start of the virtual machine.
+        /// </summary>
+        /// <remarks>This method is called for the first start, too</remarks>
+        protected virtual void OnStart()
+        {
+        }
+
+        /// <summary>
+        /// Override to handle the first paused state
+        /// of the virtual machine
+        /// </summary>
+        protected virtual void OnFirstPaused()
+        {
+        }
+
+        /// <summary>
+        /// Override to handle the paused state of the virtual machine.
+        /// </summary>
+        /// <remarks>This method is called for the first pause, too</remarks>
+        protected virtual void OnPaused()
+        {
+        }
+
+        /// <summary>
+        /// Override to handle the stopped state of the virtual machine.
+        /// </summary>
+        protected virtual void OnStopped()
+        {
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, 
         /// or resetting unmanaged resources.
         /// </summary>
-        public virtual void Dispose()
+        public override void Dispose()
         {
-            EmulatorViewModel.RenderFrameCompleted -= OnInternalRenderFrameCompleted;
+            SpectNetPackage.Default.Solution.SolutionOpened -= OnInternalSolutionOpened;
+            SpectNetPackage.Default.Solution.SolutionClosing -= OnInternalSolutionClosing;
         }
     }
 }

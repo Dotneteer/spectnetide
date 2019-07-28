@@ -75,6 +75,7 @@
     <Compile Include="Commands\SetAsDefaultCodeFileCommand.cs" />
     <Compile Include="Commands\SetAsDefaultTapeFileCommand.cs" />
     <Compile Include="Commands\ShowDisassemblyCommand.cs" />
+    <Compile Include="Commands\ShowMemoryCommand.cs" />
     <Compile Include="Commands\ShowRegistersCommand.cs" />
     <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />
     <Compile Include="Commands\ShowSpectrumKeyboardCommand.cs" />
@@ -136,12 +137,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SpectNetPackage.cs" />
+    <Compile Include="ToolWindows\BankAware\BankAwareToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\BankAware\DisassemblyAnnotationHandler.cs" />
+    <Compile Include="ToolWindows\BankAware\Spectrum48RomLabelProvider.cs" />
     <Compile Include="ToolWindows\DependencyObjectEx.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\HexUtil.cs" />
     <Compile Include="ToolWindows\Keyboard\Sp48KeyboardControl.xaml.cs">
       <DependentUpon>Sp48KeyboardControl.xaml</DependentUpon>
     </Compile>
@@ -168,6 +173,15 @@
       <DependentUpon>Sp128WideKeyControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryLineControl.xaml.cs">
+      <DependentUpon>MemoryLineControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Memory\MemoryLineViewModel.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryToolWindow.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryToolWindowControl.xaml.cs">
+      <DependentUpon>MemoryToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Memory\MemoryToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\Registers\FlagsControl.xaml.cs">
       <DependentUpon>FlagsControl.xaml</DependentUpon>
     </Compile>
@@ -179,6 +193,7 @@
       <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Registers\RegistersToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\SpectNetToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\EmulatorViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\KeyboardScanner.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineInstanceChangedEventArgs.cs" />
@@ -317,6 +332,10 @@
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bf64583f-fc84-4897-8a78-465a57ab73ac}</Project>
       <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.CommandParser\Spect.Net.CommandParser.csproj">
+      <Project>{14508ba4-7d40-4949-9246-943b7f70391d}</Project>
+      <Name>Spect.Net.CommandParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Assembler\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
       <Project>{8a3267e6-6511-4c02-864f-d06bd7fa1542}</Project>
@@ -526,6 +545,14 @@
     <Page Include="ToolWindows\Keyboard\Sp128WideKeyControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Memory\MemoryLineControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Memory\MemoryToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolWindows\Registers\FlagsControl.xaml">
       <Generator>MSBuild:Compile</Generator>

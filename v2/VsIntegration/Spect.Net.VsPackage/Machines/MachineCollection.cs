@@ -37,7 +37,7 @@ namespace Spect.Net.VsPackage.Machines
             var machine = GetMachine(project);
             if (machine != null) return machine;
 
-            machine = SpectrumMachine.CreateMachine(modelKey, editionKey);
+            machine = SpectrumMachine.CreateMachine(modelKey, editionKey) as SpectrumMachine;
             _machines[project] = machine;
             return machine;
         }

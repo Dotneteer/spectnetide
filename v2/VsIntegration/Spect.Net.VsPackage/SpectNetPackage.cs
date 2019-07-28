@@ -15,6 +15,7 @@ using Spect.Net.VsPackage.Machines;
 using Spect.Net.VsPackage.SolutionItems;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.Keyboard;
+using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.VsxLibrary;
@@ -49,6 +50,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(KeyboardToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(RegistersToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
 
     // --- Language Services
     [ProvideLanguageService(
@@ -218,7 +220,7 @@ namespace Spect.Net.VsPackage
         /// <summary>
         /// Initializes all commands that can be used within SpectNetIDE
         /// </summary>
-        private void InitializeCommands()
+        private static void InitializeCommands()
         {
             // ReSharper disable ObjectCreationAsStatement
 
@@ -228,6 +230,7 @@ namespace Spect.Net.VsPackage
             new ShowSpectrumKeyboardCommand();
             new ShowRegistersCommand();
             new ShowDisassemblyCommand();
+            new ShowMemoryCommand();
 
             // --- Solution Explorer project commands
             new SetAsActiveProjectCommand();

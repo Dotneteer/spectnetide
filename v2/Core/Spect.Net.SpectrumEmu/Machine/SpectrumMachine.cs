@@ -23,15 +23,19 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// <summary>
     /// This class represents a ZX Spectrum virtual machine
     /// </summary>
-    public class SpectrumMachine : ISpectrumMachine
+    public class SpectrumMachine : ISpectrumMachine, ISpectrumMachineInternal
     {
         private readonly object _machineStateLocker = new object();
         private VmState _machineState;
-        private readonly ISpectrumVm _spectrumVm;
         private readonly IClockProvider _clockProvider;
         private readonly double _physicalFrameClockCount;
         private CancellationTokenSource _cancellationTokenSource;
         private Task<ExecutionCompletionReason> _completionTask;
+
+        /// <summary>
+        /// Gets the ISpectrumVm instance behind the machine
+        /// </summary>
+        public ISpectrumVm SpectrumVm { get; }
 
         #region Static data members and their initialization
 
@@ -120,49 +124,49 @@ namespace Spect.Net.SpectrumEmu.Machine
             EditionKey = editionKey;
 
             // --- Create the engine and set up properties
-            _spectrumVm = new SpectrumEngine(devices);
+            SpectrumVm = new SpectrumEngine(devices);
 
-            Cpu = new CpuZ80(_spectrumVm.Cpu);
+            Cpu = new CpuZ80(SpectrumVm.Cpu);
 
             var roms = new List<ReadOnlyMemorySlice>();
-            for (var i = 0; i < _spectrumVm.RomConfiguration.NumberOfRoms; i++)
+            for (var i = 0; i < SpectrumVm.RomConfiguration.NumberOfRoms; i++)
             {
-                roms.Add(new ReadOnlyMemorySlice(_spectrumVm.RomDevice.GetRomBytes(i)));
+                roms.Add(new ReadOnlyMemorySlice(SpectrumVm.RomDevice.GetRomBytes(i)));
             }
             Roms = new ReadOnlyCollection<ReadOnlyMemorySlice>(roms);
 
-            PagingInfo = new MemoryPagingInfo(_spectrumVm.MemoryDevice);
-            Memory = new SpectrumMemoryContents(_spectrumVm.MemoryDevice, _spectrumVm.Cpu);
+            PagingInfo = new MemoryPagingInfo(SpectrumVm.MemoryDevice);
+            Memory = new SpectrumMemoryContents(SpectrumVm.MemoryDevice, SpectrumVm.Cpu);
 
             var ramBanks = new List<MemorySlice>();
-            if (_spectrumVm.MemoryConfiguration.RamBanks != null)
+            if (SpectrumVm.MemoryConfiguration.RamBanks != null)
             {
-                for (var i = 0; i < _spectrumVm.MemoryConfiguration.RamBanks; i++)
+                for (var i = 0; i < SpectrumVm.MemoryConfiguration.RamBanks; i++)
                 {
-                    ramBanks.Add(new MemorySlice(_spectrumVm.MemoryDevice.GetRamBank(i)));
+                    ramBanks.Add(new MemorySlice(SpectrumVm.MemoryDevice.GetRamBank(i)));
                 }
             }
             RamBanks = new ReadOnlyCollection<MemorySlice>(ramBanks);
 
-            Keyboard = new KeyboardEmulator(_spectrumVm);
-            ScreenConfiguration = _spectrumVm.ScreenConfiguration;
-            ScreenRenderingTable = new ScreenRenderingTable(_spectrumVm.ScreenDevice);
-            ScreenBitmap = new ScreenBitmap(_spectrumVm.ScreenDevice);
-            ScreenRenderingStatus = new ScreenRenderingStatus(_spectrumVm);
-            BeeperConfiguration = _spectrumVm.AudioConfiguration;
-            BeeperSamples = new AudioSamples(_spectrumVm.BeeperDevice);
-            BeeperProvider = _spectrumVm.BeeperProvider;
-            SoundConfiguration = _spectrumVm.SoundConfiguration;
-            AudioSamples = new AudioSamples(_spectrumVm.SoundDevice);
-            Breakpoints = new CodeBreakpoints(_spectrumVm.DebugInfoProvider);
+            Keyboard = new KeyboardEmulator(SpectrumVm);
+            ScreenConfiguration = SpectrumVm.ScreenConfiguration;
+            ScreenRenderingTable = new ScreenRenderingTable(SpectrumVm.ScreenDevice);
+            ScreenBitmap = new ScreenBitmap(SpectrumVm.ScreenDevice);
+            ScreenRenderingStatus = new ScreenRenderingStatus(SpectrumVm);
+            BeeperConfiguration = SpectrumVm.AudioConfiguration;
+            BeeperSamples = new AudioSamples(SpectrumVm.BeeperDevice);
+            BeeperProvider = SpectrumVm.BeeperProvider;
+            SoundConfiguration = SpectrumVm.SoundConfiguration;
+            AudioSamples = new AudioSamples(SpectrumVm.SoundDevice);
+            Breakpoints = new CodeBreakpoints(SpectrumVm.DebugInfoProvider);
 
             // --- Hook device events
-            _spectrumVm.TapeLoadDevice.LoadCompleted += (s, e) => FastLoadCompleted?.Invoke(s, e);
-            _spectrumVm.TapeSaveDevice.LeftSaveMode += (s, e) => LeftSaveMode?.Invoke(s, e);
+            SpectrumVm.TapeLoadDevice.LoadCompleted += (s, e) => FastLoadCompleted?.Invoke(s, e);
+            SpectrumVm.TapeSaveDevice.LeftSaveMode += (s, e) => LeftSaveMode?.Invoke(s, e);
 
             // --- Initialize machine state
             _clockProvider = GetProvider<IClockProvider>();
-            _physicalFrameClockCount = _clockProvider.GetFrequency() / (double)_spectrumVm.BaseClockFrequency *
+            _physicalFrameClockCount = _clockProvider.GetFrequency() / (double)SpectrumVm.BaseClockFrequency *
                                        ScreenConfiguration.ScreenRenderingFrameTactCount;
             MachineState = VmState.None;
             ExecutionCompletionReason = ExecutionCompletionReason.None;
@@ -174,7 +178,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <param name="modelKey">Spectrum model name</param>
         /// <param name="editionKey">Edition name</param>
         /// <returns>The newly create Spectrum machine</returns>
-        public static SpectrumMachine CreateMachine(string modelKey, string editionKey)
+        public static ISpectrumMachine CreateMachine(string modelKey, string editionKey)
         {
             // --- Check input
             if (modelKey == null) throw new ArgumentNullException(nameof(modelKey));
@@ -214,7 +218,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Creates a Spectrum 48K instance PAL edition
         /// </summary>
         /// <returns>The newly create Spectrum machine</returns>
-        public static SpectrumMachine CreateSpectrum48Pal()
+        public static ISpectrumMachine CreateSpectrum48Pal()
         {
             return CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL);
         }
@@ -223,7 +227,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Creates a Spectrum 48K instance PAL edition with turbo mode (2xCPU)
         /// </summary>
         /// <returns>The newly create Spectrum machine</returns>
-        public static SpectrumMachine CreateSpectrum48PalTurbo()
+        public static ISpectrumMachine CreateSpectrum48PalTurbo()
         {
             return CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.PAL_2_X);
         }
@@ -232,7 +236,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Creates a Spectrum 48K instance NTSC edition
         /// </summary>
         /// <returns>The newly create Spectrum machine</returns>
-        public static SpectrumMachine CreateSpectrum48Ntsc()
+        public static ISpectrumMachine CreateSpectrum48Ntsc()
         {
             return CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.NTSC);
         }
@@ -241,7 +245,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Creates a Spectrum 48K instance NTSC edition with turbo mode
         /// </summary>
         /// <returns>The newly create Spectrum machine</returns>
-        public static SpectrumMachine CreateSpectrum48NtscTurbo()
+        public static ISpectrumMachine CreateSpectrum48NtscTurbo()
         {
             return CreateMachine(SpectrumModels.ZX_SPECTRUM_48, SpectrumModels.NTSC_2_X);
         }
@@ -250,7 +254,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Creates a Spectrum 128K instance
         /// </summary>
         /// <returns>The newly create Spectrum machine</returns>
-        public static SpectrumMachine CreateSpectrum128()
+        public static ISpectrumMachine CreateSpectrum128()
         {
             return CreateMachine(SpectrumModels.ZX_SPECTRUM_128, SpectrumModels.PAL);
         }
@@ -259,7 +263,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Creates a Spectrum +3E instance
         /// </summary>
         /// <returns>The newly create Spectrum machine</returns>
-        public static SpectrumMachine CreateSpectrumP3E()
+        public static ISpectrumMachine CreateSpectrumP3E()
         {
             return CreateMachine(SpectrumModels.ZX_SPECTRUM_P3_E, SpectrumModels.PAL);
         }
@@ -400,17 +404,17 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// The CPU tact at which the last execution cycle started
         /// </summary>
-        public long LastExecutionStartTact => _spectrumVm.LastExecutionStartTact;
+        public long LastExecutionStartTact => SpectrumVm.LastExecutionStartTact;
 
         /// <summary>
         /// Gets the amounf of contention accumulated 
         /// </summary>
-        public long ContentionAccumulated => _spectrumVm.ContentionAccumulated;
+        public long ContentionAccumulated => SpectrumVm.ContentionAccumulated;
 
         /// <summary>
         /// The current screen rendering frame tact
         /// </summary>
-        public int CurrentFrameTact => _spectrumVm.CurrentFrameTact;
+        public int CurrentFrameTact => SpectrumVm.CurrentFrameTact;
 
         /// <summary>
         /// Provides access to the individual ROM pages of the machine
@@ -585,13 +589,13 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Prepare the machine to run
             IsFirstStart = MachineState == VmState.None || MachineState == VmState.Stopped;
-            _spectrumVm.DebugInfoProvider?.PrepareBreakpoints();
+            SpectrumVm.DebugInfoProvider?.PrepareBreakpoints();
             MachineState = VmState.Starting;
             if (IsFirstStart)
             {
-                _spectrumVm.Reset();
-                _spectrumVm.Cpu.StackDebugSupport.ClearStepOutStack();
-                _spectrumVm.DebugInfoProvider?.ResetHitCounts();
+                SpectrumVm.Reset();
+                SpectrumVm.Cpu.StackDebugSupport.ClearStepOutStack();
+                SpectrumVm.DebugInfoProvider?.ResetHitCounts();
                 CpuFrameCount = 0;
                 RenderFrameCount = 0;
             }
@@ -786,7 +790,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         {
             var lastRunStart = _clockProvider.GetCounter();
             var lastRenderFrameStart = lastRunStart;
-            _spectrumVm.ShadowScreenDevice.FrameCount = _spectrumVm.ScreenDevice.FrameCount;
+            SpectrumVm.ShadowScreenDevice.FrameCount = SpectrumVm.ScreenDevice.FrameCount;
             var frameCount = 0;
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -796,10 +800,10 @@ namespace Spect.Net.SpectrumEmu.Machine
                 frameCount++;
 
                 // --- Do additional task when render frame completed
-                var screenTacts = _spectrumVm.ScreenConfiguration.ScreenRenderingFrameTactCount;
-                _spectrumVm.ShadowScreenDevice.RenderScreen(0, screenTacts - 1);
-                _spectrumVm.ShadowScreenDevice.OnNewFrame();
-                var renderFrameArgs = new RenderFrameEventArgs(_spectrumVm.ShadowScreenDevice.GetPixelBuffer());
+                var screenTacts = SpectrumVm.ScreenConfiguration.ScreenRenderingFrameTactCount;
+                SpectrumVm.ShadowScreenDevice.RenderScreen(0, screenTacts - 1);
+                SpectrumVm.ShadowScreenDevice.OnNewFrame();
+                var renderFrameArgs = new RenderFrameEventArgs(SpectrumVm.ShadowScreenDevice.GetPixelBuffer());
                 RenderFrameCompleted?.Invoke(this, renderFrameArgs);
                 if (renderFrameArgs.Cancel)
                 {
@@ -843,13 +847,13 @@ namespace Spect.Net.SpectrumEmu.Machine
             {
                 // --- Execute a single CPU Frame
                 var lastCpuFrameStart = _clockProvider.GetCounter();
-                var cycleCompleted = _spectrumVm.ExecuteCycle(cancellationToken, options, true);
+                var cycleCompleted = SpectrumVm.ExecuteCycle(cancellationToken, options, true);
                 LastCpuFrameTicks = _clockProvider.GetCounter() - lastCpuFrameStart;
                 if (!cycleCompleted) return ExecutionCompletionReason.Cancelled;
 
                 // --- Check for emulated keys
                 CpuFrameCount++;
-                var hasEmulatedKey = _spectrumVm.KeyboardProvider?.EmulateKeyStroke();
+                var hasEmulatedKey = SpectrumVm.KeyboardProvider?.EmulateKeyStroke();
                 if (hasEmulatedKey != true)
                 {
                     // --- Keyboard scan
@@ -857,7 +861,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                     KeyScanning?.Invoke(this, keyStatusArgs);
                     foreach (var keyStatus in keyStatusArgs.KeyStatusList)
                     {
-                        _spectrumVm.KeyboardDevice.SetStatus(keyStatus);
+                        SpectrumVm.KeyboardDevice.SetStatus(keyStatus);
                     }
                 }
 
@@ -866,7 +870,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 CpuFrameCompleted?.Invoke(this, cancelArgs);
                 if (cancelArgs.Cancel) return ExecutionCompletionReason.Cancelled;
 
-                switch (_spectrumVm.ExecutionCompletionReason)
+                switch (SpectrumVm.ExecutionCompletionReason)
                 {
                     case ExecutionCompletionReason.TerminationPointReached:
                     case ExecutionCompletionReason.BreakpointReached:
@@ -883,7 +887,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                         RenderFrameCount++;
 
                         // --- Do additional task when render frame completed
-                        var renderFrameArgs = new RenderFrameEventArgs(_spectrumVm.ScreenDevice.GetPixelBuffer());
+                        var renderFrameArgs = new RenderFrameEventArgs(SpectrumVm.ScreenDevice.GetPixelBuffer());
                         RenderFrameCompleted?.Invoke(this, renderFrameArgs);
                         if (renderFrameArgs.Cancel)
                         {
@@ -914,7 +918,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             }
 
             // --- Done, pass back the reason of completing the run
-            return _spectrumVm.ExecutionCompletionReason;
+            return SpectrumVm.ExecutionCompletionReason;
         }
 
         /// <summary>

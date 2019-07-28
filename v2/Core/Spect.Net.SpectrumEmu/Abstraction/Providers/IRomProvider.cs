@@ -20,5 +20,13 @@
         /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
         /// <returns>Annotations of the ROM in serialized format</returns>
         string LoadRomAnnotations(string romName, int page = -1);
+
+        /// <summary>
+        /// Gets the resource name for the specified ROM annotation
+        /// </summary>
+        /// <param name="romName">Name of the ROM</param>
+        /// <param name="page">Page of the ROM (-1 means single ROM page)</param>
+        /// <returns>ROM annotation resource name</returns>
+        string GetAnnotationResourceName(string romName, int page = -1);
     }
 }
