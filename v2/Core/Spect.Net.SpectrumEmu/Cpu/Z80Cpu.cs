@@ -642,10 +642,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
             StackDebugSupport.RetExecuted = false;
             StackDebugSupport.StepOutAddress = null;
             OperationExecuting?.Invoke(this,
-                new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode));
+                new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, _opCode));
             process();
             OperationExecuted?.Invoke(this,
-                new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, opCode, Registers.PC));
+                new Z80InstructionExecutionEventArgs(_lastPC, _instructionBytes, _opCode, Registers.PC));
             _prefixMode = OpPrefixMode.None;
             _indexMode = OpIndexMode.None;
             _isInOpExecution = false;
