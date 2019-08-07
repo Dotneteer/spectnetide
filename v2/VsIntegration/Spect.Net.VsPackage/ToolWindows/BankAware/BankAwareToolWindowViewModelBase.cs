@@ -26,6 +26,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
 
         protected BankAwareToolWindowViewModelBase()
         {
+            if (IsInDesignMode) return;
             AnnotationHandler = new DisassemblyAnnotationHandler(this);
         }
 

@@ -140,6 +140,10 @@
     <Compile Include="ToolWindows\BankAware\BankAwareToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\BankAware\DisassemblyAnnotationHandler.cs" />
     <Compile Include="ToolWindows\BankAware\Spectrum48RomLabelProvider.cs" />
+    <Compile Include="ToolWindows\CommandLineEventArgs.cs" />
+    <Compile Include="ToolWindows\CommandPromptControl.xaml.cs">
+      <DependentUpon>CommandPromptControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\DependencyObjectEx.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">
@@ -182,6 +186,7 @@
       <DependentUpon>MemoryToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Memory\MemoryToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\PromptBackgroundConverter.cs" />
     <Compile Include="ToolWindows\Registers\FlagsControl.xaml.cs">
       <DependentUpon>FlagsControl.xaml</DependentUpon>
     </Compile>
@@ -218,6 +223,7 @@
     <Compile Include="VsxLibrary\Command\SpectNetCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ProjectCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\SpectrumProgramCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\SpectrumToolWindowCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\UnitTestCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\VfddCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\VmStateCommandBase.cs" />
@@ -513,6 +519,10 @@
     <Page Include="PackageStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\CommandPromptControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml">
       <SubType>Designer</SubType>

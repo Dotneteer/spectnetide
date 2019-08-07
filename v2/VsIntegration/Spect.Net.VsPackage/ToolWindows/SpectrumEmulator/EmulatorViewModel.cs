@@ -10,6 +10,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     {
         private bool _shadowsScreenEnabled;
         private bool _ulaIndicationEnabled;
+        private ushort _memViewPoint;
 
         #region ViewModel properties
 
@@ -21,7 +22,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// The current state of the virtual machine
         /// </summary>
-        public VmState MachineState => Machine.MachineState;
+        public VmState MachineState => Machine?.MachineState ?? VmState.None;
 
         /// <summary>
         /// This property determines if shadow screen should be displayed
@@ -57,6 +58,24 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 }
             }
         }
+
+        /// <summary>
+        /// Sets the memory address to navigate to when showing the ZX Spectrum Memory window
+        /// </summary>
+        public ushort MemViewPoint
+        {
+            get => _memViewPoint;
+            set
+            {
+                Set(ref _memViewPoint, value);
+                MemViewPointChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Signs if ZX Spectrum keyboard scan is enabled
+        /// </summary>
+        public bool EnableKeyboardScan { get; set; }
 
         /// <summary>
         /// Indicates that state has just been restored
@@ -120,6 +139,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// This event fires when the ula indication mode changes.
         /// </summary>
         public event EventHandler UlaIndicationModeChanged;
+
+        /// <summary>
+        /// Sign that the address of the Memory tool window has changed
+        /// </summary>
+        public event EventHandler MemViewPointChanged;
 
         #endregion
 

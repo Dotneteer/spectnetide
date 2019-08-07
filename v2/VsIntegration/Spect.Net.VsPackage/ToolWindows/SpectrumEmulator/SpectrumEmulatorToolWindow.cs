@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.Keyboard;
 using Spect.Net.VsPackage.VsxLibrary;
@@ -40,6 +41,15 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             new ToggleUlaIndicationCommand();
             // ReSharper restore ObjectCreationAsStatement
         }
+
+        /// <summary>
+        /// Enable scanning the ZX Spectrum keyboard only if this tool window has the focus.
+        /// </summary>
+        public override void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
+        {
+            SpectNetPackage.Default.EmulatorViewModel.EnableKeyboardScan = newFrame == Frame;
+        }
+
 
         #region Tool Window Commands
 

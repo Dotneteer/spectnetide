@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf">
+    xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf"
+    xmlns:memory="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory">
 
     <!-- Colors -->
     <Color x:Key="CToolBackground">#FF202020</Color>
@@ -23,7 +24,10 @@
     <Color x:Key="CEvenRow">#FF202020</Color>
     <Color x:Key="COddRow">#FF282828</Color>
     <Color x:Key="CRasterLine">#C0F00080</Color>
-
+    <Color x:Key="CPromptBackground">#404040</Color>
+    <Color x:Key="CPromptInvalidBackground">#802020</Color>
+    <Color x:Key="CValidationText">#FFE0E0E0</Color>
+    <Color x:Key="CDebugColor">#51c351</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
@@ -45,6 +49,52 @@
     <SolidColorBrush x:Key="BDebugEvenRow" Color="{StaticResource CEvenRow}"/>
     <SolidColorBrush x:Key="BDebugOddRow" Color="{StaticResource COddRow}"/>
     <SolidColorBrush x:Key="BRasterLine" Color="{StaticResource CRasterLine}"/>
+    <SolidColorBrush x:Key="BPromptBackground" Color="{StaticResource CPromptBackground}"/>
+    <SolidColorBrush x:Key="BPromptInvalidBackground" Color="{StaticResource CPromptInvalidBackground}"/>
+    <SolidColorBrush x:Key="BValidationText" Color="{StaticResource CValidationText}"/>
+    <SolidColorBrush x:Key="BDebugForeground" Color="{StaticResource CDebugColor}"/>
+
+    <!-- Templates for the ZX Spectrum Memory tool window -->
+    <DataTemplate x:Key="MemoryLineTemplate">
+        <memory:MemoryLineControl />
+    </DataTemplate>
+
+    <Style x:Key="MemoryListFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MemoryLineItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource MemoryListFocusVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                            <Setter Property="Background" Value="{StaticResource BDebugEvenRow}" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                            <Setter Property="Background" Value="{StaticResource BDebugOddRow}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!-- Component and control styles -->
     <Style x:Key="NotImplementedText" TargetType="TextBlock">
@@ -159,6 +209,20 @@
 
     <Style x:Key="MemDump" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
         <Setter Property="Margin" Value="8,0,16,0" />
+    </Style>
+
+    <!-- Prompt styles -->
+    <Style x:Key="PromptTextBox" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+    </Style>
+
+    <Style x:Key="ValidationMessageText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource BValidationText}" />
+        <Setter Property="Padding" Value="6,2" />
     </Style>
 
     <!-- Value converters -->

@@ -213,7 +213,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public List<KeyStatus> Scan()
         {
             var result = new List<KeyStatus>();
-            if (!ApplicationIsActivated())
+            if (!ApplicationIsActivated() || !SpectNetPackage.Default.EmulatorViewModel.EnableKeyboardScan)
             {
                 return result;
             }

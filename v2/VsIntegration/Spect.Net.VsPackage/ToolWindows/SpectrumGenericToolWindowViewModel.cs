@@ -13,6 +13,7 @@ namespace Spect.Net.VsPackage.ToolWindows
     /// </summary>
     public class SpectrumGenericToolWindowViewModel : SpectNetToolWindowViewModelBase
     {
+        private bool _machineEventsInitialized;
         private bool _refreshInProgress;
         private int _screenRefreshCount;
 
@@ -59,6 +60,10 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
             if (IsInDesignMode) return;
 
+            EmulatorViewModel.VmStateChanged += OnInternalVmStateChanged;
+            EmulatorViewModel.RenderFrameCompleted += OnInternalRenderFrameCompleted;
+            _machineEventsInitialized = true;
+
             SpectNetPackage.Default.Solution.SolutionOpened += OnInternalSolutionOpened;
             SpectNetPackage.Default.Solution.SolutionClosing += OnInternalSolutionClosing;
             // ReSharper disable once VirtualMemberCallInConstructor
@@ -70,8 +75,12 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionOpened(object sender, EventArgs e)
         {
-            EmulatorViewModel.VmStateChanged += OnInternalVmStateChanged;
-            EmulatorViewModel.RenderFrameCompleted += OnInternalRenderFrameCompleted;
+            if (!_machineEventsInitialized)
+            {
+                EmulatorViewModel.VmStateChanged += OnInternalVmStateChanged;
+                EmulatorViewModel.RenderFrameCompleted += OnInternalRenderFrameCompleted;
+                _machineEventsInitialized = true;
+            }
             Initialize();
             OnSolutionOpened();
         }
@@ -81,6 +90,12 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionClosing(object sender, EventArgs e)
         {
+            if (_machineEventsInitialized)
+            {
+                EmulatorViewModel.VmStateChanged -= OnInternalVmStateChanged;
+                EmulatorViewModel.RenderFrameCompleted -= OnInternalRenderFrameCompleted;
+            }
+            OnSolutionClosing();
         }
 
         /// <summary>
@@ -214,6 +229,11 @@ namespace Spect.Net.VsPackage.ToolWindows
         {
             SpectNetPackage.Default.Solution.SolutionOpened -= OnInternalSolutionOpened;
             SpectNetPackage.Default.Solution.SolutionClosing -= OnInternalSolutionClosing;
+            if (!_machineEventsInitialized) return;
+
+            EmulatorViewModel.VmStateChanged -= OnInternalVmStateChanged;
+            EmulatorViewModel.RenderFrameCompleted -= OnInternalRenderFrameCompleted;
+            _machineEventsInitialized = false;
         }
     }
 }

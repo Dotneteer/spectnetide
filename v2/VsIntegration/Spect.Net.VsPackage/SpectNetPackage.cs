@@ -109,6 +109,11 @@ namespace Spect.Net.VsPackage
         public const string PROJECT_FACTORY_GUID = "7F8C1ABC-9735-4A03-A7A7-9867750FDF50";
 
         /// <summary>
+        /// The base URL for command help topics
+        /// </summary>
+        public const string COMMANDS_BASE_URL = "https://dotneteer.github.io/spectnetide/documents";
+
+        /// <summary>
         /// The singleton instance of this class, set in InitializeAsync
         /// </summary>
         public static SpectNetPackage Default { get; private set; }
