@@ -182,7 +182,6 @@
     <Compile Include="Scripting\SoundSamplesTests.cs" />
     <Compile Include="Scripting\CpuTests.cs" />
     <Compile Include="Utility\LruListTests.cs" />
-    <Compile Include="Utility\RomSplitterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TzxResources\JetSetWilly.tzx" />

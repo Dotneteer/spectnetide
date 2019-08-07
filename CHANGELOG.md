@@ -1,3 +1,9 @@
+### Version 1.19.5
+__FIX__: Bug in code generation for IX, IY bit instructions fixed.
+
+### Version 1.19.4
+__FIX__: Virtual machine injection startup phase bug fixed.
+
 ### Version 1.19.3
 __FIX__: In a few cases the emulator did not remove the breakpoint when you erased
 that in the code window. Now, it works correctly.  

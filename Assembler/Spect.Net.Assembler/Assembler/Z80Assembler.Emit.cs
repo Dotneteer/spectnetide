@@ -4301,12 +4301,13 @@ namespace Spect.Net.Assembler.Assembler
         {
             byte idxByte, disp;
             var done = GetIndexBytes(opLine, register, sign, expr, out idxByte, out disp);
-            EmitBytes(idxByte, 0xCB, opCode);
+            EmitBytes(idxByte, 0xCB);
             if (!done)
             {
                 RecordFixup(opLine, FixupType.Bit8, expr);
             }
             EmitByte(disp);
+            EmitByte(opCode);
         }
 
         /// <summary>

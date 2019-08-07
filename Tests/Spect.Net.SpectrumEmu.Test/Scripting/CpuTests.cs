@@ -336,14 +336,14 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
 
             op = events[sampleIndex + 4];
             op.PcBefore.ShouldBe((ushort)0x8009);
-            op.Instruction.SequenceEqual(new byte[] { 0xDD, 0xCB, 0x56 }).ShouldBeTrue();
-            op.OpCode.ShouldBe((byte)0x56);
+            op.Instruction.SequenceEqual(new byte[] { 0xDD, 0xCB, 0x02 }).ShouldBeTrue();
+            op.OpCode.ShouldBe((byte)0x02);
             op.PcAfter.ShouldBeNull();
 
             op = events[sampleIndex + 5];
             op.PcBefore.ShouldBe((ushort)0x800D);
-            op.Instruction.SequenceEqual(new byte[] { 0xFD, 0xCB, 0x56 }).ShouldBeTrue();
-            op.OpCode.ShouldBe((byte)0x56);
+            op.Instruction.SequenceEqual(new byte[] { 0xFD, 0xCB, 0x06 }).ShouldBeTrue();
+            op.OpCode.ShouldBe((byte)0x06);
             op.PcAfter.ShouldBeNull();
 
             op = events[sampleIndex + 6];
@@ -406,13 +406,13 @@ namespace Spect.Net.SpectrumEmu.Test.Scripting
 
             op = events[sampleIndex + 4];
             op.PcBefore.ShouldBe((ushort)0x8009);
-            op.Instruction.SequenceEqual(new byte[] { 0xDD, 0xCB, 0x56, 0x02 }).ShouldBeTrue();
+            op.Instruction.SequenceEqual(new byte[] { 0xDD, 0xCB, 0x02, 0x56 }).ShouldBeTrue();
             op.OpCode.ShouldBe((byte)0x56);
             op.PcAfter.ShouldBe((ushort)0x800D);
 
             op = events[sampleIndex + 5];
             op.PcBefore.ShouldBe((ushort)0x800D);
-            op.Instruction.SequenceEqual(new byte[] { 0xFD, 0xCB, 0x56, 0x06 }).ShouldBeTrue();
+            op.Instruction.SequenceEqual(new byte[] { 0xFD, 0xCB, 0x06, 0x56 }).ShouldBeTrue();
             op.OpCode.ShouldBe((byte)0x56);
             op.PcAfter.ShouldBe((ushort)0x8011);
 
