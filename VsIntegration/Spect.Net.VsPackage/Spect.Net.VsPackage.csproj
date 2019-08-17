@@ -189,6 +189,7 @@
     <Compile Include="ProjectStructure\Z80ProjectSettings.cs" />
     <Compile Include="ProjectStructure\Z80TestProjectItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\KempstonProvider.cs" />
     <Compile Include="SpectNetCommandSet.cs" />
     <Compile Include="SpectNetOptionsGrid.cs">
       <SubType>Component</SubType>
@@ -375,6 +376,7 @@
     <Compile Include="Vsx\TaskListWindow.cs" />
     <Compile Include="Vsx\ToolWindowAttribute.cs" />
     <Compile Include="Vsx\ToolWindowToolbarAttribute.cs" />
+    <Compile Include="Vsx\TypedEnumConverter.cs" />
     <Compile Include="Vsx\VsIde.cs" />
     <Compile Include="Vsx\VsxAsyncCommand.cs" />
     <Compile Include="Vsx\VsxClueTypeAttribute.cs" />

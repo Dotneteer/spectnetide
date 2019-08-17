@@ -12,6 +12,7 @@ using Spect.Net.SpectrumEmu.Cpu;
 using Spect.Net.SpectrumEmu.Devices.Beeper;
 using Spect.Net.SpectrumEmu.Devices.Floppy;
 using Spect.Net.SpectrumEmu.Devices.Interrupt;
+using Spect.Net.SpectrumEmu.Devices.Kempston;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Ports;
@@ -255,6 +256,16 @@ namespace Spect.Net.SpectrumEmu.Machine
         public int InterruptTact => ScreenConfiguration.InterruptTact;
 
         /// <summary>
+        /// The Kempston device attached to the VM
+        /// </summary>
+        public IKempstonDevice KempstonDevice { get; }
+
+        /// <summary>
+        /// The Kempston provider attached to the VM
+        /// </summary>
+        public IKempstonProvider KempstonProvider { get; private set; }
+
+        /// <summary>
         /// This property indicates if the machine currently runs the
         /// maskable interrupt method.
         /// </summary>
@@ -335,6 +346,11 @@ namespace Spect.Net.SpectrumEmu.Machine
             KeyboardProvider = (IKeyboardProvider) keyboardInfo?.Provider;
             KeyboardDevice = keyboardInfo?.Device ?? new KeyboardDevice();
 
+            // --- Init the Kempston device
+            var kempstonInfo = GetDeviceInfo<IKempstonDevice>();
+            KempstonProvider = (IKempstonProvider)kempstonInfo?.Provider;
+            KempstonDevice = kempstonInfo?.Device ?? new KempstonDevice();
+
             // --- Init the interrupt device
             InterruptDevice = new InterruptDevice(InterruptTact);
 
@@ -381,6 +397,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             AttachProvider(pixelRenderer);
             AttachProvider(BeeperProvider);
             AttachProvider(KeyboardProvider);
+            AttachProvider(KempstonProvider);
             AttachProvider(TapeProvider);
             AttachProvider(DebugInfoProvider);
             
@@ -397,6 +414,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(ScreenDevice);
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);
+            _spectrumDevices.Add(KempstonDevice);
             _spectrumDevices.Add(InterruptDevice);
             _spectrumDevices.Add(TapeDevice);
 

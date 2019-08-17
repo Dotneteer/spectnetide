@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
+using Spect.Net.VsPackage.Vsx;
 
 namespace Spect.Net.VsPackage
 {
@@ -197,6 +198,7 @@ namespace Spect.Net.VsPackage
         [Category("Keyboard Tool")]
         [DisplayName("Keyboard layout")]
         [Description("You can select the type of keyboard layout to display in the Zx Spectrum Keyboard tool window.")]
+        [TypeConverter(typeof(TypedEnumConverter<KeyboardLayoutTypeOptions>))]
         public KeyboardLayoutTypeOptions KeyboardLayoutType
         {
             get => _keyboardLayoutType;
@@ -212,6 +214,7 @@ namespace Spect.Net.VsPackage
         [Category("Keyboard Tool")]
         [DisplayName("Keyboard display mode")]
         [Description("You can select the display type to use for the ZX Spectrum keyboard tool window.")]
+        [TypeConverter(typeof(TypedEnumConverter<KeyboardFitTypeOptions>))]
         public KeyboardFitTypeOptions KeyboardFitType
         {
             get => _keyboardFitType;
@@ -305,6 +308,12 @@ namespace Spect.Net.VsPackage
         [Description("Border color for memory pointing to an annotation label (#rrggbb)")]
         public string AnnotationColor { get; set; } = @"Green";
 
+        [Category("Peripherals")]
+        [DisplayName("Kempston Joystick Emulation")]
+        [Description("Keyboard configuration to emulate Kempston Joystick. You need to restart the virtual machine so that changing this option takes effect.")]
+        [TypeConverter(typeof(TypedEnumConverter<KempstonEmulationOptions>))]
+        public KempstonEmulationOptions KempstonEmulation { get; set; } = KempstonEmulationOptions.Left;
+
         /// <summary>
         /// Signs that the keyboard layout type has changed
         /// </summary>
@@ -332,7 +341,9 @@ namespace Spect.Net.VsPackage
     public enum KeyboardLayoutTypeOptions
     {
         Default = 0,
+        [Description("ZX Spectrum 48")]
         Spectrum48,
+        [Description("ZX Spectrum 128")]
         Spectrum128
     }
 
@@ -341,8 +352,24 @@ namespace Spect.Net.VsPackage
     /// </summary>
     public enum KeyboardFitTypeOptions
     {
+        [Description("Original size")]
         OriginalSize,
+        [Description("Fit to tool window")]
         Fit
+    }
+
+    /// <summary>
+    /// Options for Kempston Joystick keyboard emulation
+    /// </summary>
+    public enum KempstonEmulationOptions
+    {
+        Off,
+        [Description("L-R-D-U-F: 5-8-6-7-0")]
+        Left,
+        [Description("L-R-D-U-F: 1-2-3-4-5")]
+        Middle,
+        [Description("L-R-D-U-F: 6-7-8-9-0")]
+        Right
     }
 
     /// <summary>

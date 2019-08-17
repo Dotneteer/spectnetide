@@ -1,3 +1,7 @@
+### Version 1.20.0
+__FEATURE__: The virtual machine now supports Kempston joystick emulation.
+
+
 ### Version 1.19.5
 __FIX__: Bug in code generation for IX, IY bit instructions fixed.
 

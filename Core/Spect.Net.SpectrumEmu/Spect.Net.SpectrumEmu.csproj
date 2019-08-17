@@ -65,6 +65,7 @@
     <Compile Include="Abstraction\Configuration\INoProvider.cs" />
     <Compile Include="Abstraction\Configuration\IPortConfiguration.cs" />
     <Compile Include="Abstraction\Configuration\IRomConfiguration.cs" />
+    <Compile Include="Abstraction\Configuration\KempstonDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\KeyboardDeviceInfo.cs" />
     <Compile Include="Abstraction\Configuration\MemoryConfigurationData.cs" />
     <Compile Include="Abstraction\Configuration\MemoryContentionType.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Abstraction\Devices\IDivIdeDevice.cs" />
     <Compile Include="Abstraction\Devices\IFrameBoundDevice.cs" />
     <Compile Include="Abstraction\Devices\IInterruptDevice.cs" />
+    <Compile Include="Abstraction\Devices\IKempstonDevice.cs" />
     <Compile Include="Abstraction\Devices\IKeyboardDevice.cs" />
     <Compile Include="Abstraction\Devices\IBeeperDevice.cs" />
     <Compile Include="Abstraction\Devices\INextFeatureSetDevice.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Abstraction\Models\SpectrumEdition.cs" />
     <Compile Include="Abstraction\Providers\IClockProvider.cs" />
     <Compile Include="Abstraction\Providers\IBeeperProvider.cs" />
+    <Compile Include="Abstraction\Providers\IKempstonProvider.cs" />
     <Compile Include="Abstraction\Providers\IKeyboardProvider.cs" />
     <Compile Include="Abstraction\Providers\IMemoryProvider.cs" />
     <Compile Include="Abstraction\Providers\IPortProvider.cs" />
@@ -160,6 +163,7 @@
     <Compile Include="Devices\Floppy\IFloppyDeviceLogger.cs" />
     <Compile Include="Devices\Floppy\VirtualFloppyFile.cs" />
     <Compile Include="Devices\Interrupt\InterruptDevice.cs" />
+    <Compile Include="Devices\Kempston\KempstonDevice.cs" />
     <Compile Include="Devices\Keyboard\EmulatedKeyStroke.cs" />
     <Compile Include="Devices\Keyboard\KeyboardDevice.cs" />
     <Compile Include="Devices\Keyboard\SpectrumKeyCode.cs" />
@@ -180,6 +184,7 @@
     <Compile Include="Devices\Next\UlaNextPaletteExtensionRegister.cs" />
     <Compile Include="Devices\Ports\DivIdeControlPortHandler.cs" />
     <Compile Include="Devices\Ports\IPortAccessLogger.cs" />
+    <Compile Include="Devices\Ports\KempstonJoystickPortHandler.cs" />
     <Compile Include="Devices\Ports\NextMemoryBankSelectPortHandler.cs" />
     <Compile Include="Devices\Ports\NextRegisterAccessPortHandler.cs" />
     <Compile Include="Devices\Ports\SoundRegisterIndexPortHandler.cs" />

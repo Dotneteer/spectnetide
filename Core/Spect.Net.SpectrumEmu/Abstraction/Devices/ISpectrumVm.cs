@@ -111,6 +111,16 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
 
         /// <summary>
+        /// The Kempston device attached to the VM
+        /// </summary>
+        IKempstonDevice KempstonDevice { get; }
+
+        /// <summary>
+        /// The Kempston device attached to the VM
+        /// </summary>
+        IKempstonProvider KempstonProvider { get; }
+
+        /// <summary>
         /// This property indicates if the machine currently runs the
         /// maskable interrupt method.
         /// </summary>

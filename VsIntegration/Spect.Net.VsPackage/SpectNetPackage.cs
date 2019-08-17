@@ -19,6 +19,7 @@ using Spect.Net.VsPackage.CustomEditors.SpConfEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.CustomEditors.VfddEditor;
 using Spect.Net.VsPackage.ProjectStructure;
+using Spect.Net.VsPackage.Providers;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
 using Spect.Net.VsPackage.ToolWindows.CompilerOutput;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
@@ -54,7 +55,7 @@ namespace Spect.Net.VsPackage
     /// </remarks>
     [Export(typeof(SpectNetPackage))]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [InstalledProductRegistration("#110", "#112", "1.19.5", IconResourceID = 400)] // Info on this package for Help/About
+    [InstalledProductRegistration("#110", "#112", "1.20.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid("1b214806-bc31-49bd-be5d-79ac4a189f3c")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
@@ -108,7 +109,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
         public const string CPS_VERSION_FILE = "cps.version";
-        public const string CURRENT_CPS_VERSION = "1.19.5";
+        public const string CURRENT_CPS_VERSION = "1.20.0";
         public const string CPS_RESOURCE_PREFIX = "Spect.Net.VsPackage.DeploymentResources";
         public const string CPS_RULES = "Rules";
 
@@ -213,6 +214,7 @@ namespace Spect.Net.VsPackage
             SpectrumMachine.Reset();
             SpectrumMachine.RegisterProvider<IRomProvider>(() => new PackageRomProvider());
             SpectrumMachine.RegisterProvider<IKeyboardProvider>(() => new KeyboardProvider());
+            SpectrumMachine.RegisterProvider<IKempstonProvider>(() => new KempstonProvider());
             SpectrumMachine.RegisterProvider<IBeeperProvider>(() => new AudioWaveProvider());
             SpectrumMachine.RegisterProvider<ITapeProvider>(() => new VsIntegratedTapeProvider());
             SpectrumMachine.RegisterProvider<ISoundProvider>(() => new AudioWaveProvider(AudioProviderType.Psg));

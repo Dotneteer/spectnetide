@@ -48,7 +48,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                     TactsPerSample = 100
                 }, null),
                 new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen,
-                    renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen))
+                    renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen)),
+                new KempstonDeviceInfo(new KempstonTestProvider())
             }, ulaIssue)
         {
             StackPointerManipulations = new List<StackPointerManipulationEvent>();
