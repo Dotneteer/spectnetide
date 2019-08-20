@@ -405,6 +405,12 @@ namespace Spect.Net.VsPackage
         [Description("The --strict option of ZXB")]
         public bool StrictType { get; set; } = false;
 
+        [Category("Peripherals")]
+        [DisplayName("Kempston Joystick Emulation")]
+        [Description("Keyboard configuration to emulate Kempston Joystick. You need to restart the virtual machine so that changing this option takes effect.")]
+        [TypeConverter(typeof(TypedEnumConverter<KempstonEmulationOptions>))]
+        public KempstonEmulationOptions KempstonEmulation { get; set; } = KempstonEmulationOptions.Left;
+
         /// <summary>
         /// Signs that the keyboard layout type has changed
         /// </summary>
@@ -475,6 +481,20 @@ namespace Spect.Net.VsPackage
         Two,
         [Description("250%")]
         Two50
+    }
+
+    /// <summary>
+    /// Options for Kempston Joystick keyboard emulation
+    /// </summary>
+    public enum KempstonEmulationOptions
+    {
+        Off,
+        [Description("L-R-D-U-F: 5-8-6-7-0")]
+        Left,
+        [Description("L-R-D-U-F: 1-2-3-4-5")]
+        Middle,
+        [Description("L-R-D-U-F: 6-7-8-9-0")]
+        Right
     }
 
     /// <summary>

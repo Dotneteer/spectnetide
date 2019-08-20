@@ -199,6 +199,16 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Devices
         IExpressionEvaluationContext DebugExpressionContext { get; set; }
 
         /// <summary>
+        /// The Kempston device attached to the VM
+        /// </summary>
+        IKempstonDevice KempstonDevice { get; }
+
+        /// <summary>
+        /// The Kempston device attached to the VM
+        /// </summary>
+        IKempstonProvider KempstonProvider { get; }
+
+        /// <summary>
         /// The main execution cycle of the Spectrum VM
         /// </summary>
         /// <param name="token">Cancellation token</param>

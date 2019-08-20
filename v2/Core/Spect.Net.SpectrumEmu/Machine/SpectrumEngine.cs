@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
@@ -22,6 +18,12 @@ using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Devices.Screen;
 using Spect.Net.SpectrumEmu.Devices.Sound;
 using Spect.Net.SpectrumEmu.Devices.Tape;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Spect.Net.SpectrumEmu.Devices.Kempston;
+
 // ReSharper disable IdentifierTypo
 
 #pragma warning disable 67
@@ -34,7 +36,7 @@ namespace Spect.Net.SpectrumEmu.Machine
     /// <summary>
     /// This class represents a ZX Spectrum 48 virtual machine
     /// </summary>
-    public class SpectrumEngine: ISpectrumVm, 
+    public class SpectrumEngine : ISpectrumVm,
         ISpectrumVmTestSupport,
         ISpectrumVmRunCodeSupport
     {
@@ -67,7 +69,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Collection of Spectrum devices
         /// </summary>
         public DeviceInfoCollection DeviceData { get; }
-        
+
         /// <summary>
         /// The Z80 CPU of the machine
         /// </summary>
@@ -155,6 +157,16 @@ namespace Spect.Net.SpectrumEmu.Machine
         public IKeyboardProvider KeyboardProvider { get; }
 
         /// <summary>
+        /// The Kempston device attached to the VM
+        /// </summary>
+        public IKempstonDevice KempstonDevice { get; }
+
+        /// <summary>
+        /// The Kempston provider attached to the VM
+        /// </summary>
+        public IKempstonProvider KempstonProvider { get; private set; }
+
+        /// <summary>
         /// The beeper device attached to the VM
         /// </summary>
         public IBeeperDevice BeeperDevice { get; }
@@ -237,7 +249,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <summary>
         /// Gets the current frame tact according to the CPU tick count
         /// </summary>
-        public virtual int CurrentFrameTact => (int)(Cpu.Tacts - LastFrameStartCpuTick)/ClockMultiplier;
+        public virtual int CurrentFrameTact => (int)(Cpu.Tacts - LastFrameStartCpuTick) / ClockMultiplier;
 
         /// <summary>
         /// Overflow from the previous frame, given in #of tacts 
@@ -265,7 +277,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Prepare the memory device
             var memoryInfo = GetDeviceInfo<IMemoryDevice>();
             MemoryDevice = memoryInfo?.Device ?? new Spectrum48MemoryDevice();
-            MemoryConfiguration = (IMemoryConfiguration) memoryInfo?.ConfigurationData;
+            MemoryConfiguration = (IMemoryConfiguration)memoryInfo?.ConfigurationData;
 
             // --- Prepare the port device
             var portInfo = GetDeviceInfo<IPortDevice>();
@@ -284,8 +296,8 @@ namespace Spect.Net.SpectrumEmu.Machine
                 else if (mult > 8) mult = 8;
             }
             ClockMultiplier = mult;
-            Cpu = new Z80Cpu(MemoryDevice, 
-                PortDevice, 
+            Cpu = new Z80Cpu(MemoryDevice,
+                PortDevice,
                 cpuConfig?.SupportsNextOperations ?? false)
             {
                 UseGateArrayContention = MemoryConfiguration.ContentionType == MemoryContentionType.GateArray
@@ -299,7 +311,7 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Init the screen device
             var screenInfo = GetDeviceInfo<IScreenDevice>();
-            var pixelRenderer = (IScreenFrameProvider) screenInfo.Provider;
+            var pixelRenderer = (IScreenFrameProvider)screenInfo.Provider;
             ScreenConfiguration = new ScreenConfiguration((IScreenConfiguration)screenInfo.ConfigurationData);
             ScreenDevice = screenInfo.Device ?? new Spectrum48ScreenDevice();
             ShadowScreenDevice = new Spectrum48ScreenDevice();
@@ -307,14 +319,19 @@ namespace Spect.Net.SpectrumEmu.Machine
             // --- Init the beeper device
             var beeperInfo = GetDeviceInfo<IBeeperDevice>();
             AudioConfiguration = (IAudioConfiguration)beeperInfo?.ConfigurationData;
-            BeeperProvider = (IBeeperProvider) beeperInfo?.Provider;
+            BeeperProvider = (IBeeperProvider)beeperInfo?.Provider;
             BeeperDevice = beeperInfo?.Device ?? new BeeperDevice();
 
             // --- Init the keyboard device
             var keyboardInfo = GetDeviceInfo<IKeyboardDevice>();
-            KeyboardProvider = (IKeyboardProvider) keyboardInfo?.Provider;
+            KeyboardProvider = (IKeyboardProvider)keyboardInfo?.Provider;
             KeyboardDevice = keyboardInfo?.Device ?? new KeyboardDevice();
 
+            // --- Init the Kempston device
+            var kempstonInfo = GetDeviceInfo<IKempstonDevice>();
+            KempstonProvider = (IKempstonProvider)kempstonInfo?.Provider;
+            KempstonDevice = kempstonInfo?.Device ?? new KempstonDevice();
+            
             // --- Init the interrupt device
             InterruptDevice = new InterruptDevice(InterruptTact);
 
@@ -357,9 +374,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             AttachProvider(pixelRenderer);
             AttachProvider(BeeperProvider);
             AttachProvider(KeyboardProvider);
+            AttachProvider(KempstonProvider);
             AttachProvider(TapeLoadProvider);
             AttachProvider(DebugInfoProvider);
-            
+
             // --- Attach optional providers
             if (SoundProvider != null)
             {
@@ -374,6 +392,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             _spectrumDevices.Add(ShadowScreenDevice);
             _spectrumDevices.Add(BeeperDevice);
             _spectrumDevices.Add(KeyboardDevice);
+            _spectrumDevices.Add(KempstonDevice);
             _spectrumDevices.Add(InterruptDevice);
             _spectrumDevices.Add(TapeLoadDevice);
 
@@ -574,18 +593,18 @@ namespace Spect.Net.SpectrumEmu.Machine
                     {
                         // --- Check for reaching the termination point
                         case EmulationMode.UntilExecutionPoint when options.TerminationPoint < 0x4000:
-                        {
-                            // --- ROM & address must match
-                            if (options.TerminationRom == MemoryDevice.GetSelectedRomIndex()
-                                && options.TerminationPoint == Cpu.Registers.PC)
                             {
-                                // --- We reached the termination point within ROM
-                                ExecutionCompletionReason = ExecutionCompletionReason.TerminationPointReached;
-                                return true;
-                            }
+                                // --- ROM & address must match
+                                if (options.TerminationRom == MemoryDevice.GetSelectedRomIndex()
+                                    && options.TerminationPoint == Cpu.Registers.PC)
+                                {
+                                    // --- We reached the termination point within ROM
+                                    ExecutionCompletionReason = ExecutionCompletionReason.TerminationPointReached;
+                                    return true;
+                                }
 
-                            break;
-                        }
+                                break;
+                            }
 
                         // --- Check if we reached the termination point within RAM
                         case EmulationMode.UntilExecutionPoint
@@ -686,52 +705,52 @@ namespace Spect.Net.SpectrumEmu.Machine
                 // --- We're in Step-Over mode
                 case DebugStepMode.StepOver
                     when DebugInfoProvider.ImminentBreakpoint != null:
-                {
-                    // --- We also stop, if an imminent breakpoint is reached, and also remove
-                    // --- this breakpoint
-                    if (DebugInfoProvider.ImminentBreakpoint == Cpu.Registers.PC)
                     {
-                        DebugInfoProvider.ImminentBreakpoint = null;
-                        return true;
+                        // --- We also stop, if an imminent breakpoint is reached, and also remove
+                        // --- this breakpoint
+                        if (DebugInfoProvider.ImminentBreakpoint == Cpu.Registers.PC)
+                        {
+                            DebugInfoProvider.ImminentBreakpoint = null;
+                            return true;
+                        }
+                        break;
                     }
-                    break;
-                }
 
                 case DebugStepMode.StepOver:
-                {
-                    var imminentJustCreated = false;
-
-                    // --- We check for a CALL-like instruction
-                    var length = Cpu.GetCallInstructionLength();
-                    if (length > 0)
                     {
-                        // --- Its a CALL-like instruction, create an imminent breakpoint
-                        DebugInfoProvider.ImminentBreakpoint = (ushort)(Cpu.Registers.PC + length);
-                        imminentJustCreated = true;
-                    }
+                        var imminentJustCreated = false;
 
-                    // --- We stop, we executed at least one instruction and if there's no imminent 
-                    // --- breakpoint or we've just created one
-                    if (executedInstructionCount > 0
-                        && (DebugInfoProvider.ImminentBreakpoint == null || imminentJustCreated))
-                    {
-                        return true;
+                        // --- We check for a CALL-like instruction
+                        var length = Cpu.GetCallInstructionLength();
+                        if (length > 0)
+                        {
+                            // --- Its a CALL-like instruction, create an imminent breakpoint
+                            DebugInfoProvider.ImminentBreakpoint = (ushort)(Cpu.Registers.PC + length);
+                            imminentJustCreated = true;
+                        }
+
+                        // --- We stop, we executed at least one instruction and if there's no imminent 
+                        // --- breakpoint or we've just created one
+                        if (executedInstructionCount > 0
+                            && (DebugInfoProvider.ImminentBreakpoint == null || imminentJustCreated))
+                        {
+                            return true;
+                        }
+                        break;
                     }
-                    break;
-                }
 
                 // --- We're in Step-Out mode and want to complete the current subroutine call
-                case DebugStepMode.StepOut 
-                    when Cpu.StackDebugSupport.RetExecuted 
-                        && executedInstructionCount > 0 
+                case DebugStepMode.StepOut
+                    when Cpu.StackDebugSupport.RetExecuted
+                        && executedInstructionCount > 0
                         && entryStepOutStackDepth == Cpu.StackDebugSupport.StepOutStackDepth + 1:
-                {
-                    if (Cpu.Registers.PC != Cpu.StackDebugSupport.StepOutAddress)
                     {
-                        Cpu.StackDebugSupport.ClearStepOutStack();
+                        if (Cpu.Registers.PC != Cpu.StackDebugSupport.StepOutAddress)
+                        {
+                            Cpu.StackDebugSupport.ClearStepOutStack();
+                        }
+                        return true;
                     }
-                    return true;
-                }
             }
 
             // --- In any other case, we carry on
@@ -938,21 +957,21 @@ namespace Spect.Net.SpectrumEmu.Machine
             spState.RunsInMaskableInterrupt = state[nameof(Spectrum48DeviceState.RunsInMaskableInterrupt)].Value<bool>();
             spState.Z80CpuState = GetDeviceState(state, nameof(Spectrum48DeviceState.Z80CpuState), "CPU");
             spState.RomDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.RomDeviceState), "ROM");
-            spState.MemoryDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.MemoryDeviceState), 
+            spState.MemoryDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.MemoryDeviceState),
                 "memory device");
-            spState.PortDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.PortDeviceState), 
+            spState.PortDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.PortDeviceState),
                 "port device");
-            spState.ScreenDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.ScreenDeviceState), 
+            spState.ScreenDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.ScreenDeviceState),
                 "screen device");
             spState.InterruptDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.InterruptDeviceState),
                 "interrupt device");
             spState.KeyboardDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.KeyboardDeviceState),
                 "keyboard device");
-            spState.BeeperDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.BeeperDeviceState), 
+            spState.BeeperDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.BeeperDeviceState),
                 "beeper device");
-            spState.SoundDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.SoundDeviceState), 
+            spState.SoundDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.SoundDeviceState),
                 "sound device");
-            spState.TapeDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.TapeDeviceState), 
+            spState.TapeDeviceState = GetDeviceState(state, nameof(Spectrum48DeviceState.TapeDeviceState),
                 "tape device");
 
             // --- Store back device state

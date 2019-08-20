@@ -5,6 +5,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.SpectrumEmu.Providers;
+using Spect.Net.SpectrumEmu.Test.Devices.Kempston;
 
 namespace Spect.Net.SpectrumEmu.Test.Helpers
 {
@@ -45,7 +46,8 @@ namespace Spect.Net.SpectrumEmu.Test.Helpers
                     TactsPerSample = 100
                 }, null),
                 new ScreenDeviceInfo(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen,
-                    renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen))
+                    renderer ?? new TestPixelRenderer(screenConfig ?? SpectrumModels.ZxSpectrum48Pal.Screen)),
+                new KempstonDeviceInfo(new KempstonTestProvider())
             }, ulaIssue)
         {
             StackPointerManipulations = new List<StackPointerManipulationEvent>();

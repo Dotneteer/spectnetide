@@ -1,6 +1,4 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Machine;
-
-namespace Spect.Net.SpectrumEmu.Devices.Ports
+﻿namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
     /// <summary>
     /// This class represents the port device used by the Spectrum 48 virtual machine
@@ -9,8 +7,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     {
         public Spectrum48PortDevice()
         {
-            IPortHandler handler = new Spectrum48PortHandler(this);
-            Handlers.Add(handler);
+            Handlers.Add(new Spectrum48PortHandler(this));
+            Handlers.Add(new KempstonJoystickPortHandler(this));
         }
     }
 }

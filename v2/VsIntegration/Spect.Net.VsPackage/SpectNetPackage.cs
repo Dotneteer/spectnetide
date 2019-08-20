@@ -197,6 +197,7 @@ namespace Spect.Net.VsPackage
             SpectrumMachine.RegisterProvider<ISoundProvider>(() => new AudioWaveProvider(AudioProviderType.Psg));
             SpectrumMachine.RegisterProvider<ITapeLoadProvider>(() => new VsIntegratedTapeLoadProvider());
             SpectrumMachine.RegisterProvider<ITapeSaveProvider>(() => new VsIntegratedTapeSaveProvider());
+            SpectrumMachine.RegisterProvider<IKempstonProvider>(() => new KempstonProvider());
             EmulatorViewModel = new EmulatorViewModel();
 
             // --- Initialize other services
