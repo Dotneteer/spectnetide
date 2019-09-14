@@ -16,7 +16,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Machine
         /// <summary>
         /// Type of breakpoint hit condition
         /// </summary>
-        SpectrumEmu.Machine.BreakpointHitType HitType { get; }
+        BreakpointHitType HitType { get; }
 
         /// <summary>
         /// Value of the hit condition

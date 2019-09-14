@@ -25,6 +25,11 @@ namespace Spect.Net.VsPackage.SolutionItems
         public const string SETTINGS_FILE = ".z80settings";
 
         /// <summary>
+        /// The name of the configuration file within the project folder
+        /// </summary>
+        public const string CONFIG_FILE = @"\Rom\ZxSpectrum.spconf";
+
+        /// <summary>
         /// Message to display when a project folder is invalid
         /// </summary>
         public const string DEFAULT_INV_FOLDER_MESSAGE =
@@ -693,21 +698,18 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// </summary>
         private void LoadSpectrumModelInfo()
         {
-            var configItem = SpConfProjectItems.FirstOrDefault();
-            if (configItem != null)
+            var configFilename = ProjectDir + CONFIG_FILE;
+            try
             {
-                try
-                {
-                    var data = File.ReadAllText(configItem.Filename);
-                    SpectrumProjectConfigSerializer.Deserialize(data, out var confVm);
-                    ModelName = confVm.ModelName;
-                    EditionName = confVm.EditionName;
-                    SpectrumConfiguration = confVm.ConfigurationData;
-                }
-                catch
-                {
-                    // --- This exception is intentionally ignored
-                }
+                var data = File.ReadAllText(configFilename);
+                SpectrumProjectConfigSerializer.Deserialize(data, out var confVm);
+                ModelName = confVm.ModelName;
+                EditionName = confVm.EditionName;
+                SpectrumConfiguration = confVm.ConfigurationData;
+            }
+            catch
+            {
+                // --- This exception is intentionally ignored
             }
         }
 

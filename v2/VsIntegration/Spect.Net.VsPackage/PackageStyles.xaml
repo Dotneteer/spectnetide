@@ -28,6 +28,9 @@
     <Color x:Key="CPromptInvalidBackground">#802020</Color>
     <Color x:Key="CValidationText">#FFE0E0E0</Color>
     <Color x:Key="CDebugColor">#51c351</Color>
+    <Color x:Key="CSilverGray">#e0e0e0</Color>
+    <Color x:Key="CWarning">#F89406</Color>
+    <Color x:Key="CDanger">#BD362F</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
@@ -53,6 +56,15 @@
     <SolidColorBrush x:Key="BPromptInvalidBackground" Color="{StaticResource CPromptInvalidBackground}"/>
     <SolidColorBrush x:Key="BValidationText" Color="{StaticResource CValidationText}"/>
     <SolidColorBrush x:Key="BDebugForeground" Color="{StaticResource CDebugColor}"/>
+    <SolidColorBrush x:Key="BDebugHeaderBackground" Color="#FF383838"/>
+    <SolidColorBrush x:Key="BExplainText" Color="{StaticResource CSilverGray}"/>
+    <SolidColorBrush x:Key="BDialogLabelText" Color="{StaticResource CSilverGray}"/>
+    <SolidColorBrush x:Key="BDialogButtonBackground" Color="{StaticResource CVividBlue}"/>
+    <SolidColorBrush x:Key="BWarning" Color="{StaticResource CWarning}"/>
+    <SolidColorBrush x:Key="BDanger" Color="{StaticResource CDanger}"/>
+    <SolidColorBrush x:Key="BDebugMouseOverBackground" Color="#FF000000"/>
+    <SolidColorBrush x:Key="BDebugMouseOverBorder" Color="#FF404040"/>
+    <SolidColorBrush x:Key="BDebugSelectedBackground" Color="#FF000040"/>
 
     <!-- Templates for the ZX Spectrum Memory tool window -->
     <DataTemplate x:Key="MemoryLineTemplate">
@@ -103,6 +115,73 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
+
+    <Style x:Key="ExplainText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource BExplainText}" />
+    </Style>
+
+    <Style x:Key="DialogLabelText" TargetType="TextBlock" BasedOn="{StaticResource ExplainText}">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Margin" Value="12,4" />
+    </Style>
+
+    <Style x:Key="DialogTextBox" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Margin" Value="12,4" />
+        <Setter Property="Background" Value="{DynamicResource BDebugHeaderBackground}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style x:Key="DialogButton" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="12,2" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+    </Style>
+
+    <Style x:Key="SmallDialogButton" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+    </Style>
+
+    <Style x:Key="DialogCheckBox" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="12,4" />
+    </Style>
+
+    <!-- Control template for a dialog button -->
+    <ControlTemplate x:Key="DialogButtonTemplate" TargetType="{x:Type ButtonBase}">
+        <Border x:Name="border" 
+                        BorderBrush="{DynamicResource BDialogButtonBackground}" 
+                        BorderThickness="2" 
+                        Background="{DynamicResource BDialogButtonBackground}" 
+                        SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="contentPresenter" 
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+            </ContentPresenter>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Button.IsDefaulted" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource BDialogButtonHover}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource BDialogButtonHover}"/>
+                <Setter Property="Background" TargetName="border" Value="{DynamicResource BDialogButtonHover}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource BDialogButtonBackground}"/>
+                <Setter Property="Background" TargetName="border" Value="{DynamicResource BDialogButtonHover}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FFB0B0B0"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 
     <!-- ZX Spectrum Emulator styles -->
     <Style x:Key="EmuOverlayText" TargetType="TextBlock">

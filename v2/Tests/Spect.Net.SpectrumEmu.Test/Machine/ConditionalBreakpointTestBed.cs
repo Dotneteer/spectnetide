@@ -4,7 +4,6 @@ using Spect.Net.EvalParser;
 using Spect.Net.EvalParser.Generated;
 using Spect.Net.EvalParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Abstraction.Machine;
-using BreakpointHitType = Spect.Net.SpectrumEmu.Machine.BreakpointHitType;
 
 namespace Spect.Net.SpectrumEmu.Test.Machine
 {

@@ -84,6 +84,7 @@
     <Compile Include="Compilers\Z80AssemblyCompiler.cs" />
     <Compile Include="CustomEditors\SpectrumConfEditorViewModel.cs" />
     <Compile Include="Debugging\BreakpointChangeWatcher.cs" />
+    <Compile Include="Debugging\BreakpointInfo.cs" />
     <Compile Include="Debugging\BreakpointsChangedEventArgs.cs" />
     <Compile Include="Debugging\VsIntegratedSpectrumDebugInfoProvider.cs" />
     <Compile Include="ImageMonikers.cs" />
@@ -140,17 +141,28 @@
     <Compile Include="SpectNetPackage.cs" />
     <Compile Include="ToolWindows\BankAware\BankAwareToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\BankAware\DisassemblyAnnotationHandler.cs" />
+    <Compile Include="ToolWindows\BankAware\MemoryViewModel.cs" />
     <Compile Include="ToolWindows\BankAware\Spectrum48RomLabelProvider.cs" />
     <Compile Include="ToolWindows\CommandLineEventArgs.cs" />
     <Compile Include="ToolWindows\CommandPromptControl.xaml.cs">
       <DependentUpon>CommandPromptControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\DependencyObjectEx.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyControl.xaml.cs">
+      <DependentUpon>DisassemblyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Disassembly\DisassemblyItemSelectedEventArgs.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyItemViewModel.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">
       <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyViewRefreshedEventArgs.cs" />
+    <Compile Include="ToolWindows\Disassembly\IDisassemblyItemParent.cs" />
+    <Compile Include="ToolWindows\Disassembly\InstructionBackgroundConverter.cs" />
+    <Compile Include="ToolWindows\Disassembly\RomFlagBackgroundConverter.cs" />
+    <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
     <Compile Include="ToolWindows\HexUtil.cs" />
     <Compile Include="ToolWindows\Keyboard\Sp48KeyboardControl.xaml.cs">
       <DependentUpon>Sp48KeyboardControl.xaml</DependentUpon>
@@ -178,6 +190,11 @@
       <DependentUpon>Sp128WideKeyControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
+    <Compile Include="ToolWindows\Memory\ExportMemoryDialog.xaml.cs">
+      <DependentUpon>ExportMemoryDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Memory\ExportMemoryViewModel.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryExporter.cs" />
     <Compile Include="ToolWindows\Memory\MemoryLineControl.xaml.cs">
       <DependentUpon>MemoryLineControl.xaml</DependentUpon>
     </Compile>
@@ -527,6 +544,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ToolWindows\Disassembly\DisassemblyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -556,6 +577,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\Keyboard\Sp128WideKeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Memory\ExportMemoryDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

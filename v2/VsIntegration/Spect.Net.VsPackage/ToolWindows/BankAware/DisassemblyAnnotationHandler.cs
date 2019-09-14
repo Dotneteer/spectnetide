@@ -6,6 +6,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.VsPackage.ToolWindows.Disassembly;
 
 namespace Spect.Net.VsPackage.ToolWindows.BankAware
 {
@@ -197,7 +198,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
         /// <returns>Null, if operation id ok, otherwise, error message</returns>
         /// <remarks>If the literal already exists, it must have the symbol's value.</remarks>
         public string ApplyLiteral(ushort address, string literalName,
-            Dictionary<ushort, int> lineIndexes, Collection<DisassemblyItem> disassemblyItems)
+            Dictionary<ushort, int> lineIndexes, Collection<DisassemblyItemViewModel> disassemblyItems)
         {
             if (!lineIndexes.TryGetValue(address, out int lineIndex))
             {
@@ -205,13 +206,13 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
             }
 
             var disassItem = disassemblyItems[lineIndex];
-            if (!disassItem.HasSymbol)
+            if (!disassItem.Item.HasSymbol)
             {
                 return $"Disassembly line #{address:X4} does not have an associated value to replace";
             }
 
-            var symbolValue = disassItem.SymbolValue;
-            if (disassItem.HasLabelSymbol)
+            var symbolValue = disassItem.Item.SymbolValue;
+            if (disassItem.Item.HasLabelSymbol)
             {
                 return
                     $"%L {symbolValue:X4} {literalName}%Disassembly line #{address:X4} refers to a label. Use the 'L {symbolValue:X4}' command to define a label.";

@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using Spect.Net.CommandParser.SyntaxTree;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.BankAware;
+using Spect.Net.VsPackage.Z80Programs.ExportMemory;
 using Z80Registers = Spect.Net.SpectrumEmu.Abstraction.Cpu.Registers;
 
 namespace Spect.Net.VsPackage.ToolWindows.Memory
@@ -216,16 +218,15 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
                             return false;
                         }
 
-                        // TODO: Implement the Memory Export command
-                        //if (DisplayExportMemoryDialog(out var vm, startAddress, endAddress))
-                        //{
-                        //    // --- Export cancelled
-                        //    break;
-                        //}
+                        if (DisplayExportMemoryDialog(out var vm, startAddress, endAddress))
+                        {
+                            // --- Export cancelled
+                            break;
+                        }
 
-                        //var exporter = new MemoryExporter(vm);
-                        //exporter.ExportMemory(MachineViewModel.SpectrumVm);
-                        //ExportMemoryViewModel.LatestFolder = Path.GetDirectoryName(vm.Filename);
+                        var exporter = new MemoryExporter(vm);
+                        exporter.ExportMemory(EmulatorViewModel.Machine.SpectrumVm);
+                        ExportMemoryViewModel.LatestFolder = Path.GetDirectoryName(vm.Filename);
                         break;
                     }
 
@@ -260,35 +261,34 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             }
         }
 
-        // TODO: Implement the Export Memory command
-        ///// <summary>
-        ///// Displays the Export Disassembly dialog to collect parameter data
-        ///// </summary>
-        ///// <param name="vm">View model with collected data</param>
-        ///// <param name="startAddress">Disassembly start address</param>
-        ///// <param name="endAddress">Disassembly end address</param>
-        ///// <returns>
-        ///// True, if the user stars export; false, if the export is cancelled
-        ///// </returns>
-        //private static bool DisplayExportMemoryDialog(out ExportMemoryViewModel vm, ushort startAddress, ushort endAddress)
-        //{
-        //    var exportDialog = new ExportMemoryDialog()
-        //    {
-        //        HasMaximizeButton = false,
-        //        HasMinimizeButton = false
-        //    };
+        /// <summary>
+        /// Displays the Export Disassembly dialog to collect parameter data
+        /// </summary>
+        /// <param name="vm">View model with collected data</param>
+        /// <param name="startAddress">Disassembly start address</param>
+        /// <param name="endAddress">Disassembly end address</param>
+        /// <returns>
+        /// True, if the user stars export; false, if the export is cancelled
+        /// </returns>
+        private static bool DisplayExportMemoryDialog(out ExportMemoryViewModel vm, ushort startAddress, ushort endAddress)
+        {
+            var exportDialog = new ExportMemoryDialog()
+            {
+                HasMaximizeButton = false,
+                HasMinimizeButton = false
+            };
 
-        //    vm = new ExportMemoryViewModel
-        //    {
-        //        Filename = Path.Combine(ExportMemoryViewModel.LatestFolder
-        //                                ?? "C:\\Temp", "Memory.bin"),
-        //        StartAddress = startAddress.ToString(),
-        //        EndAddress = endAddress.ToString(),
-        //        AddToProject = true
-        //    };
-        //    exportDialog.SetVm(vm);
-        //    var accepted = exportDialog.ShowModal();
-        //    return !accepted.HasValue || !accepted.Value;
-        //}
+            vm = new ExportMemoryViewModel
+            {
+                Filename = Path.Combine(ExportMemoryViewModel.LatestFolder
+                                        ?? "C:\\Temp", "Memory.bin"),
+                StartAddress = startAddress.ToString(),
+                EndAddress = endAddress.ToString(),
+                AddToProject = true
+            };
+            exportDialog.SetVm(vm);
+            var accepted = exportDialog.ShowModal();
+            return !accepted.HasValue || !accepted.Value;
+        }
     }
 }

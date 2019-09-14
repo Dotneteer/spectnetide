@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
+using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
 
@@ -11,6 +12,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private bool _shadowsScreenEnabled;
         private bool _ulaIndicationEnabled;
         private ushort _memViewPoint;
+        private ushort _disAssViewPoint;
 
         #region ViewModel properties
 
@@ -71,6 +73,26 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 MemViewPointChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        /// <summary>
+        /// Sets the memory address to navigate to when showing the Z80 Disassembly window
+        /// </summary>
+        public ushort DisAssViewPoint
+        {
+            get => _disAssViewPoint;
+            set
+            {
+                Set(ref _disAssViewPoint, value);
+                DisAssViewPointChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler DisAssViewPointChanged;
+
+        /// <summary>
+        /// Provider to manage debug information
+        /// </summary>
+        public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
 
         /// <summary>
         /// Signs if ZX Spectrum keyboard scan is enabled
