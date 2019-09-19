@@ -10,5 +10,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
     [Caption("ZX Spectrum Memory")]
     public class MemoryToolWindow: SpectrumToolWindowPane<MemoryToolWindowControl, MemoryToolWindowViewModel>
     {
+        protected override MemoryToolWindowViewModel GetVmInstance()
+        {
+            return SpectNetPackage.Default.MemoryViewModel;
+        }
     }
 }

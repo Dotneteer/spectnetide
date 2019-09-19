@@ -38,18 +38,18 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             Vm.EmulatorViewModel.RenderFrameCompleted += OnScreenRefreshed;
             Vm.EmulatorViewModel.MemViewPointChanged += OnMemViewPointChanged;
-            if (!Vm.ViewInitializedWithSolution)
-            {
-                Vm.ViewInitializedWithSolution = true;
-                if (Vm.MachineState == VmState.Stopped)
-                {
-                    Vm.SetRomViewMode(0);
-                }
-                else
-                {
-                    Vm.SetFullViewMode();
-                }
-            }
+            //if (!Vm.ViewInitializedWithSolution)
+            //{
+            //    Vm.ViewInitializedWithSolution = true;
+            //    if (Vm.MachineState == VmState.Stopped)
+            //    {
+            //        Vm.SetRomViewMode(0);
+            //    }
+            //    else
+            //    {
+            //        Vm.SetFullViewMode();
+            //    }
+            //}
             ScrollToTop(Vm.EmulatorViewModel.MemViewPoint);
             Vm.RefreshViewMode();
         }

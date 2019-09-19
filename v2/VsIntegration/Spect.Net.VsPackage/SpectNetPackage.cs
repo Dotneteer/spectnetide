@@ -180,6 +180,11 @@ namespace Spect.Net.VsPackage
         public RegistersToolWindowViewModel RegistersViewModel { get; private set; }
 
         /// <summary>
+        /// Contains the view model for the ZX Spectrum tool window
+        /// </summary>
+        public MemoryToolWindowViewModel MemoryViewModel { get; private set; }
+
+        /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
         /// </summary>
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
@@ -231,6 +236,7 @@ namespace Spect.Net.VsPackage
             // --- Create view models
             EmulatorViewModel = new EmulatorViewModel();
             RegistersViewModel = new RegistersToolWindowViewModel();
+            MemoryViewModel = new MemoryToolWindowViewModel();
 
             var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
             await LogAsync("SpectNetIdePackage initialized.");

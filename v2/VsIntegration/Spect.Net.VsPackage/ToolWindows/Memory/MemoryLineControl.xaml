@@ -6,7 +6,7 @@
              xmlns:memory="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
              x:Class="Spect.Net.VsPackage.ToolWindows.Memory.MemoryLineControl" 
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="500" 
+             d:DesignHeight="50" d:DesignWidth="662" 
              d:DataContext="{d:DesignInstance {x:Type memory:MemoryLineViewModel}, IsDesignTimeCreatable=True}" 
              Background="Transparent">
 

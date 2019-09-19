@@ -11,7 +11,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
     /// <summary>
     /// This view model is the base of the view models that manage memory
     /// </summary>
-    public abstract class BankAwareToolWindowViewModelBase : SpectrumGenericToolWindowViewModel
+    public abstract class BankAwareToolWindowViewModelBase : SpectrumToolWindowViewModelBase
     {
         private bool _fullViewMode;
         private bool _romViewMode;
@@ -28,6 +28,18 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
         {
             if (IsInDesignMode) return;
             AnnotationHandler = new DisassemblyAnnotationHandler(this);
+        }
+
+        /// <summary>
+        /// Refresh the AnnotationHandler whenever there is a new machine instance
+        /// </summary>
+        protected override void OnMachineInstanceChanged()
+        {
+            if (Machine != null)
+            {
+                AnnotationHandler.SetupMachineAnnotations();
+                SetRomViewMode(0);
+            }
         }
 
         /// <summary>
@@ -177,15 +189,6 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
         {
             RomIndex = SpectrumVm?.MemoryDevice?.GetSelectedRomIndex() ?? 0;
             RamBankIndex = SpectrumVm?.MemoryDevice?.GetSelectedBankIndex(3) ?? 0;
-        }
-
-        /// <summary>
-        /// When the view model is first time created, use the ROM view
-        /// </summary>
-        protected override void Initialize()
-        {
-            RaisePropertyChanged(nameof(BankViewAllowed));
-            SetRomViewMode(0);
         }
 
         /// <summary>

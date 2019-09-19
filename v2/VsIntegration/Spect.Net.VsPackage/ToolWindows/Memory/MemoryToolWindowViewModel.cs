@@ -24,13 +24,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
             if (IsInDesignMode)
             {
                 FullViewMode = true;
+                MemoryLines = new ObservableCollection<MemoryLineViewModel>
+                {
+                    new MemoryLineViewModel(),
+                    new MemoryLineViewModel(),
+                    new MemoryLineViewModel(),
+                    new MemoryLineViewModel(),
+                };
                 return;
-            }
-
-            if (MachineState != VmState.Stopped)
-            {
-                // ReSharper disable once VirtualMemberCallInConstructor
-                InitViewMode();
             }
         }
 
@@ -84,6 +85,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         /// </summary>
         public override void RefreshViewMode()
         {
+            if (SpectrumVm == null) return;
+
             var memory = GetMemoryBuffer();
             var length = GetMemoryLength();
             if (memory == null || length == null) return;

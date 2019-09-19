@@ -65,6 +65,12 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
+            InitDisassembly();
+            if (MachineState == VmState.Stopped)
+            {
+                InitViewMode();
+            }
+
             _tapeDeviceAttached = false;
             // TODO: Respond to these events
             //Package.CodeManager.CodeInjected += OnVmCodeInjected;
@@ -79,7 +85,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// Performs application-defined tasks associated with freeing, releasing, 
         /// or resetting unmanaged resources.
         /// </summary>
-        public override void Dispose()
+        public void Dispose()
         {
             // TODO: Handle Dispose
             //Package.CodeManager.CodeInjected -= OnVmCodeInjected;
@@ -480,19 +486,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         #endregion
 
         #region Overridden methods
-
-        /// <summary>
-        /// When the view model is first time created, use the ROM view
-        /// </summary>
-        protected override void Initialize()
-        {
-            InitDisassembly();
-            base.Initialize();
-            if (MachineState == VmState.Stopped)
-            {
-                InitViewMode();
-            }
-        }
 
         /// <summary>
         /// Obtain the machine view model from the solution

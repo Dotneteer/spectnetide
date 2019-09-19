@@ -23,12 +23,12 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
         /// <summary>
         /// Annotations for ROM pages
         /// </summary>
-        public Dictionary<int, DisassemblyAnnotation> RomPageAnnotations { get; }
+        public Dictionary<int, DisassemblyAnnotation> RomPageAnnotations { get; private set; }
 
         /// <summary>
         /// ROM annotation files
         /// </summary>
-        public Dictionary<int, string> RomAnnotationFiles { get; }
+        public Dictionary<int, string> RomAnnotationFiles { get; private set; }
 
         /// <summary>
         /// Annotations for RAM banks
@@ -47,9 +47,15 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
         public DisassemblyAnnotationHandler(BankAwareToolWindowViewModelBase parent)
         {
             Parent = parent;
+        }
 
+        /// <summary>
+        /// Sets up the annotations for the current machine.
+        /// </summary>
+        public void SetupMachineAnnotations()
+        {
             // --- Read ROM annotations
-            var spectrumVm = Parent.EmulatorViewModel.Machine.SpectrumVm;
+            var spectrumVm = Parent.SpectrumVm;
             RomPageAnnotations = new Dictionary<int, DisassemblyAnnotation>();
             RomAnnotationFiles = new Dictionary<int, string>();
             var romConfig = spectrumVm.RomConfiguration;

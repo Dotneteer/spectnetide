@@ -48,19 +48,19 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         private void OnLoaded(object s, RoutedEventArgs e)
         {
             Vm.EmulatorViewModel.MemViewPointChanged += OnDisAssViewPointChanged;
-            if (!Vm.ViewInitializedWithSolution)
-            {
-                // --- Set the proper view mode when first initialized 
-                Vm.ViewInitializedWithSolution = true;
-                if (Vm.MachineState == VmState.Stopped)
-                {
-                    Vm.SetRomViewMode(0);
-                }
-                else
-                {
-                    Vm.SetFullViewMode();
-                }
-            }
+            //if (!Vm.ViewInitializedWithSolution)
+            //{
+            //    // --- Set the proper view mode when first initialized 
+            //    Vm.ViewInitializedWithSolution = true;
+            //    if (Vm.MachineState == VmState.Stopped)
+            //    {
+            //        Vm.SetRomViewMode(0);
+            //    }
+            //    else
+            //    {
+            //        Vm.SetFullViewMode();
+            //    }
+            //}
             ScrollToTop(Vm.MachineState == VmState.Paused 
                 ? Vm.SpectrumVm.Cpu.Registers.PC 
                 : Vm.EmulatorViewModel.DisAssViewPoint);
