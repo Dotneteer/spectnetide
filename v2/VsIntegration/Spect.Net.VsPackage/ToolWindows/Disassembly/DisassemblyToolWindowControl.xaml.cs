@@ -20,12 +20,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// <param name="vm">View model instance to set</param>
         void ISupportsMvvm<DisassemblyToolWindowViewModel>.SetVm(DisassemblyToolWindowViewModel vm)
         {
-            if (Vm != null)
-            {
-                Vm.DisassemblyViewRefreshed -= OnDisassemblyViewRefreshed;
-            }
             DataContext = Vm = vm;
-            Vm.DisassemblyViewRefreshed += OnDisassemblyViewRefreshed;
         }
 
         public DisassemblyToolWindowControl()
@@ -47,20 +42,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         private void OnLoaded(object s, RoutedEventArgs e)
         {
+            Vm.DisassemblyViewRefreshed += OnDisassemblyViewRefreshed;
             Vm.EmulatorViewModel.MemViewPointChanged += OnDisAssViewPointChanged;
-            //if (!Vm.ViewInitializedWithSolution)
-            //{
-            //    // --- Set the proper view mode when first initialized 
-            //    Vm.ViewInitializedWithSolution = true;
-            //    if (Vm.MachineState == VmState.Stopped)
-            //    {
-            //        Vm.SetRomViewMode(0);
-            //    }
-            //    else
-            //    {
-            //        Vm.SetFullViewMode();
-            //    }
-            //}
             ScrollToTop(Vm.MachineState == VmState.Paused 
                 ? Vm.SpectrumVm.Cpu.Registers.PC 
                 : Vm.EmulatorViewModel.DisAssViewPoint);
@@ -69,6 +52,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
+            Vm.DisassemblyViewRefreshed -= OnDisassemblyViewRefreshed;
             Vm.EmulatorViewModel.MemViewPointChanged -= OnDisAssViewPointChanged;
         }
 

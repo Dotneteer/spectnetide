@@ -50,6 +50,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             SpectNetPackage.Default.EmulatorViewModel.EnableKeyboardScan = newFrame == Frame;
         }
 
+        protected override SpectrumEmulatorToolWindowViewModel GetVmInstance()
+        {
+            return SpectNetPackage.Default.SpectrumViewModel;
+        }
 
         #region Tool Window Commands
 

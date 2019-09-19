@@ -96,7 +96,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// <summary>
         /// Provider to manage debug information
         /// </summary>
-        public ISpectrumDebugInfoProvider DebugInfoProvider { get; set; }
+        public ISpectrumDebugInfoProvider DebugInfoProvider => SpectNetPackage.Default.DebugInfoProvider;
 
         /// <summary>
         /// Signs if ZX Spectrum keyboard scan is enabled

@@ -3,7 +3,7 @@
     /// <summary>
     /// The view model of the Keyboard tool window
     /// </summary>
-    public class KeyboardToolWindowViewModel : SpectrumGenericToolWindowViewModel
+    public class KeyboardToolWindowViewModel : SpectrumToolWindowViewModelBase
     {
         private KeyboardLayoutTypeOptions _keyboardLayoutType;
         private KeyboardFitTypeOptions _keyboardFitType;

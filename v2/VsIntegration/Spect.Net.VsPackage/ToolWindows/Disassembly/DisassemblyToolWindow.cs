@@ -11,5 +11,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
     public class DisassemblyToolWindow :
         SpectrumToolWindowPane<DisassemblyToolWindowControl, DisassemblyToolWindowViewModel>
     {
+        protected override DisassemblyToolWindowViewModel GetVmInstance()
+        {
+            return SpectNetPackage.Default.DisassemblyViewModel;
+        }
     }
 }

@@ -79,6 +79,11 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// </summary>
         public event EventHandler SolutionClosing;
 
+        /// <summary>
+        /// Indicates is solution is closing
+        /// </summary>
+        public bool IsSolutionClosing { get; private set; }
+
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public SolutionStructure()
             : base(SpectNetPackage.Default.ApplicationObject.DTE.Solution,
@@ -405,9 +410,17 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// </summary>
         private void OnAfterClosing()
         {
-            _lastCollectedActiveProject = null;
-            _ = Machines.DisposeMachinesAsync();
-            SolutionClosing?.Invoke(this, EventArgs.Empty);
+            IsSolutionClosing = true;
+            try
+            {
+                _lastCollectedActiveProject = null;
+                _ = Machines.DisposeMachinesAsync();
+                SolutionClosing?.Invoke(this, EventArgs.Empty);
+            }
+            finally
+            {
+                IsSolutionClosing = false;
+            }
         }
 
         /// <summary>

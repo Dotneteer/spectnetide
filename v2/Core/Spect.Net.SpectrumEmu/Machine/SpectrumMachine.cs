@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
-using Spect.Net.SpectrumEmu.Abstraction;
+﻿using Spect.Net.SpectrumEmu.Abstraction;
 using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
@@ -17,6 +11,12 @@ using Spect.Net.SpectrumEmu.Devices.Memory;
 using Spect.Net.SpectrumEmu.Devices.Ports;
 using Spect.Net.SpectrumEmu.Devices.Rom;
 using Spect.Net.SpectrumEmu.Providers;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Spect.Net.SpectrumEmu.Machine
 {
@@ -211,6 +211,11 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Setup the machine
             var machine = new SpectrumMachine(modelKey, editionKey, devices);
+            var debugProvider = GetProvider<ISpectrumDebugInfoProvider>();
+            if (debugProvider != null)
+            {
+                machine.SpectrumVm.DebugInfoProvider = debugProvider;
+            }
             return machine;
         }
 
@@ -573,7 +578,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// This event fires when the virtual machine left the save mode.
         /// </summary>
         public event EventHandler<SaveModeEventArgs> LeftSaveMode;
-        
+
         #endregion
 
         #region Machine control methods
@@ -609,11 +614,13 @@ namespace Spect.Net.SpectrumEmu.Machine
 
             // --- Set up the task that runs the machine
             MachineState = VmState.Running;
-            Console.WriteLine("Machine is about to start");
             try
             {
                 _completionTask = StartAndRun(_cancellationTokenSource.Token, options);
-                Console.WriteLine("Machine started");
+                _completionTask.GetAwaiter().OnCompleted(async () =>
+                {
+                    await WaitForPause();
+                });
             }
             catch (TaskCanceledException)
             {
@@ -818,7 +825,7 @@ namespace Spect.Net.SpectrumEmu.Machine
                 var waitInMs = 1000.0 * waitInTicks / _clockProvider.GetFrequency();
                 if (waitInMs > 0)
                 {
-                    await Task.Delay((int) waitInMs, cancellationToken);
+                    await Task.Delay((int)waitInMs, cancellationToken);
                     if (cancellationToken.IsCancellationRequested)
                     {
                         return;

@@ -136,7 +136,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.ToolWindow
     public abstract class ToolWindowPaneBase<TControl, TVm> :
         ToolWindowPaneBase<TControl>
         where TControl : ContentControl, ISupportsMvvm<TVm>, new()
-        where TVm : ViewModelBase, new()
+        where TVm : ViewModelBase
     {
         /// <summary>
         /// The view model behind this tool window
@@ -145,7 +145,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.ToolWindow
 
         protected ToolWindowPaneBase()
         {
-            Vm = GetVmInstance() ?? new TVm();
+            Vm = GetVmInstance();
             Content.SetVm(Vm);
         }
 
@@ -157,10 +157,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.ToolWindow
         /// View model instance to use. Null, if a new view model instance
         /// should be created.
         /// </returns>
-        protected virtual TVm GetVmInstance()
-        {
-            return null;
-        }
+        protected abstract TVm GetVmInstance();
     }
 
 }

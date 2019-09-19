@@ -11,5 +11,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Keyboard
     public class KeyboardToolWindow :
         SpectrumToolWindowPane<KeyboardToolWindowControl, KeyboardToolWindowViewModel>
     {
+        protected override KeyboardToolWindowViewModel GetVmInstance()
+        {
+            return SpectNetPackage.Default.KeyboardToolModel;
+        }
     }
 }

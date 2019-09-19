@@ -25,7 +25,7 @@ using Spect.Net.Wpf.Providers;
 using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 using Task = System.Threading.Tasks.Task;
 
-#pragma warning disable IDE0067 // Dispose objects before losing scope
+#pragma warning disable IDE0067
 #pragma warning disable VSTHRD100
 
 namespace Spect.Net.VsPackage
@@ -175,6 +175,16 @@ namespace Spect.Net.VsPackage
         public EmulatorViewModel EmulatorViewModel { get; private set; }
 
         /// <summary>
+        /// Contains the view model for the singleton ZX Spectrum Emulator tool window
+        /// </summary>
+        public SpectrumEmulatorToolWindowViewModel SpectrumViewModel { get; private set; }
+
+        /// <summary>
+        /// Contains the view model for the ZX Spectrum keyboard
+        /// </summary>
+        public KeyboardToolWindowViewModel KeyboardToolModel { get; private set; }
+
+        /// <summary>
         /// Contains the view model for the Z80 Registers tool window
         /// </summary>
         public RegistersToolWindowViewModel RegistersViewModel { get; private set; }
@@ -183,6 +193,11 @@ namespace Spect.Net.VsPackage
         /// Contains the view model for the ZX Spectrum tool window
         /// </summary>
         public MemoryToolWindowViewModel MemoryViewModel { get; private set; }
+
+        /// <summary>
+        /// Contains the view model for the Z80 Disassembly tool window
+        /// </summary>
+        public DisassemblyToolWindowViewModel DisassemblyViewModel { get; private set; }
 
         /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
@@ -207,6 +222,7 @@ namespace Spect.Net.VsPackage
             Z80AsmLanguage = new Z80AsmLanguageService(this);
 
             // --- Special providers for the ZX Spectrum virtual machine
+            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
             SpectrumMachine.Reset();
             SpectrumMachine.RegisterDefaultProviders();
             SpectrumMachine.RegisterProvider<IRomProvider>(() => new PackageRomProvider());
@@ -215,6 +231,7 @@ namespace Spect.Net.VsPackage
             SpectrumMachine.RegisterProvider<ITapeLoadProvider>(() => new VsIntegratedTapeLoadProvider());
             SpectrumMachine.RegisterProvider<ITapeSaveProvider>(() => new VsIntegratedTapeSaveProvider());
             SpectrumMachine.RegisterProvider<IKempstonProvider>(() => new KempstonProvider());
+            SpectrumMachine.RegisterProvider<ISpectrumDebugInfoProvider>(() => DebugInfoProvider);
 
             // --- Initialize other services
             BreakpointChangeWatcher = new BreakpointChangeWatcher();
@@ -231,12 +248,14 @@ namespace Spect.Net.VsPackage
             Solution.ActiveProjectChanged += OnActiveProjectChanged;
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
-            DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
 
             // --- Create view models
             EmulatorViewModel = new EmulatorViewModel();
+            SpectrumViewModel = new SpectrumEmulatorToolWindowViewModel();
+            KeyboardToolModel = new KeyboardToolWindowViewModel();
             RegistersViewModel = new RegistersToolWindowViewModel();
             MemoryViewModel = new MemoryToolWindowViewModel();
+            DisassemblyViewModel = new DisassemblyToolWindowViewModel();
 
             var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
             await LogAsync("SpectNetIdePackage initialized.");

@@ -11,6 +11,7 @@ using Spect.Net.VsPackage.ToolWindows.BankAware;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -65,12 +66,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                 return;
             }
 
-            InitDisassembly();
-            if (MachineState == VmState.Stopped)
-            {
-                InitViewMode();
-            }
-
+            AnnotationHandler = new DisassemblyAnnotationHandler(this);
             _tapeDeviceAttached = false;
             // TODO: Respond to these events
             //Package.CodeManager.CodeInjected += OnVmCodeInjected;
@@ -85,7 +81,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// Performs application-defined tasks associated with freeing, releasing, 
         /// or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             // TODO: Handle Dispose
             //Package.CodeManager.CodeInjected -= OnVmCodeInjected;
@@ -436,18 +432,17 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
                             return false;
                         }
 
-                        // TODO: Implement disassembly export
-                        //if (DisplayExportDisassemblyDialog(out var vm, startAddress, endAddress))
-                        //{
-                        //    // --- Export cancelled
-                        //    break;
-                        //}
+                        if (DisplayExportDisassemblyDialog(out var vm, startAddress, endAddress))
+                        {
+                            // --- Export cancelled
+                            break;
+                        }
 
-                        //var exporter = new DisassemblyExporter(vm, this);
-                        //var disassembler = CreateDisassembler();
-                        //exporter.ExportDisassembly(disassembler);
-                        //ExportDisassemblyViewModel.LatestFolder =
-                        //    Path.GetDirectoryName(vm.Filename);
+                        var exporter = new DisassemblyExporter(vm, this);
+                        var disassembler = CreateDisassembler();
+                        exporter.ExportDisassembly(disassembler);
+                        ExportDisassemblyViewModel.LatestFolder =
+                            Path.GetDirectoryName(vm.Filename);
                         break;
                     }
 
@@ -487,13 +482,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
         #region Overridden methods
 
-        /// <summary>
-        /// Obtain the machine view model from the solution
-        /// </summary>
-        protected override void OnSolutionOpened()
+        protected override void OnMachineInstanceChanged()
         {
-            base.OnSolutionOpened();
-            InitDisassembly();
+            if (Machine != null)
+            {
+                InitDisassembly();
+                SetRomViewMode(0);
+            }
         }
 
         /// <summary>
@@ -549,8 +544,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             base.OnStopped();
             DetachFromTapeDeviceEvents();
-            DisassemblyViewRefreshed?.Invoke(this,
-                new DisassemblyViewRefreshedEventArgs(0));
+            if (!IsSolutionClosing)
+            {
+                DisassemblyViewRefreshed?.Invoke(this,
+                    new DisassemblyViewRefreshedEventArgs(0));
+            }
         }
 
         #endregion
@@ -676,7 +674,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             DisassemblyItems = new ObservableCollection<DisassemblyItemViewModel>();
             LineIndexes = new Dictionary<ushort, int>();
-            AnnotationHandler = new DisassemblyAnnotationHandler(this);
+            AnnotationHandler.SetupMachineAnnotations();
         }
 
         /// <summary>
@@ -997,39 +995,39 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             return true;
         }
 
-        ///// <summary>
-        ///// Displays the Export Disassembly dialog to collect parameter data
-        ///// </summary>
-        ///// <param name="vm">View model with collected data</param>
-        ///// <param name="startAddress">Disassembly start address</param>
-        ///// <param name="endAddress">Disassembly end address</param>
-        ///// <returns>
-        ///// True, if the user stars export; false, if the export is cancelled
-        ///// </returns>
-        //private static bool DisplayExportDisassemblyDialog(out ExportDisassemblyViewModel vm, ushort startAddress, ushort endAddress)
-        //{
-        //    var exportDialog = new ExportDisassemblyDialog()
-        //    {
-        //        HasMaximizeButton = false,
-        //        HasMinimizeButton = false
-        //    };
+        /// <summary>
+        /// Displays the Export Disassembly dialog to collect parameter data
+        /// </summary>
+        /// <param name="vm">View model with collected data</param>
+        /// <param name="startAddress">Disassembly start address</param>
+        /// <param name="endAddress">Disassembly end address</param>
+        /// <returns>
+        /// True, if the user stars export; false, if the export is cancelled
+        /// </returns>
+        private static bool DisplayExportDisassemblyDialog(out ExportDisassemblyViewModel vm, ushort startAddress, ushort endAddress)
+        {
+            var exportDialog = new ExportDisassemblyDialog()
+            {
+                HasMaximizeButton = false,
+                HasMinimizeButton = false
+            };
 
-        //    vm = new ExportDisassemblyViewModel
-        //    {
-        //        Filename = Path.Combine(ExportDisassemblyViewModel.LatestFolder
-        //            ?? "C:\\Temp", "ExportedCode.z80asm"),
-        //        StartAddress = startAddress.ToString(),
-        //        EndAddress = endAddress.ToString(),
-        //        AddToProject = true,
-        //        HangingLabels = true,
-        //        CommentStyle = CommentStyle.Semicolon,
-        //        MaxLineLengthType = LineLengthType.L100,
-        //        IndentDepth = IndentDepthType.Two
-        //    };
-        //    exportDialog.SetVm(vm);
-        //    var accepted = exportDialog.ShowModal();
-        //    return !accepted.HasValue || !accepted.Value;
-        //}
+            vm = new ExportDisassemblyViewModel
+            {
+                Filename = Path.Combine(ExportDisassemblyViewModel.LatestFolder
+                    ?? "C:\\Temp", "ExportedCode.z80asm"),
+                StartAddress = startAddress.ToString(),
+                EndAddress = endAddress.ToString(),
+                AddToProject = true,
+                HangingLabels = true,
+                CommentStyle = CommentStyle.Semicolon,
+                MaxLineLengthType = LineLengthType.L100,
+                IndentDepth = IndentDepthType.Two
+            };
+            exportDialog.SetVm(vm);
+            var accepted = exportDialog.ShowModal();
+            return !accepted.HasValue || !accepted.Value;
+        }
 
         #endregion
 

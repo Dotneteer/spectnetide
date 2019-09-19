@@ -233,7 +233,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
         /// </summary>
         protected override void OnStopped()
         {
-            SetRomViewMode(0);
+            if (!IsSolutionClosing) SetRomViewMode(0);
         }
 
         /// <summary>

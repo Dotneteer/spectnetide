@@ -288,6 +288,11 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
             }
         }
 
+        protected override void OnFirstStart()
+        {
+            ResetValues();
+        }
+
         /// <summary>
         /// Reset register values when the solution is closing
         /// </summary>

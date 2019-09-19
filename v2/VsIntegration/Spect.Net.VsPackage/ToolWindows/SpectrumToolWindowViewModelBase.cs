@@ -55,6 +55,11 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
+        /// Indicates if the solution is closing
+        /// </summary>
+        public bool IsSolutionClosing => SpectNetPackage.Default.Solution.IsSolutionClosing;
+
+        /// <summary>
         /// Instantiates this view model
         /// </summary>
         public SpectrumToolWindowViewModelBase()
@@ -72,7 +77,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// Performs application-defined tasks associated with freeing, releasing, 
         /// or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             SpectNetPackage.Default.Solution.SolutionOpened -= OnInternalSolutionOpened;
             SpectNetPackage.Default.Solution.SolutionClosing -= OnInternalSolutionClosing;
