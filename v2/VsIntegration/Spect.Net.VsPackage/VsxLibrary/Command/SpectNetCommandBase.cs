@@ -75,9 +75,17 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             OleMenuCommand = new OleMenuCommand((s, e) => { OnExecute(); }, commandId);
             OleMenuCommand.BeforeQueryStatus += (s, e) =>
             {
-                if (s is OleMenuCommand mc)
+                try
                 {
-                    OnQueryStatus(mc);
+                    if (s is OleMenuCommand mc)
+                    {
+                        OnQueryStatus(mc);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Report(ex);
+                    throw ex;
                 }
             };
             commandService.AddCommand(OleMenuCommand);
@@ -127,50 +135,57 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// </summary>
         private void OnExecute()
         {
-            IsCancelled = false;
-            ExecuteOnMainThread();
-            if (IsCancelled)
+            try
             {
-                return;
-            }
-            JoinableTaskFactory.RunAsync(async () =>
-            {
-                try
+                IsCancelled = false;
+                ExecuteOnMainThread();
+                if (IsCancelled)
                 {
-                    await Task.Yield(); // get off the caller's callstack.
-                    await ExecuteAsync();
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    await CompleteOnMainThreadAsync();
+                    return;
                 }
-                catch (OperationCanceledException)
+                JoinableTaskFactory.RunAsync(async () =>
                 {
-                    // --- This exception is expected because we signaled the cancellation token
-                    IsCancelled = true;
-                    OnCancellation();
-                }
-                catch (AggregateException ex)
-                {
-                    // --- ignore AggregateException containing only OperationCanceledExceptionI
-                    if (ex.InnerException is OperationCanceledException)
+                    try
                     {
+                        await Task.Yield(); // get off the caller's callstack.
+                        await ExecuteAsync();
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        await CompleteOnMainThreadAsync();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // --- This exception is expected because we signaled the cancellation token
                         IsCancelled = true;
                         OnCancellation();
                     }
-                    else
+                    catch (AggregateException ex)
                     {
-                        OnException(ex);
+                        // --- ignore AggregateException containing only OperationCanceledException
+                        if (ex.InnerException is OperationCanceledException)
+                        {
+                            IsCancelled = true;
+                            OnCancellation();
+                        }
+                        else
+                        {
+                            OnException(ex);
+                        }
                     }
-                }
-                finally
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    await FinallyOnMainThreadAsync();
-                    if (UpdateUiWhenComplete)
+                    finally
                     {
-                        VsxAsyncPackage.UpdateCommandUi();
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        await FinallyOnMainThreadAsync();
+                        if (UpdateUiWhenComplete)
+                        {
+                            VsxAsyncPackage.UpdateCommandUi();
+                        }
                     }
-                }
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Report(ex);
+            }
         }
 
         /// <summary>

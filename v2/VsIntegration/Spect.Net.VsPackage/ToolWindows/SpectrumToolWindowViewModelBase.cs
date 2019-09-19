@@ -1,28 +1,22 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
+using Spect.Net.Wpf.Mvvm;
 using System;
-
-// ReSharper disable IdentifierTypo
 
 namespace Spect.Net.VsPackage.ToolWindows
 {
     /// <summary>
-    /// This class is intended to be the base of all ZX Spectrum related tool window
-    /// view models
+    /// This class is intended to be the base of all tool window view models that
+    /// are connected to the ZX Spectrum emulator.
     /// </summary>
-    public class SpectrumGenericToolWindowViewModel : OldSpectNetToolWindowViewModelBase
+    /// <remarks>
+    /// 
+    /// </remarks>
+    public abstract class SpectrumToolWindowViewModelBase: EnhancedViewModelBase, IDisposable
     {
-        private bool _machineEventsInitialized;
         private bool _refreshInProgress;
         private int _screenRefreshCount;
-
-        // --- Constants used by commands
-        protected const string INV_SYNTAX = "Invalid command syntax";
-        protected const string INV_S48_COMMAND = "This command cannot be used for a Spectrum 48K model.";
-        protected const string INV_RUN_COMMAND = "This command can only be used when the virtual machine is running.";
-        protected const string INV_CONTEXT = "This command cannot be used in {0}.";
-        protected const string UNDEF_SYMBOL = "This command uses an undefined symbol ({0}).";
 
         /// <summary>
         /// The aggregated ZX Spectrum view model
@@ -56,18 +50,36 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Instantiates this view model
         /// </summary>
-        public SpectrumGenericToolWindowViewModel()
+        public SpectrumToolWindowViewModelBase()
         {
             if (IsInDesignMode) return;
 
             EmulatorViewModel.VmStateChanged += OnInternalVmStateChanged;
             EmulatorViewModel.RenderFrameCompleted += OnInternalRenderFrameCompleted;
-            _machineEventsInitialized = true;
-
+            EmulatorViewModel.MachineInstanceChanged += OnInternalMachineInstanceChanged;
             SpectNetPackage.Default.Solution.SolutionOpened += OnInternalSolutionOpened;
             SpectNetPackage.Default.Solution.SolutionClosing += OnInternalSolutionClosing;
-            // ReSharper disable once VirtualMemberCallInConstructor
-            Initialize();
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, 
+        /// or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            SpectNetPackage.Default.Solution.SolutionOpened -= OnInternalSolutionOpened;
+            SpectNetPackage.Default.Solution.SolutionClosing -= OnInternalSolutionClosing;
+            EmulatorViewModel.VmStateChanged -= OnInternalVmStateChanged;
+            EmulatorViewModel.RenderFrameCompleted -= OnInternalRenderFrameCompleted;
+            EmulatorViewModel.MachineInstanceChanged -= OnInternalMachineInstanceChanged;
+        }
+
+        /// <summary>
+        /// Responds to the event when machine instance changes
+        /// </summary>
+        private void OnInternalMachineInstanceChanged(object sender, MachineInstanceChangedEventArgs e)
+        {
+            OnMachineInstanceChanged();
         }
 
         /// <summary>
@@ -75,13 +87,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionOpened(object sender, EventArgs e)
         {
-            if (!_machineEventsInitialized)
-            {
-                EmulatorViewModel.VmStateChanged += OnInternalVmStateChanged;
-                EmulatorViewModel.RenderFrameCompleted += OnInternalRenderFrameCompleted;
-                _machineEventsInitialized = true;
-            }
-            Initialize();
             OnSolutionOpened();
         }
 
@@ -90,11 +95,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionClosing(object sender, EventArgs e)
         {
-            if (_machineEventsInitialized)
-            {
-                EmulatorViewModel.VmStateChanged -= OnInternalVmStateChanged;
-                EmulatorViewModel.RenderFrameCompleted -= OnInternalRenderFrameCompleted;
-            }
             OnSolutionClosing();
         }
 
@@ -148,9 +148,9 @@ namespace Spect.Net.VsPackage.ToolWindows
         }
 
         /// <summary>
-        /// Override this method to initialize this view model
+        /// Override this method to respond the machine instance changes
         /// </summary>
-        protected virtual void Initialize()
+        protected virtual void OnMachineInstanceChanged()
         {
         }
 
@@ -219,21 +219,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         protected virtual void OnStopped()
         {
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, 
-        /// or resetting unmanaged resources.
-        /// </summary>
-        public override void Dispose()
-        {
-            SpectNetPackage.Default.Solution.SolutionOpened -= OnInternalSolutionOpened;
-            SpectNetPackage.Default.Solution.SolutionClosing -= OnInternalSolutionClosing;
-            if (!_machineEventsInitialized) return;
-
-            EmulatorViewModel.VmStateChanged -= OnInternalVmStateChanged;
-            EmulatorViewModel.RenderFrameCompleted -= OnInternalRenderFrameCompleted;
-            _machineEventsInitialized = false;
         }
     }
 }

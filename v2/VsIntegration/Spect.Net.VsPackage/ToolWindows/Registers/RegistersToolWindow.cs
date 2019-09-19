@@ -11,5 +11,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
     public class RegistersToolWindow :
         SpectrumToolWindowPane<RegistersToolWindowControl, RegistersToolWindowViewModel>
     {
+        protected override RegistersToolWindowViewModel GetVmInstance()
+        {
+            return SpectNetPackage.Default.RegistersViewModel;
+        }
     }
 }

@@ -7,12 +7,16 @@ using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
-    public class EmulatorViewModel: ViewModelBase, IDisposable
+    /// <summary>
+    /// Represents the view model of the ZX Spectrum emulator
+    /// </summary>
+    public class EmulatorViewModel: EnhancedViewModelBase, IDisposable
     {
         private bool _shadowsScreenEnabled;
         private bool _ulaIndicationEnabled;
         private ushort _memViewPoint;
         private ushort _disAssViewPoint;
+
 
         #region ViewModel properties
 

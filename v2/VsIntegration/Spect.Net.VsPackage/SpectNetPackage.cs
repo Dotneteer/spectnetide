@@ -19,10 +19,14 @@ using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.VsxLibrary;
+using Spect.Net.VsPackage.VsxLibrary.Output;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
 using Spect.Net.Wpf.Providers;
 using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 using Task = System.Threading.Tasks.Task;
+
+#pragma warning disable IDE0067 // Dispose objects before losing scope
+#pragma warning disable VSTHRD100
 
 namespace Spect.Net.VsPackage
 {
@@ -171,9 +175,16 @@ namespace Spect.Net.VsPackage
         public EmulatorViewModel EmulatorViewModel { get; private set; }
 
         /// <summary>
+        /// Contains the view model for the Z80 Registers tool window
+        /// </summary>
+        public RegistersToolWindowViewModel RegistersViewModel { get; private set; }
+
+        /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
         /// </summary>
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
+
+        #region Package lifecycle
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -193,20 +204,15 @@ namespace Spect.Net.VsPackage
             // --- Special providers for the ZX Spectrum virtual machine
             SpectrumMachine.Reset();
             SpectrumMachine.RegisterDefaultProviders();
+            SpectrumMachine.RegisterProvider<IRomProvider>(() => new PackageRomProvider());
             SpectrumMachine.RegisterProvider<IBeeperProvider>(() => new AudioWaveProvider());
             SpectrumMachine.RegisterProvider<ISoundProvider>(() => new AudioWaveProvider(AudioProviderType.Psg));
             SpectrumMachine.RegisterProvider<ITapeLoadProvider>(() => new VsIntegratedTapeLoadProvider());
             SpectrumMachine.RegisterProvider<ITapeSaveProvider>(() => new VsIntegratedTapeSaveProvider());
             SpectrumMachine.RegisterProvider<IKempstonProvider>(() => new KempstonProvider());
-            EmulatorViewModel = new EmulatorViewModel();
 
             // --- Initialize other services
             BreakpointChangeWatcher = new BreakpointChangeWatcher();
-            BreakpointChangeWatcher.BreakpointsChanged += async (sender, args) =>
-            {
-                await OutputWindow.General.WriteLineAsync(
-                    $"Added: {args.Added.Count}, modified: {args.Modified.Count} deleted: {args.Deleted.Count}");
-            };
             BreakpointChangeWatcher.Start();
 
             // --- Main thread initialization part
@@ -221,6 +227,13 @@ namespace Spect.Net.VsPackage
             ErrorList = new ErrorListWindow();
             TaskList = new TaskListWindow();
             DebugInfoProvider = new VsIntegratedSpectrumDebugInfoProvider();
+
+            // --- Create view models
+            EmulatorViewModel = new EmulatorViewModel();
+            RegistersViewModel = new RegistersToolWindowViewModel();
+
+            var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
+            await LogAsync("SpectNetIdePackage initialized.");
         }
 
         /// <summary>
@@ -268,16 +281,6 @@ namespace Spect.Net.VsPackage
             // ReSharper restore ObjectCreationAsStatement
         }
 
-        /// <summary>
-        /// Tests if the current model is a ZX Spectrum 48K
-        /// </summary>
-        /// <returns>True, if the current model = ZX Spectrum 48K; otherwise, false</returns>
-        public static bool IsSpectrum48Model()
-        {
-            return Default.Solution?.ActiveProject?.ModelName == SpectrumModels.ZX_SPECTRUM_48;
-        }
-
-
         /// <devdoc>
         /// This method will be called by Visual Studio in response to a package close
         /// (disposing will be true in this case).  The default implementation revokes all
@@ -285,11 +288,45 @@ namespace Spect.Net.VsPackage
         /// </devdoc>
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
             if (disposing)
             {
+                Solution.Dispose();
                 _ = BreakpointChangeWatcher.StopAsync();
             }
+            base.Dispose(disposing);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Logs a message to the SpectNetIDE output pane
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static void Log(string message)
+        {
+            var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
+            pane.WriteLine(message);
+        }
+
+        /// <summary>
+        /// Logs a message to the SpectNetIDE output pane asynchronously
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static async Task LogAsync(string message)
+        {
+            var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
+            await pane.WriteLineAsync(message);
+        }
+
+        /// <summary>
+        /// Tests if the current model is a ZX Spectrum 48K
+        /// </summary>
+        /// <returns>True, if the current model = ZX Spectrum 48K; otherwise, false</returns>
+        public static bool IsSpectrum48Model()
+        {
+            return Default.Solution?.ActiveProject?.ModelName == SpectrumModels.ZX_SPECTRUM_48;
         }
 
         /// <summary>
@@ -329,3 +366,6 @@ namespace Spect.Net.VsPackage
     {
     }
 }
+
+#pragma warning restore IDE0067 // Dispose objects before losing scope
+#pragma warning restore VSTHRD100

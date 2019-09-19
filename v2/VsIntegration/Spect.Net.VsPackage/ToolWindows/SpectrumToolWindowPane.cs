@@ -17,27 +17,21 @@ namespace Spect.Net.VsPackage.ToolWindows
         where TVm : EnhancedViewModelBase, new()
 
     {
-        private bool _initializedWithSolution;
-
         /// <summary>
         /// Prepares window frame events
         /// </summary>
+        /// <remarks>
+        /// This method is invoked only once during the life cycle of the
+        /// tool window.
+        /// </remarks>
         protected override void OnCreate()
         {
             base.OnCreate();
             var solution = SpectNetPackage.Default.Solution;
             solution.SolutionOpened += OnInternalSolutionOpened;
             solution.SolutionClosing += OnInternalSolutionClosing;
-
-            if (_initializedWithSolution) return;
-
-            var vm = SpectNetPackage.Default.EmulatorViewModel;
-            if (vm != null)
-            {
-                vm.VmStateChanged += VmOnVmStateChanged;
-                ChangeCaption();
-            }
-            _initializedWithSolution = true;
+            SpectNetPackage.Default.EmulatorViewModel.VmStateChanged += VmOnVmStateChanged;
+            ChangeCaption();
         }
 
         /// <summary>
@@ -45,13 +39,7 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionOpened(object sender, EventArgs e)
         {
-            var vm = SpectNetPackage.Default.EmulatorViewModel;
-            if (vm != null)
-            {
-                vm.VmStateChanged += VmOnVmStateChanged;
-                ChangeCaption();
-            }
-            _initializedWithSolution = true;
+            ChangeCaption();
             OnSolutionOpened();
         }
 
@@ -67,11 +55,6 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         private void OnInternalSolutionClosing(object sender, EventArgs e)
         {
-            var vm = SpectNetPackage.Default.EmulatorViewModel;
-            if (vm != null)
-            {
-                vm.VmStateChanged -= VmOnVmStateChanged;
-            }
             ClosePane();
             OnSolutionClosed();
         }

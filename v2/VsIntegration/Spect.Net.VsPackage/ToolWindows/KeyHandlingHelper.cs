@@ -115,5 +115,53 @@ namespace Spect.Net.VsPackage.ToolWindows
                 VsxAsyncPackage.UpdateCommandUi();
             }
         }
+
+        public static async void HandleDebugKeys(this SpectrumToolWindowViewModelBase vm, KeyEventArgs args)
+        {
+            var machine = vm.EmulatorViewModel.Machine;
+            var state = vm.EmulatorViewModel.MachineState;
+            if (args.Key == Key.F5)
+            {
+                if (WindowsKeyboard.Modifiers == ModifierKeys.None)
+                {
+                    // --- Run in Debug mode
+                    args.Handled = true;
+                    machine.StartDebug();
+                }
+                else if (WindowsKeyboard.Modifiers == ModifierKeys.Control)
+                {
+                    args.Handled = true;
+                    machine.Start();
+                }
+            }
+            else
+            {
+                if (state != VmState.Paused) return;
+
+                if (args.Key == Key.F11 && WindowsKeyboard.Modifiers == ModifierKeys.None)
+                {
+                    // --- Step into
+                    args.Handled = true;
+                    await machine.StepInto();
+                }
+                else if (args.Key == Key.System && args.SystemKey == Key.F10 && WindowsKeyboard.Modifiers == ModifierKeys.None)
+                {
+                    // --- Step over
+                    args.Handled = true;
+                    await machine.StepOver();
+                }
+                else if (args.Key == Key.F12 && WindowsKeyboard.Modifiers == ModifierKeys.None)
+                {
+                    // --- Step over
+                    args.Handled = true;
+                    await machine.StepOut();
+                }
+            }
+
+            if (args.Handled)
+            {
+                VsxAsyncPackage.UpdateCommandUi();
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
     [Guid("149E947C-6296-4BCE-A939-A5CD3AA6195F")]
     [Caption("Z80 Disassembly")]
     public class DisassemblyToolWindow :
-        ToolWindowPaneBase<DisassemblyToolWindowControl, DisassemblyToolWindowViewModel>
+        SpectrumToolWindowPane<DisassemblyToolWindowControl, DisassemblyToolWindowViewModel>
     {
     }
 }

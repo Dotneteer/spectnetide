@@ -70,7 +70,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.ToolWindow
         }
 
         /// <summary>
-        /// Prepares window frame events
+        /// Subscribes to window frame events
         /// </summary>
         protected override void OnCreate()
         {
@@ -80,6 +80,9 @@ namespace Spect.Net.VsPackage.VsxLibrary.ToolWindow
             _windowFrameEventCookie = uiShell.AdviseWindowFrameEvents(this);
         }
 
+        /// <summary>
+        /// Unsubscribes from window frame events
+        /// </summary>
         protected override void OnClose()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -142,8 +145,21 @@ namespace Spect.Net.VsPackage.VsxLibrary.ToolWindow
 
         protected ToolWindowPaneBase()
         {
-            Vm = new TVm();
+            Vm = GetVmInstance() ?? new TVm();
             Content.SetVm(Vm);
+        }
+
+        /// <summary>
+        /// Override this method to get the view model instance
+        /// that should be used with this tool window pane
+        /// </summary>
+        /// <returns>
+        /// View model instance to use. Null, if a new view model instance
+        /// should be created.
+        /// </returns>
+        protected virtual TVm GetVmInstance()
+        {
+            return null;
         }
     }
 

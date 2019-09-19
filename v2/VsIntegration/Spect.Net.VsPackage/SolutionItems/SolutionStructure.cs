@@ -35,6 +35,11 @@ namespace Spect.Net.VsPackage.SolutionItems
         public const string SETTINGS_FILE = ".spectrumsettings";
 
         /// <summary>
+        /// The name of the folder that contains ROMs and annotations
+        /// </summary>
+        public const string ROM_FOLDER = @"Rom";
+
+        /// <summary>
         /// Check period waiting time in milleseconds
         /// </summary>
         public const int WATCH_PERIOD = 1000;
@@ -267,10 +272,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         public string GetAnnotationResourceName(string romName, int page = -1)
         {
             var fullRomName = page == -1 ? romName : $"{romName}-{page}";
-            var annItem = ActiveProject.AnnotationProjectItems.FirstOrDefault(ri =>
-                string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
-                    StringComparison.InvariantCultureIgnoreCase) == 0);
-            return annItem?.Filename;
+            return Path.Combine(ActiveProject.ProjectDir, ROM_FOLDER, fullRomName + ".disann");
         }
 
         /// <summary>
@@ -282,10 +284,8 @@ namespace Spect.Net.VsPackage.SolutionItems
         public string LoadRomAnnotation(string romName, int page = -1)
         {
             var fullRomName = page == -1 ? romName : $"{romName}-{page}";
-            var annItem = ActiveProject.AnnotationProjectItems.FirstOrDefault(ri =>
-                string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
-                StringComparison.InvariantCultureIgnoreCase) == 0);
-            return annItem != null ? File.ReadAllText(annItem.Filename) : null;
+            var annFilename = Path.Combine(ActiveProject.ProjectDir, ROM_FOLDER, fullRomName + ".disann");
+            return File.ReadAllText(annFilename);
         }
 
         /// <summary>
@@ -297,13 +297,10 @@ namespace Spect.Net.VsPackage.SolutionItems
         public byte[] LoadRomBytes(string romName, int page = -1)
         {
             var fullRomName = page == -1 ? romName : $"{romName}-{page}";
-            var romItem = ActiveProject.RomProjectItems.FirstOrDefault(ri =>
-                string.Compare(Path.GetFileNameWithoutExtension(ri.Filename), fullRomName,
-                    StringComparison.InvariantCultureIgnoreCase) == 0);
-            if (romItem == null) return null;
+            var romFilename = Path.Combine(ActiveProject.ProjectDir, ROM_FOLDER, fullRomName + ".rom");
 
             // --- Get the content of the ROM file
-            using (var stream = new StreamReader(romItem.Filename).BaseStream)
+            using (var stream = new StreamReader(romFilename).BaseStream)
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 var bytes = new byte[stream.Length];
@@ -463,8 +460,7 @@ namespace Spect.Net.VsPackage.SolutionItems
                 new ActiveProjectChangedEventArgs(oldProject, newProject));
             if (newProject == null) return;
 
-            var pane = SpectNetOutput.GetPane<SpectNetIdeOutputPane>();
-            pane.WriteLine($"New active project: {newProject.Root.FileName}");
+            SpectNetPackage.Log($"New active project: {newProject.Root.FileName}");
         }
     }
 }

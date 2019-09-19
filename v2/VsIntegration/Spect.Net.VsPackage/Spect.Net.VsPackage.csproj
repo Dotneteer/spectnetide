@@ -87,6 +87,7 @@
     <Compile Include="Debugging\BreakpointInfo.cs" />
     <Compile Include="Debugging\BreakpointsChangedEventArgs.cs" />
     <Compile Include="Debugging\VsIntegratedSpectrumDebugInfoProvider.cs" />
+    <Compile Include="ExceptionHandler.cs" />
     <Compile Include="ImageMonikers.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmClassificationFormats.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmClassificationTypes.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
     <Compile Include="Machines\KempstonProvider.cs" />
     <Compile Include="Machines\MachineCollection.cs" />
+    <Compile Include="Machines\PackageRomProvider.cs" />
     <Compile Include="Machines\VsIntegratedTapeLoadProvider.cs" />
     <Compile Include="Machines\VsIntegratedTapeSaveProvider.cs" />
     <Compile Include="MyConfiguredProject.cs" />
@@ -216,7 +218,7 @@
       <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Registers\RegistersToolWindowViewModel.cs" />
-    <Compile Include="ToolWindows\SpectNetToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\OldSpectNetToolWindowViewModelBase.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\EmulatorViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\KeyboardScanner.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineInstanceChangedEventArgs.cs" />
@@ -231,6 +233,7 @@
     <Compile Include="ToolWindows\SpectrumGenericToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowPane.cs" />
+    <Compile Include="ToolWindows\SpectrumToolWindowViewModelBase.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
     <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />

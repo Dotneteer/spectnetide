@@ -27,7 +27,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// <summary>
         /// The name of the configuration file within the project folder
         /// </summary>
-        public const string CONFIG_FILE = @"\Rom\ZxSpectrum.spconf";
+        public const string CONFIG_FILE = @"Rom\ZxSpectrum.spconf";
 
         /// <summary>
         /// Message to display when a project folder is invalid
@@ -698,7 +698,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         /// </summary>
         private void LoadSpectrumModelInfo()
         {
-            var configFilename = ProjectDir + CONFIG_FILE;
+            var configFilename = Path.Combine(ProjectDir, CONFIG_FILE);
             try
             {
                 var data = File.ReadAllText(configFilename);

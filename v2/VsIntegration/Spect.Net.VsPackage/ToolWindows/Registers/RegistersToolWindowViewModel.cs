@@ -4,7 +4,7 @@
 
 namespace Spect.Net.VsPackage.ToolWindows.Registers
 {
-    public class RegistersToolWindowViewModel: SpectrumGenericToolWindowViewModel
+    public class RegistersToolWindowViewModel: SpectrumToolWindowViewModelBase
     {
         private ushort _af;
         private byte _f;
@@ -218,7 +218,43 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
         /// </summary>
         public RegistersToolWindowViewModel()
         {
-            ResetRegisters();
+            ResetValues();
+        }
+
+        /// <summary>
+        /// Resets the register values
+        /// </summary>
+        public void ResetValues()
+        {
+            AF = 0xFFFF;
+            F = 0xFF;
+            BC = 0xFFFF;
+            DE = 0xFFFF;
+            HL = 0xFFFF;
+            PC = 0xFFFF;
+            SP = 0xFFFF;
+            _AF_ = 0xFFFF;
+            _BC_ = 0xFFFF;
+            _DE_ = 0xFFFF;
+            _HL_ = 0xFFFF;
+            IX = 0xFFFF;
+            IY = 0xFFFF;
+            IR = 0xFFFF;
+            MW = 0xFFFF;
+            IM = 0;
+            IFF1 = IFF2 = 0;
+            Halted = 0;
+            Tacts = 0;
+            FrameCount = 0;
+            LastStepTacts = 0;
+            CurrentUlaTact = "---";
+            CurrentRasterLine = "---";
+            CurrentRasterPos = "---";
+            PixelOperation = "---";
+            ContentionValue = "---";
+            LastStepTacts = 0;
+            ContentionAccumulated = 0;
+            LastContentionValue = 0;
         }
 
         /// <summary>
@@ -253,11 +289,19 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
         }
 
         /// <summary>
+        /// Reset register values when the solution is closing
+        /// </summary>
+        protected override void OnSolutionClosing()
+        {
+            ResetValues();
+        }
+
+        /// <summary>
         /// Bind these registers to the Z80 CPU's register values
         /// </summary>
         public void BindTo()
         {
-            var cpu = EmulatorViewModel?.Machine?.Cpu;
+            var cpu = EmulatorViewModel.Machine?.Cpu;
             if (cpu == null) return;
 
             AF = cpu.AF;
@@ -310,31 +354,6 @@ namespace Spect.Net.VsPackage.ToolWindows.Registers
             LastStepTacts = cpu.Tacts - Machine.LastExecutionStartTact;
             ContentionAccumulated = Machine.ContentionAccumulated;
             LastContentionValue = Machine.ContentionAccumulated - Machine.LastExecutionContentionValue;
-        }
-
-        private void ResetRegisters()
-        {
-            AF = 0xFFFF;
-            F = 0xFF;
-            BC = 0xFFFF;
-            DE = 0xFFFF;
-            HL = 0xFFFF;
-            PC = 0xFFFF;
-            SP = 0xFFFF;
-            _AF_ = 0xFFFF;
-            _BC_ = 0xFFFF;
-            _DE_ = 0xFFFF;
-            _HL_ = 0xFFFF;
-            IX = 0xFFFF;
-            IY = 0xFFFF;
-            IR = 0xFFFF;
-            MW = 0xFFFF;
-            IM = 0;
-            IFF1 = IFF2 = 0;
-            Halted = 0;
-            Tacts = 0;
-            FrameCount = 0;
-            LastStepTacts = 0;
         }
     }
 }
