@@ -120,7 +120,8 @@ namespace Spect.Net.VsPackage.VsxLibrary.Output
         private void OutputString(string output)
         {
             if (IsVirtual) return;
-            _pane.OutputStringThreadSafe(output);
+            //_pane.OutputStringThreadSafe(output);
+            _pane.OutputString(output);
             if (_paneDefinition.AutoActivate && !_hasOutput)
             {
                 Activate();

@@ -8,6 +8,8 @@ using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Commands;
+using Spect.Net.VsPackage.CustomEditors.RomEditor;
+using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.Debugging;
 using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using Spect.Net.VsPackage.LanguageServices.Z80Test;
@@ -20,6 +22,7 @@ using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.ToolWindows.StackTool;
+using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Output;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
@@ -59,6 +62,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(TapeFileExplorerToolWindow), Transient = true)]
 
     // --- Language Services
     [ProvideLanguageService(
@@ -88,11 +92,21 @@ namespace Spect.Net.VsPackage
         ShowMatchingBrace = true,
         ShowSmartIndent = true)]
     [ProvideLanguageExtension(typeof(Z80TestLanguageService), ".z80test")]
+
     [ProvideProjectFactory(typeof(ZxSpectrumProjectFactory), 
         "ZX Spectrum Code Discovery Project",
         "ZX Spectrum Project Files (*.z80dcproj);*.z80cdproj", "z80cdproj", "z80cdproj",
         @"ProjectTemplates\ZX Spectrum", LanguageVsTemplate = "ZX Spectrum Code Discovery Project")]
     [ProvideOptionPage(typeof(SpectNetOptionsGrid), "Spect.Net IDE", "General options", 0, 0, true)]
+
+    // --- Custom editors
+    [ProvideEditorExtension(typeof(RomEditorFactory), RomEditorFactory.EXTENSION, 0x40)]
+    [ProvideEditorLogicalView(typeof(RomEditorFactory), LogicalViewID.Designer)]
+    [ProvideEditorExtension(typeof(TzxEditorFactory), TzxEditorFactory.EXTENSION, 0x40)]
+    [ProvideEditorLogicalView(typeof(TzxEditorFactory), LogicalViewID.Designer)]
+    [ProvideEditorExtension(typeof(TapEditorFactory), TapEditorFactory.EXTENSION, 0x40)]
+    [ProvideEditorLogicalView(typeof(TapEditorFactory), LogicalViewID.Designer)]
+
     public sealed class SpectNetPackage : VsxAsyncPackage
     {
         /// <summary>
@@ -258,6 +272,11 @@ namespace Spect.Net.VsPackage
             // --- Initialize the package here
             InitializeCommands();
 
+            // --- Register custom editors
+            RegisterEditorFactory(new RomEditorFactory());
+            RegisterEditorFactory(new TzxEditorFactory());
+            RegisterEditorFactory(new TapEditorFactory());
+
             // --- Manage the solution and its events
             Solution = new SolutionStructure();
             Solution.ActiveProjectChanged += OnActiveProjectChanged;
@@ -274,8 +293,7 @@ namespace Spect.Net.VsPackage
             StackViewModel = new StackToolWindowViewModel();
             BasicListViewModel = new BasicListToolWindowViewModel();
 
-            var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
-            await LogAsync("SpectNetIdePackage initialized.");
+            Log("SpectNetIdePackage initialized.");
         }
 
         /// <summary>
@@ -295,6 +313,8 @@ namespace Spect.Net.VsPackage
             new ShowZ80CpuStackCommand();
             StackToolWindow.InitializeToolbarCommands();
             new ShowBasicListCommand();
+            new ShowTapeExplorerCommand();
+            TapeFileExplorerToolWindow.InitializeToolbarCommands();
 
             // --- Solution Explorer project commands
             new SetAsActiveProjectCommand();
@@ -352,17 +372,6 @@ namespace Spect.Net.VsPackage
         {
             var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
             pane.WriteLine(message);
-        }
-
-        /// <summary>
-        /// Logs a message to the SpectNetIDE output pane asynchronously
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public static async Task LogAsync(string message)
-        {
-            var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
-            await pane.WriteLineAsync(message);
         }
 
         /// <summary>

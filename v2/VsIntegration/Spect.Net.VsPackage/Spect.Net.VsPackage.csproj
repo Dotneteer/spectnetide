@@ -80,11 +80,60 @@
     <Compile Include="Commands\ShowRegistersCommand.cs" />
     <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />
     <Compile Include="Commands\ShowSpectrumKeyboardCommand.cs" />
+    <Compile Include="Commands\ShowTapeExplorerCommand.cs" />
     <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\WriteProtectFloppyCommand.cs" />
     <Compile Include="Compilers\ICompilerService.cs" />
     <Compile Include="Compilers\Z80AssemblyCompiler.cs" />
+    <Compile Include="CustomEditors\RomEditor\CommandParser.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
+      <DependentUpon>RomEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\RomEditor\RomEditorFactory.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorPane.cs" />
     <Compile Include="CustomEditors\SpectrumConfEditorViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\StandardDataBlockControl.xaml.cs">
+      <DependentUpon>StandardDataBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\StandardDataBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapeBlockViewModelBase.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapEditorFactory.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapeFileViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TurboDataBlockControl.xaml.cs">
+      <DependentUpon>TurboDataBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveControl.xaml.cs">
+      <DependentUpon>TzxArchiveControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveTextItemViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorControl.xaml.cs">
+      <DependentUpon>TzxEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorFactory.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorPane.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxHardwareInfoBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxHardwareInfoControl.xaml.cs">
+      <DependentUpon>TzxHardwareInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml.cs">
+      <DependentUpon>TzxHeaderBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxHwBlockItemViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml.cs">
+      <DependentUpon>TzxOtherBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxSelectedBlockEventArgs.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxStandardSpeedBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml.cs">
+      <DependentUpon>TzxTextDescriptionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxTurboSpeedBlockViewModel.cs" />
     <Compile Include="Debugging\BreakpointChangeWatcher.cs" />
     <Compile Include="Debugging\BreakpointInfo.cs" />
     <Compile Include="Debugging\BreakpointsChangedEventArgs.cs" />
@@ -271,6 +320,11 @@
       <DependentUpon>StackToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\StackTool\StackToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerControl.xaml.cs">
+      <DependentUpon>TapeFileExplorerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerToolWindow.cs" />
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerViewModel.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
     <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />
@@ -285,6 +339,8 @@
     <Compile Include="VsxLibrary\Command\UnitTestCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\VfddCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\VmStateCommandBase.cs" />
+    <Compile Include="VsxLibrary\Editor\EditorFactoryBase.cs" />
+    <Compile Include="VsxLibrary\Editor\EditorPaneBase.cs" />
     <Compile Include="VsxLibrary\Output\MissingOutputPaneHandling.cs" />
     <Compile Include="VsxLibrary\Output\OutputPaneAttributes.cs" />
     <Compile Include="VsxLibrary\Output\OutputPaneDefinition.cs" />
@@ -576,6 +632,42 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CustomEditors\RomEditor\RomEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\StandardDataBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TurboDataBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxArchiveControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxHardwareInfoControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PackageStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -673,6 +765,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolWindows\StackTool\StackToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\TapeFileExplorer\TapeFileExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
