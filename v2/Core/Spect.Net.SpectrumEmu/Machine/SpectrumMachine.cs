@@ -3,6 +3,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Configuration;
 using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Machine;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
@@ -42,6 +43,7 @@ namespace Spect.Net.SpectrumEmu.Machine
         // --- Provider factories to create providers when instantiating the machine
         private static readonly Dictionary<Type, Func<object>> s_ProviderFactories =
             new Dictionary<Type, Func<object>>();
+        private static IStackDebugSupport s_StackDebugSupport;
 
         /// <summary>
         /// Resets the class members when first accessed
@@ -105,6 +107,15 @@ namespace Spect.Net.SpectrumEmu.Machine
             return optional
                 ? (TProvider)default
                 : throw new KeyNotFoundException($"Cannot find a factory for {typeof(TProvider)}");
+        }
+
+        /// <summary>
+        /// Registers the object that provides stack debug support
+        /// </summary>
+        /// <param name="stackDebugSupport">Stack debug support object</param>
+        public static void RegisterStackDebugSupport(IStackDebugSupport stackDebugSupport)
+        {
+            s_StackDebugSupport = stackDebugSupport;
         }
 
         #endregion
@@ -215,6 +226,10 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (debugProvider != null)
             {
                 machine.SpectrumVm.DebugInfoProvider = debugProvider;
+            }
+            if (s_StackDebugSupport != null)
+            {
+                machine.SpectrumVm.Cpu.StackDebugSupport = s_StackDebugSupport;
             }
             return machine;
         }
@@ -602,7 +617,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             if (IsFirstStart)
             {
                 SpectrumVm.Reset();
-                SpectrumVm.Cpu.StackDebugSupport.ClearStepOutStack();
+                SpectrumVm.Cpu.StackDebugSupport.Reset();
                 SpectrumVm.DebugInfoProvider?.ResetHitCounts();
                 CpuFrameCount = 0;
                 RenderFrameCount = 0;

@@ -79,6 +79,7 @@
     <Compile Include="Commands\ShowRegistersCommand.cs" />
     <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />
     <Compile Include="Commands\ShowSpectrumKeyboardCommand.cs" />
+    <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\WriteProtectFloppyCommand.cs" />
     <Compile Include="Compilers\ICompilerService.cs" />
     <Compile Include="Compilers\Z80AssemblyCompiler.cs" />
@@ -244,6 +245,21 @@
     <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowPane.cs" />
     <Compile Include="ToolWindows\SpectrumToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\StackTool\IStackEventData.cs" />
+    <Compile Include="ToolWindows\StackTool\SimpleStackDebugSupport.cs" />
+    <Compile Include="ToolWindows\StackTool\SpContentItemControl.xaml.cs">
+      <DependentUpon>SpContentItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\StackTool\SpManipulationItemControl.xaml.cs">
+      <DependentUpon>SpManipulationItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\StackTool\StackContentManipulationViewModel.cs" />
+    <Compile Include="ToolWindows\StackTool\StackPointerManipulationViewModel.cs" />
+    <Compile Include="ToolWindows\StackTool\StackToolWindow.cs" />
+    <Compile Include="ToolWindows\StackTool\StackToolWindowControl.xaml.cs">
+      <DependentUpon>StackToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\StackTool\StackToolWindowViewModel.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
     <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />
@@ -628,6 +644,18 @@
     <Page Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\StackTool\SpContentItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\StackTool\SpManipulationItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\StackTool\StackToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

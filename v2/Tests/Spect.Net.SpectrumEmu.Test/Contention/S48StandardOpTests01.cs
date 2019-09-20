@@ -896,7 +896,8 @@ namespace Spect.Net.SpectrumEmu.Test.Contention
             };
 
             // --- Act/Assert
-            ExecuteContentionTest(ops, codeAddress, tactsFromFirstPixel, expectedLength);
+            ExecuteContentionTest(ops, codeAddress, tactsFromFirstPixel, expectedLength,
+                s => { s.Cpu.Registers.HL = 0x0000; });
         }
 
         [TestMethod]

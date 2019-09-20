@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Discovery;
+using Spect.Net.SpectrumEmu.Cpu;
+using System.Collections.Generic;
 
-namespace Spect.Net.SpectrumEmu.Cpu
+namespace Spect.Net.VsPackage.ToolWindows.StackTool
 {
     /// <summary>
     /// This class provides stack debug support
     /// </summary>
-    public class DefaultStackDebugSupport : IStackDebugSupport
+    public class SimpleStackDebugSupport : IStackDebugSupport, IStackEventData
     {
-        // --- The Step-Out stack
         private readonly Stack<ushort> _stepOutStack = new Stack<ushort>();
 
         /// <summary>
@@ -28,9 +28,10 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         public void Reset()
         {
-            StackPointerEvents = new LruList<StackPointerManipulationEvent>(16);
+            var package = SpectNetPackage.Default;
+            StackPointerEvents = new LruList<StackPointerManipulationEvent>(
+                package.Options.StackPointerEvents);
             StackContentEvents = new Dictionary<ushort, StackContentManipulationEvent>();
-            ClearStepOutStack();
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// Pops a Step-Out return point address from the stack
         /// </summary>
         /// <returns>Address popped from the stack</returns>
-        /// <returns>Zero, if the Step-Out stack is empty</returns>
+        /// <returns>Zeor, if the Step-Out stack is empty</returns>
         public ushort PopStepOutAddress()
         {
             if (_stepOutStack.Count > 0)

@@ -35,5 +35,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             LineRight = 300;
             LineTop = 100;
         }
+
+        protected override void OnSolutionClosing()
+        {
+            SpectrumVm.BeeperProvider.KillSound();
+            SpectrumVm.SoundProvider?.KillSound();
+        }
     }
 }

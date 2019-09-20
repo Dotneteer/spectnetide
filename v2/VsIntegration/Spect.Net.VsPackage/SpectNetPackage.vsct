@@ -33,28 +33,28 @@
       </Menu>
 
       <!-- Tape File Explorer tool window toolbar -->
-      <!--<Menu guid="COMMAND_SET_GUID" id="TapeFileExplorerToolbar" type="ToolWindowToolbar">
+      <Menu guid="COMMAND_SET_GUID" id="TapeFileExplorerToolbar" type="ToolWindowToolbar">
         <CommandFlag>DefaultDocked</CommandFlag>
         <Strings>
           <ButtonText>Tape File Explorer ToolBar</ButtonText>
         </Strings>
-      </Menu>-->
+      </Menu>
 
       <!-- Z80 Cpu Stack tool window toolbar -->
-      <!--<Menu guid="COMMAND_SET_GUID" id="CpuStackToolbar" type="ToolWindowToolbar">
+      <Menu guid="COMMAND_SET_GUID" id="CpuStackToolbar" type="ToolWindowToolbar">
         <CommandFlag>DefaultDocked</CommandFlag>
         <Strings>
           <ButtonText>Z80 Cpu Stack ToolBar</ButtonText>
         </Strings>
-      </Menu>-->
+      </Menu>
 
       <!-- Unit test explorer tool window toolbar -->
-      <!--<Menu guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbar" type="ToolWindowToolbar">
+      <Menu guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbar" type="ToolWindowToolbar">
         <CommandFlag>DefaultDocked</CommandFlag>
         <Strings>
           <ButtonText>Z80 Unit Test Explorer ToolBar</ButtonText>
         </Strings>
-      </Menu>-->
+      </Menu>
 
     </Menus>
 
@@ -90,34 +90,34 @@
       </Group>
 
       <!-- TapeFileWindows menu group below the main menu -->
-      <!--<Group guid="COMMAND_SET_GUID" id="TapeFileWindowsGroup" priority="0x00200">
+      <Group guid="COMMAND_SET_GUID" id="TapeFileWindowsGroup" priority="0x00200">
         <Parent guid="COMMAND_SET_GUID" id="TopLevelMenu" />
-      </Group>-->
+      </Group>
 
       <!-- TapeFileWindows menu group below the main menu -->
-      <!--<Group guid="COMMAND_SET_GUID" id="TestExplorerWindowsGroup" priority="0x00200">
+      <Group guid="COMMAND_SET_GUID" id="TestExplorerWindowsGroup" priority="0x00200">
         <Parent guid="COMMAND_SET_GUID" id="TopLevelMenu" />
-      </Group>-->
+      </Group>
 
       <!-- Tape File Explorer tool window toolbar control commands group -->
-      <!--<Group guid="COMMAND_SET_GUID" id="TapeFileExplorerToolbarGroup" priority="0x0000">
+      <Group guid="COMMAND_SET_GUID" id="TapeFileExplorerToolbarGroup" priority="0x0000">
         <Parent guid="COMMAND_SET_GUID" id="TapeFileExplorerToolbar" />
-      </Group>-->
+      </Group>
 
       <!-- Z80 CPU Stack toolbar control commands group -->
-      <!--<Group guid="COMMAND_SET_GUID" id="CpuStackToolbarGroup" priority="0x0000">
+      <Group guid="COMMAND_SET_GUID" id="CpuStackToolbarGroup" priority="0x0000">
         <Parent guid="COMMAND_SET_GUID" id="CpuStackToolbar" />
-      </Group>-->
+      </Group>
 
       <!-- Unit Test Explorer tool window toolbar start commands group -->
-      <!--<Group guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbarStartGroup" priority="0x0100">
+      <Group guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbarStartGroup" priority="0x0100">
         <Parent guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbar" />
-      </Group>-->
+      </Group>
 
       <!-- Unit Test Explorer tool window toolbar start commands group -->
-      <!--<Group guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbarViewGroup" priority="0x0100">
+      <Group guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbarViewGroup" priority="0x0100">
         <Parent guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbar" />
-      </Group>-->
+      </Group>
     </Groups>
 
     <Buttons>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
+using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.Wpf.Mvvm;
@@ -97,6 +98,21 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// Provider to manage debug information
         /// </summary>
         public ISpectrumDebugInfoProvider DebugInfoProvider => SpectNetPackage.Default.DebugInfoProvider;
+
+        /// <summary>
+        /// Stack debug provider
+        /// </summary>
+        public IStackDebugSupport StackDebugSupport
+        {
+            get => Machine?.SpectrumVm?.Cpu?.StackDebugSupport;
+            set
+            {
+                if (Machine?.SpectrumVm?.Cpu != null)
+                {
+                    Machine.SpectrumVm.Cpu.StackDebugSupport = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Signs if ZX Spectrum keyboard scan is enabled

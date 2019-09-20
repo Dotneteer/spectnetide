@@ -18,6 +18,7 @@ using Spect.Net.VsPackage.ToolWindows.Keyboard;
 using Spect.Net.VsPackage.ToolWindows.Memory;
 using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
+using Spect.Net.VsPackage.ToolWindows.StackTool;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Output;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
@@ -55,6 +56,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(RegistersToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
 
     // --- Language Services
     [ProvideLanguageService(
@@ -200,6 +202,11 @@ namespace Spect.Net.VsPackage
         public DisassemblyToolWindowViewModel DisassemblyViewModel { get; private set; }
 
         /// <summary>
+        /// Contains the view model for the Z80 Stack tool window
+        /// </summary>
+        public StackToolWindowViewModel StackViewModel { get; private set; }
+
+        /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
         /// </summary>
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
@@ -232,6 +239,7 @@ namespace Spect.Net.VsPackage
             SpectrumMachine.RegisterProvider<ITapeSaveProvider>(() => new VsIntegratedTapeSaveProvider());
             SpectrumMachine.RegisterProvider<IKempstonProvider>(() => new KempstonProvider());
             SpectrumMachine.RegisterProvider<ISpectrumDebugInfoProvider>(() => DebugInfoProvider);
+            SpectrumMachine.RegisterStackDebugSupport(new SimpleStackDebugSupport());
 
             // --- Initialize other services
             BreakpointChangeWatcher = new BreakpointChangeWatcher();
@@ -256,6 +264,7 @@ namespace Spect.Net.VsPackage
             RegistersViewModel = new RegistersToolWindowViewModel();
             MemoryViewModel = new MemoryToolWindowViewModel();
             DisassemblyViewModel = new DisassemblyToolWindowViewModel();
+            StackViewModel = new StackToolWindowViewModel();
 
             var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
             await LogAsync("SpectNetIdePackage initialized.");
@@ -275,6 +284,8 @@ namespace Spect.Net.VsPackage
             new ShowRegistersCommand();
             new ShowDisassemblyCommand();
             new ShowMemoryCommand();
+            new ShowZ80CpuStackCommand();
+            StackToolWindow.InitializeToolbarCommands();
 
             // --- Solution Explorer project commands
             new SetAsActiveProjectCommand();

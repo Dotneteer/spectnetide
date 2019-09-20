@@ -703,7 +703,6 @@ namespace Spect.Net.SpectrumEmu.Cpu
         /// </summary>
         private void ExecuteReset()
         {
-            TurnOffCpu();
             _instructionBytes.Clear();
             _lastPC = 0;
             _iff1 = false;
