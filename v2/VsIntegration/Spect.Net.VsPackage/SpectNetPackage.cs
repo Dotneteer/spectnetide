@@ -13,6 +13,7 @@ using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using Spect.Net.VsPackage.LanguageServices.Z80Test;
 using Spect.Net.VsPackage.Machines;
 using Spect.Net.VsPackage.SolutionItems;
+using Spect.Net.VsPackage.ToolWindows.BasicList;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using Spect.Net.VsPackage.ToolWindows.Keyboard;
 using Spect.Net.VsPackage.ToolWindows.Memory;
@@ -57,6 +58,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(DisassemblyToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(MemoryToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
 
     // --- Language Services
     [ProvideLanguageService(
@@ -207,6 +209,11 @@ namespace Spect.Net.VsPackage
         public StackToolWindowViewModel StackViewModel { get; private set; }
 
         /// <summary>
+        /// Contains the view model for the ZX Spectrum BASIC tool window
+        /// </summary>
+        public BasicListToolWindowViewModel BasicListViewModel { get; private set; }
+
+        /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
         /// </summary>
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
@@ -265,6 +272,7 @@ namespace Spect.Net.VsPackage
             MemoryViewModel = new MemoryToolWindowViewModel();
             DisassemblyViewModel = new DisassemblyToolWindowViewModel();
             StackViewModel = new StackToolWindowViewModel();
+            BasicListViewModel = new BasicListToolWindowViewModel();
 
             var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
             await LogAsync("SpectNetIdePackage initialized.");
@@ -286,6 +294,7 @@ namespace Spect.Net.VsPackage
             new ShowMemoryCommand();
             new ShowZ80CpuStackCommand();
             StackToolWindow.InitializeToolbarCommands();
+            new ShowBasicListCommand();
 
             // --- Solution Explorer project commands
             new SetAsActiveProjectCommand();

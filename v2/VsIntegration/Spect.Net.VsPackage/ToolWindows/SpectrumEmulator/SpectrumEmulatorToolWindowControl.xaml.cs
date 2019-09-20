@@ -28,19 +28,6 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public SpectrumEmulatorToolWindowControl()
         {
             InitializeComponent();
-
-            // --- Prepare to handle the shutdown message
-//            SpectNetPackage.Default.PackageClosing += (s, e) =>
-//            {
-//#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
-//                Dispatcher.Invoke(() =>
-//#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
-//                {
-//                        SpectrumControl.Vm.SpectrumVm.BeeperProvider.KillSound();
-//                        SpectrumControl.Vm.SpectrumVm.SoundProvider?.KillSound();
-//                    },
-//                    DispatcherPriority.Normal);
-//            };
             PreviewKeyDown += OnPreviewKeyDown;
         }
 

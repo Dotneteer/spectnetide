@@ -74,6 +74,7 @@
     <Compile Include="Commands\SetAsDefaultAnnotationFileCommand.cs" />
     <Compile Include="Commands\SetAsDefaultCodeFileCommand.cs" />
     <Compile Include="Commands\SetAsDefaultTapeFileCommand.cs" />
+    <Compile Include="Commands\ShowBasicListCommand.cs" />
     <Compile Include="Commands\ShowDisassemblyCommand.cs" />
     <Compile Include="Commands\ShowMemoryCommand.cs" />
     <Compile Include="Commands\ShowRegistersCommand.cs" />
@@ -146,6 +147,16 @@
     <Compile Include="ToolWindows\BankAware\DisassemblyAnnotationHandler.cs" />
     <Compile Include="ToolWindows\BankAware\MemoryViewModel.cs" />
     <Compile Include="ToolWindows\BankAware\Spectrum48RomLabelProvider.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicLineViewModel.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListControl.xaml.cs">
+      <DependentUpon>BasicListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindow.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindowControl.xaml.cs">
+      <DependentUpon>BasicListToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListViewModel.cs" />
     <Compile Include="ToolWindows\CommandLineEventArgs.cs" />
     <Compile Include="ToolWindows\CommandPromptControl.xaml.cs">
       <DependentUpon>CommandPromptControl.xaml</DependentUpon>
@@ -566,6 +577,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="PackageStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\BasicList\BasicListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\BasicList\BasicListToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
