@@ -81,8 +81,10 @@
     <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />
     <Compile Include="Commands\ShowSpectrumKeyboardCommand.cs" />
     <Compile Include="Commands\ShowTapeExplorerCommand.cs" />
+    <Compile Include="Commands\ShowWatchMemoryCommand.cs" />
     <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\WriteProtectFloppyCommand.cs" />
+    <Compile Include="Compilers\CompilationCompletedEventArgs.cs" />
     <Compile Include="Compilers\ICompilerService.cs" />
     <Compile Include="Compilers\Z80AssemblyCompiler.cs" />
     <Compile Include="CustomEditors\RomEditor\CommandParser.cs" />
@@ -325,6 +327,16 @@
     </Compile>
     <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerToolWindow.cs" />
     <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerViewModel.cs" />
+    <Compile Include="ToolWindows\Watch\SymbolAwareSpectrumEvaluationContext.cs" />
+    <Compile Include="ToolWindows\Watch\WatchItemControl.xaml.cs">
+      <DependentUpon>WatchItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Watch\WatchItemViewModel.cs" />
+    <Compile Include="ToolWindows\Watch\WatchToolWindow.cs" />
+    <Compile Include="ToolWindows\Watch\WatchToolWindowControl.xaml.cs">
+      <DependentUpon>WatchToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Watch\WatchToolWindowViewModel.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
     <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />
@@ -769,6 +781,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolWindows\TapeFileExplorer\TapeFileExplorerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Watch\WatchItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Watch\WatchToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

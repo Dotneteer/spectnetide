@@ -1,0 +1,51 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch" x:Class="Spect.Net.VsPackage.ToolWindows.Watch.WatchItemControl" 
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="600" d:DataContext="{d:DesignInstance {x:Type local:WatchItemViewModel}, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Modify" Command="{Binding UpdateCommand}"/>
+            <MenuItem Header="Remove" Command="{Binding RemoveCommand}"/>
+            <Separator />
+            <MenuItem Header="Move up" Command="{Binding MoveUpCommand}" IsEnabled="{Binding CanMoveUp, Mode=OneWay}"/>
+            <MenuItem Header="Move down" Command="{Binding MoveDownCommand}" IsEnabled="{Binding CanMoveDown, Mode=OneWay}"/>
+        </ContextMenu>
+
+    </UserControl.ContextMenu>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="{Binding Parent.LabelWidth}"/>
+            <ColumnDefinition Width="6"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Text="{Binding SeqNo}" HorizontalAlignment="Right" 
+                   Style="{DynamicResource Z80Text}" Margin="0,0,12,0"/>
+        <TextBlock Grid.Column="1" Text="{Binding Format}" 
+            Style="{DynamicResource Z80HilitedText}" />
+        <TextBlock Grid.Column="2" Text="{Binding Expression}" Style="{DynamicResource Z80HilitedText}" />
+        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                ForceCursor="True" Cursor="SizeWE" Background="Transparent" MouseDown="OnBorderMouseDown"></Border>
+        <StackPanel Grid.Column="4" Orientation="Horizontal">
+            <TextBlock Text="!" Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Style="{DynamicResource Z80StatusText}"
+                FontWeight="Bold"
+                Background="{StaticResource BPromptInvalidBackground}"
+                Foreground="{StaticResource BWhite90}" Padding="6,0" Margin="0,0,6,0"/>
+            <TextBlock Text="{Binding Value}" Style="{DynamicResource Z80StatusText}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

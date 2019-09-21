@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf"
     xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.ToolWindows.Disassembly"
+    xmlns:watch="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch"
     xmlns:memory="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory">
 
     <!-- Colors -->
@@ -135,6 +136,10 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <DataTemplate x:Key="WatchItemTemplate">
+        <watch:WatchItemControl />
+    </DataTemplate>
 
     <!-- Component and control styles -->
     <Style x:Key="NotImplementedText" TargetType="TextBlock">

@@ -23,6 +23,7 @@ using Spect.Net.VsPackage.ToolWindows.Registers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.VsPackage.ToolWindows.StackTool;
 using Spect.Net.VsPackage.ToolWindows.TapeFileExplorer;
+using Spect.Net.VsPackage.ToolWindows.Watch;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Output;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
@@ -63,6 +64,7 @@ namespace Spect.Net.VsPackage
     [ProvideToolWindow(typeof(StackToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(BasicListToolWindow), Transient = true)]
     [ProvideToolWindow(typeof(TapeFileExplorerToolWindow), Transient = true)]
+    [ProvideToolWindow(typeof(WatchToolWindow), Transient = true)]
 
     // --- Language Services
     [ProvideLanguageService(
@@ -228,6 +230,11 @@ namespace Spect.Net.VsPackage
         public BasicListToolWindowViewModel BasicListViewModel { get; private set; }
 
         /// <summary>
+        /// Contains the view model for the Watch memory tool window
+        /// </summary>
+        public WatchToolWindowViewModel WatchViewModel { get; private set; }
+
+        /// <summary>
         /// Provides debug information while running the Spectrum virtual machine
         /// </summary>
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
@@ -292,6 +299,7 @@ namespace Spect.Net.VsPackage
             DisassemblyViewModel = new DisassemblyToolWindowViewModel();
             StackViewModel = new StackToolWindowViewModel();
             BasicListViewModel = new BasicListToolWindowViewModel();
+            WatchViewModel = new WatchToolWindowViewModel();
 
             Log("SpectNetIdePackage initialized.");
         }
@@ -315,6 +323,7 @@ namespace Spect.Net.VsPackage
             new ShowBasicListCommand();
             new ShowTapeExplorerCommand();
             TapeFileExplorerToolWindow.InitializeToolbarCommands();
+            new ShowWatchMemoryCommand();
 
             // --- Solution Explorer project commands
             new SetAsActiveProjectCommand();
@@ -407,6 +416,8 @@ namespace Spect.Net.VsPackage
                 if (newMachine != null)
                 {
                     EmulatorViewModel.SetMachine(newMachine);
+                    WatchViewModel.EvalContext = 
+                        new SymbolAwareSpectrumEvaluationContext(EmulatorViewModel.Machine.SpectrumVm);
                 }
             }
         }
