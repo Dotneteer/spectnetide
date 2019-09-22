@@ -68,13 +68,12 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
 
             AnnotationHandler = new DisassemblyAnnotationHandler(this);
             _tapeDeviceAttached = false;
-            // TODO: Respond to these events
-            //Package.CodeManager.CodeInjected += OnVmCodeInjected;
-            //Package.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
-            //if (VmRuns)
-            //{
-            //    AttachToTapeDeviceEvents();
-            //}
+            SpectNetPackage.Default.CodeManager.CodeInjected += OnVmCodeInjected;
+            SpectNetPackage.Default.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
+            if (MachineState == VmState.Running)
+            {
+                AttachToTapeDeviceEvents();
+            }
         }
 
         /// <summary>
@@ -83,9 +82,8 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         public override void Dispose()
         {
-            // TODO: Handle Dispose
-            //Package.CodeManager.CodeInjected -= OnVmCodeInjected;
-            //Package.CodeManager.AnnotationFileChanged -= OnAnnotationFileChanged;
+            SpectNetPackage.Default.CodeManager.CodeInjected -= OnVmCodeInjected;
+            SpectNetPackage.Default.CodeManager.AnnotationFileChanged -= OnAnnotationFileChanged;
             base.Dispose();
         }
 

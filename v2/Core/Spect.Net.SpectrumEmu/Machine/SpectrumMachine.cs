@@ -555,6 +555,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// </summary>
         public long LastExecutionContentionValue { get; private set; }
 
+        /// <summary>
+        /// The task that represents the completion of the execution cycle
+        /// </summary>
+        public Task CompletionTask => _completionTask;
+
         #endregion
 
         #region Virtual machine events
@@ -774,6 +779,19 @@ namespace Spect.Net.SpectrumEmu.Machine
                 DebugStepMode.StepOut,
                 true));
             await WaitForPause();
+        }
+
+        /// <summary>
+        /// Forces a paused state (used for recovering VM state)
+        /// </summary>
+        public void ForcePausedState()
+        {
+            if (MachineState == VmState.Paused) return;
+            if (MachineState == VmState.None || MachineState == VmState.Stopped)
+            {
+                IsFirstPause = true;
+                MachineState = VmState.Paused;
+            }
         }
 
         /// <summary>

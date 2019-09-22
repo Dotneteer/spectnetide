@@ -202,6 +202,9 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public byte[][] RamBanks { get; set; }
             public int SelectedRomIndex { get; set; }
 
+            public BankedMemoryDeviceState()
+            {
+            }
             public BankedMemoryDeviceState(BankedMemoryDeviceBase device)
             {
                 RomCount = device.RomCount;

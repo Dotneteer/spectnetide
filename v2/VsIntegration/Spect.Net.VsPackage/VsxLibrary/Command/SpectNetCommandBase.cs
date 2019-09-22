@@ -18,6 +18,11 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         protected JoinableTaskCollection JoinableTaskCollection { get; }
 
         /// <summary>
+        /// Gets the host package
+        /// </summary>
+        public SpectNetPackage HostPackage => SpectNetPackage.Default;
+
+        /// <summary>
         /// Gets a <see cref="CancellationToken"/> that can be used to check if the package has been disposed.
         /// </summary>
         public CancellationToken DisposalToken => _disposalTokenSource.Token;

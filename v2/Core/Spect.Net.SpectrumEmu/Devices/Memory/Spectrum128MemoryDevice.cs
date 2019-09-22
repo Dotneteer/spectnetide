@@ -212,6 +212,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             public int CurrentSlot3Bank { get; set; }
 
+            public Spectrum128MemoryDeviceState()
+            {
+            }
+
             public Spectrum128MemoryDeviceState(Spectrum128MemoryDevice device) : base(device)
             {
                 CurrentSlot3Bank = device._currentSlot3Bank;

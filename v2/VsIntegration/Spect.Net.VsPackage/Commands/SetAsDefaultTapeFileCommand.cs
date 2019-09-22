@@ -27,7 +27,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task ExecuteAsync()
         {
-            SpectNetPackage.Default.ActiveProject.SetDefaultTapeItem(this);
+            HostPackage.ActiveProject.SetDefaultTapeItem(this);
             return Task.FromResult(0);
         }
     }

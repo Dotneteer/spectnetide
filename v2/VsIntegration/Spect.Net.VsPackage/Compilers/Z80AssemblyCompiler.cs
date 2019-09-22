@@ -1,5 +1,6 @@
 ﻿using System;
 using Spect.Net.Assembler.Assembler;
+using Spect.Net.VsPackage.VsxLibrary.Output;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 // ReSharper disable SuspiciousTypeConversion.Global
@@ -11,6 +12,11 @@ namespace Spect.Net.VsPackage.Compilers
     /// </summary>
     public class Z80AssemblyCompiler: ICompilerService
     {
+        /// <summary>
+        /// The name of the service
+        /// </summary>
+        public string ServiceName => "SpectNetIde Z80 Assembler";
+
         private EventHandler<AssemblerMessageArgs> _traceMessageHandler;
 
         /// <summary>
@@ -48,6 +54,7 @@ namespace Spect.Net.VsPackage.Compilers
             {
                 compiler.AssemblerMessageCreated += _traceMessageHandler;
             }
+            compiler.AssemblerMessageCreated += OnAssemblerMessage;
             try
             {
                 output = compiler.CompileFile(itemPath, options);
@@ -58,8 +65,18 @@ namespace Spect.Net.VsPackage.Compilers
                 {
                     compiler.AssemblerMessageCreated -= _traceMessageHandler;
                 }
+                compiler.AssemblerMessageCreated -= OnAssemblerMessage;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Responds to the event when the Z80 assembler releases a message
+        /// </summary>
+        private void OnAssemblerMessage(object sender, AssemblerMessageArgs e)
+        {
+            var pane = OutputWindow.GetPane<Z80AssemblerOutputPane>();
+            pane.WriteLine(e.Message);
         }
     }
 }

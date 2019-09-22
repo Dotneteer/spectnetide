@@ -74,7 +74,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
 
             // --- Read the initial RAM annotations
             RamBankAnnotations = new Dictionary<int, DisassemblyAnnotation>();
-            SpectNetPackage.Default.ActiveProject.AnnotationFileChanged += OnAnnotationFileChanged;
+            SpectNetPackage.Default.CodeManager.AnnotationFileChanged += OnAnnotationFileChanged;
             OnAnnotationFileChanged(null, EventArgs.Empty);
 
             // --- Register Disassembly providers to use
@@ -276,7 +276,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
-            SpectNetPackage.Default.ActiveProject.AnnotationFileChanged -= OnAnnotationFileChanged;
+            SpectNetPackage.Default.CodeManager.AnnotationFileChanged -= OnAnnotationFileChanged;
             Parent?.Dispose();
         }
 

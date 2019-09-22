@@ -84,6 +84,7 @@
     <Compile Include="Commands\ShowWatchMemoryCommand.cs" />
     <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
     <Compile Include="Commands\WriteProtectFloppyCommand.cs" />
+    <Compile Include="Compilers\CodeManager.cs" />
     <Compile Include="Compilers\CompilationCompletedEventArgs.cs" />
     <Compile Include="Compilers\ICompilerService.cs" />
     <Compile Include="Compilers\Z80AssemblyCompiler.cs" />
@@ -157,6 +158,8 @@
     <Compile Include="Machines\KempstonProvider.cs" />
     <Compile Include="Machines\MachineCollection.cs" />
     <Compile Include="Machines\PackageRomProvider.cs" />
+    <Compile Include="Machines\SpectrumVmManager.cs" />
+    <Compile Include="Machines\VmStateFileManager.cs" />
     <Compile Include="Machines\VsIntegratedTapeLoadProvider.cs" />
     <Compile Include="Machines\VsIntegratedTapeSaveProvider.cs" />
     <Compile Include="MyConfiguredProject.cs" />

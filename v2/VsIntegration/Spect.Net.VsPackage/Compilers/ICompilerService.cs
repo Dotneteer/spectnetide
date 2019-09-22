@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.VsPackage.Compilers
@@ -10,6 +9,11 @@ namespace Spect.Net.VsPackage.Compilers
     /// </summary>
     public interface ICompilerService
     {
+        /// <summary>
+        /// Gets the name of the compiler service
+        /// </summary>
+        string ServiceName { get; }
+
         /// <summary>
         /// Gets the handler that displays trace messages
         /// </summary>

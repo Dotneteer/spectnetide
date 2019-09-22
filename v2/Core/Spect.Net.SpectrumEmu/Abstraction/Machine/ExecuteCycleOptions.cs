@@ -32,6 +32,24 @@
         public ushort TerminationPoint { get; }
 
         /// <summary>
+        /// This flag shows that the virtual machine should run in hidden mode
+        /// (no screen, no sound, no delays)
+        /// </summary>
+        public bool FastVmMode { get; }
+
+        /// <summary>
+        /// This flag shows whether the virtual machine should render the screen
+        /// </summary>
+        /// <value>True, renders the screen; false, does not render the screen</value>
+        /// <remarks>This flag overrides the FastVmMode setting</remarks>
+        public bool DisableScreenRendering { get; }
+
+        /// <summary>
+        /// Timeout in CPU tacts
+        /// </summary>
+        public long TimeoutTacts { get; }
+
+        /// <summary>
         /// Initializes the options.
         /// </summary>
         /// <param name="emulationMode">Execution emulation mode.</param>
@@ -43,13 +61,19 @@
             DebugStepMode debugStepMode = DebugStepMode.StopAtBreakpoint,
             bool fastTapeMode = false,
             int terminationRom = 0x0000,
-            ushort terminationPoint = 0x0000)
+            ushort terminationPoint = 0x0000,
+            bool fastVmMode = false,
+            long timeoutTacts = 0,
+            bool disableScreenRendering = false)
         {
             EmulationMode = emulationMode;
             DebugStepMode = debugStepMode;
             FastTapeMode = fastTapeMode;
             TerminationRom = terminationRom;
             TerminationPoint = terminationPoint;
+            FastVmMode = fastVmMode;
+            TimeoutTacts = timeoutTacts;
+            DisableScreenRendering = disableScreenRendering;
         }
     }
 

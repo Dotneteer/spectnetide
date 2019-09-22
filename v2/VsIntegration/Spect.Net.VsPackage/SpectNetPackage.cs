@@ -2,12 +2,14 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 using EnvDTE;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Commands;
+using Spect.Net.VsPackage.Compilers;
 using Spect.Net.VsPackage.CustomEditors.RomEditor;
 using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.Debugging;
@@ -33,6 +35,7 @@ using Task = System.Threading.Tasks.Task;
 
 #pragma warning disable IDE0067
 #pragma warning disable VSTHRD100
+#pragma warning disable VSTHRD010
 
 namespace Spect.Net.VsPackage
 {
@@ -239,6 +242,11 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public VsIntegratedSpectrumDebugInfoProvider DebugInfoProvider { get; private set; }
 
+        /// <summary>
+        /// Use this object to raise events related to code
+        /// </summary>
+        public readonly CodeManager CodeManager = new CodeManager();
+
         #region Package lifecycle
 
         /// <summary>
@@ -373,10 +381,21 @@ namespace Spect.Net.VsPackage
         #endregion
 
         /// <summary>
+        /// Displays the tool window with the specified type
+        /// </summary>
+        /// <typeparam name="TWindow">Tool window type</typeparam>
+        public void ShowToolWindow<TWindow>(int instanceId = 0)
+            where TWindow : ToolWindowPane
+        {
+            var window = GetToolWindow(typeof(TWindow), instanceId);
+            var windowFrame = (IVsWindowFrame)window.Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+
+        /// <summary>
         /// Logs a message to the SpectNetIDE output pane
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <param name="message">Message to log</param>
         public static void Log(string message)
         {
             var pane = OutputWindow.GetPane<SpectNetIdeOutputPane>();
@@ -434,3 +453,4 @@ namespace Spect.Net.VsPackage
 
 #pragma warning restore IDE0067 // Dispose objects before losing scope
 #pragma warning restore VSTHRD100
+#pragma warning restore VSTHRD010

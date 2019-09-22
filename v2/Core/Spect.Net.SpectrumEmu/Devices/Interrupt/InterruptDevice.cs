@@ -163,6 +163,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Interrupt
             public bool InterruptRaised { get; set; }
             public bool InterruptRevoked { get; set; }
 
+            public InterruptDeviceState()
+            {
+            }
+
             public InterruptDeviceState(InterruptDevice device)
             {
                 InterruptRaised = device.InterruptRaised;

@@ -19,7 +19,7 @@ namespace Spect.Net.VsPackage.Commands
             base.OnQueryStatus(mc);
             if (!mc.Visible) return;
 
-            var solution = SpectNetPackage.Default.Solution;
+            var solution = HostPackage.Solution;
             mc.Visible = solution.Projects.Count > 1;
         }
 
@@ -28,7 +28,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task ExecuteAsync()
         {
-            SpectNetPackage.Default.Solution.SetActiveProject(ItemPath);
+            HostPackage.Solution.SetActiveProject(ItemPath);
             return Task.FromResult(0);
         }
     }

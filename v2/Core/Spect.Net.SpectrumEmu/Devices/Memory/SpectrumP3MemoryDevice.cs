@@ -252,6 +252,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public int[] Slots { get; set; }
             public bool IsInAllRamMode { get; set; }
 
+            public SpectrumP3MemoryDeviceState()
+            {
+            }
+
             public SpectrumP3MemoryDeviceState(SpectrumP3MemoryDevice device) : base(device)
             {
                 Slots = device._slots;

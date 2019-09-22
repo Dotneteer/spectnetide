@@ -10,7 +10,6 @@ namespace Spect.Net.VsPackage.Commands
     [CommandId(0x1600)]
     [ToolWindow(typeof(BasicListToolWindow))]
     public class ShowBasicListCommand : SpectrumToolWindowCommandBase
-
     {
     }
 }

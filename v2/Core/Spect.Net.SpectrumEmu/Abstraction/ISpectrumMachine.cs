@@ -13,7 +13,7 @@ namespace Spect.Net.SpectrumEmu.Abstraction
     /// <summary>
     /// This class represents the API of a ZX Spectrum virtual machine.
     /// </summary>
-    public interface ISpectrumMachine
+    public interface ISpectrumMachine: ISpectrumVmController
     {
         /// <summary>
         /// The current machine's model key.
@@ -24,28 +24,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// The current machine's edition key.
         /// </summary>
         string EditionKey { get; }
-
-        /// <summary>
-        /// Gets or sets the state of the virtual machine
-        /// </summary>
-        VmState MachineState { get; }
-
-        /// <summary>
-        /// Signs that this is the very first start of the
-        /// virtual machine 
-        /// </summary>
-        bool IsFirstStart { get; }
-
-        /// <summary>
-        /// Signs that this is the very first paused state
-        /// of the virtual machine
-        /// </summary>
-        bool IsFirstPause { get; }
-
-        /// <summary>
-        /// Signs if the machine runs in debug mode.
-        /// </summary>
-        bool RunsInDebugMode { get; }
 
         /// <summary>
         /// Indicates if fast tape mode is allowed.
@@ -226,23 +204,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         /// when it runs to a predefined breakpoint.
         /// </remarks>
         void Start();
-
-        /// <summary>
-        /// Pauses the running machine.
-        /// </summary>
-        /// <remarks>
-        /// Reports completion when the background execution has been stopped.
-        /// </remarks>
-        Task Pause();
-
-        /// <summary>
-        /// Stops the Spectrum machine.
-        /// </summary>
-        /// <remarks>
-        /// If the machine is paused or stopped, it leaves the machine in its state.
-        /// The task completes when the machine has completed its execution cycle.
-        /// </remarks>
-        Task Stop();
 
         /// <summary>
         /// Starts the Spectrum machine and runs it on a background thread unless it reaches a breakpoint.

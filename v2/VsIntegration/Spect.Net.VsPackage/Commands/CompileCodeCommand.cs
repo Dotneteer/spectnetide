@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.Commands
         protected override async Task FinallyOnMainThreadAsync()
         {
             await base.FinallyOnMainThreadAsync();
-            if (SpectNetPackage.Default.Options.ConfirmCodeCompile && Output.ErrorCount == 0)
+            if (HostPackage.Options.ConfirmCodeCompile && Output.ErrorCount == 0)
             {
                 VsxDialogs.Show("The code has been successfully compiled.");
             }

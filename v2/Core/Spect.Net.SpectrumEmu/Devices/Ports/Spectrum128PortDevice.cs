@@ -50,6 +50,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         {
             public bool PagingEnabled { get; set; }
 
+            public Spectrum128PortDeviceState()
+            {
+            }
+
             public Spectrum128PortDeviceState(Spectrum128PortDevice device)
             {
                 PagingEnabled = device._memoryHandler.PagingEnabled;

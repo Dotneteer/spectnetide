@@ -4,6 +4,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices.Tape;
 using Spect.Net.SpectrumEmu.Abstraction.Discovery;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Compilers;
 using Spect.Net.Wpf.Mvvm;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
@@ -244,6 +245,16 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         #endregion
 
         #region Helpers
+
+        /// <summary>
+        /// Forces the VM into paused state
+        /// </summary>
+        public void ForcePauseVmAfterStateRestore()
+        {
+            Machine.ForcePausedState();
+            JustRestoredState = true;
+            NoToolRefreshMode = false;
+        }
 
         /// <summary>
         /// Forwards the VmStateChanged event to subscribers

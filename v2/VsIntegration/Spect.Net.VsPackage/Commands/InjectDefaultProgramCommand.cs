@@ -18,7 +18,7 @@ namespace Spect.Net.VsPackage.Commands
             base.OnQueryStatus(mc);
             if (!mc.Visible) return;
 
-            var project = SpectNetPackage.Default.ActiveProject;
+            var project = HostPackage.ActiveProject;
             var visible = project.DefaultProgramItem != null;
             if (visible)
             {

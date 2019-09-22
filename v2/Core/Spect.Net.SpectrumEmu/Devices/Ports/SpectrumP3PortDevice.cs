@@ -67,6 +67,10 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             public bool PrinterPortStrobe { get; set; }
             public int LastSlot3Index { get; set; }
 
+            public SpectrumP3PortDeviceState()
+            {
+            }
+
             public SpectrumP3PortDeviceState(SpectrumP3PortDevice device)
             {
                 PagingMode = device._extMemoryPortHandler.PagingMode;

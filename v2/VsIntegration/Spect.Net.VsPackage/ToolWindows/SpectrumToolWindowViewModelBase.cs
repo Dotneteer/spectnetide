@@ -1,5 +1,7 @@
-﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+﻿using Spect.Net.Assembler.Assembler;
+using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Compilers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
 using Spect.Net.Wpf.Mvvm;
 using System;
@@ -60,6 +62,11 @@ namespace Spect.Net.VsPackage.ToolWindows
         public bool IsSolutionClosing => SpectNetPackage.Default.Solution.IsSolutionClosing;
 
         /// <summary>
+        /// Compiler output
+        /// </summary>
+        public AssemblerOutput CompilerOutput { get; protected set; }
+
+        /// <summary>
         /// Instantiates this view model
         /// </summary>
         public SpectrumToolWindowViewModelBase()
@@ -71,6 +78,7 @@ namespace Spect.Net.VsPackage.ToolWindows
             EmulatorViewModel.MachineInstanceChanged += OnInternalMachineInstanceChanged;
             SpectNetPackage.Default.Solution.SolutionOpened += OnInternalSolutionOpened;
             SpectNetPackage.Default.Solution.SolutionClosing += OnInternalSolutionClosing;
+            SpectNetPackage.Default.CodeManager.CompilationCompleted += OnCompilationCompleted;
         }
 
         /// <summary>
@@ -157,6 +165,14 @@ namespace Spect.Net.VsPackage.ToolWindows
             {
                 _refreshInProgress = false;
             }
+        }
+
+        /// <summary>
+        /// Responds to the event when compilation has been completed.
+        /// </summary>
+        private void OnCompilationCompleted(object sender, CompilationCompletedEventArgs e)
+        {
+            CompilerOutput = e.Output;
         }
 
         /// <summary>

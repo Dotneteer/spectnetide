@@ -172,11 +172,6 @@ namespace Spect.Net.VsPackage.SolutionItems
         public SpectrumEdition SpectrumConfiguration { get; private set; }
 
         /// <summary>
-        /// Signs that the annotation file has been changed
-        /// </summary>
-        public event EventHandler AnnotationFileChanged;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="project">The Project automation object</param>
@@ -308,7 +303,7 @@ namespace Spect.Net.VsPackage.SolutionItems
             DefaultAnnotationItem = GetProjectItemByIdentity(command.Identity, AnnotationProjectItems);
             SaveProjectSettings();
             SetVisuals(DefaultAnnotationItem, AnnotationProjectItems);
-            AnnotationFileChanged?.Invoke(this, EventArgs.Empty);
+            SpectNetPackage.Default.CodeManager.RaiseAnnotationFileChanged();
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task ExecuteAsync()
         {
-            SpectNetPackage.Default.ActiveProject?.SetDefaultCodeItem(this);
+            HostPackage.ActiveProject?.SetDefaultCodeItem(this);
             return Task.FromResult(0);
         }
     }
