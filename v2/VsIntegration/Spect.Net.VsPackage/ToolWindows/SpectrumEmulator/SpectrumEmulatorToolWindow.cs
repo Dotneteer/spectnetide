@@ -1,10 +1,16 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Machine;
+using Spect.Net.VsPackage.Machines;
+using Spect.Net.VsPackage.SolutionItems;
 using Spect.Net.VsPackage.ToolWindows.Keyboard;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Command;
+using Spect.Net.VsPackage.VsxLibrary.Output;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
 using Task = System.Threading.Tasks.Task;
 
@@ -19,6 +25,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
     public class SpectrumEmulatorToolWindow :
         SpectrumToolWindowPane<SpectrumEmulatorToolWindowControl, SpectrumEmulatorToolWindowViewModel>
     {
+        /// <summary>
+        /// VMSTATE file filter string
+        /// </summary>
+        public const string VMSTATE_FILTER = "VMSTATE Files (*.vmstate)|*.vmstate";
+
         /// <summary>
         /// Invoke this method from the main thread to initialize toolbar commands.
         /// </summary>
@@ -224,11 +235,23 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             protected override void ExecuteOnMainThread()
             {
-                VsxDialogs.Show("SAVE STATE");
+                var folder = HostPackage.Options.VmStateSaveFileFolder;
+                var filename = VsxDialogs.FileSave(VMSTATE_FILTER, folder);
+                if (filename == null) return;
+
+                var spectrum = HostPackage.EmulatorViewModel.Machine.SpectrumVm;
+                var state = spectrum.GetVmState(HostPackage.Solution.ActiveProject.ModelName);
+
+                folder = Path.GetDirectoryName(filename);
+                if (folder != null && !Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                File.WriteAllText(filename, state);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = HostPackage.EmulatorViewModel.MachineState == VmState.Paused;
         }
 
         /// <summary>
@@ -239,28 +262,129 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             public override bool UpdateUiWhenComplete => true;
 
-            protected override void ExecuteOnMainThread()
+            protected override async Task ExecuteAsync()
             {
-                VsxDialogs.Show("LOAD VM STATE");
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                var folder = HostPackage.Options.VmStateSaveFileFolder;
+                var filename = VsxDialogs.FileOpen(VMSTATE_FILTER, folder);
+                if (filename == null) return;
+
+                // --- Stop the virtual machine, provided it runs
+                var options = HostPackage.Options;
+                var pane = OutputWindow.GetPane<SpectrumVmOutputPane>();
+                var vm = HostPackage.EmulatorViewModel;
+                var machineState = vm.MachineState;
+                if ((machineState == VmState.Running || machineState == VmState.Paused))
+                {
+                    if (options.ConfirmMachineRestart)
+                    {
+                        var answer = VsxDialogs.Show("Are you sure, you want to restart " +
+                            "the ZX Spectrum virtual machine?",
+                            "The ZX Spectum virtual machine is running",
+                            MessageBoxButton.YesNo, VsxMessageBoxIcon.Question, 1);
+                        if (answer == VsxDialogResult.No)
+                        {
+                            return;
+                        }
+                    }
+
+                    // --- Stop the machine and allow 50ms to stop.
+                    await HostPackage.EmulatorViewModel.Machine.Stop();
+                    await Task.Delay(50);
+
+                    if (vm.MachineState != VmState.Stopped)
+                    {
+                        const string MESSAGE = "The ZX Spectrum virtual machine did not stop.";
+                        await pane.WriteLineAsync(MESSAGE);
+                        VsxDialogs.Show(MESSAGE, "Unexpected issue",
+                            MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                // --- Load the file and keep it paused
+                VmStateFileManager.LoadVmStateFile(filename);
+                HostPackage.EmulatorViewModel.ForceScreenRefresh();
+                HostPackage.EmulatorViewModel.ForcePauseVmAfterStateRestore();
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+            {
+                var state = HostPackage.EmulatorViewModel.MachineState;
+                mc.Enabled = state == VmState.Paused || state == VmState.Stopped || state == VmState.None;
+            }
         }
 
         /// <summary>
         /// Loads the state of the ZX Spectrum virtual machine
         /// </summary>
         [CommandId(0x1090)]
-        public class AddVmStateCommand : SpectNetCommandBase
+        public class AddVmStateCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            private const string FILE_EXISTS_MESSAGE =
+                "The virtual machine state file exists in the project. " +
+                "Would you like to override it?";
+
+            private const string INVALID_FOLDER_MESSAGE = 
+                "The virtual machine state folder specified in the Options dialog " +
+                "contains invalid characters or an absolute path. Go to the Options dialog and " +
+                "fix the issue so that you can add the virtual machine state file to the project.";
+
+            protected override async Task ExecuteAsync()
             {
-                VsxDialogs.Show("ADD VM STATE");
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                if (AddVmStateParameterDialog(out var vm)) return;
+
+                // --- Save the file into the vmstate folder
+                var filename = Path.Combine(HostPackage.Options.VmStateSaveFileFolder, vm.Filename);
+                filename = Path.ChangeExtension(filename, ".vmstate");
+
+                var spectrum = HostPackage.EmulatorViewModel.Machine.SpectrumVm;
+                var state = spectrum.GetVmState(HostPackage.Solution.ActiveProject.ModelName);
+
+                var folder = Path.GetDirectoryName(filename);
+                if (folder != null && !Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                File.WriteAllText(filename, state);
+
+                SpectrumProject.AddFileToProject(HostPackage.Options.VmStateProjectFolder, filename,
+                    INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
-                => mc.Enabled = true;
+                => mc.Enabled = MachineState == VmState.Paused;
+
+            /// <summary>
+            /// Displays the Export Z80 Code dialog to collect parameter data
+            /// </summary>
+            /// <param name="vm">View model with collected data</param>
+            /// <returns>
+            /// True, if the user stars export; false, if the export is cancelled
+            /// </returns>
+            private bool AddVmStateParameterDialog(out AddVmStateViewModel vm)
+            {
+                var exportDialog = new AddVmStateDialog
+                {
+                    HasMaximizeButton = false,
+                    HasMinimizeButton = false
+                };
+
+                var filename = $"VmState_{DateTime.Now:yyyy_mm_dd_HH_MM_ss}.vmstate";
+                vm = new AddVmStateViewModel
+                {
+                    Filename = filename
+                };
+                exportDialog.SetVm(vm);
+                var accepted = exportDialog.ShowModal();
+                if (!accepted.HasValue || !accepted.Value)
+                {
+                    return true;
+                }
+                return false;
+            }
+
         }
 
         /// <summary>

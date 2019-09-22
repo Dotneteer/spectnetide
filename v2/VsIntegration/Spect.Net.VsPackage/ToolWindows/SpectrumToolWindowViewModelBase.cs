@@ -78,7 +78,8 @@ namespace Spect.Net.VsPackage.ToolWindows
             EmulatorViewModel.MachineInstanceChanged += OnInternalMachineInstanceChanged;
             SpectNetPackage.Default.Solution.SolutionOpened += OnInternalSolutionOpened;
             SpectNetPackage.Default.Solution.SolutionClosing += OnInternalSolutionClosing;
-            SpectNetPackage.Default.CodeManager.CompilationCompleted += OnCompilationCompleted;
+            SpectNetPackage.Default.CodeManager.CompilationCompleted += OnInternalCompilationCompleted;
+            SpectNetPackage.Default.CodeManager.CodeInjected += OnInternalCodeInjected;
         }
 
         /// <summary>
@@ -87,11 +88,13 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// </summary>
         public virtual void Dispose()
         {
-            SpectNetPackage.Default.Solution.SolutionOpened -= OnInternalSolutionOpened;
-            SpectNetPackage.Default.Solution.SolutionClosing -= OnInternalSolutionClosing;
             EmulatorViewModel.VmStateChanged -= OnInternalVmStateChanged;
             EmulatorViewModel.RenderFrameCompleted -= OnInternalRenderFrameCompleted;
             EmulatorViewModel.MachineInstanceChanged -= OnInternalMachineInstanceChanged;
+            SpectNetPackage.Default.Solution.SolutionOpened -= OnInternalSolutionOpened;
+            SpectNetPackage.Default.Solution.SolutionClosing -= OnInternalSolutionClosing;
+            SpectNetPackage.Default.CodeManager.CompilationCompleted -= OnInternalCompilationCompleted;
+            SpectNetPackage.Default.CodeManager.CodeInjected -= OnInternalCodeInjected;
         }
 
         /// <summary>
@@ -170,9 +173,32 @@ namespace Spect.Net.VsPackage.ToolWindows
         /// <summary>
         /// Responds to the event when compilation has been completed.
         /// </summary>
-        private void OnCompilationCompleted(object sender, CompilationCompletedEventArgs e)
+        private void OnInternalCompilationCompleted(object sender, CompilationCompletedEventArgs e)
         {
             CompilerOutput = e.Output;
+            OnCompilationCompleted();
+        }
+
+        /// <summary>
+        /// Responds to the event when code has been completed.
+        /// </summary>
+        private void OnInternalCodeInjected(object sender, EventArgs e)
+        {
+            OnCodeInjected();
+        }
+
+        /// <summary>
+        /// Responds to the event when compilation has been completed.
+        /// </summary>
+        protected virtual void OnCompilationCompleted()
+        {
+        }
+
+        /// <summary>
+        /// Responds to the event when code has been completed.
+        /// </summary>
+        protected virtual void OnCodeInjected()
+        {
         }
 
         /// <summary>

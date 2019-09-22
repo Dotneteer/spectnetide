@@ -257,6 +257,15 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
+        /// Forces a screen refresh
+        /// </summary>
+        public void ForceScreenRefresh()
+        {
+            RenderFrameCompleted.Invoke(this,
+                new RenderFrameEventArgs(Machine.SpectrumVm.ScreenDevice.GetPixelBuffer()));
+        }
+
+        /// <summary>
         /// Forwards the VmStateChanged event to subscribers
         /// </summary>
         private void OnVmStateChanged(object sender, VmStateChangedEventArgs e)

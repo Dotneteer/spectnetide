@@ -296,6 +296,10 @@
     </Compile>
     <Compile Include="ToolWindows\Registers\RegistersToolWindowViewModel.cs" />
     <Compile Include="ToolWindows\OldSpectNetToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\AddVmStateDialog.xaml.cs">
+      <DependentUpon>AddVmStateDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SpectrumEmulator\AddVmStateViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\EmulatorViewModel.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\KeyboardScanner.cs" />
     <Compile Include="ToolWindows\SpectrumEmulator\MachineInstanceChangedEventArgs.cs" />
@@ -760,6 +764,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ToolWindows\Registers\RegistersToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\SpectrumEmulator\AddVmStateDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

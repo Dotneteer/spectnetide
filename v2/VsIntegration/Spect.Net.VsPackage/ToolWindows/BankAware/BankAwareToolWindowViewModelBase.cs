@@ -237,6 +237,14 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
         }
 
         /// <summary>
+        /// Refresh the view mode when code has been injected
+        /// </summary>
+        protected override void OnCodeInjected()
+        {
+            RefreshViewMode();
+        }
+
+        /// <summary>
         /// Override this method to init the current view mode
         /// </summary>
         public virtual void InitViewMode()
