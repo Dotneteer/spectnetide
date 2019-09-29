@@ -21,6 +21,8 @@ namespace Spect.Net.VsPackage.Debugging
 
         private CancellationTokenSource _cancellationSource;
         private JoinableTask _changeWatcherTask;
+        private string _lastCurrentBreakpointFile;
+        private int _lastCurrentBreakpointLine;
 
         /// <summary>
         /// Starts watching breakpoint changes
@@ -123,12 +125,22 @@ namespace Spect.Net.VsPackage.Debugging
                     prevBreakpoints = tempBreakpoints;
                 }
 
-                prevCount = currentCount;
-                if (added.Count == 0 && modified.Count == 0 && deleted.Count == 0) continue;
+                // --- Check for current breakpoint changes
+                var debugProvider = SpectNetPackage.Default.DebugInfoProvider;
+                var currentChanged = debugProvider.CurrentBreakpointFile != _lastCurrentBreakpointFile
+                    || debugProvider.CurrentBreakpointLine != _lastCurrentBreakpointLine;
+                if (currentChanged)
+                {
+                    _lastCurrentBreakpointFile = debugProvider.CurrentBreakpointFile;
+                    _lastCurrentBreakpointLine = debugProvider.CurrentBreakpointLine;
+                }
+                
+                if (added.Count == 0 && modified.Count == 0 && deleted.Count == 0 && !currentChanged) continue;
 
                 if (BreakpointsChanged != null)
                 {
-                    await BreakpointsChanged.InvokeAsync(this, new BreakpointsChangedEventArgs(added, modified, deleted));
+                    await BreakpointsChanged.InvokeAsync(this, 
+                        new BreakpointsChangedEventArgs(added, modified, deleted, currentChanged));
                 }
             }
         }

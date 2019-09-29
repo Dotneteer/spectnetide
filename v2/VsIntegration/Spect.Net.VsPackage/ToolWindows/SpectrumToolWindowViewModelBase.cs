@@ -3,6 +3,7 @@ using Spect.Net.SpectrumEmu.Abstraction.Devices;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.Compilers;
 using Spect.Net.VsPackage.ToolWindows.SpectrumEmulator;
+using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.Wpf.Mvvm;
 using System;
 
@@ -149,6 +150,7 @@ namespace Spect.Net.VsPackage.ToolWindows
                     if (!EmulatorViewModel.NoToolRefreshMode) OnStopped();
                     break;
             }
+            VsxAsyncPackage.UpdateCommandUi(); 
         }
 
         /// <summary>

@@ -9,11 +9,15 @@ namespace Spect.Net.VsPackage.Debugging
     /// </summary>
     public class BreakpointsChangedEventArgs: EventArgs
     {
-        public BreakpointsChangedEventArgs(List<Breakpoint> added, List<Breakpoint> modified, List<Breakpoint> deleted)
+        public BreakpointsChangedEventArgs(List<Breakpoint> added, 
+            List<Breakpoint> modified, 
+            List<Breakpoint> deleted,
+            bool current)
         {
             Added = added;
             Modified = modified;
             Deleted = deleted;
+            Current = current;
         }
 
         /// <summary>
@@ -30,5 +34,10 @@ namespace Spect.Net.VsPackage.Debugging
         /// Collection of deleted breakpoints
         /// </summary>
         public List<Breakpoint> Deleted { get; }
+
+        /// <summary>
+        /// Signs if the current breakpoint has changed
+        /// </summary>
+        public bool Current { get; }
     }
 }

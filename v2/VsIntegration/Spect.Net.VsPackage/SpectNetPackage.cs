@@ -309,6 +309,11 @@ namespace Spect.Net.VsPackage
             BasicListViewModel = new BasicListToolWindowViewModel();
             WatchViewModel = new WatchToolWindowViewModel();
 
+            // --- Prepare the provider for debugging
+            DebugInfoProvider.Prepare();
+
+            // --- Prepare language services
+            Z80AsmClassifierProvider.AttachToPackage();
             Log("SpectNetIdePackage initialized.");
         }
 
@@ -374,6 +379,7 @@ namespace Spect.Net.VsPackage
             {
                 Solution.Dispose();
                 _ = BreakpointChangeWatcher.StopAsync();
+                Z80AsmClassifierProvider.DetachFromPackage();
             }
             base.Dispose(disposing);
         }

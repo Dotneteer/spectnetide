@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using EnvDTE;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Editor;
 using Spect.Net.Assembler;
 using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
@@ -15,7 +17,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
     /// <summary>
     /// This class carries out the classification of the Z80 Assembly language text
     /// </summary>
-    internal class Z80AsmClassifier: IClassifier
+    internal class Z80AsmClassifier: IClassifier, IDisposable
     {
         // --- Store registered classification types here
         private readonly IClassificationType
@@ -89,6 +91,22 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                     return list;
                 }
                 lines = _z80SyntaxTreeVisitor.Compilation.Lines;
+            }
+
+            // --- Get document and breakpoint information
+            string filePath = GetFilePath();
+            var breakpointLines = new List<int>();
+            var package = SpectNetPackage.Default;
+            if (package != null)
+            {
+                foreach (Breakpoint bp in package.ApplicationObject.Debugger.Breakpoints)
+                {
+                    if (string.Compare(bp.File, filePath, StringComparison.InvariantCultureIgnoreCase) == 0)
+                    {
+                        // --- Breakpoints start lines at 1, ITextBuffer starts from 0
+                        breakpointLines.Add(bp.FileLine);
+                    }
+                }
             }
 
             // --- We'll use this snapshot to create classifications for
@@ -248,10 +266,22 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     // --- This line contains executable instruction,
                     // --- So it might have a breakpoint
-                    // TODO: Handle potential breakpoint
+                    if (breakpointLines.IndexOf(sourceLine.SourceLine) >= 0)
+                    {
+                        AddClassificationSpan(list, snapshot, sourceLine.InstructionSpan, _breakpoint);
+                    }
                 }
 
-                // TODO: Handle current breakpoint
+                // --- Check for current breakpoint
+                if (package != null && package.DebugInfoProvider.CurrentBreakpointFile == filePath
+                    && package.DebugInfoProvider.CurrentBreakpointLine == sourceLine.SourceLine)
+                {
+                    AddClassificationSpan(list, snapshot, 
+                        package.Options.FullLineHighlight 
+                            ? new TextSpan(0, textOfLine.Length) 
+                            : sourceLine.InstructionSpan,
+                        _currentBreakpoint);
+                }
             }
 
             return list;
@@ -261,6 +291,27 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         /// This event is fired whenever the classification changes.
         /// </summary>
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
+
+        /// <summary>
+        /// Refreshes the document
+        /// </summary>
+        public void Refresh()
+        {
+            var file = GetFilePath();
+            var span = new SnapshotSpan(_buffer.CurrentSnapshot, 0, _buffer.CurrentSnapshot.Length);
+            ClassificationChanged?.Invoke(this, new ClassificationChangedEventArgs(span));
+        }
+
+        /// <summary>
+        /// Gets the file path of the document associated with this classifier
+        /// </summary>
+        /// <returns>Full file path</returns>
+        public string GetFilePath()
+        {
+            return (_buffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument docProperty))
+                ? docProperty.FilePath
+                : null;
+        }
 
         /// <summary>
         /// Re-parses the document whenever it changes.
@@ -362,6 +413,10 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             {
                 // --- Any potential exception in intentionally ignored.
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }
