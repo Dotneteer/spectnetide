@@ -314,6 +314,7 @@ namespace Spect.Net.VsPackage
 
             // --- Prepare language services
             Z80AsmClassifierProvider.AttachToPackage();
+            Z80AsmViewTaggerProvider.AttachToPackage();
             Log("SpectNetIdePackage initialized.");
         }
 
@@ -380,6 +381,7 @@ namespace Spect.Net.VsPackage
                 Solution.Dispose();
                 _ = BreakpointChangeWatcher.StopAsync();
                 Z80AsmClassifierProvider.DetachFromPackage();
+                Z80AsmViewTaggerProvider.DetachFromPackage();
             }
             base.Dispose(disposing);
         }

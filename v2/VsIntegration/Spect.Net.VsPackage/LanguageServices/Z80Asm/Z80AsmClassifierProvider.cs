@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
@@ -72,6 +70,20 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             {
                 classifier.Refresh();
             }
+        }
+
+        /// <summary>
+        /// Refreshes the specified line
+        /// </summary>
+        /// <param name="doc">Document file name</param>
+        /// <param name="lineNo">Lien number to refresh</param>
+        public static void RefreshLine(string doc, int lineNo)
+        {
+            if (!s_ActiveClassifiers.TryGetValue(doc, out var classifier))
+            {
+                return;
+            }
+            classifier.RefreshLine(lineNo);
         }
 
         /// <summary>

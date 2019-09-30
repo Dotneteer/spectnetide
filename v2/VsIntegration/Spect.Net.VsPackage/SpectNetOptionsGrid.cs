@@ -194,6 +194,11 @@ namespace Spect.Net.VsPackage
         public bool DisableSourceNavigation { get; set; } = false;
 
         [Category("Debugger")]
+        [DisplayName("Force showing source code")]
+        [Description("When a breakpoint is reached, forces displaying the source code")]
+        public bool ForceShowSourceCode { get; set; } = true;
+
+        [Category("Debugger")]
         [DisplayName("Skip over interrupt method")]
         [Description("Skips over the Z80 instructions executed while the maskable interrupt routine runs.")]
         public bool SkipInterruptRoutine { get; set; } = false;

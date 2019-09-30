@@ -251,8 +251,16 @@ namespace Spect.Net.VsPackage.Debugging
             if (args.NewState == VmState.Running || args.NewState == VmState.Stopped)
             {
                 // --- Remove current breakpoint information
+                var oldFile = CurrentBreakpointFile;
+                var oldLine = CurrentBreakpointLine;
+
                 CurrentBreakpointFile = null;
                 CurrentBreakpointLine = -1;
+
+                if (oldFile != null)
+                {
+                    Z80AsmViewTaggerProvider.UpdateBreakpointVisuals(oldFile, oldLine);
+                }
             }
 
             var package = SpectNetPackage.Default;
@@ -269,9 +277,19 @@ namespace Spect.Net.VsPackage.Debugging
                     CurrentBreakpointFile = CompiledOutput
                         .SourceFileList[fileInfo.FileIndex].Filename;
                     CurrentBreakpointLine = fileInfo.Line;
-                    package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
-                    package.ShowToolWindow<SpectrumEmulatorToolWindow>();
+                    if (package.Options.ForceShowSourceCode)
+                    {
+                        package.ShowToolWindow<SpectrumEmulatorToolWindow>();
+                        var document = package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
+                        document.Activate();
+                    }
+                    else
+                    {
+                        package.ApplicationObject.Documents.Open(CurrentBreakpointFile);
+                        package.ShowToolWindow<SpectrumEmulatorToolWindow>();
+                    }
                     await Task.Delay(10);
+                    Z80AsmViewTaggerProvider.UpdateBreakpointVisuals(CurrentBreakpointFile, CurrentBreakpointLine);
                 }
             }
         }

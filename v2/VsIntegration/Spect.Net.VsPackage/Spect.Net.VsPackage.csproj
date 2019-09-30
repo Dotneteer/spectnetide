@@ -149,6 +149,8 @@
     <Compile Include="LanguageServices\Z80Asm\Z80AsmClassifierProvider.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmLanguageService.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmViewTagger.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmViewTaggerProvider.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestClassificationFormats.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestClassificationTypes.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestClassifier.cs" />

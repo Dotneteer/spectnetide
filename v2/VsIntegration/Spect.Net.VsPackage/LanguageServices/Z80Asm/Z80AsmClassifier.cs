@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using EnvDTE;
@@ -36,9 +37,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             _macroInvocation,
             _operand,
             _semiVar,
-            _module,
-            _breakpoint,
-            _currentBreakpoint;
+            _module;
 
         private readonly ITextBuffer _buffer;
         private bool _isProcessing;
@@ -71,8 +70,6 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             _operand = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_OPERAND);
             _semiVar = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_SEMI_VAR);
             _module = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_MODULE);
-            _breakpoint = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_BREAKPOINT);
-            _currentBreakpoint = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_CURRENT_BREAKPOINT);
 
             ParseDocument();
 
@@ -262,26 +259,26 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                     }
                 }
 
-                if (sourceLine is EmittingOperationBase && sourceLine.InstructionSpan != null)
-                {
-                    // --- This line contains executable instruction,
-                    // --- So it might have a breakpoint
-                    if (breakpointLines.IndexOf(sourceLine.SourceLine) >= 0)
-                    {
-                        AddClassificationSpan(list, snapshot, sourceLine.InstructionSpan, _breakpoint);
-                    }
-                }
+                //if (sourceLine is EmittingOperationBase && sourceLine.InstructionSpan != null)
+                //{
+                //    // --- This line contains executable instruction,
+                //    // --- So it might have a breakpoint
+                //    if (breakpointLines.IndexOf(sourceLine.SourceLine) >= 0)
+                //    {
+                //        AddClassificationSpan(list, snapshot, sourceLine.InstructionSpan, _breakpoint);
+                //    }
+                //}
 
-                // --- Check for current breakpoint
-                if (package != null && package.DebugInfoProvider.CurrentBreakpointFile == filePath
-                    && package.DebugInfoProvider.CurrentBreakpointLine == sourceLine.SourceLine)
-                {
-                    AddClassificationSpan(list, snapshot, 
-                        package.Options.FullLineHighlight 
-                            ? new TextSpan(0, textOfLine.Length) 
-                            : sourceLine.InstructionSpan,
-                        _currentBreakpoint);
-                }
+                //// --- Check for current breakpoint
+                //if (package != null && package.DebugInfoProvider.CurrentBreakpointFile == filePath
+                //    && package.DebugInfoProvider.CurrentBreakpointLine == sourceLine.SourceLine)
+                //{
+                //    AddClassificationSpan(list, snapshot, 
+                //        package.Options.FullLineHighlight 
+                //            ? new TextSpan(0, textOfLine.Length) 
+                //            : sourceLine.InstructionSpan,
+                //        _currentBreakpoint);
+                //}
             }
 
             return list;
@@ -299,7 +296,34 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         {
             var file = GetFilePath();
             var span = new SnapshotSpan(_buffer.CurrentSnapshot, 0, _buffer.CurrentSnapshot.Length);
-            ClassificationChanged?.Invoke(this, new ClassificationChangedEventArgs(span));
+            var tempEvent = ClassificationChanged;
+            tempEvent?.Invoke(this, new ClassificationChangedEventArgs(span));
+        }
+
+        public void RefreshLine(int lineNo)
+        {
+            if (!_buffer.Properties.TryGetProperty(typeof(ITextView), out ITextView view))
+            {
+                return;
+            }
+
+            var lines = view.VisualSnapshot.Lines;
+            var line = lines.FirstOrDefault(a => a.LineNumber == lineNo);
+            if (line == null) return;
+
+            var startPosition = line.Start;
+            var endPosition = line.EndIncludingLineBreak;
+
+            var span = new SnapshotSpan(view.TextSnapshot, Span.FromBounds(startPosition, endPosition));
+            if (view is IWpfTextView wpfTextView)
+            {
+                wpfTextView.ViewScroller.EnsureSpanVisible(span, EnsureSpanVisibleOptions.AlwaysCenter);
+                var firstLine = wpfTextView.TextViewLines.FirstVisibleLine;
+                var lastLine = wpfTextView.TextViewLines.LastVisibleLine;
+                if (firstLine == null || lastLine == null) return;
+                var newSpan = new SnapshotSpan(wpfTextView.TextSnapshot,
+                    Span.FromBounds(firstLine.Start, lastLine.EndIncludingLineBreak));
+            }
         }
 
         /// <summary>

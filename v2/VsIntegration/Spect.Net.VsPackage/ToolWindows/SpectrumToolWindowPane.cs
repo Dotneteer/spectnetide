@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Machine;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
 using Spect.Net.Wpf.Mvvm;

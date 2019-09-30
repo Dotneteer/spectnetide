@@ -86,6 +86,19 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         }
 
         /// <summary>
+        /// Forces the refresh of the ZX Spectrum screen
+        /// </summary>
+        public void ForceRefresh()
+        {
+            Dispatcher.Invoke(async () =>
+            {
+                await Task.Delay(50);
+                MachineOnRenderFrameCompleted(this,
+                    new RenderFrameEventArgs(Vm.Machine.SpectrumVm.ScreenDevice.GetPixelBuffer()));
+            });
+        }
+
+        /// <summary>
         /// Initialize the Spectrum virtual machine dependencies when the user control is loaded
         /// </summary>
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -170,6 +183,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                             break;
                         case VmState.Paused:
                             Vm.Machine.BeeperProvider?.PauseSound();
+                            MachineOnRenderFrameCompleted(this,
+                                new RenderFrameEventArgs(Vm.Machine.SpectrumVm.ScreenDevice.GetPixelBuffer()));
                             StartShadowScreenRendering();
                             ShowUlaRaster();
                             break;

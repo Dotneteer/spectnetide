@@ -61,6 +61,21 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             SpectNetPackage.Default.EmulatorViewModel.EnableKeyboardScan = newFrame == Frame;
         }
 
+        /// <summary>
+        /// Refresh the emulator screen
+        /// </summary>
+        public override void OnFrameIsOnScreenChanged(IVsWindowFrame frame, bool newIsOnScreen)
+        {
+            if (newIsOnScreen)
+            {
+                Content.SpectrumControl.ForceRefresh();
+            }
+        }
+
+        /// <summary>
+        /// Gets the virtual machine instance
+        /// </summary>
+        /// <returns></returns>
         protected override SpectrumEmulatorToolWindowViewModel GetVmInstance()
         {
             return SpectNetPackage.Default.SpectrumViewModel;
