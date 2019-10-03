@@ -123,6 +123,9 @@
   <data name="101" xml:space="preserve">
     <value>Z80 Unit Test Language</value>
   </data>
+  <data name="102" xml:space="preserve">
+    <value>ZX Basic Language</value>
+  </data>
   <data name="110" xml:space="preserve">
     <value>Spect.NET IDE for ZX Spectrum</value>
   </data>

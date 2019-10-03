@@ -15,6 +15,7 @@ using Spect.Net.VsPackage.CustomEditors.TzxEditor;
 using Spect.Net.VsPackage.Debugging;
 using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using Spect.Net.VsPackage.LanguageServices.Z80Test;
+using Spect.Net.VsPackage.LanguageServices.ZxBasic;
 using Spect.Net.VsPackage.Machines;
 using Spect.Net.VsPackage.SolutionItems;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
@@ -96,7 +97,21 @@ namespace Spect.Net.VsPackage
         MatchBracesAtCaret = true,
         ShowMatchingBrace = true,
         ShowSmartIndent = true)]
-    [ProvideLanguageExtension(typeof(Z80TestLanguageService), ".z80test")]
+    [ProvideLanguageExtension(typeof(ZxBasicLanguageService), ".zxbas")]
+
+    [ProvideLanguageService(
+        typeof(ZxBasicLanguageService),
+        ZxBasicLanguageService.LANGUAGE_NAME,
+        102,
+        ShowDropDownOptions = true,
+        DefaultToInsertSpaces = true,
+        EnableCommenting = true,
+        AutoOutlining = true,
+        MatchBraces = true,
+        MatchBracesAtCaret = true,
+        ShowMatchingBrace = true,
+        ShowSmartIndent = true)]
+    [ProvideLanguageExtension(typeof(ZxBasicLanguageService), ".zxbas")]
 
     [ProvideProjectFactory(typeof(ZxSpectrumProjectFactory), 
         "ZX Spectrum Code Discovery Project",

@@ -157,6 +157,7 @@
     <Compile Include="LanguageServices\Z80Test\Z80TestClassifierProvider.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicLanguageService.cs" />
     <Compile Include="Machines\KempstonProvider.cs" />
     <Compile Include="Machines\MachineCollection.cs" />
     <Compile Include="Machines\PackageRomProvider.cs" />
@@ -487,6 +488,10 @@
     <ProjectReference Include="..\..\Assembler\Spect.Net.TestParser\Spect.Net.TestParser.csproj">
       <Project>{bf0ce3fe-6516-4377-a6e4-51151f4d5185}</Project>
       <Name>Spect.Net.TestParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.ZxBasicParser\Spect.Net.ZxBasicParser.csproj">
+      <Project>{5e28e3df-88f3-43d0-af82-54d7ef4dab27}</Project>
+      <Name>Spect.Net.ZxBasicParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
       <Project>{b2917190-2c03-45d6-9dec-c58ef0e4306c}</Project>
