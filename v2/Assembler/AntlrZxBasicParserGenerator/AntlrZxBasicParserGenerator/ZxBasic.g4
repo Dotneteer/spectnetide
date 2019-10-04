@@ -1,15 +1,39 @@
 grammar ZxBasic;
 
-/*
- * Parser Rules
- */
-
+// ============================================================================
+// Common parser rules for ZX BASIC and embedded Z80 ASM
 compileUnit
-	:	EOF
-	|	(keyword | function | operator | special | IDENTIFIER | number)*
+	:	(zxb_label? zxb_line | zxb_asm_section)* EOF
 	;
 
-keyword
+// ============================================================================
+// ZX BASIC specific parser rules
+zxb_label
+	:	(DECNUM | ZXB_IDENTIFIER) COLON
+	;
+
+zxb_line
+	: zxb_line_item* ZXB_LINE_END
+	| zxb_line_item+
+	;
+
+zxb_line_item
+	:	zxb_keyword 
+	|	zxb_function
+	|	zxb_operator
+	|	zxb_special
+	|	zxb_number
+	|	ZXB_IDENTIFIER
+	|	ZXB_STRING
+	|	ZXB_COMMENT
+	;
+
+zxb_asm_section
+	:	ASM NEWLINE asm_section NEWLINE+ ASM END
+	;
+
+// --- ZX BASIC keywords
+zxb_keyword
 	:	AT
 	|	BEEP
 	|	BOLD
@@ -70,7 +94,8 @@ keyword
 	|	WHILE
 	;
 
-function
+// --- ZX BASIC functions
+zxb_function
 	:	ABS
 	|	ACS
 	|	ASC
@@ -113,7 +138,8 @@ function
 	|	VAL
 	;
 
-operator
+// --- ZX BASIC operators
+zxb_operator
 	:	AND
 	|	BAND
 	|	BNOT
@@ -129,26 +155,55 @@ operator
 	|	XOR
 	;
 
-special
+// --- ZX BASIC special keywords
+zxb_special
 	:	ALIGN
 	|	ASM
 	;
 	
-number
-	:	BINNUM
+// --- ZX BASIC numbers
+zxb_number
+	:	ZXB_BINNUM
 	|	DECNUM
-	|	HEXNUM
+	|	ZXB_HEXNUM
 	|	REALNUM
 	;
 
-/*
- * Lexer Rules
- */
-
-WS
-	:	' ' -> channel(HIDDEN)
+// ============================================================================
+// Z80 ASSEMBLER specific parser rules
+asm_section
+	:	NEWLINE* asmline (NEWLINE+ asmline)*
 	;
 
+asmline
+	: DECNUM+ ;
+
+// ============================================================================
+// Common lexer rules for ZX BASIC and embedded Z80 ASM
+WS
+	:	('\u0020' | '\t')+ -> channel(HIDDEN)
+	;
+// --- Special characters
+NEWLINE: ('\r'? '\n' | '\r')+ ;
+COLON: ':' ;
+UNDERSCORE: '_' ;
+
+// ============================================================================
+// ZX BASIC specifix lexer rules
+
+// --- ZXB Comments
+ZXB_COMMENT
+	:	ZXB_BLOCK_COMMENT
+	|	ZXB_LINE_COMMENT
+	;
+ZXB_BLOCK_COMMENT
+	:	'/\'' .*? '\'/'
+	;
+ZXB_LINE_COMMENT
+	:	(REM | '\'') InputCharacter*
+	;
+
+// --- ZX BASIC keywords
 ABS: A B S;
 ACS: A C S;
 AND: A N D;
@@ -264,15 +319,19 @@ WEND: W E N D;
 WHILE: W H I L E;
 XOR: X O R;
 
+// --- Z80 Asm and ZX BASIC decimal number
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
 
+// --- Z80 Asm and ZX BASIC real number
 REALNUM	: [0-9]* '.' [0-9]+ ExponentPart? 
 		| [0-9]+ ExponentPart;
 
-HEXNUM	: '$' HexDigit HexDigit? HexDigit? HexDigit?
+// --- ZX BASIC hexadecimal number
+ZXB_HEXNUM	: '$' HexDigit HexDigit? HexDigit? HexDigit?
 		| Digit HexDigit? HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
 
-BINNUM	: '%' BinDigit BinDigit? BinDigit? BinDigit?
+// --- ZX BASIC binary number
+ZXB_BINNUM	: '%' BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
@@ -281,13 +340,35 @@ BINNUM	: '%' BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit? ('B' | 'b') ;
 
-IDENTIFIER: IDSTART IDCONT* ;
-IDSTART	: 'A'..'Z' | 'a'..'z' ;
-IDCONT	: '0'..'9' | 'A'..'Z' | 'a'..'z' ;
+// --- ZX BASIC identifier
+ZXB_IDENTIFIER
+	:	ZXB_IDSTART ZXB_IDCONT*
+	;
+ZXB_IDSTART
+	: 'A'..'Z' | 'a'..'z'
+	;
+ZXB_IDCONT
+	:	'0'..'9' | 'A'..'Z' | 'a'..'z'
+	;
 
-/*
- * Reserved words are case-insensitive
- */
+// --- ZX BASIC String
+ZXB_STRING
+	:	'"' (~["\\\r\n\u0085\u2028\u2029])* '"'
+	;
+
+// --- This is how a ZX BASIC line can end
+ZXB_LINE_END
+	: UNDERSCORE? NewLine
+	;
+
+// ============================================================================
+// ZX BASIC and Z80 fragments
+// --- Any parsed input character
+fragment InputCharacter
+	:	~[\r\n\u0085\u2028\u2029]
+	;
+
+// --- Reserved words are case-insensitive
 fragment A : [aA]; // match either an 'a' or 'A'
 fragment B : [bB];
 fragment C : [cC];
@@ -315,16 +396,21 @@ fragment X : [xX];
 fragment Y : [yY];
 fragment Z : [zZ];
 
+// --- Digits for different radixes
 fragment HexDigit 
 	: [0-9] 
 	| [A-F] 
 	| [a-f]
 	;
-
 fragment Digit: [0-9];
-
 fragment BinDigit: '0'|'1' ;
-
 fragment ExponentPart
 	: [eE] ('+' | '-')? [0-9]+
+	;
+
+fragment NewLine
+	: '\r\n' | '\r' | '\n'
+	| '\u0085' // <Next Line CHARACTER (U+0085)>'
+	| '\u2028' //'<Line Separator CHARACTER (U+2028)>'
+	| '\u2029' //'<Paragraph Separator CHARACTER (U+2029)>'
 	;

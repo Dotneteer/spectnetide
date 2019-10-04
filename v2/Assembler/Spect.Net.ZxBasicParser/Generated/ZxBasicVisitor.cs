@@ -40,38 +40,80 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCompileUnit([NotNull] ZxBasicParser.CompileUnitContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.keyword"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_label"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitKeyword([NotNull] ZxBasicParser.KeywordContext context);
+	Result VisitZxb_label([NotNull] ZxBasicParser.Zxb_labelContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.function"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_line"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitFunction([NotNull] ZxBasicParser.FunctionContext context);
+	Result VisitZxb_line([NotNull] ZxBasicParser.Zxb_lineContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.operator"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_line_item"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitOperator([NotNull] ZxBasicParser.OperatorContext context);
+	Result VisitZxb_line_item([NotNull] ZxBasicParser.Zxb_line_itemContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.special"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_asm_section"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitSpecial([NotNull] ZxBasicParser.SpecialContext context);
+	Result VisitZxb_asm_section([NotNull] ZxBasicParser.Zxb_asm_sectionContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.number"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_keyword"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNumber([NotNull] ZxBasicParser.NumberContext context);
+	Result VisitZxb_keyword([NotNull] ZxBasicParser.Zxb_keywordContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_function([NotNull] ZxBasicParser.Zxb_functionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_operator([NotNull] ZxBasicParser.Zxb_operatorContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_special"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_special([NotNull] ZxBasicParser.Zxb_specialContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_number([NotNull] ZxBasicParser.Zxb_numberContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.asm_section"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.asmline"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAsmline([NotNull] ZxBasicParser.AsmlineContext context);
 }
 } // namespace Spect.Net.ZxBasicParser.Generated

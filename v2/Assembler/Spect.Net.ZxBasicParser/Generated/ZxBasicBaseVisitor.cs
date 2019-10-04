@@ -46,7 +46,7 @@ public partial class ZxBasicBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	public virtual Result VisitCompileUnit([NotNull] ZxBasicParser.CompileUnitContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.keyword"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_label"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -54,10 +54,10 @@ public partial class ZxBasicBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitKeyword([NotNull] ZxBasicParser.KeywordContext context) { return VisitChildren(context); }
+	public virtual Result VisitZxb_label([NotNull] ZxBasicParser.Zxb_labelContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.function"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_line"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -65,10 +65,10 @@ public partial class ZxBasicBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitFunction([NotNull] ZxBasicParser.FunctionContext context) { return VisitChildren(context); }
+	public virtual Result VisitZxb_line([NotNull] ZxBasicParser.Zxb_lineContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.operator"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_line_item"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -76,10 +76,10 @@ public partial class ZxBasicBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOperator([NotNull] ZxBasicParser.OperatorContext context) { return VisitChildren(context); }
+	public virtual Result VisitZxb_line_item([NotNull] ZxBasicParser.Zxb_line_itemContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.special"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_asm_section"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -87,10 +87,10 @@ public partial class ZxBasicBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSpecial([NotNull] ZxBasicParser.SpecialContext context) { return VisitChildren(context); }
+	public virtual Result VisitZxb_asm_section([NotNull] ZxBasicParser.Zxb_asm_sectionContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.number"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_keyword"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -98,6 +98,72 @@ public partial class ZxBasicBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitNumber([NotNull] ZxBasicParser.NumberContext context) { return VisitChildren(context); }
+	public virtual Result VisitZxb_keyword([NotNull] ZxBasicParser.Zxb_keywordContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_function"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitZxb_function([NotNull] ZxBasicParser.Zxb_functionContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_operator"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitZxb_operator([NotNull] ZxBasicParser.Zxb_operatorContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_special"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitZxb_special([NotNull] ZxBasicParser.Zxb_specialContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_number"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitZxb_number([NotNull] ZxBasicParser.Zxb_numberContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.asm_section"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.asmline"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAsmline([NotNull] ZxBasicParser.AsmlineContext context) { return VisitChildren(context); }
 }
 } // namespace Spect.Net.ZxBasicParser.Generated
