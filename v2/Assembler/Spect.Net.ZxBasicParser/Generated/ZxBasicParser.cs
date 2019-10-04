@@ -31,18 +31,47 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 [System.CLSCompliant(false)]
 public partial class ZxBasicParser : Parser {
 	public const int
-		WS=1;
+		WS=1, ABS=2, ACS=3, AND=4, ALIGN=5, ASC=6, ASM=7, ASN=8, AT=9, ATN=10, 
+		ATTR=11, BAND=12, BNOT=13, BOR=14, BXOR=15, BEEP=16, BOLD=17, BORDER=18, 
+		BRIGHT=19, BYREF=20, BYVAL=21, CAST=22, CHR=23, CIRCLE=24, CLS=25, CODE=26, 
+		CONST=27, CONTINUE=28, COS=29, CSRLIN=30, DECLARE=31, DIM=32, DO=33, DATA=34, 
+		DRAW=35, ELSE=36, ELSEIF=37, END=38, EXIT=39, EXP=40, FASTCALL=41, FLASH=42, 
+		FOR=43, FUNCTION=44, GETKEY=45, GETKEYSCANCODE=46, GO=47, GOTO=48, GOSUB=49, 
+		HEX=50, HEX16=51, IF=52, IN=53, INK=54, INKEY=55, INPUT=56, INT=57, INVERSE=58, 
+		ITALIC=59, LBOUND=60, LCASE=61, LET=62, LEN=63, LN=64, LOAD=65, LOOP=66, 
+		MOD=67, MULTIKEYS=68, NEXT=69, NOT=70, OR=71, OVER=72, OUT=73, PAPER=74, 
+		PAUSE=75, PEEK=76, PI=77, PLOT=78, POINT=79, POKE=80, POS=81, PRINT=82, 
+		PRINT42=83, PRINTAT42=84, PRINT64=85, PRINTAT64=86, RANDOMIZE=87, READ=88, 
+		REM=89, RESTORE=90, RETURN=91, RND=92, SAVE=93, SCREEN=94, SGN=95, SHL=96, 
+		SHR=97, SIN=98, SQR=99, STDCALL=100, STEP=101, STOP=102, STR=103, SUB=104, 
+		TAN=105, THEN=106, TO=107, UBOUND=108, UCASE=109, UNTIL=110, VAL=111, 
+		VERIFY=112, WEND=113, WHILE=114, XOR=115, DECNUM=116, REALNUM=117, HEXNUM=118, 
+		BINNUM=119, IDENTIFIER=120, IDSTART=121, IDCONT=122;
 	public const int
-		RULE_compileUnit = 0;
+		RULE_compileUnit = 0, RULE_keyword = 1, RULE_function = 2, RULE_operator = 3, 
+		RULE_special = 4, RULE_number = 5;
 	public static readonly string[] ruleNames = {
-		"compileUnit"
+		"compileUnit", "keyword", "function", "operator", "special", "number"
 	};
 
 	private static readonly string[] _LiteralNames = {
 		null, "' '"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "WS"
+		null, "WS", "ABS", "ACS", "AND", "ALIGN", "ASC", "ASM", "ASN", "AT", "ATN", 
+		"ATTR", "BAND", "BNOT", "BOR", "BXOR", "BEEP", "BOLD", "BORDER", "BRIGHT", 
+		"BYREF", "BYVAL", "CAST", "CHR", "CIRCLE", "CLS", "CODE", "CONST", "CONTINUE", 
+		"COS", "CSRLIN", "DECLARE", "DIM", "DO", "DATA", "DRAW", "ELSE", "ELSEIF", 
+		"END", "EXIT", "EXP", "FASTCALL", "FLASH", "FOR", "FUNCTION", "GETKEY", 
+		"GETKEYSCANCODE", "GO", "GOTO", "GOSUB", "HEX", "HEX16", "IF", "IN", "INK", 
+		"INKEY", "INPUT", "INT", "INVERSE", "ITALIC", "LBOUND", "LCASE", "LET", 
+		"LEN", "LN", "LOAD", "LOOP", "MOD", "MULTIKEYS", "NEXT", "NOT", "OR", 
+		"OVER", "OUT", "PAPER", "PAUSE", "PEEK", "PI", "PLOT", "POINT", "POKE", 
+		"POS", "PRINT", "PRINT42", "PRINTAT42", "PRINT64", "PRINTAT64", "RANDOMIZE", 
+		"READ", "REM", "RESTORE", "RETURN", "RND", "SAVE", "SCREEN", "SGN", "SHL", 
+		"SHR", "SIN", "SQR", "STDCALL", "STEP", "STOP", "STR", "SUB", "TAN", "THEN", 
+		"TO", "UBOUND", "UCASE", "UNTIL", "VAL", "VERIFY", "WEND", "WHILE", "XOR", 
+		"DECNUM", "REALNUM", "HEXNUM", "BINNUM", "IDENTIFIER", "IDSTART", "IDCONT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -96,6 +125,40 @@ public partial class ZxBasicParser : Parser {
 	}
 	public partial class CompileUnitContext : ParserRuleContext {
 		public ITerminalNode Eof() { return GetToken(ZxBasicParser.Eof, 0); }
+		public KeywordContext[] keyword() {
+			return GetRuleContexts<KeywordContext>();
+		}
+		public KeywordContext keyword(int i) {
+			return GetRuleContext<KeywordContext>(i);
+		}
+		public FunctionContext[] function() {
+			return GetRuleContexts<FunctionContext>();
+		}
+		public FunctionContext function(int i) {
+			return GetRuleContext<FunctionContext>(i);
+		}
+		public OperatorContext[] @operator() {
+			return GetRuleContexts<OperatorContext>();
+		}
+		public OperatorContext @operator(int i) {
+			return GetRuleContext<OperatorContext>(i);
+		}
+		public SpecialContext[] special() {
+			return GetRuleContexts<SpecialContext>();
+		}
+		public SpecialContext special(int i) {
+			return GetRuleContext<SpecialContext>(i);
+		}
+		public ITerminalNode[] IDENTIFIER() { return GetTokens(ZxBasicParser.IDENTIFIER); }
+		public ITerminalNode IDENTIFIER(int i) {
+			return GetToken(ZxBasicParser.IDENTIFIER, i);
+		}
+		public NumberContext[] number() {
+			return GetRuleContexts<NumberContext>();
+		}
+		public NumberContext number(int i) {
+			return GetRuleContext<NumberContext>(i);
+		}
 		public CompileUnitContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -120,10 +183,568 @@ public partial class ZxBasicParser : Parser {
 	public CompileUnitContext compileUnit() {
 		CompileUnitContext _localctx = new CompileUnitContext(_ctx, State);
 		EnterRule(_localctx, 0, RULE_compileUnit);
+		int _la;
+		try {
+			State = 24;
+			_errHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(_input,2,_ctx) ) {
+			case 1:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 12; Match(Eof);
+				}
+				break;
+
+			case 2:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 21;
+				_errHandler.Sync(this);
+				_la = _input.La(1);
+				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ACS) | (1L << AND) | (1L << ALIGN) | (1L << ASC) | (1L << ASM) | (1L << ASN) | (1L << AT) | (1L << ATN) | (1L << ATTR) | (1L << BAND) | (1L << BNOT) | (1L << BOR) | (1L << BXOR) | (1L << BEEP) | (1L << BOLD) | (1L << BORDER) | (1L << BRIGHT) | (1L << BYREF) | (1L << BYVAL) | (1L << CAST) | (1L << CHR) | (1L << CIRCLE) | (1L << CLS) | (1L << CODE) | (1L << CONST) | (1L << CONTINUE) | (1L << COS) | (1L << CSRLIN) | (1L << DECLARE) | (1L << DIM) | (1L << DO) | (1L << DATA) | (1L << DRAW) | (1L << ELSE) | (1L << ELSEIF) | (1L << END) | (1L << EXIT) | (1L << EXP) | (1L << FASTCALL) | (1L << FLASH) | (1L << FOR) | (1L << FUNCTION) | (1L << GETKEY) | (1L << GETKEYSCANCODE) | (1L << GOTO) | (1L << GOSUB) | (1L << HEX) | (1L << HEX16) | (1L << IF) | (1L << IN) | (1L << INK) | (1L << INKEY) | (1L << INPUT) | (1L << INT) | (1L << INVERSE) | (1L << ITALIC) | (1L << LBOUND) | (1L << LCASE) | (1L << LET) | (1L << LEN))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (LN - 64)) | (1L << (LOAD - 64)) | (1L << (LOOP - 64)) | (1L << (MOD - 64)) | (1L << (MULTIKEYS - 64)) | (1L << (NEXT - 64)) | (1L << (NOT - 64)) | (1L << (OR - 64)) | (1L << (OVER - 64)) | (1L << (OUT - 64)) | (1L << (PAPER - 64)) | (1L << (PAUSE - 64)) | (1L << (PEEK - 64)) | (1L << (PI - 64)) | (1L << (PLOT - 64)) | (1L << (POINT - 64)) | (1L << (POKE - 64)) | (1L << (POS - 64)) | (1L << (PRINT - 64)) | (1L << (PRINT42 - 64)) | (1L << (PRINTAT42 - 64)) | (1L << (PRINT64 - 64)) | (1L << (PRINTAT64 - 64)) | (1L << (RANDOMIZE - 64)) | (1L << (READ - 64)) | (1L << (REM - 64)) | (1L << (RESTORE - 64)) | (1L << (RETURN - 64)) | (1L << (RND - 64)) | (1L << (SAVE - 64)) | (1L << (SCREEN - 64)) | (1L << (SGN - 64)) | (1L << (SHL - 64)) | (1L << (SHR - 64)) | (1L << (SIN - 64)) | (1L << (SQR - 64)) | (1L << (STDCALL - 64)) | (1L << (STEP - 64)) | (1L << (STOP - 64)) | (1L << (STR - 64)) | (1L << (SUB - 64)) | (1L << (TAN - 64)) | (1L << (THEN - 64)) | (1L << (TO - 64)) | (1L << (UBOUND - 64)) | (1L << (UCASE - 64)) | (1L << (UNTIL - 64)) | (1L << (VAL - 64)) | (1L << (VERIFY - 64)) | (1L << (WEND - 64)) | (1L << (WHILE - 64)) | (1L << (XOR - 64)) | (1L << (DECNUM - 64)) | (1L << (REALNUM - 64)) | (1L << (HEXNUM - 64)) | (1L << (BINNUM - 64)) | (1L << (IDENTIFIER - 64)))) != 0)) {
+					{
+					State = 19;
+					_errHandler.Sync(this);
+					switch (_input.La(1)) {
+					case AT:
+					case BEEP:
+					case BOLD:
+					case BORDER:
+					case BRIGHT:
+					case BYREF:
+					case BYVAL:
+					case CIRCLE:
+					case CLS:
+					case CONST:
+					case CONTINUE:
+					case DECLARE:
+					case DIM:
+					case DO:
+					case DATA:
+					case DRAW:
+					case ELSE:
+					case ELSEIF:
+					case END:
+					case EXIT:
+					case FASTCALL:
+					case FLASH:
+					case FOR:
+					case FUNCTION:
+					case GOTO:
+					case GOSUB:
+					case IF:
+					case INK:
+					case INVERSE:
+					case ITALIC:
+					case LET:
+					case LOAD:
+					case LOOP:
+					case NEXT:
+					case OVER:
+					case OUT:
+					case PAPER:
+					case PAUSE:
+					case PI:
+					case PLOT:
+					case POKE:
+					case PRINT:
+					case RANDOMIZE:
+					case READ:
+					case REM:
+					case RESTORE:
+					case RETURN:
+					case SAVE:
+					case STDCALL:
+					case STEP:
+					case STOP:
+					case SUB:
+					case THEN:
+					case TO:
+					case UNTIL:
+					case VERIFY:
+					case WEND:
+					case WHILE:
+						{
+						State = 13; keyword();
+						}
+						break;
+					case ABS:
+					case ACS:
+					case ASC:
+					case ASN:
+					case ATN:
+					case ATTR:
+					case CAST:
+					case CHR:
+					case CODE:
+					case COS:
+					case CSRLIN:
+					case EXP:
+					case GETKEY:
+					case GETKEYSCANCODE:
+					case HEX:
+					case HEX16:
+					case IN:
+					case INKEY:
+					case INPUT:
+					case INT:
+					case LBOUND:
+					case LCASE:
+					case LEN:
+					case LN:
+					case MULTIKEYS:
+					case PEEK:
+					case POINT:
+					case POS:
+					case PRINT42:
+					case PRINTAT42:
+					case PRINT64:
+					case PRINTAT64:
+					case RND:
+					case SCREEN:
+					case SGN:
+					case STR:
+					case TAN:
+					case UBOUND:
+					case UCASE:
+					case VAL:
+						{
+						State = 14; function();
+						}
+						break;
+					case AND:
+					case BAND:
+					case BNOT:
+					case BOR:
+					case BXOR:
+					case MOD:
+					case NOT:
+					case OR:
+					case SHL:
+					case SHR:
+					case SIN:
+					case SQR:
+					case XOR:
+						{
+						State = 15; @operator();
+						}
+						break;
+					case ALIGN:
+					case ASM:
+						{
+						State = 16; special();
+						}
+						break;
+					case IDENTIFIER:
+						{
+						State = 17; Match(IDENTIFIER);
+						}
+						break;
+					case DECNUM:
+					case REALNUM:
+					case HEXNUM:
+					case BINNUM:
+						{
+						State = 18; number();
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					}
+					State = 23;
+					_errHandler.Sync(this);
+					_la = _input.La(1);
+				}
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class KeywordContext : ParserRuleContext {
+		public ITerminalNode AT() { return GetToken(ZxBasicParser.AT, 0); }
+		public ITerminalNode BEEP() { return GetToken(ZxBasicParser.BEEP, 0); }
+		public ITerminalNode BOLD() { return GetToken(ZxBasicParser.BOLD, 0); }
+		public ITerminalNode BORDER() { return GetToken(ZxBasicParser.BORDER, 0); }
+		public ITerminalNode BRIGHT() { return GetToken(ZxBasicParser.BRIGHT, 0); }
+		public ITerminalNode BYREF() { return GetToken(ZxBasicParser.BYREF, 0); }
+		public ITerminalNode BYVAL() { return GetToken(ZxBasicParser.BYVAL, 0); }
+		public ITerminalNode CIRCLE() { return GetToken(ZxBasicParser.CIRCLE, 0); }
+		public ITerminalNode CLS() { return GetToken(ZxBasicParser.CLS, 0); }
+		public ITerminalNode CONST() { return GetToken(ZxBasicParser.CONST, 0); }
+		public ITerminalNode CONTINUE() { return GetToken(ZxBasicParser.CONTINUE, 0); }
+		public ITerminalNode DECLARE() { return GetToken(ZxBasicParser.DECLARE, 0); }
+		public ITerminalNode DIM() { return GetToken(ZxBasicParser.DIM, 0); }
+		public ITerminalNode DO() { return GetToken(ZxBasicParser.DO, 0); }
+		public ITerminalNode DATA() { return GetToken(ZxBasicParser.DATA, 0); }
+		public ITerminalNode DRAW() { return GetToken(ZxBasicParser.DRAW, 0); }
+		public ITerminalNode ELSE() { return GetToken(ZxBasicParser.ELSE, 0); }
+		public ITerminalNode ELSEIF() { return GetToken(ZxBasicParser.ELSEIF, 0); }
+		public ITerminalNode END() { return GetToken(ZxBasicParser.END, 0); }
+		public ITerminalNode EXIT() { return GetToken(ZxBasicParser.EXIT, 0); }
+		public ITerminalNode FASTCALL() { return GetToken(ZxBasicParser.FASTCALL, 0); }
+		public ITerminalNode FLASH() { return GetToken(ZxBasicParser.FLASH, 0); }
+		public ITerminalNode FOR() { return GetToken(ZxBasicParser.FOR, 0); }
+		public ITerminalNode FUNCTION() { return GetToken(ZxBasicParser.FUNCTION, 0); }
+		public ITerminalNode GOTO() { return GetToken(ZxBasicParser.GOTO, 0); }
+		public ITerminalNode GOSUB() { return GetToken(ZxBasicParser.GOSUB, 0); }
+		public ITerminalNode IF() { return GetToken(ZxBasicParser.IF, 0); }
+		public ITerminalNode INK() { return GetToken(ZxBasicParser.INK, 0); }
+		public ITerminalNode INVERSE() { return GetToken(ZxBasicParser.INVERSE, 0); }
+		public ITerminalNode ITALIC() { return GetToken(ZxBasicParser.ITALIC, 0); }
+		public ITerminalNode LET() { return GetToken(ZxBasicParser.LET, 0); }
+		public ITerminalNode LOAD() { return GetToken(ZxBasicParser.LOAD, 0); }
+		public ITerminalNode LOOP() { return GetToken(ZxBasicParser.LOOP, 0); }
+		public ITerminalNode NEXT() { return GetToken(ZxBasicParser.NEXT, 0); }
+		public ITerminalNode OVER() { return GetToken(ZxBasicParser.OVER, 0); }
+		public ITerminalNode OUT() { return GetToken(ZxBasicParser.OUT, 0); }
+		public ITerminalNode PAPER() { return GetToken(ZxBasicParser.PAPER, 0); }
+		public ITerminalNode PAUSE() { return GetToken(ZxBasicParser.PAUSE, 0); }
+		public ITerminalNode PI() { return GetToken(ZxBasicParser.PI, 0); }
+		public ITerminalNode PLOT() { return GetToken(ZxBasicParser.PLOT, 0); }
+		public ITerminalNode POKE() { return GetToken(ZxBasicParser.POKE, 0); }
+		public ITerminalNode PRINT() { return GetToken(ZxBasicParser.PRINT, 0); }
+		public ITerminalNode RANDOMIZE() { return GetToken(ZxBasicParser.RANDOMIZE, 0); }
+		public ITerminalNode READ() { return GetToken(ZxBasicParser.READ, 0); }
+		public ITerminalNode REM() { return GetToken(ZxBasicParser.REM, 0); }
+		public ITerminalNode RESTORE() { return GetToken(ZxBasicParser.RESTORE, 0); }
+		public ITerminalNode RETURN() { return GetToken(ZxBasicParser.RETURN, 0); }
+		public ITerminalNode SAVE() { return GetToken(ZxBasicParser.SAVE, 0); }
+		public ITerminalNode STDCALL() { return GetToken(ZxBasicParser.STDCALL, 0); }
+		public ITerminalNode STEP() { return GetToken(ZxBasicParser.STEP, 0); }
+		public ITerminalNode STOP() { return GetToken(ZxBasicParser.STOP, 0); }
+		public ITerminalNode SUB() { return GetToken(ZxBasicParser.SUB, 0); }
+		public ITerminalNode THEN() { return GetToken(ZxBasicParser.THEN, 0); }
+		public ITerminalNode TO() { return GetToken(ZxBasicParser.TO, 0); }
+		public ITerminalNode UNTIL() { return GetToken(ZxBasicParser.UNTIL, 0); }
+		public ITerminalNode VERIFY() { return GetToken(ZxBasicParser.VERIFY, 0); }
+		public ITerminalNode WEND() { return GetToken(ZxBasicParser.WEND, 0); }
+		public ITerminalNode WHILE() { return GetToken(ZxBasicParser.WHILE, 0); }
+		public KeywordContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_keyword; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.EnterKeyword(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.ExitKeyword(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IZxBasicVisitor<TResult> typedVisitor = visitor as IZxBasicVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitKeyword(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public KeywordContext keyword() {
+		KeywordContext _localctx = new KeywordContext(_ctx, State);
+		EnterRule(_localctx, 2, RULE_keyword);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2; Match(Eof);
+			State = 26;
+			_la = _input.La(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AT) | (1L << BEEP) | (1L << BOLD) | (1L << BORDER) | (1L << BRIGHT) | (1L << BYREF) | (1L << BYVAL) | (1L << CIRCLE) | (1L << CLS) | (1L << CONST) | (1L << CONTINUE) | (1L << DECLARE) | (1L << DIM) | (1L << DO) | (1L << DATA) | (1L << DRAW) | (1L << ELSE) | (1L << ELSEIF) | (1L << END) | (1L << EXIT) | (1L << FASTCALL) | (1L << FLASH) | (1L << FOR) | (1L << FUNCTION) | (1L << GOTO) | (1L << GOSUB) | (1L << IF) | (1L << INK) | (1L << INVERSE) | (1L << ITALIC) | (1L << LET))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (LOAD - 65)) | (1L << (LOOP - 65)) | (1L << (NEXT - 65)) | (1L << (OVER - 65)) | (1L << (OUT - 65)) | (1L << (PAPER - 65)) | (1L << (PAUSE - 65)) | (1L << (PI - 65)) | (1L << (PLOT - 65)) | (1L << (POKE - 65)) | (1L << (PRINT - 65)) | (1L << (RANDOMIZE - 65)) | (1L << (READ - 65)) | (1L << (REM - 65)) | (1L << (RESTORE - 65)) | (1L << (RETURN - 65)) | (1L << (SAVE - 65)) | (1L << (STDCALL - 65)) | (1L << (STEP - 65)) | (1L << (STOP - 65)) | (1L << (SUB - 65)) | (1L << (THEN - 65)) | (1L << (TO - 65)) | (1L << (UNTIL - 65)) | (1L << (VERIFY - 65)) | (1L << (WEND - 65)) | (1L << (WHILE - 65)))) != 0)) ) {
+			_errHandler.RecoverInline(this);
+			} else {
+				if (_input.La(1) == TokenConstants.Eof) {
+					matchedEOF = true;
+				}
+
+				_errHandler.ReportMatch(this);
+				Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class FunctionContext : ParserRuleContext {
+		public ITerminalNode ABS() { return GetToken(ZxBasicParser.ABS, 0); }
+		public ITerminalNode ACS() { return GetToken(ZxBasicParser.ACS, 0); }
+		public ITerminalNode ASC() { return GetToken(ZxBasicParser.ASC, 0); }
+		public ITerminalNode ASN() { return GetToken(ZxBasicParser.ASN, 0); }
+		public ITerminalNode ATN() { return GetToken(ZxBasicParser.ATN, 0); }
+		public ITerminalNode ATTR() { return GetToken(ZxBasicParser.ATTR, 0); }
+		public ITerminalNode CAST() { return GetToken(ZxBasicParser.CAST, 0); }
+		public ITerminalNode CHR() { return GetToken(ZxBasicParser.CHR, 0); }
+		public ITerminalNode CODE() { return GetToken(ZxBasicParser.CODE, 0); }
+		public ITerminalNode COS() { return GetToken(ZxBasicParser.COS, 0); }
+		public ITerminalNode CSRLIN() { return GetToken(ZxBasicParser.CSRLIN, 0); }
+		public ITerminalNode EXP() { return GetToken(ZxBasicParser.EXP, 0); }
+		public ITerminalNode GETKEY() { return GetToken(ZxBasicParser.GETKEY, 0); }
+		public ITerminalNode GETKEYSCANCODE() { return GetToken(ZxBasicParser.GETKEYSCANCODE, 0); }
+		public ITerminalNode HEX() { return GetToken(ZxBasicParser.HEX, 0); }
+		public ITerminalNode HEX16() { return GetToken(ZxBasicParser.HEX16, 0); }
+		public ITerminalNode IN() { return GetToken(ZxBasicParser.IN, 0); }
+		public ITerminalNode INKEY() { return GetToken(ZxBasicParser.INKEY, 0); }
+		public ITerminalNode INPUT() { return GetToken(ZxBasicParser.INPUT, 0); }
+		public ITerminalNode INT() { return GetToken(ZxBasicParser.INT, 0); }
+		public ITerminalNode LBOUND() { return GetToken(ZxBasicParser.LBOUND, 0); }
+		public ITerminalNode LCASE() { return GetToken(ZxBasicParser.LCASE, 0); }
+		public ITerminalNode LEN() { return GetToken(ZxBasicParser.LEN, 0); }
+		public ITerminalNode LN() { return GetToken(ZxBasicParser.LN, 0); }
+		public ITerminalNode MULTIKEYS() { return GetToken(ZxBasicParser.MULTIKEYS, 0); }
+		public ITerminalNode PEEK() { return GetToken(ZxBasicParser.PEEK, 0); }
+		public ITerminalNode POINT() { return GetToken(ZxBasicParser.POINT, 0); }
+		public ITerminalNode POS() { return GetToken(ZxBasicParser.POS, 0); }
+		public ITerminalNode PRINT42() { return GetToken(ZxBasicParser.PRINT42, 0); }
+		public ITerminalNode PRINTAT42() { return GetToken(ZxBasicParser.PRINTAT42, 0); }
+		public ITerminalNode PRINT64() { return GetToken(ZxBasicParser.PRINT64, 0); }
+		public ITerminalNode PRINTAT64() { return GetToken(ZxBasicParser.PRINTAT64, 0); }
+		public ITerminalNode RND() { return GetToken(ZxBasicParser.RND, 0); }
+		public ITerminalNode SCREEN() { return GetToken(ZxBasicParser.SCREEN, 0); }
+		public ITerminalNode SGN() { return GetToken(ZxBasicParser.SGN, 0); }
+		public ITerminalNode STR() { return GetToken(ZxBasicParser.STR, 0); }
+		public ITerminalNode TAN() { return GetToken(ZxBasicParser.TAN, 0); }
+		public ITerminalNode UBOUND() { return GetToken(ZxBasicParser.UBOUND, 0); }
+		public ITerminalNode UCASE() { return GetToken(ZxBasicParser.UCASE, 0); }
+		public ITerminalNode VAL() { return GetToken(ZxBasicParser.VAL, 0); }
+		public FunctionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_function; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.EnterFunction(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.ExitFunction(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IZxBasicVisitor<TResult> typedVisitor = visitor as IZxBasicVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFunction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public FunctionContext function() {
+		FunctionContext _localctx = new FunctionContext(_ctx, State);
+		EnterRule(_localctx, 4, RULE_function);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 28;
+			_la = _input.La(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ACS) | (1L << ASC) | (1L << ASN) | (1L << ATN) | (1L << ATTR) | (1L << CAST) | (1L << CHR) | (1L << CODE) | (1L << COS) | (1L << CSRLIN) | (1L << EXP) | (1L << GETKEY) | (1L << GETKEYSCANCODE) | (1L << HEX) | (1L << HEX16) | (1L << IN) | (1L << INKEY) | (1L << INPUT) | (1L << INT) | (1L << LBOUND) | (1L << LCASE) | (1L << LEN))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (LN - 64)) | (1L << (MULTIKEYS - 64)) | (1L << (PEEK - 64)) | (1L << (POINT - 64)) | (1L << (POS - 64)) | (1L << (PRINT42 - 64)) | (1L << (PRINTAT42 - 64)) | (1L << (PRINT64 - 64)) | (1L << (PRINTAT64 - 64)) | (1L << (RND - 64)) | (1L << (SCREEN - 64)) | (1L << (SGN - 64)) | (1L << (STR - 64)) | (1L << (TAN - 64)) | (1L << (UBOUND - 64)) | (1L << (UCASE - 64)) | (1L << (VAL - 64)))) != 0)) ) {
+			_errHandler.RecoverInline(this);
+			} else {
+				if (_input.La(1) == TokenConstants.Eof) {
+					matchedEOF = true;
+				}
+
+				_errHandler.ReportMatch(this);
+				Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class OperatorContext : ParserRuleContext {
+		public ITerminalNode AND() { return GetToken(ZxBasicParser.AND, 0); }
+		public ITerminalNode BAND() { return GetToken(ZxBasicParser.BAND, 0); }
+		public ITerminalNode BNOT() { return GetToken(ZxBasicParser.BNOT, 0); }
+		public ITerminalNode BOR() { return GetToken(ZxBasicParser.BOR, 0); }
+		public ITerminalNode BXOR() { return GetToken(ZxBasicParser.BXOR, 0); }
+		public ITerminalNode MOD() { return GetToken(ZxBasicParser.MOD, 0); }
+		public ITerminalNode NOT() { return GetToken(ZxBasicParser.NOT, 0); }
+		public ITerminalNode OR() { return GetToken(ZxBasicParser.OR, 0); }
+		public ITerminalNode SHL() { return GetToken(ZxBasicParser.SHL, 0); }
+		public ITerminalNode SHR() { return GetToken(ZxBasicParser.SHR, 0); }
+		public ITerminalNode SIN() { return GetToken(ZxBasicParser.SIN, 0); }
+		public ITerminalNode SQR() { return GetToken(ZxBasicParser.SQR, 0); }
+		public ITerminalNode XOR() { return GetToken(ZxBasicParser.XOR, 0); }
+		public OperatorContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_operator; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.EnterOperator(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.ExitOperator(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IZxBasicVisitor<TResult> typedVisitor = visitor as IZxBasicVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitOperator(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public OperatorContext @operator() {
+		OperatorContext _localctx = new OperatorContext(_ctx, State);
+		EnterRule(_localctx, 6, RULE_operator);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 30;
+			_la = _input.La(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AND) | (1L << BAND) | (1L << BNOT) | (1L << BOR) | (1L << BXOR))) != 0) || ((((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & ((1L << (MOD - 67)) | (1L << (NOT - 67)) | (1L << (OR - 67)) | (1L << (SHL - 67)) | (1L << (SHR - 67)) | (1L << (SIN - 67)) | (1L << (SQR - 67)) | (1L << (XOR - 67)))) != 0)) ) {
+			_errHandler.RecoverInline(this);
+			} else {
+				if (_input.La(1) == TokenConstants.Eof) {
+					matchedEOF = true;
+				}
+
+				_errHandler.ReportMatch(this);
+				Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class SpecialContext : ParserRuleContext {
+		public ITerminalNode ALIGN() { return GetToken(ZxBasicParser.ALIGN, 0); }
+		public ITerminalNode ASM() { return GetToken(ZxBasicParser.ASM, 0); }
+		public SpecialContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_special; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.EnterSpecial(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.ExitSpecial(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IZxBasicVisitor<TResult> typedVisitor = visitor as IZxBasicVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSpecial(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public SpecialContext special() {
+		SpecialContext _localctx = new SpecialContext(_ctx, State);
+		EnterRule(_localctx, 8, RULE_special);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 32;
+			_la = _input.La(1);
+			if ( !(_la==ALIGN || _la==ASM) ) {
+			_errHandler.RecoverInline(this);
+			} else {
+				if (_input.La(1) == TokenConstants.Eof) {
+					matchedEOF = true;
+				}
+
+				_errHandler.ReportMatch(this);
+				Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class NumberContext : ParserRuleContext {
+		public ITerminalNode BINNUM() { return GetToken(ZxBasicParser.BINNUM, 0); }
+		public ITerminalNode DECNUM() { return GetToken(ZxBasicParser.DECNUM, 0); }
+		public ITerminalNode HEXNUM() { return GetToken(ZxBasicParser.HEXNUM, 0); }
+		public ITerminalNode REALNUM() { return GetToken(ZxBasicParser.REALNUM, 0); }
+		public NumberContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_number; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.EnterNumber(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.ExitNumber(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IZxBasicVisitor<TResult> typedVisitor = visitor as IZxBasicVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNumber(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public NumberContext number() {
+		NumberContext _localctx = new NumberContext(_ctx, State);
+		EnterRule(_localctx, 10, RULE_number);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 34;
+			_la = _input.La(1);
+			if ( !(((((_la - 116)) & ~0x3f) == 0 && ((1L << (_la - 116)) & ((1L << (DECNUM - 116)) | (1L << (REALNUM - 116)) | (1L << (HEXNUM - 116)) | (1L << (BINNUM - 116)))) != 0)) ) {
+			_errHandler.RecoverInline(this);
+			} else {
+				if (_input.La(1) == TokenConstants.Eof) {
+					matchedEOF = true;
+				}
+
+				_errHandler.ReportMatch(this);
+				Consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -138,9 +759,25 @@ public partial class ZxBasicParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\x3\a\x4\x2\t\x2"+
-		"\x3\x2\x3\x2\x3\x2\x2\x2\x2\x3\x2\x2\x2\x2\x5\x2\x4\x3\x2\x2\x2\x4\x5"+
-		"\a\x2\x2\x3\x5\x3\x3\x2\x2\x2\x2";
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3|\'\x4\x2\t\x2\x4"+
+		"\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x3\x2\x3\x2\x3\x2\x3"+
+		"\x2\x3\x2\x3\x2\x3\x2\a\x2\x16\n\x2\f\x2\xE\x2\x19\v\x2\x5\x2\x1B\n\x2"+
+		"\x3\x3\x3\x3\x3\x4\x3\x4\x3\x5\x3\x5\x3\x6\x3\x6\x3\a\x3\a\x3\a\x2\x2"+
+		"\x2\b\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\x2\a\x1A\x2\v\v\x12\x17\x1A\x1B"+
+		"\x1D\x1E!)+.\x32\x33\x36\x36\x38\x38<=@@\x43\x44GGJMOPRRTTY]__\x66hjj"+
+		"lmpprt\x1B\x2\x4\x5\b\b\n\n\f\r\x18\x19\x1C\x1C\x1F **/\x30\x34\x35\x37"+
+		"\x37\x39;>?\x41\x42\x46\x46NNQQSSUX^^`\x61iikknoqq\b\x2\x6\x6\xE\x11\x45"+
+		"\x45HI\x62\x65uu\x4\x2\a\a\t\t\x3\x2vy\'\x2\x1A\x3\x2\x2\x2\x4\x1C\x3"+
+		"\x2\x2\x2\x6\x1E\x3\x2\x2\x2\b \x3\x2\x2\x2\n\"\x3\x2\x2\x2\f$\x3\x2\x2"+
+		"\x2\xE\x1B\a\x2\x2\x3\xF\x16\x5\x4\x3\x2\x10\x16\x5\x6\x4\x2\x11\x16\x5"+
+		"\b\x5\x2\x12\x16\x5\n\x6\x2\x13\x16\az\x2\x2\x14\x16\x5\f\a\x2\x15\xF"+
+		"\x3\x2\x2\x2\x15\x10\x3\x2\x2\x2\x15\x11\x3\x2\x2\x2\x15\x12\x3\x2\x2"+
+		"\x2\x15\x13\x3\x2\x2\x2\x15\x14\x3\x2\x2\x2\x16\x19\x3\x2\x2\x2\x17\x15"+
+		"\x3\x2\x2\x2\x17\x18\x3\x2\x2\x2\x18\x1B\x3\x2\x2\x2\x19\x17\x3\x2\x2"+
+		"\x2\x1A\xE\x3\x2\x2\x2\x1A\x17\x3\x2\x2\x2\x1B\x3\x3\x2\x2\x2\x1C\x1D"+
+		"\t\x2\x2\x2\x1D\x5\x3\x2\x2\x2\x1E\x1F\t\x3\x2\x2\x1F\a\x3\x2\x2\x2 !"+
+		"\t\x4\x2\x2!\t\x3\x2\x2\x2\"#\t\x5\x2\x2#\v\x3\x2\x2\x2$%\t\x6\x2\x2%"+
+		"\r\x3\x2\x2\x2\x5\x15\x17\x1A";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }
