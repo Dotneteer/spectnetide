@@ -66,12 +66,12 @@
     </None>
     <Antlr4 Include="ZxBasic.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Spect.Net.ZxBasicParser.Generated</CustomToolNamespace>
+      <CustomToolNamespace>Spect.Net.BasicParser.Generated</CustomToolNamespace>
     </Antlr4>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)obj\Debug\ZxBasic*.cs $(ProjectDir)..\..\Spect.Net.ZxBasicParser\Generated
+    <PostBuildEvent>copy $(ProjectDir)obj\Debug\ZxBasic*.cs $(ProjectDir)..\..\Spect.Net.BasicParser\Generated
 </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
