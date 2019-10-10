@@ -68,6 +68,20 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitZxb_asm_section([NotNull] ZxBasicParser.Zxb_asm_sectionContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_asm_start"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_asm_start([NotNull] ZxBasicParser.Zxb_asm_startContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_asm_end"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_asm_end([NotNull] ZxBasicParser.Zxb_asm_endContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_keyword"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -101,6 +115,41 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitZxb_number([NotNull] ZxBasicParser.Zxb_numberContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_identifier([NotNull] ZxBasicParser.Zxb_identifierContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_string"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_string([NotNull] ZxBasicParser.Zxb_stringContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_comment([NotNull] ZxBasicParser.Zxb_commentContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_block_comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_block_comment([NotNull] ZxBasicParser.Zxb_block_commentContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.zxb_line_comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxb_line_comment([NotNull] ZxBasicParser.Zxb_line_commentContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="ZxBasicParser.asm_section"/>.

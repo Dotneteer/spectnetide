@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
-using Spect.Net.VsPackage.LanguageServices.Z80Test;
 
 namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
 {

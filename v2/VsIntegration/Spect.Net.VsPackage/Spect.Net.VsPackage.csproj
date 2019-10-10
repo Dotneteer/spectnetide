@@ -157,6 +157,11 @@
     <Compile Include="LanguageServices\Z80Test\Z80TestClassifierProvider.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicClassificationFormats.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicClassificationTypes.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicClassifier.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicClassifierProvider.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\ZxBasic\ZxBasicLanguageService.cs" />
     <Compile Include="Machines\KempstonProvider.cs" />
     <Compile Include="Machines\MachineCollection.cs" />
@@ -476,6 +481,10 @@
     <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
       <Project>{bf64583f-fc84-4897-8a78-465a57ab73ac}</Project>
       <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.BasicParser\Spect.Net.BasicParser.csproj">
+      <Project>{0c184291-215a-459e-b4a7-a8f23a619700}</Project>
+      <Name>Spect.Net.BasicParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Assembler\Spect.Net.CommandParser\Spect.Net.CommandParser.csproj">
       <Project>{14508ba4-7d40-4949-9246-943b7f70391d}</Project>

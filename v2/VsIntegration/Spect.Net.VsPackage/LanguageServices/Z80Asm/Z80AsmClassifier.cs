@@ -258,27 +258,6 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                         AddClassificationSpan(list, snapshot, mnemonic, _operand);
                     }
                 }
-
-                //if (sourceLine is EmittingOperationBase && sourceLine.InstructionSpan != null)
-                //{
-                //    // --- This line contains executable instruction,
-                //    // --- So it might have a breakpoint
-                //    if (breakpointLines.IndexOf(sourceLine.SourceLine) >= 0)
-                //    {
-                //        AddClassificationSpan(list, snapshot, sourceLine.InstructionSpan, _breakpoint);
-                //    }
-                //}
-
-                //// --- Check for current breakpoint
-                //if (package != null && package.DebugInfoProvider.CurrentBreakpointFile == filePath
-                //    && package.DebugInfoProvider.CurrentBreakpointLine == sourceLine.SourceLine)
-                //{
-                //    AddClassificationSpan(list, snapshot, 
-                //        package.Options.FullLineHighlight 
-                //            ? new TextSpan(0, textOfLine.Length) 
-                //            : sourceLine.InstructionSpan,
-                //        _currentBreakpoint);
-                //}
             }
 
             return list;
@@ -300,6 +279,10 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             tempEvent?.Invoke(this, new ClassificationChangedEventArgs(span));
         }
 
+        /// <summary>
+        /// Refreshes the specified line on the screen
+        /// </summary>
+        /// <param name="lineNo"></param>
         public void RefreshLine(int lineNo)
         {
             if (!_buffer.Properties.TryGetProperty(typeof(ITextView), out ITextView view))
@@ -435,7 +418,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             }
             catch
             {
-                // --- Any potential exception in intentionally ignored.
+                // --- Any potential exception is intentionally ignored.
             }
         }
 
