@@ -21,6 +21,57 @@ namespace Spect.Net.Assembler
     /// </summary>
     public class Z80AsmVisitor : Z80AsmBaseVisitor<object>, IZ80AsmVisitorContext
     {
+        /// <summary>
+        /// Visits the source code
+        /// </summary>
+        /// <param name="source">Source code string</param>
+        /// <returns>Source code visitor object</returns>
+        public static Z80AsmVisitor VisitSource(string source)
+        {
+            var inputStream = new AntlrInputStream(source);
+            var lexer = new Z80AsmLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new Z80AsmParser(tokenStream);
+            var context = parser.compileUnit();
+            var visitor = new Z80AsmVisitor(inputStream);
+            visitor.Visit(context);
+            return visitor;
+        }
+
+        /// <summary>
+        /// Gets the index of the compilation line index from the compilation
+        /// </summary>
+        /// <param name="lines">Compilation lines</param>
+        /// <param name="lineNo">The source code's line number</param>
+        /// <returns>Compilation line index</returns>
+        public static int? GetAsmLineIndex(List<SourceLineBase> lines, int lineNo)
+        {
+            var lower = 0;
+            var upper = lines.Count - 1;
+            while (lower <= upper)
+            {
+                var idx = (lower + upper) / 2;
+                var sourceLineNo = lines[idx].SourceLine;
+                if (sourceLineNo == lineNo)
+                {
+                    return idx;
+                }
+                if (sourceLineNo > lineNo)
+                {
+                    upper = idx - 1;
+                }
+                else
+                {
+                    lower = idx + 1;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Instantiates a visitor object
+        /// </summary>
+        /// <param name="inputStream">Input stream to parse</param>
         public Z80AsmVisitor(AntlrInputStream inputStream)
         {
             InputStream = inputStream;

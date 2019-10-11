@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Spect.Net.BasicParser;
 using Spect.Net.BasicParser.Generated;
+using Spect.Net.VsPackage.LanguageServices.Z80Asm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,8 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
             _zxbIdentifier,
             _zxbNumber,
             _zxbString,
-            _zxbAsm;
+            _zxbAsm,
+            _label;
 
         private readonly ITextBuffer _buffer;
         private bool _isProcessing;
@@ -50,6 +52,8 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
             _zxbNumber = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_NUMBER);
             _zxbString = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_STRING);
             _zxbAsm = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_ASM);
+
+            _label = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_LABEL);
 
             ParseDocument();
 
@@ -223,7 +227,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
                     var parser = new ZxBasicParser(tokenStream);
                     var context = parser.compileUnit();
                     var treeWalker = new ParseTreeWalker();
-                    var parserListener = new ZxBasicParserListener();
+                    var parserListener = new ZxBasicParserListener(tokenStream);
                     treeWalker.Walk(parserListener, context);
 
                     lock (_locker)

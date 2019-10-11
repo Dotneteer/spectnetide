@@ -43,180 +43,37 @@ public interface IZxBasicListener : IParseTreeListener {
 	void ExitCompileUnit([NotNull] ZxBasicParser.CompileUnitContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_label"/>.
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.label"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterZxb_label([NotNull] ZxBasicParser.Zxb_labelContext context);
+	void EnterLabel([NotNull] ZxBasicParser.LabelContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_label"/>.
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.label"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitZxb_label([NotNull] ZxBasicParser.Zxb_labelContext context);
+	void ExitLabel([NotNull] ZxBasicParser.LabelContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_line"/>.
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.line"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterZxb_line([NotNull] ZxBasicParser.Zxb_lineContext context);
+	void EnterLine([NotNull] ZxBasicParser.LineContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_line"/>.
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.line"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitZxb_line([NotNull] ZxBasicParser.Zxb_lineContext context);
+	void ExitLine([NotNull] ZxBasicParser.LineContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_line_item"/>.
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.line_item"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterZxb_line_item([NotNull] ZxBasicParser.Zxb_line_itemContext context);
+	void EnterLine_item([NotNull] ZxBasicParser.Line_itemContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_line_item"/>.
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.line_item"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitZxb_line_item([NotNull] ZxBasicParser.Zxb_line_itemContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_asm_section"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_asm_section([NotNull] ZxBasicParser.Zxb_asm_sectionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_asm_section"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_asm_section([NotNull] ZxBasicParser.Zxb_asm_sectionContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_asm_start"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_asm_start([NotNull] ZxBasicParser.Zxb_asm_startContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_asm_start"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_asm_start([NotNull] ZxBasicParser.Zxb_asm_startContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_asm_end"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_asm_end([NotNull] ZxBasicParser.Zxb_asm_endContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_asm_end"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_asm_end([NotNull] ZxBasicParser.Zxb_asm_endContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_keyword"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_keyword([NotNull] ZxBasicParser.Zxb_keywordContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_keyword"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_keyword([NotNull] ZxBasicParser.Zxb_keywordContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_function"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_function([NotNull] ZxBasicParser.Zxb_functionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_function"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_function([NotNull] ZxBasicParser.Zxb_functionContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_operator"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_operator([NotNull] ZxBasicParser.Zxb_operatorContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_operator"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_operator([NotNull] ZxBasicParser.Zxb_operatorContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_special"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_special([NotNull] ZxBasicParser.Zxb_specialContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_special"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_special([NotNull] ZxBasicParser.Zxb_specialContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_number"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_number([NotNull] ZxBasicParser.Zxb_numberContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_number"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_number([NotNull] ZxBasicParser.Zxb_numberContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_identifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_identifier([NotNull] ZxBasicParser.Zxb_identifierContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_identifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_identifier([NotNull] ZxBasicParser.Zxb_identifierContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_string"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_string([NotNull] ZxBasicParser.Zxb_stringContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_string"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_string([NotNull] ZxBasicParser.Zxb_stringContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_comment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_comment([NotNull] ZxBasicParser.Zxb_commentContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_comment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_comment([NotNull] ZxBasicParser.Zxb_commentContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_block_comment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_block_comment([NotNull] ZxBasicParser.Zxb_block_commentContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_block_comment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_block_comment([NotNull] ZxBasicParser.Zxb_block_commentContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.zxb_line_comment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterZxb_line_comment([NotNull] ZxBasicParser.Zxb_line_commentContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.zxb_line_comment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitZxb_line_comment([NotNull] ZxBasicParser.Zxb_line_commentContext context);
+	void ExitLine_item([NotNull] ZxBasicParser.Line_itemContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ZxBasicParser.asm_section"/>.
@@ -230,14 +87,113 @@ public interface IZxBasicListener : IParseTreeListener {
 	void ExitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ZxBasicParser.asmline"/>.
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.keyword"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterAsmline([NotNull] ZxBasicParser.AsmlineContext context);
+	void EnterKeyword([NotNull] ZxBasicParser.KeywordContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ZxBasicParser.asmline"/>.
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.keyword"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitAsmline([NotNull] ZxBasicParser.AsmlineContext context);
+	void ExitKeyword([NotNull] ZxBasicParser.KeywordContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunction([NotNull] ZxBasicParser.FunctionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunction([NotNull] ZxBasicParser.FunctionContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOperator([NotNull] ZxBasicParser.OperatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOperator([NotNull] ZxBasicParser.OperatorContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.special"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSpecial([NotNull] ZxBasicParser.SpecialContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.special"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSpecial([NotNull] ZxBasicParser.SpecialContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumber([NotNull] ZxBasicParser.NumberContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumber([NotNull] ZxBasicParser.NumberContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdentifier([NotNull] ZxBasicParser.IdentifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdentifier([NotNull] ZxBasicParser.IdentifierContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.string"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterString([NotNull] ZxBasicParser.StringContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.string"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitString([NotNull] ZxBasicParser.StringContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterComment([NotNull] ZxBasicParser.CommentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitComment([NotNull] ZxBasicParser.CommentContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.block_comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBlock_comment([NotNull] ZxBasicParser.Block_commentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.block_comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBlock_comment([NotNull] ZxBasicParser.Block_commentContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.line_comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLine_comment([NotNull] ZxBasicParser.Line_commentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.line_comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLine_comment([NotNull] ZxBasicParser.Line_commentContext context);
 }
 } // namespace Spect.Net.BasicParser.Generated

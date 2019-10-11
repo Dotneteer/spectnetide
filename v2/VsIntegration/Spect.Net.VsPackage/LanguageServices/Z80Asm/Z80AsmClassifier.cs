@@ -112,8 +112,8 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             var textOfLine = currentLine.GetText();
 
             // --- Get the range of lines
-            var firstLine = GetAsmLineIndex(lines, span.Start.GetContainingLine().LineNumber + 1) ?? 0;
-            var lastLine = GetAsmLineIndex(lines, span.End.GetContainingLine().LineNumber + 1) ?? lines.Count - 1;
+            var firstLine = Z80AsmVisitor.GetAsmLineIndex(lines, span.Start.GetContainingLine().LineNumber + 1) ?? 0;
+            var lastLine = Z80AsmVisitor.GetAsmLineIndex(lines, span.End.GetContainingLine().LineNumber + 1) ?? lines.Count - 1;
 
             for (var line = firstLine; line <= lastLine; line++)
             {
@@ -346,18 +346,11 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                     var source = _buffer.CurrentSnapshot.GetText(span);
 
                     // --- Let's use the Z80 assembly parser to obtain tags
-                    var inputStream = new AntlrInputStream(source);
-                    var lexer = new Z80AsmLexer(inputStream);
-                    var tokenStream = new CommonTokenStream(lexer);
-                    var parser = new Z80AsmParser(tokenStream);
-                    var context = parser.compileUnit();
-                    var visitor = new Z80AsmVisitor(inputStream);
-                    visitor.Visit(context);
+                    var visitor = Z80AsmVisitor.VisitSource(source);
                     lock (_locker)
                     {
                         _z80SyntaxTreeVisitor = visitor;
                     }
-
 
                     // --- Code is parsed, sign the change
                     ClassificationChanged?.Invoke(this, new ClassificationChangedEventArgs(span));
@@ -367,36 +360,6 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                     _isProcessing = false;
                 }
             });
-        }
-
-        /// <summary>
-        /// Gets the index of the compilation line index from the compilation
-        /// </summary>
-        /// <param name="lines">Compilation lines</param>
-        /// <param name="lineNo">The source code's line number</param>
-        /// <returns>Compilation line index</returns>
-        private int? GetAsmLineIndex(List<SourceLineBase> lines, int lineNo)
-        {
-            var lower = 0;
-            var upper = lines.Count - 1;
-            while (lower <= upper)
-            {
-                var idx = (lower + upper) / 2;
-                var sourceLineNo = lines[idx].SourceLine;
-                if (sourceLineNo == lineNo)
-                {
-                    return idx;
-                }
-                if (sourceLineNo > lineNo)
-                {
-                    upper = idx - 1;
-                }
-                else
-                {
-                    lower = idx + 1;
-                }
-            }
-            return null;
         }
 
         /// <summary>

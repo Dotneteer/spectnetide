@@ -16,11 +16,17 @@ namespace Spect.Net.BasicParser
         /// </summary>
         public readonly Dictionary<int, List<TokenInfo>> TokenMap
             = new Dictionary<int, List<TokenInfo>>();
+        public readonly BufferedTokenStream Tokens;
+
+        public ZxBasicParserListener(BufferedTokenStream tokens)
+        {
+            Tokens = tokens;
+        }
 
         /// <summary>
         /// Handle ZX BASIC keywords
         /// </summary>
-        public override void ExitZxb_keyword([NotNull] ZxBasicParser.Zxb_keywordContext context)
+        public override void ExitKeyword([NotNull] ZxBasicParser.KeywordContext context)
         {
             AddSpan(TokenType.ZxbKeyword, context.Start, context.Start.Text.Length);
         }
@@ -28,7 +34,7 @@ namespace Spect.Net.BasicParser
         /// <summary>
         /// Handle ZX BASIC block comments
         /// </summary>
-        public override void ExitZxb_block_comment([NotNull] ZxBasicParser.Zxb_block_commentContext context)
+        public override void ExitBlock_comment([NotNull] ZxBasicParser.Block_commentContext context)
         {
             var text = context.GetText();
             var parts = Regex.Split(text, "\r\n");
@@ -44,7 +50,7 @@ namespace Spect.Net.BasicParser
         /// <summary>
         /// Handle ZXB line comments
         /// </summary>
-        public override void ExitZxb_line_comment([NotNull] ZxBasicParser.Zxb_line_commentContext context)
+        public override void ExitLine_comment([NotNull] ZxBasicParser.Line_commentContext context)
         {
             var text = context.GetText();            
             if (text.ToUpper().StartsWith("REM"))
@@ -61,7 +67,7 @@ namespace Spect.Net.BasicParser
         /// <summary>
         /// Handle ZX BASIC function tokens
         /// </summary>
-        public override void ExitZxb_function([NotNull] ZxBasicParser.Zxb_functionContext context)
+        public override void ExitFunction([NotNull] ZxBasicParser.FunctionContext context)
         {
             AddSpan(TokenType.ZxbFunction, context.Start, context.Start.Text.Length);
         }
@@ -69,7 +75,7 @@ namespace Spect.Net.BasicParser
         /// <summary>
         /// Handle ZX BASIC operator tokens
         /// </summary>
-        public override void ExitZxb_operator([NotNull] ZxBasicParser.Zxb_operatorContext context)
+        public override void ExitOperator([NotNull] ZxBasicParser.OperatorContext context)
         {
             AddSpan(TokenType.ZxbOperator, context.Start, context.Start.Text.Length);
         }
@@ -77,7 +83,7 @@ namespace Spect.Net.BasicParser
         /// <summary>
         /// Handle ZX BASIC identifier tokens
         /// </summary>
-        public override void ExitZxb_identifier([NotNull] ZxBasicParser.Zxb_identifierContext context)
+        public override void ExitIdentifier([NotNull] ZxBasicParser.IdentifierContext context)
         {
             AddSpan(TokenType.ZxbIdentifier, context.Start, context.Start.Text.Length);
         }
@@ -85,33 +91,39 @@ namespace Spect.Net.BasicParser
         /// <summary>
         /// Handle ZX BASIC number tokens
         /// </summary>
-        public override void ExitZxb_number([NotNull] ZxBasicParser.Zxb_numberContext context)
+        public override void ExitNumber([NotNull] ZxBasicParser.NumberContext context)
         {
-            AddSpan(TokenType.ZxbNumber, context.Start, context.Start.Text.Length);
+            AddSpan(TokenType.ZxbNumber, context);
         }
 
         /// <summary>
         /// Handle ZX BASIC string tokens
         /// </summary>
-        public override void ExitZxb_string([NotNull] ZxBasicParser.Zxb_stringContext context)
+        public override void ExitString([NotNull] ZxBasicParser.StringContext context)
         {
-            AddSpan(TokenType.ZxbString, context.Start, context.Start.Text.Length);
+            AddSpan(TokenType.ZxbString, context);
         }
 
-        public override void ExitZxb_label([NotNull] ZxBasicParser.Zxb_labelContext context)
+        public override void ExitLabel([NotNull] ZxBasicParser.LabelContext context)
         {
-            AddSpan(TokenType.ZxbLabel, context.Start, context.GetText().Length);
+            AddSpan(TokenType.ZxbLabel, context);
         }
 
-        public override void ExitZxb_asm_start([NotNull] ZxBasicParser.Zxb_asm_startContext context)
+        public override void ExitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context)
         {
-            AddSpan(TokenType.ZxbAsm, context.Start, context.GetText().Length);
+            var text = context.GetText();
+            var parts = Regex.Split(text, "\r\n");
+            var startLine = context.Start.Line;
+            var lastLine = parts.Length - 1;
+            AddSpan(TokenType.ZxbComment, startLine, 0, parts[0].Length);
+            AddSpan(TokenType.ZxbComment, startLine + lastLine, 0, parts[lastLine].Length);
         }
 
-        public override void ExitZxb_asm_end([NotNull] ZxBasicParser.Zxb_asm_endContext context)
+        private void AddSpan(TokenType type, ParserRuleContext context)
         {
-            AddSpan(TokenType.ZxbAsm, context.Start, context.Start.Text.Length);
-            AddSpan(TokenType.ZxbAsm, context.Stop, context.Stop.Text.Length);
+            var firstColumn = context.Start.Column;
+            var lastColumn = context.Stop.Column + context.Stop.Text.Length;
+            AddSpan(type, context.Start.Line, firstColumn, lastColumn - firstColumn);
         }
 
         /// <summary>
