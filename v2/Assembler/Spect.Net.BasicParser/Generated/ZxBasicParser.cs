@@ -37,31 +37,34 @@ public partial class ZxBasicParser : Parser {
 		CIEQOP=23, NEQOP=24, CINEQOP=25, LTOP=26, LTEOP=27, GTOP=28, GTEOP=29, 
 		LSHOP=30, RSHOP=31, MULOP=32, DIVOP=33, DOT=34, DECNUM=35, REALNUM=36, 
 		BLOCK_COMMENT=37, LINE_COMMENT=38, NOTEQ=39, ABS=40, ACS=41, AND=42, ALIGN=43, 
-		ASC=44, ASN=45, AT=46, ATN=47, ATTR=48, BAND=49, BNOT=50, BOR=51, BXOR=52, 
-		BEEP=53, BOLD=54, BORDER=55, BRIGHT=56, BYREF=57, BYVAL=58, CAST=59, CHR=60, 
-		CIRCLE=61, CLS=62, CODE=63, CONST=64, CONTINUE=65, COS=66, CSRLIN=67, 
-		DECLARE=68, DIM=69, DO=70, DATA=71, DRAW=72, ELSE=73, ELSEIF=74, END=75, 
-		EXIT=76, EXP=77, FASTCALL=78, FLASH=79, FOR=80, FUNCTION=81, GETKEY=82, 
-		GETKEYSCANCODE=83, GO=84, GOTO=85, GOSUB=86, HEX=87, HEX16=88, IF=89, 
-		IN=90, INK=91, INKEY=92, INPUT=93, INT=94, INVERSE=95, ITALIC=96, LBOUND=97, 
-		LCASE=98, LET=99, LEN=100, LN=101, LOAD=102, LOOP=103, MOD=104, MULTIKEYS=105, 
-		NEXT=106, NOT=107, OR=108, OVER=109, OUT=110, PAPER=111, PAUSE=112, PEEK=113, 
-		PI=114, PLOT=115, POINT=116, POKE=117, POS=118, PRINT=119, PRINT42=120, 
-		PRINTAT42=121, PRINT64=122, PRINTAT64=123, RANDOMIZE=124, READ=125, REM=126, 
-		RESTORE=127, RETURN=128, RND=129, SAVE=130, SCREEN=131, SGN=132, SHL=133, 
-		SHR=134, SIN=135, SQR=136, STDCALL=137, STEP=138, STOP=139, STR=140, SUB=141, 
-		TAN=142, THEN=143, TO=144, UBOUND=145, UCASE=146, UNTIL=147, VAL=148, 
-		VERIFY=149, WEND=150, WHILE=151, XOR=152, HEXNUM=153, BINNUM=154, IDENTIFIER=155, 
-		IDSTART=156, IDCONT=157, STRING=158, LINE_END=159, ErrorCharacter=160;
+		ASC=44, ASN=45, AS=46, AT=47, ATN=48, ATTR=49, BAND=50, BNOT=51, BOR=52, 
+		BXOR=53, BEEP=54, BOLD=55, BORDER=56, BRIGHT=57, BYREF=58, BYTE=59, BYVAL=60, 
+		CAST=61, CHR=62, CIRCLE=63, CLS=64, CODE=65, CONST=66, CONTINUE=67, COS=68, 
+		CSRLIN=69, DECLARE=70, DIM=71, DO=72, DATA=73, DRAW=74, ELSE=75, ELSEIF=76, 
+		END=77, EXIT=78, EXP=79, FASTCALL=80, FLASH=81, FLOAT=82, FOR=83, FUNCTION=84, 
+		GETKEY=85, GETKEYSCANCODE=86, GO=87, GOTO=88, GOSUB=89, HEX=90, HEX16=91, 
+		IF=92, IN=93, INK=94, INKEY=95, INPUT=96, INT=97, INTEGER=98, INVERSE=99, 
+		ITALIC=100, LBOUND=101, LCASE=102, LET=103, LEN=104, LN=105, LOAD=106, 
+		LONG=107, LOOP=108, MOD=109, MULTIKEYS=110, NEXT=111, NOT=112, OR=113, 
+		OVER=114, OUT=115, PAPER=116, PAUSE=117, PEEK=118, PI=119, PLOT=120, POINT=121, 
+		POKE=122, POS=123, PRINT=124, PRINT42=125, PRINTAT42=126, PRINT64=127, 
+		PRINTAT64=128, RANDOMIZE=129, READ=130, REM=131, RESTORE=132, RETURN=133, 
+		RND=134, SAVE=135, SCREEN=136, SGN=137, SHL=138, SHR=139, SIN=140, SQR=141, 
+		STDCALL=142, STEP=143, STOP=144, STR=145, STRING=146, SUB=147, TAB=148, 
+		TAN=149, THEN=150, TO=151, UBOUND=152, UBYTE=153, UCASE=154, UINTEGER=155, 
+		ULONG=156, UNTIL=157, VAL=158, VERIFY=159, WEND=160, WHILE=161, XOR=162, 
+		HEXNUM=163, BINNUM=164, IDENTIFIER=165, IDSTART=166, IDCONT=167, ZXB_STRING=168, 
+		LINE_END=169, ErrorCharacter=170;
 	public const int
 		RULE_compileUnit = 0, RULE_label = 1, RULE_line = 2, RULE_line_item = 3, 
-		RULE_asm_section = 4, RULE_keyword = 5, RULE_function = 6, RULE_operator = 7, 
-		RULE_special = 8, RULE_number = 9, RULE_identifier = 10, RULE_string = 11, 
-		RULE_comment = 12, RULE_block_comment = 13, RULE_line_comment = 14;
+		RULE_asm_section = 4, RULE_console = 5, RULE_keyword = 6, RULE_function = 7, 
+		RULE_operator = 8, RULE_special = 9, RULE_number = 10, RULE_identifier = 11, 
+		RULE_string = 12, RULE_type = 13, RULE_comment = 14, RULE_block_comment = 15, 
+		RULE_line_comment = 16;
 	public static readonly string[] ruleNames = {
-		"compileUnit", "label", "line", "line_item", "asm_section", "keyword", 
-		"function", "operator", "special", "number", "identifier", "string", "comment", 
-		"block_comment", "line_comment"
+		"compileUnit", "label", "line", "line_item", "asm_section", "console", 
+		"keyword", "function", "operator", "special", "number", "identifier", 
+		"string", "type", "comment", "block_comment", "line_comment"
 	};
 
 	private static readonly string[] _LiteralNames = {
@@ -76,21 +79,22 @@ public partial class ZxBasicParser : Parser {
 		"RSBRAC", "QMARK", "PLUS", "MINUS", "VBAR", "UPARR", "AMP", "EQOP", "CIEQOP", 
 		"NEQOP", "CINEQOP", "LTOP", "LTEOP", "GTOP", "GTEOP", "LSHOP", "RSHOP", 
 		"MULOP", "DIVOP", "DOT", "DECNUM", "REALNUM", "BLOCK_COMMENT", "LINE_COMMENT", 
-		"NOTEQ", "ABS", "ACS", "AND", "ALIGN", "ASC", "ASN", "AT", "ATN", "ATTR", 
-		"BAND", "BNOT", "BOR", "BXOR", "BEEP", "BOLD", "BORDER", "BRIGHT", "BYREF", 
-		"BYVAL", "CAST", "CHR", "CIRCLE", "CLS", "CODE", "CONST", "CONTINUE", 
-		"COS", "CSRLIN", "DECLARE", "DIM", "DO", "DATA", "DRAW", "ELSE", "ELSEIF", 
-		"END", "EXIT", "EXP", "FASTCALL", "FLASH", "FOR", "FUNCTION", "GETKEY", 
-		"GETKEYSCANCODE", "GO", "GOTO", "GOSUB", "HEX", "HEX16", "IF", "IN", "INK", 
-		"INKEY", "INPUT", "INT", "INVERSE", "ITALIC", "LBOUND", "LCASE", "LET", 
-		"LEN", "LN", "LOAD", "LOOP", "MOD", "MULTIKEYS", "NEXT", "NOT", "OR", 
-		"OVER", "OUT", "PAPER", "PAUSE", "PEEK", "PI", "PLOT", "POINT", "POKE", 
-		"POS", "PRINT", "PRINT42", "PRINTAT42", "PRINT64", "PRINTAT64", "RANDOMIZE", 
-		"READ", "REM", "RESTORE", "RETURN", "RND", "SAVE", "SCREEN", "SGN", "SHL", 
-		"SHR", "SIN", "SQR", "STDCALL", "STEP", "STOP", "STR", "SUB", "TAN", "THEN", 
-		"TO", "UBOUND", "UCASE", "UNTIL", "VAL", "VERIFY", "WEND", "WHILE", "XOR", 
-		"HEXNUM", "BINNUM", "IDENTIFIER", "IDSTART", "IDCONT", "STRING", "LINE_END", 
-		"ErrorCharacter"
+		"NOTEQ", "ABS", "ACS", "AND", "ALIGN", "ASC", "ASN", "AS", "AT", "ATN", 
+		"ATTR", "BAND", "BNOT", "BOR", "BXOR", "BEEP", "BOLD", "BORDER", "BRIGHT", 
+		"BYREF", "BYTE", "BYVAL", "CAST", "CHR", "CIRCLE", "CLS", "CODE", "CONST", 
+		"CONTINUE", "COS", "CSRLIN", "DECLARE", "DIM", "DO", "DATA", "DRAW", "ELSE", 
+		"ELSEIF", "END", "EXIT", "EXP", "FASTCALL", "FLASH", "FLOAT", "FOR", "FUNCTION", 
+		"GETKEY", "GETKEYSCANCODE", "GO", "GOTO", "GOSUB", "HEX", "HEX16", "IF", 
+		"IN", "INK", "INKEY", "INPUT", "INT", "INTEGER", "INVERSE", "ITALIC", 
+		"LBOUND", "LCASE", "LET", "LEN", "LN", "LOAD", "LONG", "LOOP", "MOD", 
+		"MULTIKEYS", "NEXT", "NOT", "OR", "OVER", "OUT", "PAPER", "PAUSE", "PEEK", 
+		"PI", "PLOT", "POINT", "POKE", "POS", "PRINT", "PRINT42", "PRINTAT42", 
+		"PRINT64", "PRINTAT64", "RANDOMIZE", "READ", "REM", "RESTORE", "RETURN", 
+		"RND", "SAVE", "SCREEN", "SGN", "SHL", "SHR", "SIN", "SQR", "STDCALL", 
+		"STEP", "STOP", "STR", "STRING", "SUB", "TAB", "TAN", "THEN", "TO", "UBOUND", 
+		"UBYTE", "UCASE", "UINTEGER", "ULONG", "UNTIL", "VAL", "VERIFY", "WEND", 
+		"WHILE", "XOR", "HEXNUM", "BINNUM", "IDENTIFIER", "IDSTART", "IDCONT", 
+		"ZXB_STRING", "LINE_END", "ErrorCharacter"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -190,17 +194,17 @@ public partial class ZxBasicParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 37;
+			State = 41;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ASM_SECTION) | (1L << ASSIGN) | (1L << PLUS) | (1L << MINUS) | (1L << UPARR) | (1L << AMP) | (1L << LTOP) | (1L << LTEOP) | (1L << GTOP) | (1L << GTEOP) | (1L << LSHOP) | (1L << RSHOP) | (1L << MULOP) | (1L << DIVOP) | (1L << DECNUM) | (1L << REALNUM) | (1L << BLOCK_COMMENT) | (1L << LINE_COMMENT) | (1L << NOTEQ) | (1L << ABS) | (1L << ACS) | (1L << AND) | (1L << ALIGN) | (1L << ASC) | (1L << ASN) | (1L << AT) | (1L << ATN) | (1L << ATTR) | (1L << BAND) | (1L << BNOT) | (1L << BOR) | (1L << BXOR) | (1L << BEEP) | (1L << BOLD) | (1L << BORDER) | (1L << BRIGHT) | (1L << BYREF) | (1L << BYVAL) | (1L << CAST) | (1L << CHR) | (1L << CIRCLE) | (1L << CLS) | (1L << CODE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CONST - 64)) | (1L << (CONTINUE - 64)) | (1L << (COS - 64)) | (1L << (CSRLIN - 64)) | (1L << (DECLARE - 64)) | (1L << (DIM - 64)) | (1L << (DO - 64)) | (1L << (DATA - 64)) | (1L << (DRAW - 64)) | (1L << (ELSE - 64)) | (1L << (ELSEIF - 64)) | (1L << (END - 64)) | (1L << (EXIT - 64)) | (1L << (EXP - 64)) | (1L << (FASTCALL - 64)) | (1L << (FLASH - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GETKEY - 64)) | (1L << (GETKEYSCANCODE - 64)) | (1L << (GOTO - 64)) | (1L << (GOSUB - 64)) | (1L << (HEX - 64)) | (1L << (HEX16 - 64)) | (1L << (IF - 64)) | (1L << (IN - 64)) | (1L << (INK - 64)) | (1L << (INKEY - 64)) | (1L << (INPUT - 64)) | (1L << (INT - 64)) | (1L << (INVERSE - 64)) | (1L << (ITALIC - 64)) | (1L << (LBOUND - 64)) | (1L << (LCASE - 64)) | (1L << (LET - 64)) | (1L << (LEN - 64)) | (1L << (LN - 64)) | (1L << (LOAD - 64)) | (1L << (LOOP - 64)) | (1L << (MOD - 64)) | (1L << (MULTIKEYS - 64)) | (1L << (NEXT - 64)) | (1L << (NOT - 64)) | (1L << (OR - 64)) | (1L << (OVER - 64)) | (1L << (OUT - 64)) | (1L << (PAPER - 64)) | (1L << (PAUSE - 64)) | (1L << (PEEK - 64)) | (1L << (PI - 64)) | (1L << (PLOT - 64)) | (1L << (POINT - 64)) | (1L << (POKE - 64)) | (1L << (POS - 64)) | (1L << (PRINT - 64)) | (1L << (PRINT42 - 64)) | (1L << (PRINTAT42 - 64)) | (1L << (PRINT64 - 64)) | (1L << (PRINTAT64 - 64)) | (1L << (RANDOMIZE - 64)) | (1L << (READ - 64)) | (1L << (REM - 64)) | (1L << (RESTORE - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (RETURN - 128)) | (1L << (RND - 128)) | (1L << (SAVE - 128)) | (1L << (SCREEN - 128)) | (1L << (SGN - 128)) | (1L << (SHL - 128)) | (1L << (SHR - 128)) | (1L << (SIN - 128)) | (1L << (SQR - 128)) | (1L << (STDCALL - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STR - 128)) | (1L << (SUB - 128)) | (1L << (TAN - 128)) | (1L << (THEN - 128)) | (1L << (TO - 128)) | (1L << (UBOUND - 128)) | (1L << (UCASE - 128)) | (1L << (UNTIL - 128)) | (1L << (VAL - 128)) | (1L << (VERIFY - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (XOR - 128)) | (1L << (HEXNUM - 128)) | (1L << (BINNUM - 128)) | (1L << (IDENTIFIER - 128)) | (1L << (STRING - 128)) | (1L << (LINE_END - 128)) | (1L << (ErrorCharacter - 128)))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ASM_SECTION) | (1L << ASSIGN) | (1L << PLUS) | (1L << MINUS) | (1L << UPARR) | (1L << AMP) | (1L << LTOP) | (1L << LTEOP) | (1L << GTOP) | (1L << GTEOP) | (1L << LSHOP) | (1L << RSHOP) | (1L << MULOP) | (1L << DIVOP) | (1L << DECNUM) | (1L << REALNUM) | (1L << BLOCK_COMMENT) | (1L << LINE_COMMENT) | (1L << NOTEQ) | (1L << ABS) | (1L << ACS) | (1L << AND) | (1L << ALIGN) | (1L << ASC) | (1L << ASN) | (1L << AT) | (1L << ATN) | (1L << ATTR) | (1L << BAND) | (1L << BNOT) | (1L << BOR) | (1L << BXOR) | (1L << BEEP) | (1L << BOLD) | (1L << BORDER) | (1L << BRIGHT) | (1L << BYREF) | (1L << BYVAL) | (1L << CAST) | (1L << CHR) | (1L << CIRCLE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLS - 64)) | (1L << (CODE - 64)) | (1L << (CONST - 64)) | (1L << (CONTINUE - 64)) | (1L << (COS - 64)) | (1L << (CSRLIN - 64)) | (1L << (DECLARE - 64)) | (1L << (DIM - 64)) | (1L << (DO - 64)) | (1L << (DATA - 64)) | (1L << (DRAW - 64)) | (1L << (ELSE - 64)) | (1L << (ELSEIF - 64)) | (1L << (END - 64)) | (1L << (EXIT - 64)) | (1L << (EXP - 64)) | (1L << (FASTCALL - 64)) | (1L << (FLASH - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GETKEY - 64)) | (1L << (GETKEYSCANCODE - 64)) | (1L << (GOTO - 64)) | (1L << (GOSUB - 64)) | (1L << (HEX - 64)) | (1L << (HEX16 - 64)) | (1L << (IF - 64)) | (1L << (IN - 64)) | (1L << (INK - 64)) | (1L << (INKEY - 64)) | (1L << (INPUT - 64)) | (1L << (INT - 64)) | (1L << (INVERSE - 64)) | (1L << (ITALIC - 64)) | (1L << (LBOUND - 64)) | (1L << (LCASE - 64)) | (1L << (LET - 64)) | (1L << (LEN - 64)) | (1L << (LN - 64)) | (1L << (LOAD - 64)) | (1L << (LOOP - 64)) | (1L << (MOD - 64)) | (1L << (MULTIKEYS - 64)) | (1L << (NEXT - 64)) | (1L << (NOT - 64)) | (1L << (OR - 64)) | (1L << (OVER - 64)) | (1L << (OUT - 64)) | (1L << (PAPER - 64)) | (1L << (PAUSE - 64)) | (1L << (PEEK - 64)) | (1L << (PI - 64)) | (1L << (PLOT - 64)) | (1L << (POINT - 64)) | (1L << (POKE - 64)) | (1L << (POS - 64)) | (1L << (PRINT - 64)) | (1L << (PRINT42 - 64)) | (1L << (PRINTAT42 - 64)) | (1L << (PRINT64 - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PRINTAT64 - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (READ - 128)) | (1L << (REM - 128)) | (1L << (RESTORE - 128)) | (1L << (RETURN - 128)) | (1L << (RND - 128)) | (1L << (SAVE - 128)) | (1L << (SCREEN - 128)) | (1L << (SGN - 128)) | (1L << (SHL - 128)) | (1L << (SHR - 128)) | (1L << (SIN - 128)) | (1L << (SQR - 128)) | (1L << (STDCALL - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STR - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TAN - 128)) | (1L << (THEN - 128)) | (1L << (TO - 128)) | (1L << (UBOUND - 128)) | (1L << (UCASE - 128)) | (1L << (UNTIL - 128)) | (1L << (VAL - 128)) | (1L << (VERIFY - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (XOR - 128)) | (1L << (HEXNUM - 128)) | (1L << (BINNUM - 128)) | (1L << (IDENTIFIER - 128)) | (1L << (ZXB_STRING - 128)) | (1L << (LINE_END - 128)) | (1L << (ErrorCharacter - 128)))) != 0)) {
 				{
-				State = 35;
+				State = 39;
 				_errHandler.Sync(this);
 				switch (_input.La(1)) {
 				case ASM_SECTION:
 					{
-					State = 30; asm_section();
+					State = 34; asm_section();
 					}
 					break;
 				case ASSIGN:
@@ -322,6 +326,7 @@ public partial class ZxBasicParser : Parser {
 				case STOP:
 				case STR:
 				case SUB:
+				case TAB:
 				case TAN:
 				case THEN:
 				case TO:
@@ -336,31 +341,31 @@ public partial class ZxBasicParser : Parser {
 				case HEXNUM:
 				case BINNUM:
 				case IDENTIFIER:
-				case STRING:
+				case ZXB_STRING:
 				case LINE_END:
 				case ErrorCharacter:
 					{
-					State = 32;
+					State = 36;
 					_errHandler.Sync(this);
 					switch ( Interpreter.AdaptivePredict(_input,0,_ctx) ) {
 					case 1:
 						{
-						State = 31; label();
+						State = 35; label();
 						}
 						break;
 					}
-					State = 34; line();
+					State = 38; line();
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
 				}
-				State = 39;
+				State = 43;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
 			}
-			State = 40; Match(Eof);
+			State = 44; Match(Eof);
 			}
 		}
 		catch (RecognitionException re) {
@@ -403,20 +408,20 @@ public partial class ZxBasicParser : Parser {
 		LabelContext _localctx = new LabelContext(_ctx, State);
 		EnterRule(_localctx, 2, RULE_label);
 		try {
-			State = 45;
+			State = 49;
 			_errHandler.Sync(this);
 			switch (_input.La(1)) {
 			case DECNUM:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 42; Match(DECNUM);
+				State = 46; Match(DECNUM);
 				}
 				break;
 			case IDENTIFIER:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 43; Match(IDENTIFIER);
-				State = 44; Match(COLON);
+				State = 47; Match(IDENTIFIER);
+				State = 48; Match(COLON);
 				}
 				break;
 			default:
@@ -469,33 +474,33 @@ public partial class ZxBasicParser : Parser {
 		int _la;
 		try {
 			int _alt;
-			State = 59;
+			State = 63;
 			_errHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(_input,6,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 50;
+				State = 54;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ASSIGN) | (1L << PLUS) | (1L << MINUS) | (1L << UPARR) | (1L << AMP) | (1L << LTOP) | (1L << LTEOP) | (1L << GTOP) | (1L << GTEOP) | (1L << LSHOP) | (1L << RSHOP) | (1L << MULOP) | (1L << DIVOP) | (1L << DECNUM) | (1L << REALNUM) | (1L << BLOCK_COMMENT) | (1L << LINE_COMMENT) | (1L << NOTEQ) | (1L << ABS) | (1L << ACS) | (1L << AND) | (1L << ALIGN) | (1L << ASC) | (1L << ASN) | (1L << AT) | (1L << ATN) | (1L << ATTR) | (1L << BAND) | (1L << BNOT) | (1L << BOR) | (1L << BXOR) | (1L << BEEP) | (1L << BOLD) | (1L << BORDER) | (1L << BRIGHT) | (1L << BYREF) | (1L << BYVAL) | (1L << CAST) | (1L << CHR) | (1L << CIRCLE) | (1L << CLS) | (1L << CODE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CONST - 64)) | (1L << (CONTINUE - 64)) | (1L << (COS - 64)) | (1L << (CSRLIN - 64)) | (1L << (DECLARE - 64)) | (1L << (DIM - 64)) | (1L << (DO - 64)) | (1L << (DATA - 64)) | (1L << (DRAW - 64)) | (1L << (ELSE - 64)) | (1L << (ELSEIF - 64)) | (1L << (END - 64)) | (1L << (EXIT - 64)) | (1L << (EXP - 64)) | (1L << (FASTCALL - 64)) | (1L << (FLASH - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GETKEY - 64)) | (1L << (GETKEYSCANCODE - 64)) | (1L << (GOTO - 64)) | (1L << (GOSUB - 64)) | (1L << (HEX - 64)) | (1L << (HEX16 - 64)) | (1L << (IF - 64)) | (1L << (IN - 64)) | (1L << (INK - 64)) | (1L << (INKEY - 64)) | (1L << (INPUT - 64)) | (1L << (INT - 64)) | (1L << (INVERSE - 64)) | (1L << (ITALIC - 64)) | (1L << (LBOUND - 64)) | (1L << (LCASE - 64)) | (1L << (LET - 64)) | (1L << (LEN - 64)) | (1L << (LN - 64)) | (1L << (LOAD - 64)) | (1L << (LOOP - 64)) | (1L << (MOD - 64)) | (1L << (MULTIKEYS - 64)) | (1L << (NEXT - 64)) | (1L << (NOT - 64)) | (1L << (OR - 64)) | (1L << (OVER - 64)) | (1L << (OUT - 64)) | (1L << (PAPER - 64)) | (1L << (PAUSE - 64)) | (1L << (PEEK - 64)) | (1L << (PI - 64)) | (1L << (PLOT - 64)) | (1L << (POINT - 64)) | (1L << (POKE - 64)) | (1L << (POS - 64)) | (1L << (PRINT - 64)) | (1L << (PRINT42 - 64)) | (1L << (PRINTAT42 - 64)) | (1L << (PRINT64 - 64)) | (1L << (PRINTAT64 - 64)) | (1L << (RANDOMIZE - 64)) | (1L << (READ - 64)) | (1L << (REM - 64)) | (1L << (RESTORE - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (RETURN - 128)) | (1L << (RND - 128)) | (1L << (SAVE - 128)) | (1L << (SCREEN - 128)) | (1L << (SGN - 128)) | (1L << (SHL - 128)) | (1L << (SHR - 128)) | (1L << (SIN - 128)) | (1L << (SQR - 128)) | (1L << (STDCALL - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STR - 128)) | (1L << (SUB - 128)) | (1L << (TAN - 128)) | (1L << (THEN - 128)) | (1L << (TO - 128)) | (1L << (UBOUND - 128)) | (1L << (UCASE - 128)) | (1L << (UNTIL - 128)) | (1L << (VAL - 128)) | (1L << (VERIFY - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (XOR - 128)) | (1L << (HEXNUM - 128)) | (1L << (BINNUM - 128)) | (1L << (IDENTIFIER - 128)) | (1L << (STRING - 128)) | (1L << (ErrorCharacter - 128)))) != 0)) {
+				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ASSIGN) | (1L << PLUS) | (1L << MINUS) | (1L << UPARR) | (1L << AMP) | (1L << LTOP) | (1L << LTEOP) | (1L << GTOP) | (1L << GTEOP) | (1L << LSHOP) | (1L << RSHOP) | (1L << MULOP) | (1L << DIVOP) | (1L << DECNUM) | (1L << REALNUM) | (1L << BLOCK_COMMENT) | (1L << LINE_COMMENT) | (1L << NOTEQ) | (1L << ABS) | (1L << ACS) | (1L << AND) | (1L << ALIGN) | (1L << ASC) | (1L << ASN) | (1L << AT) | (1L << ATN) | (1L << ATTR) | (1L << BAND) | (1L << BNOT) | (1L << BOR) | (1L << BXOR) | (1L << BEEP) | (1L << BOLD) | (1L << BORDER) | (1L << BRIGHT) | (1L << BYREF) | (1L << BYVAL) | (1L << CAST) | (1L << CHR) | (1L << CIRCLE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLS - 64)) | (1L << (CODE - 64)) | (1L << (CONST - 64)) | (1L << (CONTINUE - 64)) | (1L << (COS - 64)) | (1L << (CSRLIN - 64)) | (1L << (DECLARE - 64)) | (1L << (DIM - 64)) | (1L << (DO - 64)) | (1L << (DATA - 64)) | (1L << (DRAW - 64)) | (1L << (ELSE - 64)) | (1L << (ELSEIF - 64)) | (1L << (END - 64)) | (1L << (EXIT - 64)) | (1L << (EXP - 64)) | (1L << (FASTCALL - 64)) | (1L << (FLASH - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GETKEY - 64)) | (1L << (GETKEYSCANCODE - 64)) | (1L << (GOTO - 64)) | (1L << (GOSUB - 64)) | (1L << (HEX - 64)) | (1L << (HEX16 - 64)) | (1L << (IF - 64)) | (1L << (IN - 64)) | (1L << (INK - 64)) | (1L << (INKEY - 64)) | (1L << (INPUT - 64)) | (1L << (INT - 64)) | (1L << (INVERSE - 64)) | (1L << (ITALIC - 64)) | (1L << (LBOUND - 64)) | (1L << (LCASE - 64)) | (1L << (LET - 64)) | (1L << (LEN - 64)) | (1L << (LN - 64)) | (1L << (LOAD - 64)) | (1L << (LOOP - 64)) | (1L << (MOD - 64)) | (1L << (MULTIKEYS - 64)) | (1L << (NEXT - 64)) | (1L << (NOT - 64)) | (1L << (OR - 64)) | (1L << (OVER - 64)) | (1L << (OUT - 64)) | (1L << (PAPER - 64)) | (1L << (PAUSE - 64)) | (1L << (PEEK - 64)) | (1L << (PI - 64)) | (1L << (PLOT - 64)) | (1L << (POINT - 64)) | (1L << (POKE - 64)) | (1L << (POS - 64)) | (1L << (PRINT - 64)) | (1L << (PRINT42 - 64)) | (1L << (PRINTAT42 - 64)) | (1L << (PRINT64 - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PRINTAT64 - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (READ - 128)) | (1L << (REM - 128)) | (1L << (RESTORE - 128)) | (1L << (RETURN - 128)) | (1L << (RND - 128)) | (1L << (SAVE - 128)) | (1L << (SCREEN - 128)) | (1L << (SGN - 128)) | (1L << (SHL - 128)) | (1L << (SHR - 128)) | (1L << (SIN - 128)) | (1L << (SQR - 128)) | (1L << (STDCALL - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STR - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TAN - 128)) | (1L << (THEN - 128)) | (1L << (TO - 128)) | (1L << (UBOUND - 128)) | (1L << (UCASE - 128)) | (1L << (UNTIL - 128)) | (1L << (VAL - 128)) | (1L << (VERIFY - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (XOR - 128)) | (1L << (HEXNUM - 128)) | (1L << (BINNUM - 128)) | (1L << (IDENTIFIER - 128)) | (1L << (ZXB_STRING - 128)) | (1L << (ErrorCharacter - 128)))) != 0)) {
 					{
 					{
-					State = 47; line_item();
+					State = 51; line_item();
 					}
 					}
-					State = 52;
+					State = 56;
 					_errHandler.Sync(this);
 					_la = _input.La(1);
 				}
-				State = 53; Match(LINE_END);
+				State = 57; Match(LINE_END);
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 55;
+				State = 59;
 				_errHandler.Sync(this);
 				_alt = 1;
 				do {
@@ -503,14 +508,14 @@ public partial class ZxBasicParser : Parser {
 					case 1:
 						{
 						{
-						State = 54; line_item();
+						State = 58; line_item();
 						}
 						}
 						break;
 					default:
 						throw new NoViableAltException(this);
 					}
-					State = 57;
+					State = 61;
 					_errHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(_input,5,_ctx);
 				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
@@ -530,6 +535,9 @@ public partial class ZxBasicParser : Parser {
 	}
 
 	public partial class Line_itemContext : ParserRuleContext {
+		public ConsoleContext console() {
+			return GetRuleContext<ConsoleContext>(0);
+		}
 		public KeywordContext keyword() {
 			return GetRuleContext<KeywordContext>(0);
 		}
@@ -580,18 +588,30 @@ public partial class ZxBasicParser : Parser {
 		Line_itemContext _localctx = new Line_itemContext(_ctx, State);
 		EnterRule(_localctx, 6, RULE_line_item);
 		try {
-			State = 70;
+			State = 75;
 			_errHandler.Sync(this);
 			switch (_input.La(1)) {
 			case AT:
-			case BEEP:
 			case BOLD:
 			case BORDER:
 			case BRIGHT:
+			case CLS:
+			case FLASH:
+			case INK:
+			case INVERSE:
+			case ITALIC:
+			case OVER:
+			case PAPER:
+			case TAB:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 65; console();
+				}
+				break;
+			case BEEP:
 			case BYREF:
 			case BYVAL:
 			case CIRCLE:
-			case CLS:
 			case CONST:
 			case CONTINUE:
 			case DECLARE:
@@ -604,22 +624,16 @@ public partial class ZxBasicParser : Parser {
 			case END:
 			case EXIT:
 			case FASTCALL:
-			case FLASH:
 			case FOR:
 			case FUNCTION:
 			case GOTO:
 			case GOSUB:
 			case IF:
-			case INK:
-			case INVERSE:
-			case ITALIC:
 			case LET:
 			case LOAD:
 			case LOOP:
 			case NEXT:
-			case OVER:
 			case OUT:
-			case PAPER:
 			case PAUSE:
 			case PI:
 			case PLOT:
@@ -641,9 +655,9 @@ public partial class ZxBasicParser : Parser {
 			case VERIFY:
 			case WEND:
 			case WHILE:
-				EnterOuterAlt(_localctx, 1);
+				EnterOuterAlt(_localctx, 2);
 				{
-				State = 61; keyword();
+				State = 66; keyword();
 				}
 				break;
 			case ABS:
@@ -686,9 +700,9 @@ public partial class ZxBasicParser : Parser {
 			case UBOUND:
 			case UCASE:
 			case VAL:
-				EnterOuterAlt(_localctx, 2);
+				EnterOuterAlt(_localctx, 3);
 				{
-				State = 62; function();
+				State = 67; function();
 				}
 				break;
 			case ASSIGN:
@@ -718,49 +732,49 @@ public partial class ZxBasicParser : Parser {
 			case SIN:
 			case SQR:
 			case XOR:
-				EnterOuterAlt(_localctx, 3);
+				EnterOuterAlt(_localctx, 4);
 				{
-				State = 63; @operator();
+				State = 68; @operator();
 				}
 				break;
 			case ALIGN:
-				EnterOuterAlt(_localctx, 4);
+				EnterOuterAlt(_localctx, 5);
 				{
-				State = 64; special();
+				State = 69; special();
 				}
 				break;
 			case DECNUM:
 			case REALNUM:
 			case HEXNUM:
 			case BINNUM:
-				EnterOuterAlt(_localctx, 5);
+				EnterOuterAlt(_localctx, 6);
 				{
-				State = 65; number();
+				State = 70; number();
 				}
 				break;
 			case IDENTIFIER:
-				EnterOuterAlt(_localctx, 6);
-				{
-				State = 66; identifier();
-				}
-				break;
-			case STRING:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 67; @string();
+				State = 71; identifier();
+				}
+				break;
+			case ZXB_STRING:
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 72; @string();
 				}
 				break;
 			case BLOCK_COMMENT:
 			case LINE_COMMENT:
-				EnterOuterAlt(_localctx, 8);
+				EnterOuterAlt(_localctx, 9);
 				{
-				State = 68; comment();
+				State = 73; comment();
 				}
 				break;
 			case ErrorCharacter:
-				EnterOuterAlt(_localctx, 9);
+				EnterOuterAlt(_localctx, 10);
 				{
-				State = 69; Match(ErrorCharacter);
+				State = 74; Match(ErrorCharacter);
 				}
 				break;
 			default:
@@ -807,7 +821,73 @@ public partial class ZxBasicParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 72; Match(ASM_SECTION);
+			State = 77; Match(ASM_SECTION);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ConsoleContext : ParserRuleContext {
+		public ITerminalNode AT() { return GetToken(ZxBasicParser.AT, 0); }
+		public ITerminalNode BOLD() { return GetToken(ZxBasicParser.BOLD, 0); }
+		public ITerminalNode BORDER() { return GetToken(ZxBasicParser.BORDER, 0); }
+		public ITerminalNode BRIGHT() { return GetToken(ZxBasicParser.BRIGHT, 0); }
+		public ITerminalNode CLS() { return GetToken(ZxBasicParser.CLS, 0); }
+		public ITerminalNode FLASH() { return GetToken(ZxBasicParser.FLASH, 0); }
+		public ITerminalNode INK() { return GetToken(ZxBasicParser.INK, 0); }
+		public ITerminalNode INVERSE() { return GetToken(ZxBasicParser.INVERSE, 0); }
+		public ITerminalNode ITALIC() { return GetToken(ZxBasicParser.ITALIC, 0); }
+		public ITerminalNode OVER() { return GetToken(ZxBasicParser.OVER, 0); }
+		public ITerminalNode PAPER() { return GetToken(ZxBasicParser.PAPER, 0); }
+		public ITerminalNode TAB() { return GetToken(ZxBasicParser.TAB, 0); }
+		public ConsoleContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_console; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.EnterConsole(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.ExitConsole(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IZxBasicVisitor<TResult> typedVisitor = visitor as IZxBasicVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitConsole(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ConsoleContext console() {
+		ConsoleContext _localctx = new ConsoleContext(_ctx, State);
+		EnterRule(_localctx, 10, RULE_console);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 79;
+			_la = _input.La(1);
+			if ( !(((((_la - 47)) & ~0x3f) == 0 && ((1L << (_la - 47)) & ((1L << (AT - 47)) | (1L << (BOLD - 47)) | (1L << (BORDER - 47)) | (1L << (BRIGHT - 47)) | (1L << (CLS - 47)) | (1L << (FLASH - 47)) | (1L << (INK - 47)) | (1L << (INVERSE - 47)) | (1L << (ITALIC - 47)))) != 0) || ((((_la - 114)) & ~0x3f) == 0 && ((1L << (_la - 114)) & ((1L << (OVER - 114)) | (1L << (PAPER - 114)) | (1L << (TAB - 114)))) != 0)) ) {
+			_errHandler.RecoverInline(this);
+			} else {
+				if (_input.La(1) == TokenConstants.Eof) {
+					matchedEOF = true;
+				}
+
+				_errHandler.ReportMatch(this);
+				Consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -822,15 +902,10 @@ public partial class ZxBasicParser : Parser {
 	}
 
 	public partial class KeywordContext : ParserRuleContext {
-		public ITerminalNode AT() { return GetToken(ZxBasicParser.AT, 0); }
 		public ITerminalNode BEEP() { return GetToken(ZxBasicParser.BEEP, 0); }
-		public ITerminalNode BOLD() { return GetToken(ZxBasicParser.BOLD, 0); }
-		public ITerminalNode BORDER() { return GetToken(ZxBasicParser.BORDER, 0); }
-		public ITerminalNode BRIGHT() { return GetToken(ZxBasicParser.BRIGHT, 0); }
 		public ITerminalNode BYREF() { return GetToken(ZxBasicParser.BYREF, 0); }
 		public ITerminalNode BYVAL() { return GetToken(ZxBasicParser.BYVAL, 0); }
 		public ITerminalNode CIRCLE() { return GetToken(ZxBasicParser.CIRCLE, 0); }
-		public ITerminalNode CLS() { return GetToken(ZxBasicParser.CLS, 0); }
 		public ITerminalNode CONST() { return GetToken(ZxBasicParser.CONST, 0); }
 		public ITerminalNode CONTINUE() { return GetToken(ZxBasicParser.CONTINUE, 0); }
 		public ITerminalNode DECLARE() { return GetToken(ZxBasicParser.DECLARE, 0); }
@@ -843,22 +918,16 @@ public partial class ZxBasicParser : Parser {
 		public ITerminalNode END() { return GetToken(ZxBasicParser.END, 0); }
 		public ITerminalNode EXIT() { return GetToken(ZxBasicParser.EXIT, 0); }
 		public ITerminalNode FASTCALL() { return GetToken(ZxBasicParser.FASTCALL, 0); }
-		public ITerminalNode FLASH() { return GetToken(ZxBasicParser.FLASH, 0); }
 		public ITerminalNode FOR() { return GetToken(ZxBasicParser.FOR, 0); }
 		public ITerminalNode FUNCTION() { return GetToken(ZxBasicParser.FUNCTION, 0); }
 		public ITerminalNode GOTO() { return GetToken(ZxBasicParser.GOTO, 0); }
 		public ITerminalNode GOSUB() { return GetToken(ZxBasicParser.GOSUB, 0); }
 		public ITerminalNode IF() { return GetToken(ZxBasicParser.IF, 0); }
-		public ITerminalNode INK() { return GetToken(ZxBasicParser.INK, 0); }
-		public ITerminalNode INVERSE() { return GetToken(ZxBasicParser.INVERSE, 0); }
-		public ITerminalNode ITALIC() { return GetToken(ZxBasicParser.ITALIC, 0); }
 		public ITerminalNode LET() { return GetToken(ZxBasicParser.LET, 0); }
 		public ITerminalNode LOAD() { return GetToken(ZxBasicParser.LOAD, 0); }
 		public ITerminalNode LOOP() { return GetToken(ZxBasicParser.LOOP, 0); }
 		public ITerminalNode NEXT() { return GetToken(ZxBasicParser.NEXT, 0); }
-		public ITerminalNode OVER() { return GetToken(ZxBasicParser.OVER, 0); }
 		public ITerminalNode OUT() { return GetToken(ZxBasicParser.OUT, 0); }
-		public ITerminalNode PAPER() { return GetToken(ZxBasicParser.PAPER, 0); }
 		public ITerminalNode PAUSE() { return GetToken(ZxBasicParser.PAUSE, 0); }
 		public ITerminalNode PI() { return GetToken(ZxBasicParser.PI, 0); }
 		public ITerminalNode PLOT() { return GetToken(ZxBasicParser.PLOT, 0); }
@@ -903,14 +972,14 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public KeywordContext keyword() {
 		KeywordContext _localctx = new KeywordContext(_ctx, State);
-		EnterRule(_localctx, 10, RULE_keyword);
+		EnterRule(_localctx, 12, RULE_keyword);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 74;
+			State = 81;
 			_la = _input.La(1);
-			if ( !(((((_la - 46)) & ~0x3f) == 0 && ((1L << (_la - 46)) & ((1L << (AT - 46)) | (1L << (BEEP - 46)) | (1L << (BOLD - 46)) | (1L << (BORDER - 46)) | (1L << (BRIGHT - 46)) | (1L << (BYREF - 46)) | (1L << (BYVAL - 46)) | (1L << (CIRCLE - 46)) | (1L << (CLS - 46)) | (1L << (CONST - 46)) | (1L << (CONTINUE - 46)) | (1L << (DECLARE - 46)) | (1L << (DIM - 46)) | (1L << (DO - 46)) | (1L << (DATA - 46)) | (1L << (DRAW - 46)) | (1L << (ELSE - 46)) | (1L << (ELSEIF - 46)) | (1L << (END - 46)) | (1L << (EXIT - 46)) | (1L << (FASTCALL - 46)) | (1L << (FLASH - 46)) | (1L << (FOR - 46)) | (1L << (FUNCTION - 46)) | (1L << (GOTO - 46)) | (1L << (GOSUB - 46)) | (1L << (IF - 46)) | (1L << (INK - 46)) | (1L << (INVERSE - 46)) | (1L << (ITALIC - 46)) | (1L << (LET - 46)) | (1L << (LOAD - 46)) | (1L << (LOOP - 46)) | (1L << (NEXT - 46)) | (1L << (OVER - 46)))) != 0) || ((((_la - 110)) & ~0x3f) == 0 && ((1L << (_la - 110)) & ((1L << (OUT - 110)) | (1L << (PAPER - 110)) | (1L << (PAUSE - 110)) | (1L << (PI - 110)) | (1L << (PLOT - 110)) | (1L << (POKE - 110)) | (1L << (PRINT - 110)) | (1L << (RANDOMIZE - 110)) | (1L << (READ - 110)) | (1L << (REM - 110)) | (1L << (RESTORE - 110)) | (1L << (RETURN - 110)) | (1L << (SAVE - 110)) | (1L << (STDCALL - 110)) | (1L << (STEP - 110)) | (1L << (STOP - 110)) | (1L << (SUB - 110)) | (1L << (THEN - 110)) | (1L << (TO - 110)) | (1L << (UNTIL - 110)) | (1L << (VERIFY - 110)) | (1L << (WEND - 110)) | (1L << (WHILE - 110)))) != 0)) ) {
+			if ( !(((((_la - 54)) & ~0x3f) == 0 && ((1L << (_la - 54)) & ((1L << (BEEP - 54)) | (1L << (BYREF - 54)) | (1L << (BYVAL - 54)) | (1L << (CIRCLE - 54)) | (1L << (CONST - 54)) | (1L << (CONTINUE - 54)) | (1L << (DECLARE - 54)) | (1L << (DIM - 54)) | (1L << (DO - 54)) | (1L << (DATA - 54)) | (1L << (DRAW - 54)) | (1L << (ELSE - 54)) | (1L << (ELSEIF - 54)) | (1L << (END - 54)) | (1L << (EXIT - 54)) | (1L << (FASTCALL - 54)) | (1L << (FOR - 54)) | (1L << (FUNCTION - 54)) | (1L << (GOTO - 54)) | (1L << (GOSUB - 54)) | (1L << (IF - 54)) | (1L << (LET - 54)) | (1L << (LOAD - 54)) | (1L << (LOOP - 54)) | (1L << (NEXT - 54)) | (1L << (OUT - 54)) | (1L << (PAUSE - 54)))) != 0) || ((((_la - 119)) & ~0x3f) == 0 && ((1L << (_la - 119)) & ((1L << (PI - 119)) | (1L << (PLOT - 119)) | (1L << (POKE - 119)) | (1L << (PRINT - 119)) | (1L << (RANDOMIZE - 119)) | (1L << (READ - 119)) | (1L << (REM - 119)) | (1L << (RESTORE - 119)) | (1L << (RETURN - 119)) | (1L << (SAVE - 119)) | (1L << (STDCALL - 119)) | (1L << (STEP - 119)) | (1L << (STOP - 119)) | (1L << (SUB - 119)) | (1L << (THEN - 119)) | (1L << (TO - 119)) | (1L << (UNTIL - 119)) | (1L << (VERIFY - 119)) | (1L << (WEND - 119)) | (1L << (WHILE - 119)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			} else {
 				if (_input.La(1) == TokenConstants.Eof) {
@@ -997,14 +1066,14 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public FunctionContext function() {
 		FunctionContext _localctx = new FunctionContext(_ctx, State);
-		EnterRule(_localctx, 12, RULE_function);
+		EnterRule(_localctx, 14, RULE_function);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 76;
+			State = 83;
 			_la = _input.La(1);
-			if ( !(((((_la - 40)) & ~0x3f) == 0 && ((1L << (_la - 40)) & ((1L << (ABS - 40)) | (1L << (ACS - 40)) | (1L << (ASC - 40)) | (1L << (ASN - 40)) | (1L << (ATN - 40)) | (1L << (ATTR - 40)) | (1L << (CAST - 40)) | (1L << (CHR - 40)) | (1L << (CODE - 40)) | (1L << (COS - 40)) | (1L << (CSRLIN - 40)) | (1L << (EXP - 40)) | (1L << (GETKEY - 40)) | (1L << (GETKEYSCANCODE - 40)) | (1L << (HEX - 40)) | (1L << (HEX16 - 40)) | (1L << (IN - 40)) | (1L << (INKEY - 40)) | (1L << (INPUT - 40)) | (1L << (INT - 40)) | (1L << (LBOUND - 40)) | (1L << (LCASE - 40)) | (1L << (LEN - 40)) | (1L << (LN - 40)))) != 0) || ((((_la - 105)) & ~0x3f) == 0 && ((1L << (_la - 105)) & ((1L << (MULTIKEYS - 105)) | (1L << (PEEK - 105)) | (1L << (POINT - 105)) | (1L << (POS - 105)) | (1L << (PRINT42 - 105)) | (1L << (PRINTAT42 - 105)) | (1L << (PRINT64 - 105)) | (1L << (PRINTAT64 - 105)) | (1L << (RND - 105)) | (1L << (SCREEN - 105)) | (1L << (SGN - 105)) | (1L << (STR - 105)) | (1L << (TAN - 105)) | (1L << (UBOUND - 105)) | (1L << (UCASE - 105)) | (1L << (VAL - 105)))) != 0)) ) {
+			if ( !(((((_la - 40)) & ~0x3f) == 0 && ((1L << (_la - 40)) & ((1L << (ABS - 40)) | (1L << (ACS - 40)) | (1L << (ASC - 40)) | (1L << (ASN - 40)) | (1L << (ATN - 40)) | (1L << (ATTR - 40)) | (1L << (CAST - 40)) | (1L << (CHR - 40)) | (1L << (CODE - 40)) | (1L << (COS - 40)) | (1L << (CSRLIN - 40)) | (1L << (EXP - 40)) | (1L << (GETKEY - 40)) | (1L << (GETKEYSCANCODE - 40)) | (1L << (HEX - 40)) | (1L << (HEX16 - 40)) | (1L << (IN - 40)) | (1L << (INKEY - 40)) | (1L << (INPUT - 40)) | (1L << (INT - 40)) | (1L << (LBOUND - 40)) | (1L << (LCASE - 40)))) != 0) || ((((_la - 104)) & ~0x3f) == 0 && ((1L << (_la - 104)) & ((1L << (LEN - 104)) | (1L << (LN - 104)) | (1L << (MULTIKEYS - 104)) | (1L << (PEEK - 104)) | (1L << (POINT - 104)) | (1L << (POS - 104)) | (1L << (PRINT42 - 104)) | (1L << (PRINTAT42 - 104)) | (1L << (PRINT64 - 104)) | (1L << (PRINTAT64 - 104)) | (1L << (RND - 104)) | (1L << (SCREEN - 104)) | (1L << (SGN - 104)) | (1L << (STR - 104)) | (1L << (TAN - 104)) | (1L << (UBOUND - 104)) | (1L << (UCASE - 104)) | (1L << (VAL - 104)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			} else {
 				if (_input.La(1) == TokenConstants.Eof) {
@@ -1078,14 +1147,14 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public OperatorContext @operator() {
 		OperatorContext _localctx = new OperatorContext(_ctx, State);
-		EnterRule(_localctx, 14, RULE_operator);
+		EnterRule(_localctx, 16, RULE_operator);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 78;
+			State = 85;
 			_la = _input.La(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ASSIGN) | (1L << PLUS) | (1L << MINUS) | (1L << UPARR) | (1L << AMP) | (1L << LTOP) | (1L << LTEOP) | (1L << GTOP) | (1L << GTEOP) | (1L << LSHOP) | (1L << RSHOP) | (1L << MULOP) | (1L << DIVOP) | (1L << NOTEQ) | (1L << AND) | (1L << BAND) | (1L << BNOT) | (1L << BOR) | (1L << BXOR))) != 0) || ((((_la - 104)) & ~0x3f) == 0 && ((1L << (_la - 104)) & ((1L << (MOD - 104)) | (1L << (NOT - 104)) | (1L << (OR - 104)) | (1L << (SHL - 104)) | (1L << (SHR - 104)) | (1L << (SIN - 104)) | (1L << (SQR - 104)) | (1L << (XOR - 104)))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ASSIGN) | (1L << PLUS) | (1L << MINUS) | (1L << UPARR) | (1L << AMP) | (1L << LTOP) | (1L << LTEOP) | (1L << GTOP) | (1L << GTEOP) | (1L << LSHOP) | (1L << RSHOP) | (1L << MULOP) | (1L << DIVOP) | (1L << NOTEQ) | (1L << AND) | (1L << BAND) | (1L << BNOT) | (1L << BOR) | (1L << BXOR))) != 0) || ((((_la - 109)) & ~0x3f) == 0 && ((1L << (_la - 109)) & ((1L << (MOD - 109)) | (1L << (NOT - 109)) | (1L << (OR - 109)) | (1L << (SHL - 109)) | (1L << (SHR - 109)) | (1L << (SIN - 109)) | (1L << (SQR - 109)) | (1L << (XOR - 109)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			} else {
 				if (_input.La(1) == TokenConstants.Eof) {
@@ -1133,11 +1202,11 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public SpecialContext special() {
 		SpecialContext _localctx = new SpecialContext(_ctx, State);
-		EnterRule(_localctx, 16, RULE_special);
+		EnterRule(_localctx, 18, RULE_special);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 80; Match(ALIGN);
+			State = 87; Match(ALIGN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1179,12 +1248,12 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public NumberContext number() {
 		NumberContext _localctx = new NumberContext(_ctx, State);
-		EnterRule(_localctx, 18, RULE_number);
+		EnterRule(_localctx, 20, RULE_number);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 82;
+			State = 89;
 			_la = _input.La(1);
 			if ( !(_la==DECNUM || _la==REALNUM || _la==HEXNUM || _la==BINNUM) ) {
 			_errHandler.RecoverInline(this);
@@ -1234,11 +1303,11 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public IdentifierContext identifier() {
 		IdentifierContext _localctx = new IdentifierContext(_ctx, State);
-		EnterRule(_localctx, 20, RULE_identifier);
+		EnterRule(_localctx, 22, RULE_identifier);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 84; Match(IDENTIFIER);
+			State = 91; Match(IDENTIFIER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1253,7 +1322,7 @@ public partial class ZxBasicParser : Parser {
 	}
 
 	public partial class StringContext : ParserRuleContext {
-		public ITerminalNode STRING() { return GetToken(ZxBasicParser.STRING, 0); }
+		public ITerminalNode ZXB_STRING() { return GetToken(ZxBasicParser.ZXB_STRING, 0); }
 		public StringContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1277,11 +1346,52 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public StringContext @string() {
 		StringContext _localctx = new StringContext(_ctx, State);
-		EnterRule(_localctx, 22, RULE_string);
+		EnterRule(_localctx, 24, RULE_string);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 86; Match(STRING);
+			State = 93; Match(ZXB_STRING);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class TypeContext : ParserRuleContext {
+		public TypeContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_type; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.EnterType(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IZxBasicListener typedListener = listener as IZxBasicListener;
+			if (typedListener != null) typedListener.ExitType(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IZxBasicVisitor<TResult> typedVisitor = visitor as IZxBasicVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitType(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public TypeContext type() {
+		TypeContext _localctx = new TypeContext(_ctx, State);
+		EnterRule(_localctx, 26, RULE_type);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
 			}
 		}
 		catch (RecognitionException re) {
@@ -1325,21 +1435,21 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public CommentContext comment() {
 		CommentContext _localctx = new CommentContext(_ctx, State);
-		EnterRule(_localctx, 24, RULE_comment);
+		EnterRule(_localctx, 28, RULE_comment);
 		try {
-			State = 90;
+			State = 99;
 			_errHandler.Sync(this);
 			switch (_input.La(1)) {
 			case BLOCK_COMMENT:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 88; block_comment();
+				State = 97; block_comment();
 				}
 				break;
 			case LINE_COMMENT:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 89; line_comment();
+				State = 98; line_comment();
 				}
 				break;
 			default:
@@ -1382,11 +1492,11 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public Block_commentContext block_comment() {
 		Block_commentContext _localctx = new Block_commentContext(_ctx, State);
-		EnterRule(_localctx, 26, RULE_block_comment);
+		EnterRule(_localctx, 30, RULE_block_comment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 92; Match(BLOCK_COMMENT);
+			State = 101; Match(BLOCK_COMMENT);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1425,11 +1535,11 @@ public partial class ZxBasicParser : Parser {
 	[RuleVersion(0)]
 	public Line_commentContext line_comment() {
 		Line_commentContext _localctx = new Line_commentContext(_ctx, State);
-		EnterRule(_localctx, 28, RULE_line_comment);
+		EnterRule(_localctx, 32, RULE_line_comment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 94; Match(LINE_COMMENT);
+			State = 103; Match(LINE_COMMENT);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1444,44 +1554,47 @@ public partial class ZxBasicParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xA2\x63\x4\x2\t"+
-		"\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4\t"+
-		"\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
-		"\t\x10\x3\x2\x3\x2\x5\x2#\n\x2\x3\x2\a\x2&\n\x2\f\x2\xE\x2)\v\x2\x3\x2"+
-		"\x3\x2\x3\x3\x3\x3\x3\x3\x5\x3\x30\n\x3\x3\x4\a\x4\x33\n\x4\f\x4\xE\x4"+
-		"\x36\v\x4\x3\x4\x3\x4\x6\x4:\n\x4\r\x4\xE\x4;\x5\x4>\n\x4\x3\x5\x3\x5"+
-		"\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x5\x5I\n\x5\x3\x6\x3\x6\x3"+
-		"\a\x3\a\x3\b\x3\b\x3\t\x3\t\x3\n\x3\n\x3\v\x3\v\x3\f\x3\f\x3\r\x3\r\x3"+
-		"\xE\x3\xE\x5\xE]\n\xE\x3\xF\x3\xF\x3\x10\x3\x10\x3\x10\x2\x2\x2\x11\x2"+
-		"\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10\x2\x12\x2\x14\x2\x16\x2\x18\x2"+
-		"\x1A\x2\x1C\x2\x1E\x2\x2\x6\x1A\x2\x30\x30\x37<?@\x42\x43\x46NPSWX[[]"+
-		"]\x61\x62\x65\x65hillortuwwyy~\x82\x84\x84\x8B\x8D\x8F\x8F\x91\x92\x95"+
-		"\x95\x97\x99\x1A\x2*+./\x31\x32=>\x41\x41\x44\x45OOTUYZ\\\\^`\x63\x64"+
-		"\x66gkkssvvxxz}\x83\x83\x85\x86\x8E\x8E\x90\x90\x93\x94\x96\x96\r\x2\r"+
-		"\r\x13\x14\x16\x17\x1C#)),,\x33\x36jjmn\x87\x8A\x9A\x9A\x4\x2%&\x9B\x9C"+
-		"\x63\x2\'\x3\x2\x2\x2\x4/\x3\x2\x2\x2\x6=\x3\x2\x2\x2\bH\x3\x2\x2\x2\n"+
-		"J\x3\x2\x2\x2\fL\x3\x2\x2\x2\xEN\x3\x2\x2\x2\x10P\x3\x2\x2\x2\x12R\x3"+
-		"\x2\x2\x2\x14T\x3\x2\x2\x2\x16V\x3\x2\x2\x2\x18X\x3\x2\x2\x2\x1A\\\x3"+
-		"\x2\x2\x2\x1C^\x3\x2\x2\x2\x1E`\x3\x2\x2\x2 &\x5\n\x6\x2!#\x5\x4\x3\x2"+
-		"\"!\x3\x2\x2\x2\"#\x3\x2\x2\x2#$\x3\x2\x2\x2$&\x5\x6\x4\x2% \x3\x2\x2"+
-		"\x2%\"\x3\x2\x2\x2&)\x3\x2\x2\x2\'%\x3\x2\x2\x2\'(\x3\x2\x2\x2(*\x3\x2"+
-		"\x2\x2)\'\x3\x2\x2\x2*+\a\x2\x2\x3+\x3\x3\x2\x2\x2,\x30\a%\x2\x2-.\a\x9D"+
-		"\x2\x2.\x30\a\x5\x2\x2/,\x3\x2\x2\x2/-\x3\x2\x2\x2\x30\x5\x3\x2\x2\x2"+
-		"\x31\x33\x5\b\x5\x2\x32\x31\x3\x2\x2\x2\x33\x36\x3\x2\x2\x2\x34\x32\x3"+
-		"\x2\x2\x2\x34\x35\x3\x2\x2\x2\x35\x37\x3\x2\x2\x2\x36\x34\x3\x2\x2\x2"+
-		"\x37>\a\xA1\x2\x2\x38:\x5\b\x5\x2\x39\x38\x3\x2\x2\x2:;\x3\x2\x2\x2;\x39"+
-		"\x3\x2\x2\x2;<\x3\x2\x2\x2<>\x3\x2\x2\x2=\x34\x3\x2\x2\x2=\x39\x3\x2\x2"+
-		"\x2>\a\x3\x2\x2\x2?I\x5\f\a\x2@I\x5\xE\b\x2\x41I\x5\x10\t\x2\x42I\x5\x12"+
-		"\n\x2\x43I\x5\x14\v\x2\x44I\x5\x16\f\x2\x45I\x5\x18\r\x2\x46I\x5\x1A\xE"+
-		"\x2GI\a\xA2\x2\x2H?\x3\x2\x2\x2H@\x3\x2\x2\x2H\x41\x3\x2\x2\x2H\x42\x3"+
-		"\x2\x2\x2H\x43\x3\x2\x2\x2H\x44\x3\x2\x2\x2H\x45\x3\x2\x2\x2H\x46\x3\x2"+
-		"\x2\x2HG\x3\x2\x2\x2I\t\x3\x2\x2\x2JK\a\x4\x2\x2K\v\x3\x2\x2\x2LM\t\x2"+
-		"\x2\x2M\r\x3\x2\x2\x2NO\t\x3\x2\x2O\xF\x3\x2\x2\x2PQ\t\x4\x2\x2Q\x11\x3"+
-		"\x2\x2\x2RS\a-\x2\x2S\x13\x3\x2\x2\x2TU\t\x5\x2\x2U\x15\x3\x2\x2\x2VW"+
-		"\a\x9D\x2\x2W\x17\x3\x2\x2\x2XY\a\xA0\x2\x2Y\x19\x3\x2\x2\x2Z]\x5\x1C"+
-		"\xF\x2[]\x5\x1E\x10\x2\\Z\x3\x2\x2\x2\\[\x3\x2\x2\x2]\x1B\x3\x2\x2\x2"+
-		"^_\a\'\x2\x2_\x1D\x3\x2\x2\x2`\x61\a(\x2\x2\x61\x1F\x3\x2\x2\x2\v\"%\'"+
-		"/\x34;=H\\";
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xACl\x4\x2\t\x2"+
+		"\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4\t\t"+
+		"\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10\t"+
+		"\x10\x4\x11\t\x11\x4\x12\t\x12\x3\x2\x3\x2\x5\x2\'\n\x2\x3\x2\a\x2*\n"+
+		"\x2\f\x2\xE\x2-\v\x2\x3\x2\x3\x2\x3\x3\x3\x3\x3\x3\x5\x3\x34\n\x3\x3\x4"+
+		"\a\x4\x37\n\x4\f\x4\xE\x4:\v\x4\x3\x4\x3\x4\x6\x4>\n\x4\r\x4\xE\x4?\x5"+
+		"\x4\x42\n\x4\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3"+
+		"\x5\x5\x5N\n\x5\x3\x6\x3\x6\x3\a\x3\a\x3\b\x3\b\x3\t\x3\t\x3\n\x3\n\x3"+
+		"\v\x3\v\x3\f\x3\f\x3\r\x3\r\x3\xE\x3\xE\x3\xF\x3\xF\x3\x10\x3\x10\x5\x10"+
+		"\x66\n\x10\x3\x11\x3\x11\x3\x12\x3\x12\x3\x12\x2\x2\x2\x13\x2\x2\x4\x2"+
+		"\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10\x2\x12\x2\x14\x2\x16\x2\x18\x2\x1A\x2"+
+		"\x1C\x2\x1E\x2 \x2\"\x2\x2\a\v\x2\x31\x31\x39;\x42\x42SS``\x65\x66ttv"+
+		"v\x96\x96\x1C\x2\x38\x38<<>>\x41\x41\x44\x45HPRRUVZ[^^iillnnqquuwwyz|"+
+		"|~~\x83\x87\x89\x89\x90\x92\x95\x95\x98\x99\x9F\x9F\xA1\xA3\x1B\x2*+."+
+		"/\x32\x33?@\x43\x43\x46GQQWX\\]__\x61\x63ghjkppxx{{}}\x7F\x82\x88\x88"+
+		"\x8A\x8B\x93\x93\x97\x97\x9A\x9A\x9C\x9C\xA0\xA0\r\x2\r\r\x13\x14\x16"+
+		"\x17\x1C#)),,\x34\x37oors\x8C\x8F\xA4\xA4\x4\x2%&\xA5\xA6k\x2+\x3\x2\x2"+
+		"\x2\x4\x33\x3\x2\x2\x2\x6\x41\x3\x2\x2\x2\bM\x3\x2\x2\x2\nO\x3\x2\x2\x2"+
+		"\fQ\x3\x2\x2\x2\xES\x3\x2\x2\x2\x10U\x3\x2\x2\x2\x12W\x3\x2\x2\x2\x14"+
+		"Y\x3\x2\x2\x2\x16[\x3\x2\x2\x2\x18]\x3\x2\x2\x2\x1A_\x3\x2\x2\x2\x1C\x61"+
+		"\x3\x2\x2\x2\x1E\x65\x3\x2\x2\x2 g\x3\x2\x2\x2\"i\x3\x2\x2\x2$*\x5\n\x6"+
+		"\x2%\'\x5\x4\x3\x2&%\x3\x2\x2\x2&\'\x3\x2\x2\x2\'(\x3\x2\x2\x2(*\x5\x6"+
+		"\x4\x2)$\x3\x2\x2\x2)&\x3\x2\x2\x2*-\x3\x2\x2\x2+)\x3\x2\x2\x2+,\x3\x2"+
+		"\x2\x2,.\x3\x2\x2\x2-+\x3\x2\x2\x2./\a\x2\x2\x3/\x3\x3\x2\x2\x2\x30\x34"+
+		"\a%\x2\x2\x31\x32\a\xA7\x2\x2\x32\x34\a\x5\x2\x2\x33\x30\x3\x2\x2\x2\x33"+
+		"\x31\x3\x2\x2\x2\x34\x5\x3\x2\x2\x2\x35\x37\x5\b\x5\x2\x36\x35\x3\x2\x2"+
+		"\x2\x37:\x3\x2\x2\x2\x38\x36\x3\x2\x2\x2\x38\x39\x3\x2\x2\x2\x39;\x3\x2"+
+		"\x2\x2:\x38\x3\x2\x2\x2;\x42\a\xAB\x2\x2<>\x5\b\x5\x2=<\x3\x2\x2\x2>?"+
+		"\x3\x2\x2\x2?=\x3\x2\x2\x2?@\x3\x2\x2\x2@\x42\x3\x2\x2\x2\x41\x38\x3\x2"+
+		"\x2\x2\x41=\x3\x2\x2\x2\x42\a\x3\x2\x2\x2\x43N\x5\f\a\x2\x44N\x5\xE\b"+
+		"\x2\x45N\x5\x10\t\x2\x46N\x5\x12\n\x2GN\x5\x14\v\x2HN\x5\x16\f\x2IN\x5"+
+		"\x18\r\x2JN\x5\x1A\xE\x2KN\x5\x1E\x10\x2LN\a\xAC\x2\x2M\x43\x3\x2\x2\x2"+
+		"M\x44\x3\x2\x2\x2M\x45\x3\x2\x2\x2M\x46\x3\x2\x2\x2MG\x3\x2\x2\x2MH\x3"+
+		"\x2\x2\x2MI\x3\x2\x2\x2MJ\x3\x2\x2\x2MK\x3\x2\x2\x2ML\x3\x2\x2\x2N\t\x3"+
+		"\x2\x2\x2OP\a\x4\x2\x2P\v\x3\x2\x2\x2QR\t\x2\x2\x2R\r\x3\x2\x2\x2ST\t"+
+		"\x3\x2\x2T\xF\x3\x2\x2\x2UV\t\x4\x2\x2V\x11\x3\x2\x2\x2WX\t\x5\x2\x2X"+
+		"\x13\x3\x2\x2\x2YZ\a-\x2\x2Z\x15\x3\x2\x2\x2[\\\t\x6\x2\x2\\\x17\x3\x2"+
+		"\x2\x2]^\a\xA7\x2\x2^\x19\x3\x2\x2\x2_`\a\xAA\x2\x2`\x1B\x3\x2\x2\x2\x61"+
+		"\x62\x3\x2\x2\x2\x62\x1D\x3\x2\x2\x2\x63\x66\x5 \x11\x2\x64\x66\x5\"\x12"+
+		"\x2\x65\x63\x3\x2\x2\x2\x65\x64\x3\x2\x2\x2\x66\x1F\x3\x2\x2\x2gh\a\'"+
+		"\x2\x2h!\x3\x2\x2\x2ij\a(\x2\x2j#\x3\x2\x2\x2\v&)+\x33\x38?\x41M\x65";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }

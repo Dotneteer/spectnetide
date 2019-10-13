@@ -26,7 +26,23 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
             _zxbNumber,
             _zxbString,
             _zxbAsm,
-            _label;
+
+            _label,
+            _comment,
+            _pragma,
+            _directive,
+            _includeDirective,
+            _instruction,
+            _number,
+            _identifier,
+            _string,
+            _function,
+            _macroParam,
+            _statement,
+            _macroInvocation,
+            _operand,
+            _semiVar,
+            _module;
 
         private readonly ITextBuffer _buffer;
         private bool _isProcessing;
@@ -54,6 +70,21 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
             _zxbAsm = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_ASM);
 
             _label = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_LABEL);
+            _pragma = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_PRAGMA);
+            _directive = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_DIRECTIVE);
+            _includeDirective = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_INCLUDE_DIRECTIVE);
+            _instruction = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_INSTRUCTION);
+            _comment = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_COMMENT);
+            _number = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_NUMBER);
+            _identifier = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_IDENTIFIER);
+            _string = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_STRING);
+            _function = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_FUNCTION);
+            _macroParam = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_MACRO_PARAM);
+            _statement = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_STATEMENT);
+            _macroInvocation = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_MACRO_INVOCATION);
+            _operand = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_OPERAND);
+            _semiVar = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_SEMI_VAR);
+            _module = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_MODULE);
 
             ParseDocument();
 
@@ -120,6 +151,55 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
                                 break;
                             case TokenType.ZxbAsm:
                                 type = _zxbAsm;
+                                break;
+
+                            case TokenType.Comment:
+                                type = _comment;
+                                break;
+                            case TokenType.Label:
+                                type = _label;
+                                break;
+                            case TokenType.Instruction:
+                                type = _instruction;
+                                break;
+                            case TokenType.Pragma:
+                                type = _pragma;
+                                break;
+                            case TokenType.Directive:
+                                type = _directive;
+                                break;
+                            case TokenType.IncludeDirective:
+                                type = _includeDirective;
+                                break;
+                            case TokenType.MacroInvocation:
+                                type = _macroInvocation;
+                                break;
+                            case TokenType.Module:
+                                type = _module;
+                                break;
+                            case TokenType.Statement:
+                                type = _statement;
+                                break;
+                            case TokenType.Number:
+                                type = _number;
+                                break;
+                            case TokenType.String:
+                                type = _string;
+                                break;
+                            case TokenType.Function:
+                                type = _function;
+                                break;
+                            case TokenType.SemiVar:
+                                type = _semiVar;
+                                break;
+                            case TokenType.MacroParam:
+                                type = _macroParam;
+                                break;
+                            case TokenType.Identifier:
+                                type = _identifier;
+                                break;
+                            case TokenType.Operand:
+                                type = _operand;
                                 break;
                         }
                         if (type != null)

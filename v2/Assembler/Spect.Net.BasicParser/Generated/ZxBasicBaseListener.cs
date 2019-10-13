@@ -101,6 +101,19 @@ public partial class ZxBasicBaseListener : IZxBasicListener {
 	public virtual void ExitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.console"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterConsole([NotNull] ZxBasicParser.ConsoleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.console"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitConsole([NotNull] ZxBasicParser.ConsoleContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ZxBasicParser.keyword"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -190,6 +203,19 @@ public partial class ZxBasicBaseListener : IZxBasicListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitString([NotNull] ZxBasicParser.StringContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ZxBasicParser.type"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterType([NotNull] ZxBasicParser.TypeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ZxBasicParser.type"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitType([NotNull] ZxBasicParser.TypeContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ZxBasicParser.comment"/>.

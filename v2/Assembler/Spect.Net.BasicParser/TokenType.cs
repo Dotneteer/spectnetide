@@ -14,6 +14,23 @@
         ZxbNumber,
         ZxbString,
         ZxbLabel,
-        ZxbAsm
+        ZxbAsm,
+
+        Label,
+        Comment,
+        Pragma,
+        Directive,
+        IncludeDirective,
+        Instruction,
+        Number,
+        Identifier,
+        String,
+        Function,
+        MacroParam,
+        Statement,
+        MacroInvocation,
+        Operand,
+        SemiVar,
+        Module
     }
 }

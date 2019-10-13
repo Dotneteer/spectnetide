@@ -34,7 +34,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
         public ZxbCommentClassifierFormat()
         {
             DisplayName = "ZX Basic - Comment";
-            ForegroundColor = Colors.LimeGreen;
+            ForegroundColor = Colors.Green;
             IsBold = true;
         }
     }

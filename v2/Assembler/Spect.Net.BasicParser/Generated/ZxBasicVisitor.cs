@@ -68,6 +68,13 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.console"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConsole([NotNull] ZxBasicParser.ConsoleContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ZxBasicParser.keyword"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -115,6 +122,13 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitString([NotNull] ZxBasicParser.StringContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.type"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitType([NotNull] ZxBasicParser.TypeContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="ZxBasicParser.comment"/>.

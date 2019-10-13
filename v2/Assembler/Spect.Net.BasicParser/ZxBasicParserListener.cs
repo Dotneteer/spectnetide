@@ -1,7 +1,13 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Spect.Net.Assembler;
+using Spect.Net.Assembler.SyntaxTree;
+using Spect.Net.Assembler.SyntaxTree.Operations;
+using Spect.Net.Assembler.SyntaxTree.Statements;
 using Spect.Net.BasicParser.Generated;
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Spect.Net.BasicParser
@@ -111,12 +117,177 @@ namespace Spect.Net.BasicParser
 
         public override void ExitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context)
         {
+            // --- Mark the delimiting tokens
             var text = context.GetText();
             var parts = Regex.Split(text, "\r\n");
             var startLine = context.Start.Line;
             var lastLine = parts.Length - 1;
-            AddSpan(TokenType.ZxbComment, startLine, 0, parts[0].Length);
-            AddSpan(TokenType.ZxbComment, startLine + lastLine, 0, parts[lastLine].Length);
+            AddSpan(TokenType.ZxbAsm, startLine, 0, parts[0].Length);
+            AddSpan(TokenType.ZxbAsm, startLine + lastLine, 0, parts[lastLine].Length);
+
+            // --- Create the Z80 Asm body text
+            var body = new StringBuilder(4096);
+            for (var i = 1; i < lastLine; i++)
+            {
+                body.AppendLine(parts[i]);
+            }
+
+            // --- Parse the embedded Z80 assembly code
+            var visitor = Z80AsmVisitor.VisitSource(body.ToString());
+            var lines = visitor.Compilation.Lines;
+
+            // --- Iterate through lines
+            for (var i = 1; i < lastLine; i++)
+            {
+                var asmLineIdx = Z80AsmVisitor.GetAsmLineIndex(lines, i);
+                if (asmLineIdx == null) continue;
+
+                // --- Handle block comments
+                var textOfLine = parts[i];
+                var lastStartIndex = 0;
+                while (true)
+                {
+                    var blockBeginsPos = textOfLine.IndexOf("/*", lastStartIndex, StringComparison.Ordinal);
+                    if (blockBeginsPos < 0) break;
+                    var blockEndsPos = textOfLine.IndexOf("*/", blockBeginsPos, StringComparison.Ordinal);
+                    if (blockEndsPos <= blockBeginsPos) break;
+
+                    // --- Block comment found
+                    lastStartIndex = blockEndsPos + 2;
+                    AddSpan(TokenType.Comment, i + startLine, blockBeginsPos, lastStartIndex - blockBeginsPos);
+                }
+
+                // --- Get the parsed line
+                var asmLine = lines[asmLineIdx.Value];
+
+                if (asmLine.LabelSpan != null)
+                {
+                    AddSpan(TokenType.Label, i + startLine, asmLine, asmLine.LabelSpan);
+                }
+
+                // --- Create keywords
+                if (asmLine.KeywordSpan != null)
+                {
+                    var type = TokenType.Instruction;
+                    switch (asmLine)
+                    {
+                        case PragmaBase _:
+                            type = TokenType.Pragma;
+                            break;
+                        case Directive _:
+                            type = TokenType.Directive;
+                            break;
+                        case IncludeDirective _:
+                            type = TokenType.IncludeDirective;
+                            break;
+                        case MacroOrStructInvocation _:
+                            type = TokenType.MacroInvocation;
+                            break;
+                        case ModuleStatement _:
+                        case ModuleEndStatement _:
+                            type = TokenType.Module;
+                            break;
+                        case StatementBase _:
+                            type = TokenType.Statement;
+                            break;
+                    }
+
+                    // --- Retrieve a pragma/directive/instruction
+                    AddSpan(type, i + startLine, asmLine, asmLine.KeywordSpan);
+                }
+
+                // --- Create comments
+                if (asmLine.CommentSpan != null)
+                {
+                    AddSpan(TokenType.Comment, i + startLine, asmLine, asmLine.CommentSpan);
+                }
+
+                // --- Create numbers
+                if (asmLine.NumberSpans != null)
+                {
+                    foreach (var numberSpan in asmLine.NumberSpans)
+                    {
+                        AddSpan(TokenType.Number, i + startLine, asmLine, numberSpan);
+                    }
+                }
+
+                // --- Create strings
+                if (asmLine.StringSpans != null)
+                {
+                    foreach (var stringSpan in asmLine.StringSpans)
+                    {
+                        AddSpan(TokenType.String, i + startLine, asmLine, stringSpan);
+                    }
+                }
+
+                // --- Create functions
+                if (asmLine.FunctionSpans != null)
+                {
+                    foreach (var functionSpan in asmLine.FunctionSpans)
+                    {
+                        AddSpan(TokenType.Function, i + startLine, asmLine, functionSpan);
+                    }
+                }
+
+                // --- Create semi-variables
+                if (asmLine.SemiVarSpans != null)
+                {
+                    foreach (var semiVarSpan in asmLine.SemiVarSpans)
+                    {
+                        AddSpan(TokenType.SemiVar, i + startLine, asmLine, semiVarSpan);
+                    }
+                }
+
+                // --- Create macro parameters
+                if (asmLine.MacroParamSpans != null)
+                {
+                    foreach (var macroParamSpan in asmLine.MacroParamSpans)
+                    {
+                        AddSpan(TokenType.MacroParam, i + startLine, asmLine, macroParamSpan);
+                    }
+                }
+
+                // --- Create identifiers
+                if (asmLine.IdentifierSpans != null)
+                {
+                    foreach (var id in asmLine.IdentifierSpans)
+                    {
+                        AddSpan(TokenType.Identifier, i + startLine, asmLine, id);
+                    }
+                }
+
+                // --- Create statements
+                if (asmLine.StatementSpans != null)
+                {
+                    foreach (var statement in asmLine.StatementSpans)
+                    {
+                        AddSpan(TokenType.Statement, i + startLine, asmLine, statement);
+                    }
+                }
+
+                // --- Create operands
+                if (asmLine.OperandSpans != null)
+                {
+                    foreach (var operand in asmLine.OperandSpans)
+                    {
+                        AddSpan(TokenType.Operand, i + startLine, asmLine, operand);
+                    }
+                }
+
+                // --- Create mnemonics
+                if (asmLine.MnemonicSpans != null)
+                {
+                    foreach (var mnemonic in asmLine.MnemonicSpans)
+                    {
+                        AddSpan(TokenType.Operand, i + startLine, asmLine, mnemonic);
+                    }
+                }
+            }
+        }
+
+        private void AddSpan(TokenType type, int line, SourceLineBase asmLine, TextSpan span)
+        {
+            AddSpan(type, line, span.Start - asmLine.FirstPosition + asmLine.FirstColumn, span.End - span.Start);
         }
 
         private void AddSpan(TokenType type, ParserRuleContext context)

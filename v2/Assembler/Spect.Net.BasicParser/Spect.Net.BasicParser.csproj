@@ -14,4 +14,8 @@
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Spect.Net.Assembler\Spect.Net.Assembler.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -19,7 +19,8 @@ line
 	;
 
 line_item
-	:	keyword 
+	:	console
+	|	keyword 
 	|	function
 	|	operator
 	|	special
@@ -34,17 +35,28 @@ asm_section
 	:	ASM_SECTION
 	;
 
-// --- ZX BASIC keywords
-keyword
+// --- Console
+console
 	:	AT
-	|	BEEP
 	|	BOLD
 	|	BORDER
 	|	BRIGHT
+	|	CLS
+	|	FLASH
+	|	INK
+	|	INVERSE
+	|	ITALIC
+	|	OVER
+	|	PAPER
+	|	TAB
+	;
+
+// --- ZX BASIC keywords
+keyword
+	:	BEEP
 	|	BYREF
 	|	BYVAL
 	|	CIRCLE
-	|	CLS
 	|	CONST
 	|	CONTINUE
 	|	DECLARE
@@ -57,22 +69,16 @@ keyword
 	|	END
 	|	EXIT
 	|	FASTCALL
-	|	FLASH
 	|	FOR
 	|	FUNCTION
 	|	GOTO
 	|	GOSUB
 	|	IF
-	|	INK
-	|	INVERSE
-	|	ITALIC
 	|	LET
 	|	LOAD
 	|	LOOP
 	|	NEXT
-	|	OVER
 	|	OUT
-	|	PAPER
 	|	PAUSE
 	|	PI
 	|	PLOT
@@ -133,6 +139,8 @@ function
 	|	RND
 	|	SCREEN
 	|	SGN
+	|	SIN
+	|	SQR
 	|	STR
 	|	TAN
 	|	UBOUND
@@ -152,8 +160,6 @@ operator
 	|	OR
 	|	SHL
 	|	SHR
-	|	SIN
-	|	SQR
 	|	XOR
 	|	ASSIGN
 	|	PLUS
@@ -189,7 +195,11 @@ identifier
 	;
 
 string
-	:	STRING
+	:	ZXB_STRING
+	;
+
+type
+	:
 	;
 
 comment
@@ -246,6 +256,7 @@ RSHOP	: '>>' ;
 MULOP	: '*' ;
 DIVOP	: '/' ;
 DOT		: '.' ;
+HMARK	: '#' ;
 
 // --- Z80 Asm and ZX BASIC decimal number
 DECNUM	: Digit Digit? Digit? Digit? Digit?;
@@ -268,6 +279,18 @@ LINE_COMMENT
 
 NOTEQ: '<>';
 
+// --- Preprocessor directives
+P_DEFINE: HMARK D E F I N E;
+P_ELSE: HMARK E L S E;
+P_ELSEIF: HMARK E L S E I F;
+P_ENDIF: HMARK E N D I F;
+P_IF: HMARK I F;
+P_IFDEF: HMARK I F D E F;
+P_IFNDEF: HMARK I F N D E F;
+P_INCLIB: HMARK I N C L I B;
+P_INCLUDE: HMARK I N C L U D E;
+
+
 // --- ZX BASIC keywords
 ABS: A B S;
 ACS: A C S;
@@ -275,6 +298,8 @@ AND: A N D;
 ALIGN: A L I G N;
 ASC: A S C;
 ASN: A S N;
+AS: A S;
+
 AT: A T;
 ATN: A T N;
 ATTR: A T T R;
@@ -287,6 +312,7 @@ BOLD: B O L D;
 BORDER: B O R D E R;
 BRIGHT: B R I G H T;
 BYREF: B Y R E F;
+BYTE: B Y T E;
 BYVAL: B Y V A L;
 CAST: C A S T;
 CHR: C H R DOLLAR?;
@@ -309,6 +335,7 @@ EXIT: E X I T;
 EXP: E X P;
 FASTCALL: F A S T C A L L;
 FLASH: F L A S H;
+FLOAT: F L O A T;
 FOR: F O R;
 FUNCTION: F U N C T I O N;
 GETKEY: G E T K E Y;
@@ -324,6 +351,7 @@ INK: I N K;
 INKEY: I N K E Y DOLLAR?;
 INPUT: I N P U T;
 INT: I N T;
+INTEGER: I N T E G E R;
 INVERSE: I N V E R S E;
 ITALIC: I T A L I C;
 LBOUND: L B O U N D;
@@ -332,6 +360,7 @@ LET: L E T;
 LEN: L E N;
 LN: L N;
 LOAD: L O A D;
+LONG: L O N G;
 LOOP: L O O P;
 MOD: M O D;
 MULTIKEYS: M U L T I K E Y S;
@@ -370,12 +399,17 @@ STDCALL: S T D C A L L;
 STEP: S T E P;
 STOP: S T O P;
 STR: S T R DOLLAR?;
+STRING: S T R I N G;
 SUB: S U B;
+TAB: T A B;
 TAN: T A N;
 THEN: T H E N;
 TO: T O;
 UBOUND: U B O U N D;
+UBYTE: U B Y T E;
 UCASE: U C A S E;
+UINTEGER: U I N T E G E R;
+ULONG: U L O N G;
 UNTIL: U N T I L;
 VAL: V A L;
 VERIFY: V E R I F Y;
@@ -409,7 +443,7 @@ IDCONT
 	;
 
 // --- ZX BASIC String
-STRING
+ZXB_STRING
 	:	'"' (~["\\\r\n\u0085\u2028\u2029])* '"'
 	;
 

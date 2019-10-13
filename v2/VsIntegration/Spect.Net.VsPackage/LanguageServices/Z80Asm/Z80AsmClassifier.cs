@@ -263,6 +263,154 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             return list;
         }
 
+        //public void DoHighLighting(List<SourceLineBase> lines, int firstLine, int lastLine)
+        //{
+        //    for (var line = firstLine; line <= lastLine; line++)
+        //    {
+        //        var sourceLine = lines[line];
+
+        //        // --- Check for a block comment
+        //        var lastStartIndex = 0;
+        //        while (true)
+        //        {
+        //            var blockBeginsPos = textOfLine.IndexOf("/*", lastStartIndex, StringComparison.Ordinal);
+        //            if (blockBeginsPos < 0) break;
+        //            var blockEndsPos = textOfLine.IndexOf("*/", blockBeginsPos, StringComparison.Ordinal);
+        //            if (blockEndsPos <= blockBeginsPos) break;
+
+        //            // --- Block comment found
+        //            lastStartIndex = blockEndsPos + 2;
+        //            AddClassificationSpan(list, snapshot,
+        //                new TextSpan(sourceLine.FirstPosition + blockBeginsPos - 1, sourceLine.FirstPosition + blockEndsPos + 1),
+        //                _comment);
+        //        }
+
+        //        // --- Create labels
+        //        if (sourceLine.LabelSpan != null)
+        //        {
+        //            AddClassificationSpan(list, snapshot, sourceLine.LabelSpan, _label);
+        //        }
+
+        //        // --- Create keywords
+        //        if (sourceLine.KeywordSpan != null)
+        //        {
+        //            var type = _instruction;
+        //            switch (sourceLine)
+        //            {
+        //                case PragmaBase _:
+        //                    type = _pragma;
+        //                    break;
+        //                case Directive _:
+        //                    type = _directive;
+        //                    break;
+        //                case IncludeDirective _:
+        //                    type = _includeDirective;
+        //                    break;
+        //                case MacroOrStructInvocation _:
+        //                    type = _macroInvocation;
+        //                    break;
+        //                case ModuleStatement _:
+        //                case ModuleEndStatement _:
+        //                    type = _module;
+        //                    break;
+        //                case StatementBase _:
+        //                    type = _statement;
+        //                    break;
+        //            }
+
+        //            // --- Retrieve a pragma/directive/instruction
+        //            AddClassificationSpan(list, snapshot, sourceLine.KeywordSpan, type);
+        //        }
+
+        //        // --- Create comments
+        //        if (sourceLine.CommentSpan != null)
+        //        {
+        //            AddClassificationSpan(list, snapshot, sourceLine.CommentSpan, _comment);
+        //        }
+
+        //        // --- Create numbers
+        //        if (sourceLine.NumberSpans != null)
+        //        {
+        //            foreach (var numberSpan in sourceLine.NumberSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, numberSpan, _number);
+        //            }
+        //        }
+
+        //        // --- Create strings
+        //        if (sourceLine.StringSpans != null)
+        //        {
+        //            foreach (var stringSpan in sourceLine.StringSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, stringSpan, _string);
+        //            }
+        //        }
+
+        //        // --- Create functions
+        //        if (sourceLine.FunctionSpans != null)
+        //        {
+        //            foreach (var functionSpan in sourceLine.FunctionSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, functionSpan, _function);
+        //            }
+        //        }
+
+        //        // --- Create semi-variables
+        //        if (sourceLine.SemiVarSpans != null)
+        //        {
+        //            foreach (var semiVarSpan in sourceLine.SemiVarSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, semiVarSpan, _semiVar);
+        //            }
+        //        }
+
+        //        // --- Create macro parameters
+        //        if (sourceLine.MacroParamSpans != null)
+        //        {
+        //            foreach (var macroParamSpan in sourceLine.MacroParamSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, macroParamSpan, _macroParam);
+        //            }
+        //        }
+
+        //        // --- Create identifiers
+        //        if (sourceLine.IdentifierSpans != null)
+        //        {
+        //            foreach (var id in sourceLine.IdentifierSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, id, _identifier);
+        //            }
+        //        }
+
+        //        // --- Create statements
+        //        if (sourceLine.StatementSpans != null)
+        //        {
+        //            foreach (var statement in sourceLine.StatementSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, statement, _statement);
+        //            }
+        //        }
+
+        //        // --- Create operands
+        //        if (sourceLine.OperandSpans != null)
+        //        {
+        //            foreach (var operand in sourceLine.OperandSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, operand, _operand);
+        //            }
+        //        }
+
+        //        // --- Create mnemonics
+        //        if (sourceLine.MnemonicSpans != null)
+        //        {
+        //            foreach (var mnemonic in sourceLine.MnemonicSpans)
+        //            {
+        //                AddClassificationSpan(list, snapshot, mnemonic, _operand);
+        //            }
+        //        }
+        //    }
+        //}
+
         /// <summary>
         /// This event is fired whenever the classification changes.
         /// </summary>
