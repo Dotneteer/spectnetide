@@ -641,7 +641,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefsPragma;
             line.ShouldNotBeNull();
-            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeNull();
         }
 
         [TestMethod]
@@ -654,7 +655,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefsPragma;
             line.ShouldNotBeNull();
-            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeNull();
         }
 
         [TestMethod]
@@ -667,7 +669,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefsPragma;
             line.ShouldNotBeNull();
-            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeNull();
         }
 
         [TestMethod]
@@ -680,7 +683,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefsPragma;
             line.ShouldNotBeNull();
-            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeNull();
         }
 
         [TestMethod]
@@ -693,7 +697,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefsPragma;
             line.ShouldNotBeNull();
-            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeNull();
         }
 
         [TestMethod]
@@ -706,7 +711,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefsPragma;
             line.ShouldNotBeNull();
-            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeNull();
         }
 
         [TestMethod]
@@ -719,7 +725,8 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefsPragma;
             line.ShouldNotBeNull();
-            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeNull();
         }
 
         [TestMethod]
@@ -732,7 +739,22 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DefsPragma;
             line.ShouldNotBeNull();
-            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksAsExpected9()
+        {
+            // --- Act
+            var visitor = Parse(".defs 22, 33");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as DefsPragma;
+            line.ShouldNotBeNull();
+            line.Count.ShouldBeOfType<LiteralNode>();
+            line.Value.ShouldBeOfType<LiteralNode>();
         }
 
         [TestMethod]

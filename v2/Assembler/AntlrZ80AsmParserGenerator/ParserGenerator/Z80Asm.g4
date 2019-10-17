@@ -141,7 +141,7 @@ defnPragma	: DNPRAG expr ;
 defhPragma	: DHPRAG expr ;
 skipPragma	: SKIPRAG expr (COMMA expr)?;
 externPragma: EXTPRAG ;
-defsPragma	: DSPRAG expr ;
+defsPragma	: DSPRAG expr (COMMA expr)?;
 fillbPragma	: FBPRAG expr COMMA expr ;
 fillwPragma : FWPRAG expr COMMA expr ;
 modelPragma : MODPRAG (IDENTIFIER | NEXT) ;

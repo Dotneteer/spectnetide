@@ -922,7 +922,7 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void DefsPragmaWorksWithImmediateEvaluation()
+        public void DefsPragmaWorksWithImmediateEvaluation1()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -943,7 +943,28 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
-        public void DefsPragmaWorksWithIndirectEvaluation()
+        public void DefsPragmaWorksWithImmediateEvaluation2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x2a, 0x2a, 0x2a, 0x2a, 0x2a, 0x2a };
+
+            // --- Act
+            var output = compiler.Compile(@".defs 6, 0x2a");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksWithIndirectEvaluation1()
         {
             // --- Arrange
             var compiler = new Z80Assembler();
@@ -953,6 +974,30 @@ namespace Spect.Net.Assembler.Test.Assembler
             var output = compiler.Compile(@"
                 Count: .equ 3
                 .defs Count");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void DefsPragmaWorksWithIndirectEvaluation2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x04, 0x04, 0x04 };
+
+            // --- Act
+            var output = compiler.Compile(@"
+                Count: .equ 3
+                Value: .equ 4
+                .defs Count, Value");
 
             // --- Assert
             output.ErrorCount.ShouldBe(0);

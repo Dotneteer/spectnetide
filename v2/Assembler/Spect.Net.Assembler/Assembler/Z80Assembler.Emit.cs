@@ -2494,11 +2494,22 @@ namespace Spect.Net.Assembler.Assembler
         /// <param name="emitAction">Action to emit a code byte</param>
         private void ProcessDefsPragma(DefsPragma pragma, Action<byte> emitAction = null)
         {
-            var count = Eval(pragma, pragma.Expression);
+            var count = Eval(pragma, pragma.Count);
             if (!count.IsValid)
             {
                 ReportError(Errors.Z0201, pragma, ExpressionNode.SymbolErrors);
                 return;
+            }
+            var fillValue = (byte)0x00;
+            if (pragma.Value != null)
+            {
+                var value = Eval(pragma, pragma.Value);
+                if (!value.IsValid)
+                {
+                    ReportError(Errors.Z0201, pragma, ExpressionNode.SymbolErrors);
+                    return;
+                }
+                fillValue = value.AsByte();
             }
             for (var i = 0; i < count.Value; i++)
             {
@@ -2508,7 +2519,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
                 else
                 {
-                    EmitByte(0x00);
+                    EmitByte(fillValue);
                 }
             }
         }

@@ -26,6 +26,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
             foreach (var expr in context.IDENTIFIER())
             {
                 Locals.Add(expr.GetText().ToUpper());
+                visitorContext.AddIdentifier(expr);
             }
         }
 
