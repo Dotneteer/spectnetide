@@ -6,17 +6,68 @@ using System.Windows.Media;
 namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
 {
     /// <summary>
-    /// Defines an editor format for a ZX BASIC keyword
+    /// Defines an editor format for a ZX BASIC console keyword
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = ZxBasicClassificationTypes.ZXB_KEYWORD)]
-    [Name(ZxBasicClassificationTypes.ZXB_KEYWORD)]
+    [ClassificationType(ClassificationTypeNames = ZxBasicClassificationTypes.ZXB_CONSOLE)]
+    [Name(ZxBasicClassificationTypes.ZXB_CONSOLE)]
     [UserVisible(true)]
-    internal sealed class ZxbKeywordClassifierFormat : ClassificationFormatDefinition
+    internal sealed class ZxbConsoleClassifierFormat : ClassificationFormatDefinition
     {
-        public ZxbKeywordClassifierFormat()
+        public ZxbConsoleClassifierFormat()
         {
-            DisplayName = "ZX Basic - Keyword";
+            DisplayName = "ZX Basic - Console";
+            ForegroundColor = Color.FromArgb(255, 86, 156, 214);
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a ZX BASIC preprocessor directive
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = ZxBasicClassificationTypes.ZXB_PREPROC)]
+    [Name(ZxBasicClassificationTypes.ZXB_PREPROC)]
+    [UserVisible(true)]
+    internal sealed class ZxbPreProcClassifierFormat : ClassificationFormatDefinition
+    {
+        public ZxbPreProcClassifierFormat()
+        {
+            DisplayName = "ZX Basic - Preprocessor";
+            ForegroundColor = Colors.LightGray;
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a ZX BASIC statement keyword
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = ZxBasicClassificationTypes.ZXB_STATEMENT)]
+    [Name(ZxBasicClassificationTypes.ZXB_STATEMENT)]
+    [UserVisible(true)]
+    internal sealed class ZxbStatementClassifierFormat : ClassificationFormatDefinition
+    {
+        public ZxbStatementClassifierFormat()
+        {
+            DisplayName = "ZX Basic - Statement";
+            ForegroundColor = Color.FromArgb(255, 86, 156, 214);
+            IsBold = true;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a ZX BASIC control flow statement keyword
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = ZxBasicClassificationTypes.ZXB_CONTROL_FLOW)]
+    [Name(ZxBasicClassificationTypes.ZXB_CONTROL_FLOW)]
+    [UserVisible(true)]
+    internal sealed class ZxbControlFlowClassifierFormat : ClassificationFormatDefinition
+    {
+        public ZxbControlFlowClassifierFormat()
+        {
+            DisplayName = "ZX Basic - Control Flow";
             ForegroundColor = Color.FromArgb(255, 86, 156, 214);
             IsBold = true;
         }
@@ -26,7 +77,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
     /// Defines an editor format for a ZX BASIC comment
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = ZxBasicClassificationTypes.ZXB_KEYWORD)]
+    [ClassificationType(ClassificationTypeNames = ZxBasicClassificationTypes.ZXB_COMMENT)]
     [Name(ZxBasicClassificationTypes.ZXB_COMMENT)]
     [UserVisible(true)]
     internal sealed class ZxbCommentClassifierFormat : ClassificationFormatDefinition
@@ -50,7 +101,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
     {
         public ZxbFunctionClassifierFormat()
         {
-            DisplayName = "ZX BASIC - Function";
+            DisplayName = "ZX Basic - Function";
             ForegroundColor = Colors.DarkCyan;
             IsBold = true;
         }
@@ -67,7 +118,23 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
     {
         public ZxbOperatorClassifierFormat()
         {
-            DisplayName = "ZX BASIC - Operator";
+            DisplayName = "ZX Basic - Operator";
+            ForegroundColor = Colors.DarkCyan;
+        }
+    }
+
+    /// <summary>
+    /// Defines an editor format for a ZX BASIC operator
+    /// </summary>
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = ZxBasicClassificationTypes.ZXB_TYPE)]
+    [Name(ZxBasicClassificationTypes.ZXB_TYPE)]
+    [UserVisible(true)]
+    internal sealed class ZxbTypeClassifierFormat : ClassificationFormatDefinition
+    {
+        public ZxbTypeClassifierFormat()
+        {
+            DisplayName = "ZX Basic - Type";
             ForegroundColor = Colors.DarkCyan;
         }
     }
@@ -83,7 +150,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
     {
         public ZxbIdentifierClassifierFormat()
         {
-            DisplayName = "ZX BASIC - Identifier";
+            DisplayName = "ZX Basic - Identifier";
             ForegroundColor = Colors.NavajoWhite;
         }
     }
@@ -99,7 +166,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
     {
         public ZxbNumberClassifierFormat()
         {
-            DisplayName = "ZX BASIC - Number";
+            DisplayName = "ZX Basic - Number";
             ForegroundColor = Colors.Cyan;
         }
     }
@@ -115,7 +182,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
     {
         public ZxbStringClassifierFormat()
         {
-            DisplayName = "ZX BASIC - String";
+            DisplayName = "ZX Basic - String";
             ForegroundColor = Colors.Cyan;
         }
     }
@@ -131,7 +198,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
     {
         public ZxbLabelClassifierFormat()
         {
-            DisplayName = "ZX BASIC - Label";
+            DisplayName = "ZX Basic - Label";
             ForegroundColor = Colors.DarkOrange;
         }
     }

@@ -1,16 +1,13 @@
 grammar ZxBasic;
 
-// ============================================================================
-// Common parser rules for ZX BASIC and embedded Z80 ASM
 compileUnit
-	:	(asm_section | label? line)* EOF
+	:	(label? (asm_section | line | NEWL))* EOF
 	;
 
-// ============================================================================
-// ZX BASIC specific parser rules
 label
-	:	DECNUM 
-	|	IDENTIFIER COLON
+	:	DECNUM
+	|	IDENTIFIER NEWL
+	|	IDENTIFIER COLON NEWL?
 	;
 
 line
@@ -20,22 +17,36 @@ line
 
 line_item
 	:	console
-	|	keyword 
+	|	preproc
+	|	control_flow
+	|	statement
 	|	function
 	|	operator
-	|	special
+	|	type
 	|	number
 	|	identifier
 	|	string
 	|	comment
+	|	other
 	|	ErrorCharacter
 	;
 
 asm_section
-	:	ASM_SECTION
+	:	asm_start asm_body asm_end
 	;
 
-// --- Console
+asm_start
+	:	ASM
+	;
+
+asm_body
+	:	(asm_token | NEWL+)*
+	;
+
+asm_end
+	:	END_ASM
+	;
+
 console
 	:	AT
 	|	BOLD
@@ -51,19 +62,52 @@ console
 	|	TAB
 	;
 
-// --- ZX BASIC keywords
-keyword
-	:	BEEP
-	|	BYREF
-	|	BYVAL
+preproc
+	:	P_DEFINE
+	|	P_ELSE
+	|	P_ELSEIF
+	|	P_ENDIF
+	|	P_IF
+	|	P_IFDEF
+	|	P_IFNDEF
+	|	P_INCLIB
+	|	P_INCLUDE
+	|	P_LINE
+	|	P_PRAGMA
+	|	P_REQUIRE
+	|	P_UNDEF
+	|	P_DINCLUDE
+	;
+
+statement
+	:	ALIGN
+	|	BEEP
 	|	CIRCLE
-	|	CONST
-	|	CONTINUE
-	|	DECLARE
-	|	DIM
-	|	DO
+	|	CLEAR
+	|	CODE
 	|	DATA
+	|	DIM
 	|	DRAW
+	|	INPUT
+	|	LET
+	|	LOAD
+	|	OUT
+	|	PAUSE
+	|	PLOT
+	|	POINT
+	|	POKE
+	|	PRINT
+	|	RANDOMIZE
+	|	READ
+	|	REM
+	|	RESTORE
+	|	SAVE
+	|	VERIFY
+	;
+
+control_flow
+	:	CONTINUE
+	|	DO
 	|	ELSE
 	|	ELSEIF
 	|	END
@@ -71,25 +115,12 @@ keyword
 	|	FASTCALL
 	|	FOR
 	|	FUNCTION
-	|	GOTO
 	|	GOSUB
+	|	GOTO
 	|	IF
-	|	LET
-	|	LOAD
 	|	LOOP
 	|	NEXT
-	|	OUT
-	|	PAUSE
-	|	PI
-	|	PLOT
-	|	POKE
-	|	PRINT
-	|	RANDOMIZE
-	|	READ
-	|	REM
-	|	RESTORE
 	|	RETURN
-	|	SAVE
 	|	STDCALL
 	|	STEP
 	|	STOP
@@ -97,12 +128,10 @@ keyword
 	|	THEN
 	|	TO
 	|	UNTIL
-	|	VERIFY
 	|	WEND
 	|	WHILE
 	;
 
-// --- ZX BASIC functions
 function
 	:	ABS
 	|	ACS
@@ -112,7 +141,6 @@ function
 	|	ATTR
 	|	CAST
 	|	CHR
-	|	CODE
 	|	COS
 	|	CSRLIN
 	|	EXP
@@ -122,7 +150,6 @@ function
 	|	HEX16
 	|	IN
 	|	INKEY
-	|	INPUT
 	|	INT
 	|	LBOUND
 	|	LCASE
@@ -130,7 +157,6 @@ function
 	|	LN
 	|	MULTIKEYS
 	|	PEEK
-	|	POINT
 	|	POS
 	|	PRINT42
 	|	PRINTAT42
@@ -148,7 +174,6 @@ function
 	|	VAL
 	;
 
-// --- ZX BASIC operators
 operator
 	:	AND
 	|	BAND
@@ -161,7 +186,6 @@ operator
 	|	SHL
 	|	SHR
 	|	XOR
-	|	ASSIGN
 	|	PLUS
 	|	MINUS
 	|	UPARR
@@ -172,17 +196,27 @@ operator
 	|	GTOP
 	|	GTEOP
 	|	MULOP
-	|	DIVOP
+	|	SLASH
 	|	LSHOP
 	|	RSHOP
 	;
 
-// --- ZX BASIC special keywords
-special
-	:	ALIGN
+other
+	:	COLON
+	|	UNDERSCORE
+	|	DOLLAR
+	|	SCOLON
+	|	COMMA
+	|	ASSIGN
+	|	LPAR
+	|	RPAR
+	|	LSBRAC
+	|	RSBRAC
+	|	QMARK
+	|	DOT
+	|	HMARK
 	;
-	
-// --- ZX BASIC numbers
+
 number
 	:	BINNUM
 	|	DECNUM
@@ -196,10 +230,23 @@ identifier
 
 string
 	:	ZXB_STRING
+	|	ZXB_FSTRING
 	;
 
 type
-	:
+	:	AS
+	|	BYREF
+	|	BYTE
+	|	BYVAL
+	|	CONST
+	|	FIXED
+	|	FLOAT
+	|	INTEGER
+	|	LONG
+	|	STRING
+	|	UBYTE
+	|	UINTEGER
+	|	ULONG
 	;
 
 comment
@@ -215,14 +262,57 @@ line_comment
 	:	LINE_COMMENT
 	;
 
+asm_token
+	:	console
+	|	preproc
+	|	control_flow
+	|	statement
+	|	function
+	|	operator
+	|	type
+	|	number
+	|	identifier
+	|	string
+	|	comment
+	|	other
+	|	COLON
+	|	UNDERSCORE
+	|	SINGLE_QUOTE
+	|	SLASH
+	|	DOLLAR
+	|	SCOLON
+	|	COMMA
+	|	ASSIGN
+	|	LPAR
+	|	RPAR
+	|	LSBRAC
+	|	RSBRAC
+	|	QMARK
+	|	PLUS
+	|	MINUS
+	|	VBAR
+	|	UPARR
+	|	AMP
+	|	LTOP
+	|	GTOP
+	|	MULOP
+	|	DOT
+	|	HMARK
+	|	LBRAC
+	|	RBRAC
+	|	EXCLM
+	|	GO
+	|	LINE_END
+	|	ErrorCharacter
+	;
+
 // ============================================================================
-// Common lexer rules for ZX BASIC and embedded Z80 ASM
+// Lexer rules for ZX BASIC
 WS
 	:	('\u0020' | '\t')+ -> channel(HIDDEN)
 	;
-ASM_SECTION
-	:	A S M WS* NewLine+ (InputCharacter* NewLine+)* NewLine* A S M WS* E N D
-	;
+
+NEWL:	NewLine;
 
 COLON: ':' ;
 UNDERSCORE: '_' ;
@@ -230,7 +320,6 @@ SINGLE_QUOTE: '\'' ;
 SLASH: '/' ;
 DOLLAR: '$' ;
 SCOLON	: ';' ;
-COMSEP	: '//' ;
 COMMA	: ',' ;
 ASSIGN	: '=' ;
 LPAR	: '(' ;
@@ -243,10 +332,6 @@ MINUS	: '-' ;
 VBAR	: '|' ;
 UPARR	: '^' ;
 AMP		: '&' ;
-EQOP	: '==' ;
-CIEQOP	: '===' ;
-NEQOP	: '!=' ;
-CINEQOP	: '!==' ;
 LTOP	: '<' ;
 LTEOP	: '<=' ;
 GTOP	: '>' ;
@@ -254,21 +339,17 @@ GTEOP	: '>=' ;
 LSHOP	: '<<' ;
 RSHOP	: '>>' ;
 MULOP	: '*' ;
-DIVOP	: '/' ;
 DOT		: '.' ;
 HMARK	: '#' ;
+LBRAC	: '{' ;
+RBRAC	: '}' ;
+EXCLM	: '!' ;
 
-// --- Z80 Asm and ZX BASIC decimal number
-DECNUM	: Digit Digit? Digit? Digit? Digit?;
+DECNUM	: Digit Digit*;
 
-// --- Z80 Asm and ZX BASIC real number
 REALNUM	: [0-9]* '.' [0-9]+ ExponentPart? 
 		| [0-9]+ ExponentPart;
 
-// ============================================================================
-// ZX BASIC specifix lexer rules
-
-// --- ZXB Comments
 BLOCK_COMMENT
 	:	SLASH SINGLE_QUOTE .*? SINGLE_QUOTE SLASH
 	;
@@ -279,7 +360,6 @@ LINE_COMMENT
 
 NOTEQ: '<>';
 
-// --- Preprocessor directives
 P_DEFINE: HMARK D E F I N E;
 P_ELSE: HMARK E L S E;
 P_ELSEIF: HMARK E L S E I F;
@@ -289,17 +369,22 @@ P_IFDEF: HMARK I F D E F;
 P_IFNDEF: HMARK I F N D E F;
 P_INCLIB: HMARK I N C L I B;
 P_INCLUDE: HMARK I N C L U D E;
+P_LINE: HMARK L I N E;
+P_PRAGMA: HMARK P R A G M A;
+P_REQUIRE: HMARK R E Q U I R E;
+P_UNDEF: HMARK U N D E F;
+P_DINCLUDE: DOLLAR I N C L U D E;
 
+END_ASM: E N D WS* A S M;
 
-// --- ZX BASIC keywords
 ABS: A B S;
 ACS: A C S;
 AND: A N D;
 ALIGN: A L I G N;
 ASC: A S C;
+ASM: A S M;
 ASN: A S N;
 AS: A S;
-
 AT: A T;
 ATN: A T N;
 ATTR: A T T R;
@@ -315,6 +400,7 @@ BYREF: B Y R E F;
 BYTE: B Y T E;
 BYVAL: B Y V A L;
 CAST: C A S T;
+CLEAR: C L E A R;
 CHR: C H R DOLLAR?;
 CIRCLE: C I R C L E;
 CLS: C L S;
@@ -334,6 +420,7 @@ END: E N D;
 EXIT: E X I T;
 EXP: E X P;
 FASTCALL: F A S T C A L L;
+FIXED: F I X E D;
 FLASH: F L A S H;
 FLOAT: F L O A T;
 FOR: F O R;
@@ -341,8 +428,8 @@ FUNCTION: F U N C T I O N;
 GETKEY: G E T K E Y;
 GETKEYSCANCODE: G E T K E Y S C A N C O D E;
 GO: G O;
-GOTO: G O T O | GO TO;
-GOSUB: G O S U B | GO SUB;
+GOTO: G O T O | GO WS* TO;
+GOSUB: G O S U B | GO WS* SUB;
 HEX: H E X;
 HEX16: H E X '16';
 IF: I F;
@@ -417,11 +504,9 @@ WEND: W E N D;
 WHILE: W H I L E;
 XOR: X O R;
 
-// --- ZX BASIC hexadecimal number
 HEXNUM	: '$' HexDigit HexDigit? HexDigit? HexDigit?
 		| Digit HexDigit? HexDigit? HexDigit? HexDigit? ('H' | 'h') ;
 
-// --- ZX BASIC binary number
 BINNUM	: '%' BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
@@ -431,35 +516,33 @@ BINNUM	: '%' BinDigit BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit?
 		  BinDigit? BinDigit? BinDigit? BinDigit? ('B' | 'b') ;
 
-// --- ZX BASIC identifier
 IDENTIFIER
 	:	IDSTART IDCONT*
 	;
 IDSTART
-	: 'A'..'Z' | 'a'..'z'
+	: 'A'..'Z' | 'a'..'z' | '_'
 	;
 IDCONT
-	:	'0'..'9' | 'A'..'Z' | 'a'..'z'
+	:	'0'..'9' | 'A'..'Z' | 'a'..'z' | '_' | '$'
 	;
 
-// --- ZX BASIC String
 ZXB_STRING
 	:	'"' (~["\\\r\n\u0085\u2028\u2029])* '"'
 	;
+ZXB_FSTRING
+	:	'<' (~["\\\r\n\u0085\u2028\u2029])* '>'
+	;
 
-// --- This is how a ZX BASIC line can end
 LINE_END
 	: UNDERSCORE? NewLine
 	;
 
-// --- Any invalid character should be converted into an ErrorCharacter token.
 ErrorCharacter
     :   .
     ;
 
 // ============================================================================
-// ZX BASIC and Z80 fragments
-// --- Any parsed input character
+// Fragments
 fragment InputCharacter
 	:	~[\r\n\u0085\u2028\u2029]
 	;
@@ -492,8 +575,7 @@ fragment HexEscapeSequence
 	| '\\x' HexDigit HexDigit
 	;
 
-// --- Reserved words are case-insensitive
-fragment A : [aA]; // match either an 'a' or 'A'
+fragment A : [aA];
 fragment B : [bB];
 fragment C : [cC];
 fragment D : [dD];
@@ -520,7 +602,6 @@ fragment X : [xX];
 fragment Y : [yY];
 fragment Z : [zZ];
 
-// --- Digits for different radixes
 fragment HexDigit 
 	: [0-9] 
 	| [A-F] 

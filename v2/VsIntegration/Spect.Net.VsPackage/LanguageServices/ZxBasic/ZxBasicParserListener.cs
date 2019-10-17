@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Microsoft.VisualStudio.Text;
 using Spect.Net.Assembler;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
@@ -7,41 +8,36 @@ using Spect.Net.Assembler.SyntaxTree.Statements;
 using Spect.Net.BasicParser.Generated;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Spect.Net.BasicParser
+namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
 {
     /// <summary>
     /// Represents a listener that processes the ZX BASIC grammar
     /// </summary>
     public class ZxBasicParserListener: ZxBasicBaseListener
     {
+        // --- Store a reference to the text buffer
+        private readonly ITextBuffer _buffer;
+
+        // --- Indicates if an "asm...end asm" section is being processed
+        private bool _asmProcessing;
+
         /// <summary>
         /// The map of tokens for each source code line
         /// </summary>
         public readonly Dictionary<int, List<TokenInfo>> TokenMap
             = new Dictionary<int, List<TokenInfo>>();
-        public readonly BufferedTokenStream Tokens;
-
-        public ZxBasicParserListener(BufferedTokenStream tokens)
+        
+        public ZxBasicParserListener(ITextBuffer buffer)
         {
-            Tokens = tokens;
+            _buffer = buffer;
         }
 
-        /// <summary>
-        /// Handle ZX BASIC keywords
-        /// </summary>
-        public override void ExitKeyword([NotNull] ZxBasicParser.KeywordContext context)
-        {
-            AddSpan(TokenType.ZxbKeyword, context.Start, context.Start.Text.Length);
-        }
-
-        /// <summary>
-        /// Handle ZX BASIC block comments
-        /// </summary>
         public override void ExitBlock_comment([NotNull] ZxBasicParser.Block_commentContext context)
         {
+            if (_asmProcessing) return;
+
             var text = context.GetText();
             var parts = Regex.Split(text, "\r\n");
             var startLine = context.Start.Line;
@@ -53,15 +49,14 @@ namespace Spect.Net.BasicParser
             }
         }
 
-        /// <summary>
-        /// Handle ZXB line comments
-        /// </summary>
         public override void ExitLine_comment([NotNull] ZxBasicParser.Line_commentContext context)
         {
+            if (_asmProcessing) return;
+
             var text = context.GetText();            
             if (text.ToUpper().StartsWith("REM"))
             {
-                AddSpan(TokenType.ZxbKeyword, context.Start, 3);
+                AddSpan(TokenType.ZxbStatement, context.Start, 3);
                 AddSpan(TokenType.ZxbComment, context.Start.Line, context.Start.Column + 3, context.GetText().Length - 3);
             }
             else
@@ -70,76 +65,126 @@ namespace Spect.Net.BasicParser
             }
         }
 
-        /// <summary>
-        /// Handle ZX BASIC function tokens
-        /// </summary>
-        public override void ExitFunction([NotNull] ZxBasicParser.FunctionContext context)
+        public override void ExitConsole([NotNull] ZxBasicParser.ConsoleContext context)
         {
-            AddSpan(TokenType.ZxbFunction, context.Start, context.Start.Text.Length);
+            if (_asmProcessing) return;
+
+            AddSpan(TokenType.ZxbConsole, context);
         }
 
-        /// <summary>
-        /// Handle ZX BASIC operator tokens
-        /// </summary>
+        public override void ExitPreproc([NotNull] ZxBasicParser.PreprocContext context)
+        {
+            if (_asmProcessing) return;
+
+            AddSpan(TokenType.ZxbPreProc, context);
+        }
+
+        public override void ExitStatement([NotNull] ZxBasicParser.StatementContext context)
+        {
+            if (_asmProcessing) return;
+
+            AddSpan(TokenType.ZxbStatement, context);
+        }
+
+        public override void ExitControl_flow([NotNull] ZxBasicParser.Control_flowContext context)
+        {
+            if (_asmProcessing) return;
+
+            AddSpan(TokenType.ZxbControlFlow, context);
+        }
+
+        public override void ExitFunction([NotNull] ZxBasicParser.FunctionContext context)
+        {
+            if (_asmProcessing) return;
+
+            AddSpan(TokenType.ZxbFunction, context);
+        }
+
         public override void ExitOperator([NotNull] ZxBasicParser.OperatorContext context)
         {
+            if (_asmProcessing) return;
+
             AddSpan(TokenType.ZxbOperator, context.Start, context.Start.Text.Length);
         }
 
-        /// <summary>
-        /// Handle ZX BASIC identifier tokens
-        /// </summary>
+        public override void ExitType([NotNull] ZxBasicParser.TypeContext context)
+        {
+            if (_asmProcessing) return;
+
+            AddSpan(TokenType.ZxbType, context);
+        }
+
         public override void ExitIdentifier([NotNull] ZxBasicParser.IdentifierContext context)
         {
+            if (_asmProcessing) return;
+
             AddSpan(TokenType.ZxbIdentifier, context.Start, context.Start.Text.Length);
         }
 
-        /// <summary>
-        /// Handle ZX BASIC number tokens
-        /// </summary>
         public override void ExitNumber([NotNull] ZxBasicParser.NumberContext context)
         {
+            if (_asmProcessing) return;
+
             AddSpan(TokenType.ZxbNumber, context);
         }
 
-        /// <summary>
-        /// Handle ZX BASIC string tokens
-        /// </summary>
         public override void ExitString([NotNull] ZxBasicParser.StringContext context)
         {
+            if (_asmProcessing) return;
+
             AddSpan(TokenType.ZxbString, context);
         }
 
         public override void ExitLabel([NotNull] ZxBasicParser.LabelContext context)
         {
+            if (_asmProcessing) return;
+
             AddSpan(TokenType.ZxbLabel, context);
+        }
+
+        public override void EnterAsm_start([NotNull] ZxBasicParser.Asm_startContext context)
+        {
+            _asmProcessing = true;
+        }
+
+        public override void ExitAsm_end([NotNull] ZxBasicParser.Asm_endContext context)
+        {
+            _asmProcessing = false;
         }
 
         public override void ExitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context)
         {
             // --- Mark the delimiting tokens
-            var text = context.GetText();
-            var parts = Regex.Split(text, "\r\n");
-            var startLine = context.Start.Line;
-            var lastLine = parts.Length - 1;
-            AddSpan(TokenType.ZxbAsm, startLine, 0, parts[0].Length);
-            AddSpan(TokenType.ZxbAsm, startLine + lastLine, 0, parts[lastLine].Length);
-
-            // --- Create the Z80 Asm body text
-            var body = new StringBuilder(4096);
-            for (var i = 1; i < lastLine; i++)
+            if (context.asm_start() != null)
             {
-                body.AppendLine(parts[i]);
+                AddSpan(TokenType.ZxbAsm, context.asm_start());
+            }
+            if (context.asm_end() != null)
+            {
+                AddSpan(TokenType.ZxbAsm, context.asm_end());
             }
 
+            var bodyContext = context.asm_body();
+            if (bodyContext == null) return;
+
+            // --- Create the Z80 Asm body text
+            var bodyStart = bodyContext.Start.StartIndex;
+            var bodyEnd = bodyContext.Stop.StopIndex;
+            var startLine = bodyContext.Start.Line;
+            var body = bodyEnd > bodyStart
+                ? _buffer.CurrentSnapshot.GetText(bodyStart, bodyEnd - bodyStart + 1)
+                : string.Empty;
+
             // --- Parse the embedded Z80 assembly code
-            var visitor = Z80AsmVisitor.VisitSource(body.ToString());
+            var parts = Regex.Split(body, "\r\n");
+            var visitor = Z80AsmVisitor.VisitSource(body);
             var lines = visitor.Compilation.Lines;
 
             // --- Iterate through lines
-            for (var i = 1; i < lastLine; i++)
+            for (var i = 0; i < parts.Length; i++)
             {
-                var asmLineIdx = Z80AsmVisitor.GetAsmLineIndex(lines, i);
+                var offset = i == 0 ? bodyContext.Start.Column : 0;
+                var asmLineIdx = Z80AsmVisitor.GetAsmLineIndex(lines, i+1);
                 if (asmLineIdx == null) continue;
 
                 // --- Handle block comments
@@ -154,7 +199,7 @@ namespace Spect.Net.BasicParser
 
                     // --- Block comment found
                     lastStartIndex = blockEndsPos + 2;
-                    AddSpan(TokenType.Comment, i + startLine, blockBeginsPos, lastStartIndex - blockBeginsPos);
+                    AddSpan(TokenType.Comment, i + startLine, offset + blockBeginsPos, lastStartIndex - blockBeginsPos);
                 }
 
                 // --- Get the parsed line
@@ -162,7 +207,7 @@ namespace Spect.Net.BasicParser
 
                 if (asmLine.LabelSpan != null)
                 {
-                    AddSpan(TokenType.Label, i + startLine, asmLine, asmLine.LabelSpan);
+                    AddSpan(TokenType.Label, i + startLine, offset, asmLine, asmLine.LabelSpan);
                 }
 
                 // --- Create keywords
@@ -193,13 +238,13 @@ namespace Spect.Net.BasicParser
                     }
 
                     // --- Retrieve a pragma/directive/instruction
-                    AddSpan(type, i + startLine, asmLine, asmLine.KeywordSpan);
+                    AddSpan(type, i + startLine, offset, asmLine, asmLine.KeywordSpan);
                 }
 
                 // --- Create comments
                 if (asmLine.CommentSpan != null)
                 {
-                    AddSpan(TokenType.Comment, i + startLine, asmLine, asmLine.CommentSpan);
+                    AddSpan(TokenType.Comment, i + startLine, offset, asmLine, asmLine.CommentSpan);
                 }
 
                 // --- Create numbers
@@ -207,7 +252,7 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var numberSpan in asmLine.NumberSpans)
                     {
-                        AddSpan(TokenType.Number, i + startLine, asmLine, numberSpan);
+                        AddSpan(TokenType.Number, i + startLine, offset, asmLine, numberSpan);
                     }
                 }
 
@@ -216,7 +261,7 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var stringSpan in asmLine.StringSpans)
                     {
-                        AddSpan(TokenType.String, i + startLine, asmLine, stringSpan);
+                        AddSpan(TokenType.String, i + startLine, offset, asmLine, stringSpan);
                     }
                 }
 
@@ -225,7 +270,7 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var functionSpan in asmLine.FunctionSpans)
                     {
-                        AddSpan(TokenType.Function, i + startLine, asmLine, functionSpan);
+                        AddSpan(TokenType.Function, i + startLine, offset, asmLine, functionSpan);
                     }
                 }
 
@@ -234,7 +279,7 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var semiVarSpan in asmLine.SemiVarSpans)
                     {
-                        AddSpan(TokenType.SemiVar, i + startLine, asmLine, semiVarSpan);
+                        AddSpan(TokenType.SemiVar, i + startLine, offset, asmLine, semiVarSpan);
                     }
                 }
 
@@ -243,7 +288,7 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var macroParamSpan in asmLine.MacroParamSpans)
                     {
-                        AddSpan(TokenType.MacroParam, i + startLine, asmLine, macroParamSpan);
+                        AddSpan(TokenType.MacroParam, i + startLine, offset, asmLine, macroParamSpan);
                     }
                 }
 
@@ -252,7 +297,7 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var id in asmLine.IdentifierSpans)
                     {
-                        AddSpan(TokenType.Identifier, i + startLine, asmLine, id);
+                        AddSpan(TokenType.Identifier, i + startLine, offset, asmLine, id);
                     }
                 }
 
@@ -261,7 +306,7 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var statement in asmLine.StatementSpans)
                     {
-                        AddSpan(TokenType.Statement, i + startLine, asmLine, statement);
+                        AddSpan(TokenType.Statement, i + startLine, offset, asmLine, statement);
                     }
                 }
 
@@ -270,7 +315,7 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var operand in asmLine.OperandSpans)
                     {
-                        AddSpan(TokenType.Operand, i + startLine, asmLine, operand);
+                        AddSpan(TokenType.Operand, i + startLine, offset, asmLine, operand);
                     }
                 }
 
@@ -279,15 +324,15 @@ namespace Spect.Net.BasicParser
                 {
                     foreach (var mnemonic in asmLine.MnemonicSpans)
                     {
-                        AddSpan(TokenType.Operand, i + startLine, asmLine, mnemonic);
+                        AddSpan(TokenType.Operand, i + startLine, offset, asmLine, mnemonic);
                     }
                 }
             }
         }
 
-        private void AddSpan(TokenType type, int line, SourceLineBase asmLine, TextSpan span)
+        private void AddSpan(TokenType type, int line, int startIndex, SourceLineBase asmLine, TextSpan span)
         {
-            AddSpan(type, line, span.Start - asmLine.FirstPosition + asmLine.FirstColumn, span.End - span.Start);
+            AddSpan(type, line, startIndex + span.Start - asmLine.FirstPosition + asmLine.FirstColumn, span.End - span.Start);
         }
 
         private void AddSpan(TokenType type, ParserRuleContext context)
@@ -297,12 +342,6 @@ namespace Spect.Net.BasicParser
             AddSpan(type, context.Start.Line, firstColumn, lastColumn - firstColumn);
         }
 
-        /// <summary>
-        /// Adds a span to the token map
-        /// </summary>
-        /// <param name="type">Token type</param>
-        /// <param name="startToken">Start token</param>
-        /// <param name="length">Span length</param>
         private void AddSpan(TokenType type, IToken startToken, int length)
         {
             if (startToken == null) return;
@@ -310,24 +349,11 @@ namespace Spect.Net.BasicParser
             AddSpan(startToken.Line, span);
         }
 
-        /// <summary>
-        /// Add a span to the token map
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="line"></param>
-        /// <param name="start"></param>
-        /// <param name="length"></param>
         private void AddSpan(TokenType type, int line, int start, int length)
         {
             AddSpan(line, new TokenInfo(type, start, length));
         }
 
-        /// <summary>
-        /// Adds a span to the token map
-        /// </summary>
-        /// <param name="type">Token type</param>
-        /// <param name="line">Line to add this token for</param>
-        /// <param name="tokenInfo">Token information to add</param>
         private void AddSpan(int line, TokenInfo tokenInfo)
         {
             if (TokenMap.TryGetValue(line, out var tokenList))

@@ -18,7 +18,11 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
         // --- Store registered classification types here
         private readonly IClassificationType
             _zxbLabel,
-            _zxbKeyword,
+            _zxbConsole,
+            _zxbPreProc,
+            _zxbStatement,
+            _zxbControlFlow,
+            _zxbType,
             _zxbComment,
             _zxbFunction,
             _zxbOperator,
@@ -46,6 +50,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
 
         private readonly ITextBuffer _buffer;
         private bool _isProcessing;
+        private bool _reParse;
         private Dictionary<int, List<TokenInfo>> _tokenMap;
         private readonly object _locker = new object();
 
@@ -60,9 +65,13 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
             _buffer = buffer;
 
             _zxbLabel = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_LABEL);
-            _zxbKeyword = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_KEYWORD);
+            _zxbConsole = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_CONSOLE);
+            _zxbPreProc = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_PREPROC);
+            _zxbStatement = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_STATEMENT);
+            _zxbControlFlow = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_CONTROL_FLOW);
             _zxbComment = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_COMMENT);
             _zxbFunction = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_FUNCTION);
+            _zxbType = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_TYPE);
             _zxbOperator = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_OPERATOR);
             _zxbIdentifier = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_IDENTIFIER);
             _zxbNumber = registry.GetClassificationType(ZxBasicClassificationTypes.ZXB_NUMBER);
@@ -86,6 +95,8 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
             _semiVar = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_SEMI_VAR);
             _module = registry.GetClassificationType(Z80AsmClassificationTypes.Z80_MODULE);
 
+            _isProcessing = false;
+            _reParse = false;
             ParseDocument();
 
             _buffer.Changed += OnBufferChanged;
@@ -125,8 +136,20 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
                         IClassificationType type = null;
                         switch (token.TokenType)
                         {
-                            case TokenType.ZxbKeyword:
-                                type = _zxbKeyword;
+                            case TokenType.ZxbConsole:
+                                type = _zxbConsole;
+                                break;
+                            case TokenType.ZxbPreProc:
+                                type = _zxbPreProc;
+                                break;
+                            case TokenType.ZxbStatement:
+                                type = _zxbStatement;
+                                break;
+                            case TokenType.ZxbControlFlow:
+                                type = _zxbControlFlow;
+                                break;
+                            case TokenType.ZxbType:
+                                type = _zxbType;
                                 break;
                             case TokenType.ZxbComment:
                                 type = _zxbComment;
@@ -289,41 +312,55 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
         private async void ParseDocument()
         {
             // --- Do not start parsing over existing parsing
-            if (_isProcessing) return;
-            _isProcessing = true;
-
-            await Task.Run(() =>
+            if (_isProcessing)
             {
-                try
+                _reParse = true;
+                return;
+            }
+            _isProcessing = true;
+            await DoParse();
+            while (_reParse)
+            {
+                _reParse = false;
+                _isProcessing = true;
+                await DoParse();
+            }
+
+            async Task DoParse()
+            {
+                await Task.Run(() =>
                 {
-                    // --- Get the entire text of the source code
-                    var span = new SnapshotSpan(_buffer.CurrentSnapshot, 0, _buffer.CurrentSnapshot.Length);
-                    var source = _buffer.CurrentSnapshot.GetText(span);
-
-                    // --- Let's use the Z80 assembly parser to obtain tags
-                    var inputStream = new AntlrInputStream(source);
-                    var lexer = new ZxBasicLexer(inputStream);
-                    var tokenStream = new CommonTokenStream(lexer);
-                    var parser = new ZxBasicParser(tokenStream);
-                    var context = parser.compileUnit();
-                    var treeWalker = new ParseTreeWalker();
-                    var parserListener = new ZxBasicParserListener(tokenStream);
-                    treeWalker.Walk(parserListener, context);
-
-                    lock (_locker)
+                    try
                     {
-                        _tokenMap = parserListener.TokenMap;
+                        // --- Get the entire text of the source code
+                        var span = new SnapshotSpan(_buffer.CurrentSnapshot, 0, _buffer.CurrentSnapshot.Length);
+                        var source = _buffer.CurrentSnapshot.GetText(span);
+
+                        // --- Let's use the Z80 assembly parser to obtain tags
+                        var inputStream = new AntlrInputStream(source);
+                        var lexer = new ZxBasicLexer(inputStream);
+                        var tokenStream = new CommonTokenStream(lexer);
+                        var parser = new ZxBasicParser(tokenStream);
+                        var context = parser.compileUnit();
+                        var treeWalker = new ParseTreeWalker();
+                        var parserListener = new ZxBasicParserListener(_buffer);
+                        treeWalker.Walk(parserListener, context);
+
+                        lock (_locker)
+                        {
+                            _tokenMap = parserListener.TokenMap;
+                        }
+
+
+                        // --- Code is parsed, sign the change
+                        ClassificationChanged?.Invoke(this, new ClassificationChangedEventArgs(span));
                     }
-
-
-                    // --- Code is parsed, sign the change
-                    ClassificationChanged?.Invoke(this, new ClassificationChangedEventArgs(span));
-                }
-                finally
-                {
-                    _isProcessing = false;
-                }
-            });
+                    finally
+                    {
+                        _isProcessing = false;
+                    }
+                });
+            }
         }
 
         public void Dispose()

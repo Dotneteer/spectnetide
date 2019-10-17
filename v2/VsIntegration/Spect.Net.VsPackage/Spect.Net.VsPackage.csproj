@@ -157,12 +157,15 @@
     <Compile Include="LanguageServices\Z80Test\Z80TestClassifierProvider.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
+    <Compile Include="LanguageServices\ZxBasic\TokenInfo.cs" />
+    <Compile Include="LanguageServices\ZxBasic\TokenType.cs" />
     <Compile Include="LanguageServices\ZxBasic\ZxBasicClassificationFormats.cs" />
     <Compile Include="LanguageServices\ZxBasic\ZxBasicClassificationTypes.cs" />
     <Compile Include="LanguageServices\ZxBasic\ZxBasicClassifier.cs" />
     <Compile Include="LanguageServices\ZxBasic\ZxBasicClassifierProvider.cs" />
     <Compile Include="LanguageServices\ZxBasic\ZxBasicContentTypeDefinition.cs" />
     <Compile Include="LanguageServices\ZxBasic\ZxBasicLanguageService.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicParserListener.cs" />
     <Compile Include="Machines\KempstonProvider.cs" />
     <Compile Include="Machines\MachineCollection.cs" />
     <Compile Include="Machines\PackageRomProvider.cs" />

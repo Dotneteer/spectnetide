@@ -68,6 +68,27 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAsm_section([NotNull] ZxBasicParser.Asm_sectionContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.asm_start"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAsm_start([NotNull] ZxBasicParser.Asm_startContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.asm_body"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAsm_body([NotNull] ZxBasicParser.Asm_bodyContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.asm_end"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAsm_end([NotNull] ZxBasicParser.Asm_endContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ZxBasicParser.console"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -75,11 +96,25 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitConsole([NotNull] ZxBasicParser.ConsoleContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.keyword"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.preproc"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitKeyword([NotNull] ZxBasicParser.KeywordContext context);
+	Result VisitPreproc([NotNull] ZxBasicParser.PreprocContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStatement([NotNull] ZxBasicParser.StatementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.control_flow"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitControl_flow([NotNull] ZxBasicParser.Control_flowContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="ZxBasicParser.function"/>.
@@ -96,11 +131,11 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitOperator([NotNull] ZxBasicParser.OperatorContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ZxBasicParser.special"/>.
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.other"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitSpecial([NotNull] ZxBasicParser.SpecialContext context);
+	Result VisitOther([NotNull] ZxBasicParser.OtherContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="ZxBasicParser.number"/>.
@@ -150,5 +185,12 @@ public interface IZxBasicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLine_comment([NotNull] ZxBasicParser.Line_commentContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ZxBasicParser.asm_token"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAsm_token([NotNull] ZxBasicParser.Asm_tokenContext context);
 }
 } // namespace Spect.Net.BasicParser.Generated

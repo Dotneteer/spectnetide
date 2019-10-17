@@ -1,4 +1,4 @@
-﻿namespace Spect.Net.BasicParser
+﻿namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
 {
     /// <summary>
     /// Represents the type of a token
@@ -6,7 +6,11 @@
     public enum TokenType
     {
         None,
-        ZxbKeyword,
+        ZxbConsole,
+        ZxbPreProc,
+        ZxbControlFlow,
+        ZxbStatement,
+        ZxbType,
         ZxbComment,
         ZxbFunction,
         ZxbOperator,

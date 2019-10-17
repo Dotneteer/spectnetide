@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Spect.Net.BasicParser
+﻿namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
 {
     /// <summary>
     /// This class describes token information
