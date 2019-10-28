@@ -249,6 +249,7 @@
         <Icon guid="ImageCatalogGuid" id="FloppyDrive" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Create Virtual Floppy Disk File</ButtonText>
         </Strings>

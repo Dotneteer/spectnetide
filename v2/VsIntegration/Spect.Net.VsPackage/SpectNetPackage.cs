@@ -380,6 +380,7 @@ namespace Spect.Net.VsPackage
             new InsertDriveBCommand();
             new EjectFloppyCommand();
             new WriteProtectFloppyCommand();
+            new CreateVfddFileCommand();
 
             // ReSharper restore ObjectCreationAsStatement
         }

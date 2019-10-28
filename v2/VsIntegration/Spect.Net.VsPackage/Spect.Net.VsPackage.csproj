@@ -57,6 +57,7 @@
     <Compile Include="Commands\CompileDefaultCodeCommand.cs" />
     <Compile Include="Commands\CompileCodeCommand.cs" />
     <Compile Include="Commands\CompileUnitTestCommand.cs" />
+    <Compile Include="Commands\CreateVfddFileCommand.cs" />
     <Compile Include="Commands\DebugProgramCommand.cs" />
     <Compile Include="Commands\DebugDefaultProgramCommand.cs" />
     <Compile Include="Commands\EjectFloppyCommand.cs" />
@@ -145,6 +146,11 @@
     <Compile Include="Debugging\BreakpointInfo.cs" />
     <Compile Include="Debugging\BreakpointsChangedEventArgs.cs" />
     <Compile Include="Debugging\VsIntegratedSpectrumDebugInfoProvider.cs" />
+    <Compile Include="Dialogs\Vfdd\CreateVfddFileDialog.xaml.cs">
+      <DependentUpon>CreateVfddFileDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Vfdd\CreateVfddFileViewModel.cs" />
+    <Compile Include="Dialogs\Vfdd\DiskFormatConverter.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="ImageMonikers.cs" />
     <Compile Include="LanguageServices\Z80Asm\Z80AsmClassificationFormats.cs" />
@@ -704,6 +710,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Vfdd\CreateVfddFileDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,7 +4,8 @@
     xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf"
     xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.ToolWindows.Disassembly"
     xmlns:watch="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch"
-    xmlns:memory="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory">
+    xmlns:memory="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
+    xmlns:floppy="clr-namespace:Spect.Net.VsPackage.Dialogs.Vfdd">
 
     <!-- Colors -->
     <Color x:Key="CToolBackground">#FF202020</Color>
@@ -349,5 +350,7 @@
     <disassembly:CommentStyleConverter x:Key="CommentStyleConverter" />
     <disassembly:IndentDepthTypeConverter x:Key="IndentDepthTypeConverter" />
     <disassembly:LineLengthTypeConverter x:Key="LineLengthTypeConverter" />
+    <floppy:DiskFormatConverter x:Key="DiskFormatConverter" />
+
 
 </ResourceDictionary>

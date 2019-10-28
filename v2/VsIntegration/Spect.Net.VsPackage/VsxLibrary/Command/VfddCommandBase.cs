@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
+using Spect.Net.SpectrumEmu.Devices.Floppy;
 using Spect.Net.VsPackage.SolutionItems;
 
 namespace Spect.Net.VsPackage.VsxLibrary.Command
@@ -28,5 +29,11 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
 
             mc.Visible = IsInActiveProject;
         }
+
+        /// <summary>
+        /// Gets the floppy device
+        /// </summary>
+        public FloppyDevice FloppyDevice => SpectNetPackage.Default.EmulatorViewModel.Machine
+            .SpectrumVm.FloppyDevice as FloppyDevice;
     }
 }
