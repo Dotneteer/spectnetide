@@ -1,0 +1,237 @@
+﻿<UserControl x:Class="Spect.Net.VsPackage.ToolWindows.Keyboard.Sp128KeyboardControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Spect.Net.VsPackage.ToolWindows.Keyboard"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Border BorderThickness="1" BorderBrush="#181818" HorizontalAlignment="Left"
+            VerticalAlignment="Top">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="73"/>
+                <RowDefinition Height="73"/>
+                <RowDefinition Height="73"/>
+                <RowDefinition Height="73"/>
+                <RowDefinition Height="73"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" x:Name="Row1"
+                    Orientation="Horizontal" >
+                <local:Sp128KeyControl 
+                Code="N4" SecondaryCode="CShift"
+                Keyword="INV" SShiftKey="VIDEO" Centered="true" CleanMode="true" />
+                <local:Sp128KeyControl 
+                Code="N3" SecondaryCode="CShift"
+                Keyword="TRUE" SShiftKey="VIDEO" Centered="true" CleanMode="true"/>
+                <local:Sp128KeyControl 
+                Code="N1"
+                MainKey="1" NumericMode="True" SShiftKey="!" ExtKey="BLUE" ExtShiftKey="DEFFN" 
+                HasGraphics="true" GraphicsCode="1" />
+                <local:Sp128KeyControl 
+                Code="N2"
+                MainKey="2" NumericMode="True" SShiftKey="@" ExtKey="RED" ExtShiftKey="FN" 
+                HasGraphics="true" GraphicsCode="2"/>
+                <local:Sp128KeyControl 
+                Code="N3"
+                MainKey="3" NumericMode="True" SShiftKey="#" ExtKey="MAGENTA" ExtShiftKey="LINE" 
+                HasGraphics="true" GraphicsCode="3"/>
+                <local:Sp128KeyControl 
+                Code="N4"
+                MainKey="4" NumericMode="True" SShiftKey="$" ExtKey="GREEN" ExtShiftKey="OPEN #" 
+                HasGraphics="true" GraphicsCode="4"/>
+                <local:Sp128KeyControl 
+                Code="N5"
+                MainKey="5" NumericMode="True" SShiftKey="%" ExtKey="CYAN" ExtShiftKey="CLOSE #" 
+                HasGraphics="true" GraphicsCode="5"/>
+                <local:Sp128KeyControl 
+                Code="N6"
+                MainKey="6" NumericMode="True" SShiftKey="&amp;" ExtKey="YELLOW" ExtShiftKey="MOVE" 
+                HasGraphics="true" GraphicsCode="6"/>
+                <local:Sp128KeyControl 
+                Code="N7"
+                MainKey="7" NumericMode="True" SShiftKey="'" ExtKey="WHITE" ExtShiftKey="ERASE" 
+                HasGraphics="true" GraphicsCode="7"/>
+                <local:Sp128KeyControl 
+                Code="N8"
+                MainKey="8" NumericMode="True" SShiftKey="(" ExtKey="" ExtShiftKey="POINT" 
+                HasGraphics="true" GraphicsCode="8"/>
+                <local:Sp128KeyControl 
+                Code="N9"
+                MainKey="9" NumericMode="True" SShiftKey=")" ExtKey="" ExtShiftKey="CAT" 
+                HasGraphics="false" />
+                <local:Sp128KeyControl 
+                Code="N0"
+                MainKey="0" NumericMode="True" SShiftKey="_" ExtKey="BLACK" ExtShiftKey="FORMAT" 
+                HasGraphics="false" />
+                <local:Sp128WideKeyControl 
+                Code="Space" SecondaryCode="CShift"
+                ButtonWidth="110"
+                Keyword="BREAK"  />
+            </StackPanel>
+            <StackPanel Grid.Row="1" x:Name="Row2"
+                    Orientation="Horizontal">
+                <local:Sp128WideKeyControl 
+                Code="N0" SecondaryCode="CShift"
+                ButtonWidth="110"
+                Keyword="DELETE"  />
+                <local:Sp128KeyControl 
+                Code="N9" SecondaryCode="CShift"
+                Keyword="" SShiftKey="GRAPH" Centered="true" CleanMode="true" />
+                <local:Sp128KeyControl 
+                Code="Q"
+                MainKey="Q" Keyword="PLOT" SShiftKey="&lt;=" ExtKey="SIN" ExtShiftKey="ASN" />
+                <local:Sp128KeyControl 
+                Code="W"
+                MainKey="W" Keyword="DRAW" SShiftKey="&lt;&gt;" ExtKey="COS" ExtShiftKey="ACS" />
+                <local:Sp128KeyControl 
+                Code="E"
+                MainKey="E" Keyword="REM" SShiftKey="&gt;=" ExtKey="TAN" ExtShiftKey="ATN" />
+                <local:Sp128KeyControl 
+                Code="R"
+                MainKey="R" Keyword="RUN" SShiftKey="&lt;" ExtKey="INT" ExtShiftKey="VERIFY" />
+                <local:Sp128KeyControl 
+                Code="T"
+                MainKey="T" Keyword="RAND" SShiftKey="&gt;" ExtKey="RND" ExtShiftKey="MERGE" />
+                <local:Sp128KeyControl 
+                Code="Y"
+                MainKey="Y" Keyword="RETURN" SShiftKey="AND" ExtKey="STR$" ExtShiftKey="[" Centered="true" />
+                <local:Sp128KeyControl 
+                Code="U"
+                MainKey="U" Keyword="IF" SShiftKey="OR" ExtKey="CHR$" ExtShiftKey="]" Centered="true" />
+                <local:Sp128KeyControl 
+                Code="I"
+                MainKey="I" Keyword="INPUT" SShiftKey="AT" ExtKey="CODE" ExtShiftKey="IN" Centered="true" />
+                <local:Sp128KeyControl 
+                Code="O"
+                MainKey="O" Keyword="POKE" SShiftKey=";" ExtKey="PEEK" ExtShiftKey="OUT" />
+                <local:Sp128KeyControl 
+                Code="P"
+                MainKey="P" Keyword="PRINT" SShiftKey="&quot;" ExtKey="TAB" ExtShiftKey="(C)" />
+            </StackPanel>
+            <local:Sp128EnterKeyControl x:Name="EnterKey" Grid.Row="1" Grid.RowSpan="2" Margin="880,0,0,0"
+                Panel.ZIndex="-10"
+            HorizontalAlignment="Left"/>
+            <StackPanel Grid.Row="2" x:Name="Row3"
+                    Orientation="Horizontal" >
+                <local:Sp128WideKeyControl 
+                Code="SShift" SecondaryCode="CShift"
+                ButtonWidth="110"
+                MainKey="EXTEND"
+                Keyword="MODE"  />
+                <local:Sp128WideKeyControl 
+                Code="N1" SecondaryCode="CShift"
+                ButtonWidth="95"
+                Keyword="EDIT"  />
+                <local:Sp128KeyControl 
+                Code="A"
+                MainKey="A" Keyword="NEW" SShiftKey="STOP" ExtKey="READ" ExtShiftKey="~" Centered="true"/>
+                <local:Sp128KeyControl 
+                Code="S"
+                MainKey="S" Keyword="SAVE" SShiftKey="NOT" ExtKey="RESTORE" ExtShiftKey="|" Centered="true" />
+                <local:Sp128KeyControl 
+                Code="D"
+                MainKey="D" Keyword="DIM" SShiftKey="STEP" ExtKey="DATA" ExtShiftKey="\" Centered="true"/>
+                <local:Sp128KeyControl 
+                Code="F"
+                MainKey="F" Keyword="FOR" SShiftKey="TO" ExtKey="SGN" ExtShiftKey="{}{" Centered="true" />
+                <local:Sp128KeyControl 
+                Code="G"
+                MainKey="G" Keyword="GOTO" SShiftKey="THEN" ExtKey="ABS" ExtShiftKey="{}}" Centered="true" />
+                <local:Sp128KeyControl 
+                Code="H"
+                MainKey="H" Keyword="GOSUB" SShiftKey="&#x2191;" ExtKey="SQR" ExtShiftKey="CIRCLE" />
+                <local:Sp128KeyControl 
+                Code="J"
+                MainKey="J" Keyword="LOAD" SShiftKey="-" ExtKey="VAL" ExtShiftKey="VAL$" />
+                <local:Sp128KeyControl 
+                Code="K"
+                MainKey="K" Keyword="LIST" SShiftKey="+" ExtKey="LEN" ExtShiftKey="SCREEN$" />
+                <local:Sp128KeyControl 
+                Code="L"
+                MainKey="L" Keyword="LET" SShiftKey="=" ExtKey="USR" ExtShiftKey="ATTR" />
+            </StackPanel>
+            <StackPanel Grid.Row="3" x:Name="Row4"
+                    Orientation="Horizontal" >
+                <local:Sp128WideKeyControl 
+                Code="CShift" SecondaryCode="CShift"
+                ButtonWidth="168"
+                MainKey="CAPS"
+                Keyword="SHIFT"  />
+                <local:Sp128KeyControl 
+                Code="N2" SecondaryCode="CShift"
+                Keyword="CAPS" SShiftKey="LOCK" Centered="true" CleanMode="True"/>
+                <local:Sp128KeyControl
+                Code="Z"
+                MainKey="Z" Keyword="COPY" SShiftKey=":" ExtKey="LN" ExtShiftKey="BEEP" />
+                <local:Sp128KeyControl 
+                Code="X"
+                MainKey="X" Keyword="CLEAR" SShiftKey="&#x00A3;" ExtKey="EXP" ExtShiftKey="INK" />
+                <local:Sp128KeyControl 
+                Code="C"
+                MainKey="C" Keyword="CONT" SShiftKey="?" ExtKey="LPRINT" ExtShiftKey="PAPER" />
+                <local:Sp128KeyControl 
+                Code="V"
+                MainKey="V" Keyword="CLS" SShiftKey="/" ExtKey="LLIST" ExtShiftKey="FLASH" />
+                <local:Sp128KeyControl 
+                Code="B"
+                MainKey="B" Keyword="BORDER" SShiftKey="*" ExtKey="BIN" ExtShiftKey="BRIGHT" />
+                <local:Sp128KeyControl 
+                Code="N"
+                MainKey="N" Keyword="NEXT" SShiftKey="," ExtKey="INKEY$" ExtShiftKey="OVER" />
+                <local:Sp128KeyControl 
+                Code="M"
+                MainKey="M" Keyword="PAUSE" SShiftKey="." ExtKey="PI" ExtShiftKey="INVERSE" />
+                <local:Sp128KeyControl 
+                Code="M" SecondaryCode="SShift"
+                MainKey="." SimpleMode="true" />
+                <local:Sp128WideKeyControl 
+                Code="CShift" SecondaryCode="CShift"
+                ButtonWidth="167"
+                MainKey="CAPS"
+                Keyword="SHIFT"  />
+            </StackPanel>
+            <StackPanel Grid.Row="4" x:Name="Row5"
+                    Orientation="Horizontal" >
+                <local:Sp128KeyControl 
+                Code="SShift" SecondaryCode="SShift"
+                Keyword="SYMBOL" SShiftKey="SHIFT" Centered="true" CleanMode="true" />
+                <local:Sp128KeyControl 
+                Code="O" SecondaryCode="SShift"
+                MainKey=";" SimpleMode="true" />
+                <local:Sp128KeyControl 
+                Code="P" SecondaryCode="SShift"
+                MainKey="&quot;" SimpleMode="true" />
+                <local:Sp128KeyControl 
+                Code="N5" SecondaryCode="CShift"
+                MainKey="&#x25C4;" SimpleMode="true" />
+                <local:Sp128KeyControl 
+                Code="N8" SecondaryCode="CShift"
+                MainKey="&#x25BA;" SimpleMode="true" />
+                <local:Sp128WideKeyControl 
+                Code="Space"
+                ButtonWidth="335"/>
+                <local:Sp128KeyControl 
+                Code="N7" SecondaryCode="CShift"
+                MainKey="&#x25B2;" SimpleMode="true" />
+                <local:Sp128KeyControl 
+                Code="N6" SecondaryCode="CShift"
+                MainKey="&#x25BC;" SimpleMode="true" />
+                <local:Sp128KeyControl 
+                Code="N" SecondaryCode="SShift"
+                MainKey="," SimpleMode="true" />
+                <local:Sp128KeyControl 
+                Code="SShift" SecondaryCode="SShift"
+                Keyword="SYMBOL" SShiftKey="SHIFT" Centered="true" CleanMode="true" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

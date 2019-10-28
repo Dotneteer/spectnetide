@@ -1,0 +1,2 @@
+﻿ld a,b
+.comparebin "./Memory.bin", 0, 1

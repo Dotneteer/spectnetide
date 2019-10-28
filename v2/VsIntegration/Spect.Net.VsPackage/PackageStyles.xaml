@@ -1,0 +1,353 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf"
+    xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.ToolWindows.Disassembly"
+    xmlns:watch="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch"
+    xmlns:memory="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory">
+
+    <!-- Colors -->
+    <Color x:Key="CToolBackground">#FF202020</Color>
+    <Color x:Key="Cz80Text">#FF51c351</Color>
+    <Color x:Key="Cz80HilitedText">#FFF89406</Color>
+    <Color x:Key="Cz80StatusText">#00AFFF</Color>
+    <Color x:Key="CEmuOverlay">#51A351</Color>
+    <Color x:Key="CDebugBackground">#FF202020</Color>
+    <Color x:Key="CKeyboardBackground">#FF202020</Color>
+    <Color x:Key="CKeyboardButtonBorder">#FF181818</Color>
+    <Color x:Key="CKeyboardButtonBackground">#FF383838</Color>
+    <Color x:Key="CVividBlue">#006fFF</Color>
+    <Color x:Key="CWhite90">#f0f0ff</Color>
+    <Color x:Key="CKeyHoverBackground">#FF405050</Color>
+    <Color x:Key="CShiftKeyHoverBackground">#FF808080</Color>
+    <Color x:Key="CMainButtonText">#FFF0F0F0</Color>
+    <Color x:Key="CShiftText">#900000</Color>
+    <Color x:Key="CExtShiftText">#F04040</Color>
+    <Color x:Key="CEvenRow">#FF202020</Color>
+    <Color x:Key="COddRow">#FF282828</Color>
+    <Color x:Key="CRasterLine">#C0F00080</Color>
+    <Color x:Key="CPromptBackground">#404040</Color>
+    <Color x:Key="CPromptInvalidBackground">#802020</Color>
+    <Color x:Key="CValidationText">#FFE0E0E0</Color>
+    <Color x:Key="CDebugColor">#51c351</Color>
+    <Color x:Key="CSilverGray">#e0e0e0</Color>
+    <Color x:Key="CWarning">#F89406</Color>
+    <Color x:Key="CDanger">#BD362F</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="BToolBackground" Color="{StaticResource CToolBackground}"/>
+    <SolidColorBrush x:Key="Bz80Text" Color="{StaticResource Cz80Text}"/>
+    <SolidColorBrush x:Key="Bz80HilitedText" Color="{StaticResource Cz80HilitedText}"/>
+    <SolidColorBrush x:Key="Bz80StatusText" Color="{StaticResource Cz80StatusText}"/>
+    <SolidColorBrush x:Key="BEmuOverlay" Color="{StaticResource CEmuOverlay}"/>
+    <SolidColorBrush x:Key="BDebugBackground" Color="{StaticResource CDebugBackground}"/>
+    <SolidColorBrush x:Key="BKeyboardBackground" Color="{StaticResource CKeyboardBackground}"/>
+    <SolidColorBrush x:Key="BKeyboardButtonBorder" Color="{StaticResource CKeyboardButtonBorder}"/>
+    <SolidColorBrush x:Key="BKeyboardButtonBackground" Color="{StaticResource CKeyboardButtonBackground}"/>
+    <SolidColorBrush x:Key="BVividBlue" Color="{StaticResource CVividBlue}"/>
+    <SolidColorBrush x:Key="BWhite90" Color="{StaticResource CWhite90}"/>
+    <SolidColorBrush x:Key="BKeyHoverBackground" Color="{StaticResource CKeyHoverBackground}"/>
+    <SolidColorBrush x:Key="BShiftKeyHoverBackground" Color="{StaticResource CShiftKeyHoverBackground}"/>
+    <SolidColorBrush x:Key="BMainButtonText" Color="{StaticResource CMainButtonText}"/>
+    <SolidColorBrush x:Key="BShiftText" Color="{StaticResource CShiftText}"/>
+    <SolidColorBrush x:Key="BExtShiftText" Color="{StaticResource CExtShiftText}"/>
+    <SolidColorBrush x:Key="BDebugEvenRow" Color="{StaticResource CEvenRow}"/>
+    <SolidColorBrush x:Key="BDebugOddRow" Color="{StaticResource COddRow}"/>
+    <SolidColorBrush x:Key="BRasterLine" Color="{StaticResource CRasterLine}"/>
+    <SolidColorBrush x:Key="BPromptBackground" Color="{StaticResource CPromptBackground}"/>
+    <SolidColorBrush x:Key="BPromptInvalidBackground" Color="{StaticResource CPromptInvalidBackground}"/>
+    <SolidColorBrush x:Key="BValidationText" Color="{StaticResource CValidationText}"/>
+    <SolidColorBrush x:Key="BDebugForeground" Color="{StaticResource CDebugColor}"/>
+    <SolidColorBrush x:Key="BDebugHeaderBackground" Color="#FF383838"/>
+    <SolidColorBrush x:Key="BExplainText" Color="{StaticResource CSilverGray}"/>
+    <SolidColorBrush x:Key="BDialogLabelText" Color="{StaticResource CSilverGray}"/>
+    <SolidColorBrush x:Key="BDialogButtonBackground" Color="{StaticResource CVividBlue}"/>
+    <SolidColorBrush x:Key="BWarning" Color="{StaticResource CWarning}"/>
+    <SolidColorBrush x:Key="BDanger" Color="{StaticResource CDanger}"/>
+    <SolidColorBrush x:Key="BDebugMouseOverBackground" Color="#FF000000"/>
+    <SolidColorBrush x:Key="BDebugMouseOverBorder" Color="#FF404040"/>
+    <SolidColorBrush x:Key="BDebugSelectedBackground" Color="#FF000040"/>
+
+    <!-- Templates for the ZX Spectrum Memory tool window -->
+    <DataTemplate x:Key="MemoryLineTemplate">
+        <memory:MemoryLineControl />
+    </DataTemplate>
+
+    <Style x:Key="MemoryListFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MemoryLineItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource MemoryListFocusVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                            <Setter Property="Background" Value="{StaticResource BDebugEvenRow}" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                            <Setter Property="Background" Value="{StaticResource BDebugOddRow}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="StackLineItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource MemoryListFocusVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                            <Setter Property="Background" Value="{StaticResource BDebugEvenRow}" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                            <Setter Property="Background" Value="{StaticResource BDebugOddRow}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="WatchItemTemplate">
+        <watch:WatchItemControl />
+    </DataTemplate>
+
+    <!-- Component and control styles -->
+    <Style x:Key="NotImplementedText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80HilitedText}" />
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="ExplainText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource BExplainText}" />
+    </Style>
+
+    <Style x:Key="DialogLabelText" TargetType="TextBlock" BasedOn="{StaticResource ExplainText}">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Margin" Value="12,4" />
+    </Style>
+
+    <Style x:Key="DialogTextBox" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Margin" Value="12,4" />
+        <Setter Property="Background" Value="{DynamicResource BDebugHeaderBackground}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style x:Key="DialogButton" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="12,2" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+    </Style>
+
+    <Style x:Key="SmallDialogButton" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+    </Style>
+
+    <Style x:Key="DialogCheckBox" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="12,4" />
+    </Style>
+
+    <Style x:Key="DialogRadioButton" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{StaticResource BDialogLabelText}" />
+        <Setter Property="Margin" Value="12,6" />
+    </Style>
+
+    <!-- Control template for a dialog button -->
+    <ControlTemplate x:Key="DialogButtonTemplate" TargetType="{x:Type ButtonBase}">
+        <Border x:Name="border" 
+                        BorderBrush="{DynamicResource BDialogButtonBackground}" 
+                        BorderThickness="2" 
+                        Background="{DynamicResource BDialogButtonBackground}" 
+                        SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="contentPresenter" 
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+            </ContentPresenter>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Button.IsDefaulted" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource BDialogButtonHover}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource BDialogButtonHover}"/>
+                <Setter Property="Background" TargetName="border" Value="{DynamicResource BDialogButtonHover}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource BDialogButtonBackground}"/>
+                <Setter Property="Background" TargetName="border" Value="{DynamicResource BDialogButtonHover}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FFB0B0B0"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- ZX Spectrum Emulator styles -->
+    <Style x:Key="EmuOverlayText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource BToolBackground}"/>
+        <Setter Property="Background" Value="{StaticResource BEmuOverlay}" />
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Padding" Value="8, 2"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
+    <Style x:Key="UlaRasterLine" TargetType="Line">
+        <Setter Property="Stroke" Value="{StaticResource BRasterLine}"/>
+    </Style>
+
+    <Style x:Key="SyncRectangle" TargetType="Rectangle">
+        <Setter Property="StrokeThickness" Value="0"/>
+        <Setter Property="Fill" Value="#18FFFFFF"/>
+    </Style>
+
+    <!-- ZX Spectrum 48K button styles -->
+    <Style x:Key="ExtKeyLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+    </Style>
+    <Style x:Key="ExtNumLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BMainButtonText}" />
+    </Style>
+    <Style x:Key="MainButton" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BMainButtonText}" />
+    </Style>
+    <Style x:Key="SymShiftLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BShiftText}" />
+    </Style>
+    <Style x:Key="NumShiftLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BShiftText}" />
+    </Style>
+    <Style x:Key="KeywordLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BMainButtonText}" />
+    </Style>
+    <Style x:Key="ExtShiftLine" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BExtShiftText}" />
+    </Style>
+
+    <!-- ZX Spectrum 128K button styles -->
+    <Style x:Key="Sp128ButtonText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource BWhite90}" />
+    </Style>
+    <Style x:Key="Sp128MainButtonText" TargetType="TextBlock" BasedOn="{StaticResource Sp128ButtonText}">
+        <Setter Property="FontSize" Value="18" />
+    </Style>
+    <Style x:Key="Sp128NumButtonText" TargetType="TextBlock" BasedOn="{StaticResource Sp128ButtonText}">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+    <Style x:Key="Sp128SimpleButtonText" TargetType="TextBlock" BasedOn="{StaticResource Sp128ButtonText}">
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+
+    <!-- Information display types -->
+    <Style x:Key="Z80Text" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+    </Style>
+
+    <Style x:Key="Z80HilitedText" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
+        <Setter Property="Foreground" Value="{StaticResource Bz80HilitedText}" />
+    </Style>
+
+    <Style x:Key="Z80StatusText" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
+        <Setter Property="Foreground" Value="{StaticResource Bz80StatusText}" />
+    </Style>
+
+    <!-- ZX Spectrum Memory tool window styles -->
+    <Style x:Key="MemData" TargetType="TextBlock" BasedOn="{StaticResource Z80StatusText}">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Padding" Value="2,0" />
+    </Style>
+
+    <Style x:Key="MemDump" TargetType="TextBlock" BasedOn="{StaticResource Z80Text}">
+        <Setter Property="Margin" Value="8,0,16,0" />
+    </Style>
+
+    <!-- Prompt styles -->
+    <Style x:Key="PromptTextBox" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource Bz80Text}" />
+    </Style>
+
+    <Style x:Key="ValidationMessageText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{StaticResource BValidationText}" />
+        <Setter Property="Padding" Value="6,2" />
+    </Style>
+
+    <!-- Value converters -->
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <valueConverters:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
+    <valueConverters:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
+    <disassembly:CommentStyleConverter x:Key="CommentStyleConverter" />
+    <disassembly:IndentDepthTypeConverter x:Key="IndentDepthTypeConverter" />
+    <disassembly:LineLengthTypeConverter x:Key="LineLengthTypeConverter" />
+
+</ResourceDictionary>

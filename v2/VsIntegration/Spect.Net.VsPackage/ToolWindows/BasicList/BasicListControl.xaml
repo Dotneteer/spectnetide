@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Spect.Net.VsPackage.ToolWindows.BasicList.BasicListControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:basicList="clr-namespace:Spect.Net.VsPackage.ToolWindows.BasicList"
+             mc:Ignorable="d" 
+             Background="{DynamicResource BToolBackground}"
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type basicList:BasicListViewModel}, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate x:Key="BasicLineTemplate">
+                <Grid d:DataContext="{d:DesignInstance {x:Type basicList:BasicLineViewModel}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="55" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding LineNo}" 
+                               HorizontalAlignment="Right" 
+                               Margin="0,0,8,0" 
+                               Style="{StaticResource Z80HilitedText}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Text}" 
+                               TextWrapping="Wrap" 
+                               Margin="0,0,8,0" 
+                               Style="{StaticResource Z80StatusText}"/>
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <ListBox x:Name="BasicListBox"
+                 BorderThickness="0"
+                 HorizontalAlignment="Stretch"
+                 Margin="2"
+                 SelectionMode="Extended"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.CanContentScroll="True"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ItemsSource="{Binding ProgramLines}"
+                 Background="Transparent"
+                 FontFamily="Consolas"
+                 FontSize="14"
+                 Foreground="{StaticResource BDebugForeground}" 
+                 AlternationCount="2" 
+                 ItemContainerStyle="{DynamicResource MemoryLineItemStyle}" ItemTemplate="{DynamicResource BasicLineTemplate}">
+        </ListBox>
+    </Grid>
+</UserControl>

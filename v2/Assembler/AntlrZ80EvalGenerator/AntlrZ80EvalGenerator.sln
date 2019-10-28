@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntlrZ80EvalGenerator", "AntlrZ80EvalGenerator\AntlrZ80EvalGenerator.csproj", "{C8A80EE5-3442-4FFF-BF0D-F4DAD7C0E794}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8A80EE5-3442-4FFF-BF0D-F4DAD7C0E794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8A80EE5-3442-4FFF-BF0D-F4DAD7C0E794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8A80EE5-3442-4FFF-BF0D-F4DAD7C0E794}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8A80EE5-3442-4FFF-BF0D-F4DAD7C0E794}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7C44A03-7190-436B-8661-3E9177E163CC}
+	EndGlobalSection
+EndGlobal

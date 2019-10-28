@@ -1,0 +1,42 @@
+﻿<toolWindows:SpectrumToolWindowControlBase
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
+             xmlns:spectrumEmulator="clr-namespace:Spect.Net.VsPackage.ToolWindows.SpectrumEmulator"
+             xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf" 
+    x:Class="Spect.Net.VsPackage.ToolWindows.SpectrumEmulator.SpectrumEmulatorToolWindowControl"
+             Focusable="True"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type spectrumEmulator:SpectrumEmulatorToolWindowViewModel}, IsDesignTimeCreatable=True}" >
+
+    <toolWindows:SpectrumToolWindowControlBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <valueConverters:BoolToVisibleConverter x:Key="BoolToVisibleConverter"/>
+        </ResourceDictionary>
+    </toolWindows:SpectrumToolWindowControlBase.Resources>
+
+    <Grid Background="{DynamicResource BToolBackground}" Focusable="True">
+        <Border Panel.ZIndex="0" x:Name="ScreenControl">
+            <spectrumEmulator:SpectrumDisplayControl 
+                x:Name="SpectrumControl"
+                DataContext="{Binding EmulatorViewModel, Mode=OneWay}" />
+        </Border>
+        <Border>
+            <TextBlock Visibility="{Binding EmulatorViewModel.ShouldIndicateShadowScreen, Converter={StaticResource BoolToVisibleConverter}, Mode=OneWay}" Text="Shadow Screen On" 
+                       Style="{DynamicResource EmuOverlayText}" />
+        </Border>
+    </Grid>
+</toolWindows:SpectrumToolWindowControlBase>
+
+
+
+
+
+
+

@@ -1,0 +1,7 @@
+﻿; Tests single circularity
+.org #8000
+nop
+
+#include "./SingleCircular.z80Asm"
+
+nop

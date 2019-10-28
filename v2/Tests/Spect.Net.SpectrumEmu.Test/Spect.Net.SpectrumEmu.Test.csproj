@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TapResources\Pinball.tap" />
+    <None Remove="TzxResources\JetSetWilly.tzx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TapResources\Pinball.tap" />
+    <EmbeddedResource Include="TzxResources\JetSetWilly.tzx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+    <PackageReference Include="Shouldly" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj" />
+  </ItemGroup>
+
+</Project>

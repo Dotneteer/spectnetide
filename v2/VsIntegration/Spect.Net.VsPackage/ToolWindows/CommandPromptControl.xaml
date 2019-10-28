@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="Spect.Net.VsPackage.ToolWindows.CommandPromptControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:toolWindows="clr-namespace:Spect.Net.VsPackage.ToolWindows"
+             xmlns:valueConverters="clr-namespace:Spect.Net.Wpf.ValueConverters;assembly=Spect.Net.Wpf"
+             x:Name="UserControl" 
+     
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <toolWindows:PromptBackgroundConverter x:Key="PromptBackgroundConverter">
+                <toolWindows:PromptBackgroundConverter.ResourceDictionary>
+                    <ResourceDictionary Source="..\PackageStyles.xaml"/>
+                </toolWindows:PromptBackgroundConverter.ResourceDictionary>
+            </toolWindows:PromptBackgroundConverter>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="0" Grid.Row="0"  Text="{Binding Prompt, ElementName=UserControl}" 
+                   Style="{DynamicResource Z80StatusText}" 
+                   Margin="4,0" Cursor="Hand" MouseDown="PromptClicked" >
+            <TextBlock.ToolTip>
+                <ToolTip>
+                    <TextBlock Text="Click to display command reference information" />
+                </ToolTip>
+            </TextBlock.ToolTip>
+
+        </TextBlock>
+        <TextBox Grid.Column="1" Grid.Row="0" x:Name="CommandLine" 
+                 Text="{Binding CommandText, ElementName=UserControl, Mode=TwoWay, 
+                 UpdateSourceTrigger=PropertyChanged}" 
+                 Background="{Binding IsValid, Converter={StaticResource PromptBackgroundConverter}, ElementName=UserControl}" 
+                 BorderThickness="0" 
+                 Foreground="{DynamicResource Bz80Text}"
+                 Style="{StaticResource PromptTextBox}" KeyDown="OnCommandLineKeyDown" 
+                 MaxLength="{Binding MaxLength, ElementName=UserControl}" 
+                 PreviewTextInput="OnCommandLinePreviewTextInput" PreviewKeyDown="OnCommandLinePreviewKeyDown"/>
+        <Border Grid.Row="1" Grid.Column="1" 
+                Background="{DynamicResource BDanger}" VerticalAlignment="Top" Visibility="{Binding IsValid, Converter={StaticResource BoolToCollapsedConverter}, ElementName=UserControl}">
+            <TextBlock Text="{Binding ValidationMessage, ElementName=UserControl}" Style="{DynamicResource ValidationMessageText}" />
+        </Border>
+    </Grid>
+</UserControl>
+
+
+

@@ -1,0 +1,73 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:tzxEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.TzxEditor"
+             xmlns:romEditor="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
+             xmlns:basicList1="clr-namespace:Spect.Net.VsPackage.ToolWindows.BasicList"
+             x:Class="Spect.Net.VsPackage.CustomEditors.TzxEditor.StandardDataBlockControl" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance {x:Type tzxEditor:TzxStandardSpeedBlockViewModel}, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\PackageStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Pause After:" Margin="0,0,8,0" Style="{DynamicResource Z80HilitedText}"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PauseAfter}" Style="{DynamicResource Z80StatusText}"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Data Length:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DataLength}" Style="{DynamicResource Z80StatusText}"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Tape Block:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding HeaderType}" Style="{DynamicResource Z80StatusText}"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Data Type:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DataType}" Style="{DynamicResource Z80StatusText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Filename:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Filename}" Style="{DynamicResource Z80StatusText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Data Bytes:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding DataBlockBytes}" Style="{DynamicResource Z80StatusText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Auto Start:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding AutoStartLine}" Style="{DynamicResource Z80StatusText}" Visibility="{Binding HasAutoStartLine, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="Var. Offset:" Margin="0,0,8, 0" Style="{DynamicResource Z80HilitedText}" Visibility="{Binding IsHeaderBlock, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding VariablesOffset}" Style="{DynamicResource Z80StatusText}" Visibility="{Binding HasVariablesOffset, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <TextBlock Grid.Row="8" Grid.Column="0" Text="Data:" Margin="0,0,8,0" Style="{DynamicResource Z80HilitedText}" 
+                   Cursor="Hand" 
+                   MouseDown="OnDataLabelClicked" 
+                   VerticalAlignment="Top" HorizontalAlignment="Left" 
+                   Visibility="{Binding ShowProgram, Converter={StaticResource BoolToCollapsedConverter}}" />
+        <TextBlock Grid.Row="8" Grid.Column="0" Text="BASIC Code:" Margin="0,0,8,0" Style="{DynamicResource Z80HilitedText}" 
+                   Cursor="Hand" 
+                   MouseDown="OnDataLabelClicked" 
+                   VerticalAlignment="Top" HorizontalAlignment="Left" 
+                   Visibility="{Binding ShowProgram, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Border Grid.Row="8" Grid.Column="1" 
+                Visibility="{Binding ShowProgram, Converter={StaticResource BoolToCollapsedConverter}}">
+            <romEditor:RomEditorControl x:Name="RomEditor" DataContext="{Binding Memory}" />
+        </Border>
+        <Border Grid.Row="8" Grid.Column="1" 
+                Visibility="{Binding ShowProgram, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <basicList1:BasicListControl DataContext="{Binding ProgramList}"/>
+        </Border>
+    </Grid>
+</UserControl>

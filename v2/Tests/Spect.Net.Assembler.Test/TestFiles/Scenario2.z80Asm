@@ -1,0 +1,5 @@
+﻿ld a,b
+#include "./Scenario2.inc1.z80Asm"
+ld b,c
+#include "./Scenario2.inc2.z80Asm"
+ret

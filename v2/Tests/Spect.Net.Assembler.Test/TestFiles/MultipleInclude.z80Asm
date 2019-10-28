@@ -1,0 +1,11 @@
+﻿; Tests multiple include file
+.org #8000
+nop
+
+#include "./inc1.z80Asm"
+
+nop
+
+#include "./inc2.z80Asm"
+
+nop

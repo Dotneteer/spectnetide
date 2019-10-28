@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Z80 Unit Test file</Name>
+    <Description>This file containz Z80 Test Language code</Description>
+    <Icon>Spect.Net.Z80TestTemplate.ico</Icon>
+    <TemplateID>d22f0907-5fd9-4f2f-8626-0d5ea8ea7ea9</TemplateID>
+    <ProjectType>ZX Spectrum</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>UnitTest.z80test</DefaultName>
+    <AppliesTo>Spect.Net.CodeDiscover</AppliesTo>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="true">UnitTest.z80test</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

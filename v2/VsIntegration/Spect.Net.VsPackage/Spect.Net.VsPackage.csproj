@@ -1,0 +1,843 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <UseCodebase>true</UseCodebase>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{F6B84D08-129A-4077-90E2-0FCDDF2D41DF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Spect.Net.VsPackage</RootNamespace>
+    <AssemblyName>Spect.Net.VsPackage</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CodeDiscoverProjectTreePropertiesProvider.cs" />
+    <Compile Include="Commands\CompileAllUnitTestsCommand.cs" />
+    <Compile Include="Commands\CompileDefaultCodeCommand.cs" />
+    <Compile Include="Commands\CompileCodeCommand.cs" />
+    <Compile Include="Commands\CompileUnitTestCommand.cs" />
+    <Compile Include="Commands\DebugProgramCommand.cs" />
+    <Compile Include="Commands\DebugDefaultProgramCommand.cs" />
+    <Compile Include="Commands\EjectFloppyCommand.cs" />
+    <Compile Include="Commands\ExportDefaultProgramCommand.cs" />
+    <Compile Include="Commands\ExportProgramCommand.cs" />
+    <Compile Include="Commands\InjectDefaultProgramCommand.cs" />
+    <Compile Include="Commands\InsertDriveACommand.cs" />
+    <Compile Include="Commands\InsertDriveBCommand.cs" />
+    <Compile Include="Commands\LoadVmStateCommand.cs" />
+    <Compile Include="Commands\RunAllUnitTestsCommand.cs" />
+    <Compile Include="Commands\RunProgramCommand.cs" />
+    <Compile Include="Commands\RunDefaultProgramCommand.cs" />
+    <Compile Include="Commands\RunUnitTestCommand.cs" />
+    <Compile Include="Commands\SetAsActiveProjectCommand.cs" />
+    <Compile Include="Commands\SetAsDefaultAnnotationFileCommand.cs" />
+    <Compile Include="Commands\SetAsDefaultCodeFileCommand.cs" />
+    <Compile Include="Commands\SetAsDefaultTapeFileCommand.cs" />
+    <Compile Include="Commands\ShowBasicListCommand.cs" />
+    <Compile Include="Commands\ShowDisassemblyCommand.cs" />
+    <Compile Include="Commands\ShowMemoryCommand.cs" />
+    <Compile Include="Commands\ShowRegistersCommand.cs" />
+    <Compile Include="Commands\ShowSpectrumEmulatorCommand.cs" />
+    <Compile Include="Commands\ShowSpectrumKeyboardCommand.cs" />
+    <Compile Include="Commands\ShowTapeExplorerCommand.cs" />
+    <Compile Include="Commands\ShowWatchMemoryCommand.cs" />
+    <Compile Include="Commands\ShowZ80CpuStackCommand.cs" />
+    <Compile Include="Commands\WriteProtectFloppyCommand.cs" />
+    <Compile Include="Compilers\CodeManager.cs" />
+    <Compile Include="Compilers\CompilationCompletedEventArgs.cs" />
+    <Compile Include="Compilers\ICompilerService.cs" />
+    <Compile Include="Compilers\Z80AssemblyCompiler.cs" />
+    <Compile Include="Compilers\ZxBasicCompiler.cs" />
+    <Compile Include="Compilers\ZxbOptions.cs" />
+    <Compile Include="Compilers\ZxbResult.cs" />
+    <Compile Include="Compilers\ZxbRunner.cs" />
+    <Compile Include="CustomEditors\RomEditor\CommandParser.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
+      <DependentUpon>RomEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\RomEditor\RomEditorFactory.cs" />
+    <Compile Include="CustomEditors\RomEditor\RomEditorPane.cs" />
+    <Compile Include="CustomEditors\SpectrumConfEditorViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\StandardDataBlockControl.xaml.cs">
+      <DependentUpon>StandardDataBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\StandardDataBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapeBlockViewModelBase.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapEditorFactory.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TapeFileViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TurboDataBlockControl.xaml.cs">
+      <DependentUpon>TurboDataBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveControl.xaml.cs">
+      <DependentUpon>TzxArchiveControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveInfoViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxArchiveTextItemViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorControl.xaml.cs">
+      <DependentUpon>TzxEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorFactory.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxEditorPane.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxHardwareInfoBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxHardwareInfoControl.xaml.cs">
+      <DependentUpon>TzxHardwareInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml.cs">
+      <DependentUpon>TzxHeaderBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxHeaderBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxHwBlockItemViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml.cs">
+      <DependentUpon>TzxOtherBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxOtherBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxSelectedBlockEventArgs.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxStandardSpeedBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionBlockViewModel.cs" />
+    <Compile Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml.cs">
+      <DependentUpon>TzxTextDescriptionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\TzxEditor\TzxTurboSpeedBlockViewModel.cs" />
+    <Compile Include="Debugging\BreakpointChangeWatcher.cs" />
+    <Compile Include="Debugging\BreakpointInfo.cs" />
+    <Compile Include="Debugging\BreakpointsChangedEventArgs.cs" />
+    <Compile Include="Debugging\VsIntegratedSpectrumDebugInfoProvider.cs" />
+    <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="ImageMonikers.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmClassificationFormats.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmClassificationTypes.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmClassifier.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmClassifierProvider.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmContentTypeDefinition.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmLanguageService.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmViewTagger.cs" />
+    <Compile Include="LanguageServices\Z80Asm\Z80AsmViewTaggerProvider.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestClassificationFormats.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestClassificationTypes.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestClassifier.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestClassifierProvider.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestContentTypeDefinition.cs" />
+    <Compile Include="LanguageServices\Z80Test\Z80TestLanguageService.cs" />
+    <Compile Include="LanguageServices\ZxBasic\TokenInfo.cs" />
+    <Compile Include="LanguageServices\ZxBasic\TokenType.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicClassificationFormats.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicClassificationTypes.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicClassifier.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicClassifierProvider.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicContentTypeDefinition.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicLanguageService.cs" />
+    <Compile Include="LanguageServices\ZxBasic\ZxBasicParserListener.cs" />
+    <Compile Include="Machines\KempstonProvider.cs" />
+    <Compile Include="Machines\MachineCollection.cs" />
+    <Compile Include="Machines\PackageRomProvider.cs" />
+    <Compile Include="Machines\SpectrumVmManager.cs" />
+    <Compile Include="Machines\VmStateFileManager.cs" />
+    <Compile Include="Machines\VsIntegratedTapeLoadProvider.cs" />
+    <Compile Include="Machines\VsIntegratedTapeSaveProvider.cs" />
+    <Compile Include="MyConfiguredProject.cs" />
+    <Compile Include="MyUnconfiguredProject.cs" />
+    <Compile Include="ProjectProperties.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SolutionItems\ActiveProjectChangedEventArgs.cs" />
+    <Compile Include="SolutionItems\AnnotationProjectItem.cs" />
+    <Compile Include="SolutionItems\ItemHierarchyBase.cs" />
+    <Compile Include="SolutionItems\ProjectItemRenamedEventArgs.cs" />
+    <Compile Include="SolutionItems\SolutionStructure.cs" />
+    <Compile Include="SolutionItems\SpectrumProjectConfigSerializer.cs" />
+    <Compile Include="SolutionItems\ProgramItemBase.cs" />
+    <Compile Include="SolutionItems\SpectrumProject.cs" />
+    <Compile Include="SolutionItems\SpectrumProjectConfigItem.cs" />
+    <Compile Include="SolutionItems\SpectrumProjectItemBase.cs" />
+    <Compile Include="SolutionItems\SpectrumProjectSettings.cs" />
+    <Compile Include="SolutionItems\SpectrumRomProjectItem.cs" />
+    <Compile Include="SolutionItems\SpectrumSolutionSettings.cs" />
+    <Compile Include="SolutionItems\TapeProjectItemBase.cs" />
+    <Compile Include="SolutionItems\TapProjectItem.cs" />
+    <Compile Include="SolutionItems\TzxProjectItem.cs" />
+    <Compile Include="SolutionItems\UnusedProjectItem.cs" />
+    <Compile Include="SolutionItems\VmStateProjectItem.cs" />
+    <Compile Include="SolutionItems\VsHierarchyTypes.cs" />
+    <Compile Include="SolutionItems\Z80CodeProjectItem.cs" />
+    <Compile Include="SolutionItems\Z80TestProjectItem.cs" />
+    <Compile Include="SolutionItems\ZxBasicProjectItem.cs" />
+    <Compile Include="SpectNetOptionsGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SpectNetPackage.cs" />
+    <Compile Include="ToolWindows\BankAware\BankAwareToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\BankAware\DisassemblyAnnotationHandler.cs" />
+    <Compile Include="ToolWindows\BankAware\MemoryViewModel.cs" />
+    <Compile Include="ToolWindows\BankAware\Spectrum48RomLabelProvider.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicLineViewModel.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListControl.xaml.cs">
+      <DependentUpon>BasicListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindow.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindowControl.xaml.cs">
+      <DependentUpon>BasicListToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\BasicList\BasicListToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\BasicList\BasicListViewModel.cs" />
+    <Compile Include="ToolWindows\CommandLineEventArgs.cs" />
+    <Compile Include="ToolWindows\CommandPromptControl.xaml.cs">
+      <DependentUpon>CommandPromptControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DependencyObjectEx.cs" />
+    <Compile Include="ToolWindows\Disassembly\CommentStyle.cs" />
+    <Compile Include="ToolWindows\Disassembly\CommentStyleConverter.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyControl.xaml.cs">
+      <DependentUpon>DisassemblyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Disassembly\DisassemblyExporter.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyItemSelectedEventArgs.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyItemViewModel.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindow.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml.cs">
+      <DependentUpon>DisassemblyToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Disassembly\DisassemblyToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\Disassembly\DisassemblyViewRefreshedEventArgs.cs" />
+    <Compile Include="ToolWindows\Disassembly\ExportDisassemblyDialog.xaml.cs">
+      <DependentUpon>ExportDisassemblyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Disassembly\ExportDisassemblyViewModel.cs" />
+    <Compile Include="ToolWindows\Disassembly\IDisassemblyItemParent.cs" />
+    <Compile Include="ToolWindows\Disassembly\IndentDepthType.cs" />
+    <Compile Include="ToolWindows\Disassembly\IndentDepthTypeConverter.cs" />
+    <Compile Include="ToolWindows\Disassembly\InstructionBackgroundConverter.cs" />
+    <Compile Include="ToolWindows\Disassembly\LineLengthType.cs" />
+    <Compile Include="ToolWindows\Disassembly\LineLengthTypeConverter.cs" />
+    <Compile Include="ToolWindows\Disassembly\RomFlagBackgroundConverter.cs" />
+    <Compile Include="ToolWindows\Disassembly\TopAddressChangedEventArgs.cs" />
+    <Compile Include="ToolWindows\HexUtil.cs" />
+    <Compile Include="ToolWindows\Keyboard\Sp48KeyboardControl.xaml.cs">
+      <DependentUpon>Sp48KeyboardControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\Sp128EnterKeyControl.xaml.cs">
+      <DependentUpon>Sp128EnterKeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\IKeyCodeProvider.cs" />
+    <Compile Include="ToolWindows\Keyboard\KeyboardToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\Keyboard\KeyboardToolWindow.cs" />
+    <Compile Include="ToolWindows\Keyboard\Sp128KeyboardControl.xaml.cs">
+      <DependentUpon>Sp128KeyboardControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\KeyboardToolWindowControl.xaml.cs">
+      <DependentUpon>KeyboardToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\KeyPressHandler.cs" />
+    <Compile Include="ToolWindows\Keyboard\Sp128KeyControl.xaml.cs">
+      <DependentUpon>Sp128KeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\Sp48KeyControl.xaml.cs">
+      <DependentUpon>Sp48KeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Keyboard\Sp128WideKeyControl.xaml.cs">
+      <DependentUpon>Sp128WideKeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\KeyHandlingHelper.cs" />
+    <Compile Include="ToolWindows\Memory\ExportMemoryDialog.xaml.cs">
+      <DependentUpon>ExportMemoryDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Memory\ExportMemoryViewModel.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryExporter.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryLineControl.xaml.cs">
+      <DependentUpon>MemoryLineControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Memory\MemoryLineViewModel.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryToolWindow.cs" />
+    <Compile Include="ToolWindows\Memory\MemoryToolWindowControl.xaml.cs">
+      <DependentUpon>MemoryToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Memory\MemoryToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\PromptBackgroundConverter.cs" />
+    <Compile Include="ToolWindows\Registers\FlagsControl.xaml.cs">
+      <DependentUpon>FlagsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Registers\Register16Control.xaml.cs">
+      <DependentUpon>Register16Control.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Registers\RegistersToolWindow.cs" />
+    <Compile Include="ToolWindows\Registers\RegistersToolWindowControl.xaml.cs">
+      <DependentUpon>RegistersToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Registers\RegistersToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\OldSpectNetToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\AddVmStateDialog.xaml.cs">
+      <DependentUpon>AddVmStateDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SpectrumEmulator\AddVmStateViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\EmulatorViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\KeyboardScanner.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\MachineInstanceChangedEventArgs.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml.cs">
+      <DependentUpon>SpectrumDisplayControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindow.cs" />
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml.cs">
+      <DependentUpon>SpectrumEmulatorToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\SpectrumToolWindowControlBase.cs" />
+    <Compile Include="ToolWindows\SpectrumToolWindowPane.cs" />
+    <Compile Include="ToolWindows\SpectrumToolWindowViewModelBase.cs" />
+    <Compile Include="ToolWindows\StackTool\IStackEventData.cs" />
+    <Compile Include="ToolWindows\StackTool\SimpleStackDebugSupport.cs" />
+    <Compile Include="ToolWindows\StackTool\SpContentItemControl.xaml.cs">
+      <DependentUpon>SpContentItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\StackTool\SpManipulationItemControl.xaml.cs">
+      <DependentUpon>SpManipulationItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\StackTool\StackContentManipulationViewModel.cs" />
+    <Compile Include="ToolWindows\StackTool\StackPointerManipulationViewModel.cs" />
+    <Compile Include="ToolWindows\StackTool\StackToolWindow.cs" />
+    <Compile Include="ToolWindows\StackTool\StackToolWindowControl.xaml.cs">
+      <DependentUpon>StackToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\StackTool\StackToolWindowViewModel.cs" />
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerControl.xaml.cs">
+      <DependentUpon>TapeFileExplorerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerToolWindow.cs" />
+    <Compile Include="ToolWindows\TapeFileExplorer\TapeFileExplorerViewModel.cs" />
+    <Compile Include="ToolWindows\Watch\SymbolAwareSpectrumEvaluationContext.cs" />
+    <Compile Include="ToolWindows\Watch\WatchItemControl.xaml.cs">
+      <DependentUpon>WatchItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Watch\WatchItemViewModel.cs" />
+    <Compile Include="ToolWindows\Watch\WatchToolWindow.cs" />
+    <Compile Include="ToolWindows\Watch\WatchToolWindowControl.xaml.cs">
+      <DependentUpon>WatchToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Watch\WatchToolWindowViewModel.cs" />
+    <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
+    <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />
+    <Compile Include="Commands\InjectProgramCommand.cs" />
+    <Compile Include="VsxLibrary\Command\InsertFloppyCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\ShowToolWindowCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\SingleProjectItemCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\SpectNetCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\ProjectCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\SpectrumProgramCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\SpectrumToolWindowCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\UnitTestCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\VfddCommandBase.cs" />
+    <Compile Include="VsxLibrary\Command\VmStateCommandBase.cs" />
+    <Compile Include="VsxLibrary\Editor\EditorFactoryBase.cs" />
+    <Compile Include="VsxLibrary\Editor\EditorPaneBase.cs" />
+    <Compile Include="VsxLibrary\Output\MissingOutputPaneHandling.cs" />
+    <Compile Include="VsxLibrary\Output\OutputPaneAttributes.cs" />
+    <Compile Include="VsxLibrary\Output\OutputPaneDefinition.cs" />
+    <Compile Include="VsxLibrary\Output\OutputWindow.cs" />
+    <Compile Include="VsxLibrary\Output\OutputWindowPane.cs" />
+    <Compile Include="VsxLibrary\Output\SpectNetIdeOutputPane.cs" />
+    <Compile Include="VsxLibrary\Output\WindowsPaneNotFoundException.cs" />
+    <Compile Include="VsxLibrary\ToolWindow\CaptionAttribute.cs" />
+    <Compile Include="VsxLibrary\ToolWindow\ErrorListWindow.cs" />
+    <Compile Include="VsxLibrary\ToolWindow\ISupportsMvvm.cs" />
+    <Compile Include="VsxLibrary\ToolWindow\TaskListWindow.cs" />
+    <Compile Include="VsxLibrary\ToolWindow\ToolWindowAttribute.cs" />
+    <Compile Include="VsxLibrary\ToolWindow\ToolWindowToolbarAttribute.cs" />
+    <Compile Include="VsxLibrary\ToolWindow\ToolWindowPaneBase.cs" />
+    <Compile Include="VsxLibrary\TypedEnumConverter.cs" />
+    <Compile Include="VsxLibrary\VsIde.cs" />
+    <Compile Include="VsxLibrary\VsxAsyncPackage.cs" />
+    <Compile Include="VsxLibrary\VsxConverter.cs" />
+    <Compile Include="VsxLibrary\VsxDialogs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Z80AsmIcon.png" />
+    <Resource Include="Images\Z80TestIcon.png" />
+    <Resource Include="Images\DisassAnnIcon.png" />
+    <Resource Include="Images\SpConfIcon.png" />
+    <Resource Include="Images\RomIcon.png" />
+    <Resource Include="Images\TzxIcon.png" />
+    <Resource Include="Images\TapIcon.png" />
+    <Resource Include="Images\ZxBasicIcon.png" />
+    <Resource Include="Images\CodeDiscoveryProjectIcon.png" />
+    <Resource Include="Images\VmStateIcon.png" />
+    <Resource Include="Images\FloppyIcon.png" />
+    <Content Include="ProjectIcons.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <VSCTCompile Include="SpectNetPackage.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
+    <Content Include="_VsixDependencies\Newtonsoft.Json.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <TargetPath>Newtonsoft.Json.dll</TargetPath>
+      <VSIXSubPath>..</VSIXSubPath>
+    </Content>
+    <None Include=".editorconfig" />
+    <None Include="app.config" />
+    <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="Key.snk" />
+    <Content Include="ProjectImages.imagemanifest">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime">
+      <Version>4.6.6</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.202" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.2.3074">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\SpectNetIde.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.Assembler\Spect.Net.Assembler.csproj">
+      <Project>{bf64583f-fc84-4897-8a78-465a57ab73ac}</Project>
+      <Name>Spect.Net.Assembler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.BasicParser\Spect.Net.BasicParser.csproj">
+      <Project>{0c184291-215a-459e-b4a7-a8f23a619700}</Project>
+      <Name>Spect.Net.BasicParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.CommandParser\Spect.Net.CommandParser.csproj">
+      <Project>{14508ba4-7d40-4949-9246-943b7f70391d}</Project>
+      <Name>Spect.Net.CommandParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.EvalParser\Spect.Net.EvalParser.csproj">
+      <Project>{8a3267e6-6511-4c02-864f-d06bd7fa1542}</Project>
+      <Name>Spect.Net.EvalParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Assembler\Spect.Net.TestParser\Spect.Net.TestParser.csproj">
+      <Project>{bf0ce3fe-6516-4377-a6e4-51151f4d5185}</Project>
+      <Name>Spect.Net.TestParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Spect.Net.SpectrumEmu\Spect.Net.SpectrumEmu.csproj">
+      <Project>{b2917190-2c03-45d6-9dec-c58ef0e4306c}</Project>
+      <Name>Spect.Net.SpectrumEmu</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Spect.Net.Wpf\Spect.Net.Wpf.csproj">
+      <Project>{a288ce42-5fbe-46c9-81f5-c85221a68df4}</Project>
+      <Name>Spect.Net.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.CodeDiscover.ProjectTemplate\Spect.Net.CodeDiscover.ProjectTemplate.csproj">
+      <Project>{e33bcc87-665d-4a13-986c-98c1abdb7fde}</Project>
+      <Name>Spect.Net.CodeDiscover.ProjectTemplate</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.DisassAnnTemplate\Spect.Net.DisassAnnTemplate.csproj">
+      <Project>{de39796b-f4c4-4854-bff2-29b3aab262d4}</Project>
+      <Name>Spect.Net.DisassAnnTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
+      <Project>{7f2dc1ea-d3d4-43a9-8f69-95e90014a828}</Project>
+      <Name>Spect.Net.ProjectWizard</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.Z80AsmTemplate\Spect.Net.Z80AsmTemplate.csproj">
+      <Project>{f1705241-501d-4bcc-a1b7-90a2e0aa7795}</Project>
+      <Name>Spect.Net.Z80AsmTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.Z80TestTemplate\Spect.Net.Z80TestTemplate.csproj">
+      <Project>{2314354b-c31c-4bf7-b2f6-10df76a10967}</Project>
+      <Name>Spect.Net.Z80TestTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.ZxBasicTemplate\Spect.Net.ZxBasicTemplate.csproj">
+      <Project>{075e5409-6330-431e-bf56-36da111896a3}</Project>
+      <Name>Spect.Net.ZxBasicTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\DisassAnn.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\folder.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\general.browseobject.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\general.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\none.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\Rom.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\scc.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\SpConf.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\Tap.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\Tzx.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\Vfdd.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\VmState.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\Z80Asm.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\Z80Test.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\ZxBasic.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="CustomEditors\RomEditor\RomEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\StandardDataBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TurboDataBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxArchiveControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxHardwareInfoControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxHeaderBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxOtherBlockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\BasicList\BasicListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\BasicList\BasicListToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\CommandPromptControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Disassembly\DisassemblyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Disassembly\DisassemblyToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Disassembly\ExportDisassemblyDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp48KeyboardControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp128EnterKeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp128KeyboardControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\KeyboardToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp128KeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp48KeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Keyboard\Sp128WideKeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Memory\ExportMemoryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Memory\MemoryLineControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Memory\MemoryToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Registers\FlagsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Registers\Register16Control.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Registers\RegistersToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\SpectrumEmulator\AddVmStateDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\SpectrumEmulator\SpectrumDisplayControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\SpectrumEmulator\SpectrumEmulatorToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\StackTool\SpContentItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\StackTool\SpManipulationItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\StackTool\StackToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\TapeFileExplorer\TapeFileExplorerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Watch\WatchItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\Watch\WatchToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <BuildSystemToCopy Include="BuildSystem\DeployedBuildSystem\**\*" />
+      <RulesToCopy Include="BuildSystem\Rules\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BuildSystemToCopy)" DestinationFiles="@(BuildSystemToCopy->'$(LocalAppData)\CustomProjectSystems\Spect.Net.CodeDiscover\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(RulesToCopy)" DestinationFiles="@(RulesToCopy->'$(LocalAppData)\CustomProjectSystems\Spect.Net.CodeDiscover\Rules\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+  </Target>
+</Project>
