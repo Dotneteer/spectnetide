@@ -522,9 +522,14 @@ namespace Spect.Net.Assembler
             {
                 AddString(context.FSTRING());
             }
-            return mnemonic == "#INCLUDE" 
-                ? (object) new IncludeDirective(this, context) 
-                : new Directive(this, context);
+            if (mnemonic == "#INCLUDE")
+            {
+                return new IncludeDirective(this, context);
+            } else if (mnemonic == "#LINE")
+            {
+                return new LineDirective(this, context);
+            }
+            return new Directive(this, context);
         }
 
         #endregion

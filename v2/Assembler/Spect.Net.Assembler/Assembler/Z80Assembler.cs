@@ -222,6 +222,10 @@ namespace Spect.Net.Assembler.Assembler
                         parsedLines.AddRange(includedLines);
                     }
                 }
+                else if (line is LineDirective lineDirective)
+                {
+                    // TODO: Process a #line directive
+                }
                 else if (line is Directive preProc)
                 {
                     ApplyDirective(preProc, ifdefStack, ref processOps);

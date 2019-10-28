@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.VsPackage.VsxLibrary.Output;
 
@@ -8,10 +9,19 @@ using Spect.Net.VsPackage.VsxLibrary.Output;
 namespace Spect.Net.VsPackage.Compilers
 {
     /// <summary>
-    /// This class represents the Z80 AssemblyCompiler
+    /// This class represents the Z80 Assembly compiler
     /// </summary>
     public class Z80AssemblyCompiler: ICompilerService
     {
+        /// <summary>
+        /// Tests if the compiler is available.
+        /// </summary>
+        /// <returns>True, if the compiler is installed, and so available.</returns>
+        public Task<bool> IsAvailable()
+        {
+            return Task.FromResult(true);
+        }
+
         /// <summary>
         /// The name of the service
         /// </summary>
@@ -44,30 +54,37 @@ namespace Spect.Net.VsPackage.Compilers
         /// <param name="options">Assembler options to use</param>
         /// <param name="output">Assembler output</param>
         /// <returns>True, if compilation is successful; otherwise, false</returns>
-        public bool CompileDocument(string itemPath, 
-            AssemblerOptions options, 
-            out AssemblerOutput output)
+        public Task<AssemblerOutput> CompileDocument(string itemPath, 
+            AssemblerOptions options)
         {
-            output = null;
-            var compiler = new Z80Assembler();
-            if (_traceMessageHandler != null)
+            var tcs = new TaskCompletionSource<AssemblerOutput>();
+            _ = Task.Factory.StartNew(() =>
             {
-                compiler.AssemblerMessageCreated += _traceMessageHandler;
-            }
-            compiler.AssemblerMessageCreated += OnAssemblerMessage;
-            try
-            {
-                output = compiler.CompileFile(itemPath, options);
-            }
-            finally
-            {
+                var compiler = new Z80Assembler();
                 if (_traceMessageHandler != null)
                 {
-                    compiler.AssemblerMessageCreated -= _traceMessageHandler;
+                    compiler.AssemblerMessageCreated += _traceMessageHandler;
                 }
-                compiler.AssemblerMessageCreated -= OnAssemblerMessage;
-            }
-            return true;
+                compiler.AssemblerMessageCreated += OnAssemblerMessage;
+                try
+                {
+                    var output = compiler.CompileFile(itemPath, options);
+                    tcs.SetResult(output);
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+                finally
+                {
+                    if (_traceMessageHandler != null)
+                    {
+                        compiler.AssemblerMessageCreated -= _traceMessageHandler;
+                    }
+                    compiler.AssemblerMessageCreated -= OnAssemblerMessage;
+                }
+            });
+            return tcs.Task;
         }
 
         /// <summary>

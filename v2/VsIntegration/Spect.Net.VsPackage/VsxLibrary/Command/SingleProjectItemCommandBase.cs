@@ -65,6 +65,11 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         }
 
         /// <summary>
+        /// Gets the extension of the item
+        /// </summary>
+        public string ItemExtension => Path.GetExtension(ItemPath);
+
+        /// <summary>
         /// Gets the identity of the project item.
         /// </summary>
         public string Identity
@@ -103,9 +108,8 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             hierarchy = null;
             itemid = VSConstants.VSITEMID_NIL;
 
-            var monitorSelection = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
-            var solution = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
-            if (monitorSelection == null || solution == null)
+            if (!(Package.GetGlobalService(typeof(SVsShellMonitorSelection)) is IVsMonitorSelection monitorSelection) 
+                || !(Package.GetGlobalService(typeof(SVsSolution)) is IVsSolution solution))
             {
                 return false;
             }

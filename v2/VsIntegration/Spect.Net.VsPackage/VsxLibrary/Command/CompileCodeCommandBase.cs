@@ -8,6 +8,7 @@ using Spect.Net.VsPackage.SolutionItems;
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using Task = System.Threading.Tasks.Task;
 using VsTask = Microsoft.VisualStudio.Shell.Task;
@@ -30,6 +31,12 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             "The list file folder specified in the Options dialog " +
             "contains invalid characters or an absolute path. Go to the Options dialog and " +
             "fix the issue so that you can add the list file to the project.";
+
+        // --- Compiler state variables
+        private ICompilerService _compiler;
+        private string _itemFullPath;
+        private IVsHierarchy _hierarchy;
+        private uint _itemId;
 
         /// <summary>
         /// The output of the compilation
@@ -98,19 +105,46 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// Override this method to define how to prepare the command on the
         /// main thread of Visual Studio
         /// </summary>
-        protected override void ExecuteOnMainThread()
+        protected override async Task ExecuteOnMainThreadAsync()
         {
-            base.ExecuteOnMainThread();
+            await base.ExecuteOnMainThreadAsync();
             if (IsCancelled) return;
 
             // --- Get the item
-            GetItem(out var hierarchy, out _);
-            if (hierarchy == null)
+            GetItem(out _hierarchy, out _itemId);
+            if (_hierarchy == null || !(_hierarchy is IVsProject project))
             {
                 IsCancelled = true;
                 return;
             }
 
+            project.GetMkDocument(_itemId, out _itemFullPath);
+            var extension = Path.GetExtension(_itemFullPath);
+
+            _compiler = null;
+            switch (extension?.ToLower())
+            {
+                case ".z80asm":
+                    _compiler = new Z80AssemblyCompiler();
+                    break;
+                case ".zxbas":
+                    _compiler = new ZxBasicCompiler();
+                    break;
+            }
+
+            // --- Insist to have a compiler
+            if (_compiler == null)
+            {
+                IsCancelled = true;
+                return;
+            }
+
+            // --- Check that the compiler has been installed
+            if (!await _compiler.IsAvailable())
+            {
+                IsCancelled = true;
+                return;
+            }
 
             // --- Sign that the compilation is in progress, and there
             // --- in no compiled output yet
@@ -128,12 +162,14 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         {
             var modelName = HostPackage.ActiveProject?.ModelName;
             var currentModel = SpectrumModels.GetModelTypeFromName(modelName);
+            if (ItemExtension.ToLower() == ".zxbas")
+            {
+                currentModel = SpectrumModelType.Spectrum48;
+            }
 
             var options = new AssemblerOptions
             {
-                CurrentModel = currentModel,
-                // Use it only for ZX BASIC
-                // ProcExplicitLocalsOnly = true
+                CurrentModel = currentModel
             };
             var runOptions = HostPackage.Options.RunSymbols;
             if (runOptions != null)
@@ -154,37 +190,19 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// Compiles the program code
         /// </summary>
         /// <returns>True, if compilation successful; otherwise, false</returns>
-        public bool CompileCode()
+        public async Task<bool> CompileCode()
         {
-            GetCodeItem(out var hierarchy, out var itemId);
-            if (hierarchy == null) return false;
-
-            if (!(hierarchy is IVsProject project)) return false;
-            project.GetMkDocument(itemId, out var itemFullPath);
-            var extension = Path.GetExtension(itemFullPath);
-
-            ICompilerService compiler = null;
-            switch (extension?.ToLower())
-            {
-                case ".z80asm":
-                    compiler = new Z80AssemblyCompiler();
-                    break;
-                case ".zxbas":
-                    // TODO: Add ZX BASIC compiler here
-                    break;
-            }
-
-            if (compiler == null) return false;
             var start = DateTime.Now;
-            SpectNetPackage.Log(compiler.ServiceName);
-            var compiled = compiler.CompileDocument(itemFullPath, PrepareAssemblerOptions(), out var output);
+            SpectNetPackage.Log(_compiler.ServiceName);
+            var output = await _compiler.CompileDocument(_itemFullPath, PrepareAssemblerOptions());
             var duration = (DateTime.Now - start).TotalMilliseconds;
             SpectNetPackage.Log($"Compile time: {duration}ms");
+            var compiled = output != null;
             if (compiled)
             {
                 // --- Sign that compilation was successful
                 HostPackage.DebugInfoProvider.CompiledOutput = Output = output;
-                CreateCompilationListFile(hierarchy, itemId);
+                CreateCompilationListFile(_hierarchy, _itemId);
             }
             HostPackage.CodeManager.RaiseCompilationCompleted(output);
             return compiled;
@@ -235,7 +253,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                     ErrorCategory = TaskErrorCategory.Error,
                     HierarchyItem = hierarchy,
                     Document = error.Filename ?? ItemPath,
-                    Line = error.Line,
+                    Line = error.Line - 1,
                     Column = error.Column,
                     Text = error.ErrorCode == null
                         ? error.Message
@@ -289,7 +307,18 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         {
             if (sender is ErrorTask task)
             {
-                HostPackage.ErrorList.Navigate(task);
+                var navTask = new ErrorTask
+                {
+                    Category = task.Category,
+                    ErrorCategory = task.ErrorCategory,
+                    HierarchyItem = task.HierarchyItem,
+                    Document = task.Document,
+                    Line = task.Line + 1,
+                    Column = task.Column,
+                    Text = task.Text,
+                    CanDelete = task.CanDelete
+                };
+                HostPackage.ErrorList.Navigate(navTask);
             }
         }
 

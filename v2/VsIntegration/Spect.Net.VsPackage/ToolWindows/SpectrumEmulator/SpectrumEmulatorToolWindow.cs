@@ -106,10 +106,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1081)]
         public class StartVmCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            protected override Task ExecuteOnMainThreadAsync()
             {
                 Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
                 Machine.Start();
+                return Task.FromResult(0);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -184,10 +185,11 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1085)]
         public class StartDebugVmCommand : SpectrumVmCommand
         {
-            protected override void ExecuteOnMainThread()
+            protected override Task ExecuteOnMainThreadAsync()
             {
                 Machine.FastTapeMode = SpectNetPackage.Default.Options.UseFastLoad;
                 Machine.StartDebug();
+                return Task.FromResult(0);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -248,21 +250,23 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         [CommandId(0x1088)]
         public class SaveVmStateCommand : SpectNetCommandBase
         {
-            protected override void ExecuteOnMainThread()
+            protected override Task ExecuteOnMainThreadAsync()
             {
                 var folder = HostPackage.Options.VmStateSaveFileFolder;
                 var filename = VsxDialogs.FileSave(VMSTATE_FILTER, folder);
-                if (filename == null) return;
-
-                var spectrum = HostPackage.EmulatorViewModel.Machine.SpectrumVm;
-                var state = spectrum.GetVmState(HostPackage.Solution.ActiveProject.ModelName);
-
-                folder = Path.GetDirectoryName(filename);
-                if (folder != null && !Directory.Exists(folder))
+                if (filename != null)
                 {
-                    Directory.CreateDirectory(folder);
+                    var spectrum = HostPackage.EmulatorViewModel.Machine.SpectrumVm;
+                    var state = spectrum.GetVmState(HostPackage.Solution.ActiveProject.ModelName);
+
+                    folder = Path.GetDirectoryName(filename);
+                    if (folder != null && !Directory.Exists(folder))
+                    {
+                        Directory.CreateDirectory(folder);
+                    }
+                    File.WriteAllText(filename, state);
                 }
-                File.WriteAllText(filename, state);
+                return Task.FromResult(0);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -420,9 +424,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public class ToggleShadowScreenCommand : SpectNetCommandBase
         {
             protected EmulatorViewModel Evm => SpectNetPackage.Default.EmulatorViewModel;
-            protected override void ExecuteOnMainThread()
+            protected override Task ExecuteOnMainThreadAsync()
             {
                 Evm.ShadowScreenEnabled = !Evm.ShadowScreenEnabled;
+                return Task.FromResult(0);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)
@@ -436,9 +441,10 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         public class ToggleUlaIndicationCommand : SpectNetCommandBase
         {
             protected EmulatorViewModel Evm => SpectNetPackage.Default.EmulatorViewModel;
-            protected override void ExecuteOnMainThread()
+            protected override Task ExecuteOnMainThreadAsync()
             {
                 Evm.UlaIndicationEnabled = !Evm.UlaIndicationEnabled;
+                return Task.FromResult(0);
             }
 
             protected override void OnQueryStatus(OleMenuCommand mc)

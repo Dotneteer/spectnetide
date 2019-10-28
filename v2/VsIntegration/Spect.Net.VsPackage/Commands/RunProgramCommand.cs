@@ -1,4 +1,5 @@
-﻿using Spect.Net.VsPackage.VsxLibrary.Command;
+﻿using Spect.Net.VsPackage.Machines;
+using Spect.Net.VsPackage.VsxLibrary.Command;
 
 namespace Spect.Net.VsPackage.Commands
 {
@@ -14,9 +15,6 @@ namespace Spect.Net.VsPackage.Commands
         protected override void ResumeVm()
         {
             var vm = HostPackage.EmulatorViewModel;
-            vm.MemViewPoint = (ushort)MemoryStartAddress;
-            vm.DisAssViewPoint = (ushort)DisassemblyStartAddress;
-            vm.StackDebugSupport.ClearStepOutStack();
             vm.Machine.Start();
         }
 

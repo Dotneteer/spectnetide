@@ -210,6 +210,19 @@ namespace Spect.Net.VsPackage.Commands
                 vm.Machine.SpectrumVm.Cpu.Registers.PC = continuationPoint.Value;
                 await pane.WriteLineAsync($"Resuming code execution at address {vm.Machine.SpectrumVm.Cpu.Registers.PC:X4}.");
             }
+            vm.MemViewPoint = (ushort)MemoryStartAddress;
+            vm.DisAssViewPoint = (ushort)DisassemblyStartAddress;
+            vm.StackDebugSupport.ClearStepOutStack();
+            if (ItemExtension.ToLower() == ".zxbas")
+            {
+                // --- Push the MAIN_EXECUTION loop address to the stack
+                var memDevice = vm.Machine.SpectrumVm.MemoryDevice;
+                var spValue = vm.Machine.SpectrumVm.Cpu.Registers.SP;
+                var mainExec = VmStateFileManager.SP48_MAIN_EXEC_ADDR;
+                memDevice.Write((ushort)(spValue - 1), (byte)(mainExec >> 8));
+                memDevice.Write((ushort)(spValue - 2), (byte)mainExec);
+                vm.Machine.SpectrumVm.Cpu.Registers.SP -= 2;
+            }
             ResumeVm();
         }
 

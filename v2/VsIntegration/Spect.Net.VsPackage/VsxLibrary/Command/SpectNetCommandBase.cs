@@ -138,54 +138,54 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// <summary>
         /// Override this method to execute the command
         /// </summary>
-        private void OnExecute()
+        private async void OnExecute()
         {
             try
             {
                 IsCancelled = false;
-                ExecuteOnMainThread();
+                await ExecuteOnMainThreadAsync();
                 if (IsCancelled)
                 {
                     return;
                 }
-                JoinableTaskFactory.RunAsync(async () =>
-                {
-                    try
-                    {
-                        await Task.Yield(); // get off the caller's callstack.
+                _ = JoinableTaskFactory.RunAsync(async () =>
+                  {
+                      try
+                      {
+                          await Task.Yield(); // get off the caller's callstack.
                         await ExecuteAsync();
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        await CompleteOnMainThreadAsync();
-                    }
-                    catch (OperationCanceledException)
-                    {
+                          await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                          await CompleteOnMainThreadAsync();
+                      }
+                      catch (OperationCanceledException)
+                      {
                         // --- This exception is expected because we signaled the cancellation token
                         IsCancelled = true;
-                        OnCancellation();
-                    }
-                    catch (AggregateException ex)
-                    {
+                          OnCancellation();
+                      }
+                      catch (AggregateException ex)
+                      {
                         // --- ignore AggregateException containing only OperationCanceledException
                         if (ex.InnerException is OperationCanceledException)
-                        {
-                            IsCancelled = true;
-                            OnCancellation();
-                        }
-                        else
-                        {
-                            OnException(ex);
-                        }
-                    }
-                    finally
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        await FinallyOnMainThreadAsync();
-                        if (UpdateUiWhenComplete)
-                        {
-                            VsxAsyncPackage.UpdateCommandUi();
-                        }
-                    }
-                });
+                          {
+                              IsCancelled = true;
+                              OnCancellation();
+                          }
+                          else
+                          {
+                              OnException(ex);
+                          }
+                      }
+                      finally
+                      {
+                          await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                          await FinallyOnMainThreadAsync();
+                          if (UpdateUiWhenComplete)
+                          {
+                              VsxAsyncPackage.UpdateCommandUi();
+                          }
+                      }
+                  });
             }
             catch (Exception ex)
             {
@@ -197,8 +197,9 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// Override this method to define how to prepare the command on the
         /// main thread of Visual Studio
         /// </summary>
-        protected virtual void ExecuteOnMainThread()
+        protected virtual Task ExecuteOnMainThreadAsync()
         {
+            return Task.FromResult(0);
         }
 
         /// <summary>

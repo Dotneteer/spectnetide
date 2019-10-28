@@ -745,11 +745,11 @@ namespace Spect.Net.Assembler.Assembler
             if (scope.IsTemporaryScope)
             {
                 var tmpScope = localScopes.Pop();
-                scope = localScopes.Peek();
+                scope = localScopes.Count > 0 ? localScopes.Peek(): null;
                 localScopes.Push(tmpScope);
             }
 
-            if (!scope.IsProcScope)
+            if (scope == null || !scope.IsProcScope)
             {
                 ReportError(Errors.Z0448, stmt);
             }

@@ -32,6 +32,15 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public string Message { get; }
 
+        public AssemblerErrorInfo(string errorCode, string filename, int line, int column, string message)
+        {
+            ErrorCode = errorCode;
+            Filename = filename;
+            Line = line;
+            Column = column;
+            Message = message;
+        }
+
         public AssemblerErrorInfo(SourceFileItem sourceItem, Z80AsmParserErrorInfo syntaxErrorInfo)
         {
             var token = syntaxErrorInfo.Token.Trim();

@@ -72,7 +72,7 @@ directive
 	|	ELSE
 	|	IF expr
 	|	INCLUDE (STRING | FSTRING)
-	|	LINEDIR expr COMMA? STRING
+	|	LINEDIR expr (COMMA? STRING)?
 	;	
 
 statement

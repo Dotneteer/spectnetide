@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Spect.Net.Assembler.Assembler;
 
 namespace Spect.Net.VsPackage.Compilers
@@ -13,6 +14,12 @@ namespace Spect.Net.VsPackage.Compilers
         /// Gets the name of the compiler service
         /// </summary>
         string ServiceName { get; }
+
+        /// <summary>
+        /// Tests if the compiler is available.
+        /// </summary>
+        /// <returns>True, if the compiler is installed, and so available.</returns>
+        Task<bool> IsAvailable();
 
         /// <summary>
         /// Gets the handler that displays trace messages
@@ -33,8 +40,7 @@ namespace Spect.Net.VsPackage.Compilers
         /// <param name="options">Assembler options to use</param>
         /// <param name="output">Assembler output</param>
         /// <returns>True, if compilation is successful; otherwise, false</returns>
-        bool CompileDocument(string itemPath,
-            AssemblerOptions options,
-            out AssemblerOutput output);
+        Task<AssemblerOutput> CompileDocument(string itemPath,
+            AssemblerOptions options);
     }
 }

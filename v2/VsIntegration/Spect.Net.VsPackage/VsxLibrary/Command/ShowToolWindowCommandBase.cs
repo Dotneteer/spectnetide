@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.VsxLibrary.ToolWindow;
 using System;
 using System.Reflection;
+using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.VsxLibrary.Command
 {
@@ -33,13 +34,15 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// Override this method to define how to prepare the command on the
         /// main thread of Visual Studio
         /// </summary>
-        protected override void ExecuteOnMainThread()
+        protected override async Task ExecuteOnMainThreadAsync()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (ToolWindowType == null) return;
-            var window = SpectNetPackage.Default.GetToolWindow(ToolWindowType);
-            var windowFrame = (IVsWindowFrame)window.Frame;
-            ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
+            if (ToolWindowType != null)
+            {
+                var window = SpectNetPackage.Default.GetToolWindow(ToolWindowType);
+                var windowFrame = (IVsWindowFrame)window.Frame;
+                ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            }
         }
     }
 }

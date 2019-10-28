@@ -408,7 +408,7 @@ namespace Spect.Net.VsPackage
         [Category("ZX BASIC options")]
         [DisplayName("Require strict types")]
         [Description("The --strict option of ZXB")]
-        public bool StrictType { get; set; } = false;
+        public bool StrictTypes { get; set; } = false;
 
         [Category("Peripherals")]
         [DisplayName("Kempston Joystick Emulation")]
