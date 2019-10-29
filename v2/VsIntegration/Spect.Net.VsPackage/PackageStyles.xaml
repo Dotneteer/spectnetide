@@ -5,7 +5,8 @@
     xmlns:disassembly="clr-namespace:Spect.Net.VsPackage.ToolWindows.Disassembly"
     xmlns:watch="clr-namespace:Spect.Net.VsPackage.ToolWindows.Watch"
     xmlns:memory="clr-namespace:Spect.Net.VsPackage.ToolWindows.Memory"
-    xmlns:floppy="clr-namespace:Spect.Net.VsPackage.Dialogs.Vfdd">
+    xmlns:floppy="clr-namespace:Spect.Net.VsPackage.Dialogs.Vfdd"
+    xmlns:export="clr-namespace:Spect.Net.VsPackage.Dialogs.Export">
 
     <!-- Colors -->
     <Color x:Key="CToolBackground">#FF202020</Color>
@@ -351,6 +352,7 @@
     <disassembly:IndentDepthTypeConverter x:Key="IndentDepthTypeConverter" />
     <disassembly:LineLengthTypeConverter x:Key="LineLengthTypeConverter" />
     <floppy:DiskFormatConverter x:Key="DiskFormatConverter" />
+    <export:ExportFormatConverter x:Key="ExportFormatConverter" />
 
 
 </ResourceDictionary>

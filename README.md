@@ -1,5 +1,26 @@
 # Introduction
 
+## Version 2.0 is coming soon!
+
+I have been actively working on version 2 since June 2019. The first public preview will be available in November 2019. The main themes of version 2:
+
+- __Totally rewitten Visual Studio integration.__ I removed many annoying issues related to solution loading.
+- __Multiple ZX Spectrum projects.__ You can put more than one ZX Spectrum project into a single solution. While working, you can change the active project anytime.
+- __Boriel's BASIC (ZX BASIC) integration.__ Besides Z80 assembly, now, you can use ZX BASIC as your programming language to create spectacular games and applications.
+- __New debugging tools.__ The ZX Spectrum emulator provides two extra options: _ULA render point indication_, and _shadow screen rendering_.
+- __New, more modern project item icons.__
+
+Preview 1 (mid-November) will have these limitations:
+
+- ZX BASIC source code debugging is not supported yet.
+- Z80 Assembler Output and Z80 Unit Test Explorer are not supported yet.
+- SpectNetIDE is available only on VS 2019 (all editions supported).
+- Spectrum Scripting Console App project type removed.
+
+__Stay tuned!__
+
+## About the Project
+
 This project implements a ZX Spectrum integrated development environment (IDE) that is integrated into Visual Studio 2017 and 2019. 
 Initially, I intended this project to be just a demo project so that I can use it in my agile software design and testing courses. However, it became a fun project.
 

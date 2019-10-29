@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Spect.Net.VsPackage.0aad2815-a1c8-438c-a3ec-4c3fa0ae2b31" Version="2.0.0" Language="en-US" Publisher="Istvan Novak" />
+        <Identity Id="Spect.Net.VsPackage.E4F1ECA8-963F-4E73-8205-CDB1E484BA09" Version="2.0.0" Language="en-US" Publisher="Istvan Novak" />
         <DisplayName>SpectNetIde</DisplayName>
-        <Description xml:space="preserve">ZX Spectrum IDE with Visual Studio 2017 and 2019 integration</Description>
+        <Description xml:space="preserve">ZX Spectrum IDE with Visual Studio 2019 integration</Description>
         <Icon>Resources\SpectNetIde.ico</Icon>
     </Metadata>
     <Installation>

@@ -1,4 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-05-19T10:02:13+02:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Syntax Basics</title><link href="http://localhost:4000/spectnetide/documents/unit-testing-basics" rel="alternate" type="text/html" title="Syntax Basics" /><published>2019-01-05T00:00:00+01:00</published><updated>2019-01-05T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/unit-testing-basics</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/unit-testing-basics">&lt;p&gt;&lt;strong&gt;SpectNetIde&lt;/strong&gt; provides a somple programming language to describe Z80-related unit tests. You can add the 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-10-29T08:04:53+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Install SpectNetIDE</title><link href="http://localhost:4000/spectnetide/getting-started/install-spectnetide-2" rel="alternate" type="text/html" title="Install SpectNetIDE" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/install-spectnetide</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/install-spectnetide-2">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;You need Visual Studio installed on your machine. You do not have to pay to get a legal license for VS, SpectNetIDE works with the free Community edition seamlessly. You can download the Visual Studio edition of your choice from its &lt;a href=&quot;https://visualstudio.microsoft.com/downloads/&quot;&gt;home page&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Select the Tools|Extensions and Updates menu command. It displays a dialog to install VS extensions. Click the Online tab and type “SpectNetIDE” in the search box.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The dialog looks up the Visual Studio Marketplace and displays the SpectNetIDE extension. Click Download to start the installation.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/extensions-dialog-in-vs.png&quot; alt=&quot;Extensions and Updates&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;The IDE prepares the downloaded package for setup. However, it will begin installing it only after you close Visual Studio.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/extension-ready-to-install.png&quot; alt=&quot;Ready to Install&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;5&quot;&gt;
+  &lt;li&gt;When you have closed all running instances of Visual Studio, the VSIX installer automatically starts the setup. First, you have to confirm the license terms and click Modify.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/confirm-vsix-install.png&quot; alt=&quot;Confirm VSIX Install&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;6&quot;&gt;
+  &lt;li&gt;The VSIX installer sets up the extension—it takes less than a minute—and signs when it completes.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/vsix-install-completes.png&quot; alt=&quot;VSIX Install Completes&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, SpectNetIDE is ready to use. When you start Visual Studio, in the Help|About dialog you can check it’s integrated with VS.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectnetide-in-about.png&quot; alt=&quot;SpectNetIde in About&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To get familiar with using the ZX Spectrum IDE, take a look at the other tutorials!&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE is an open source project with MIT license, and it is free to install. I implemented the ZX Spectrum IDE as a Visual Studio 2017/2019 extension (VSIX). Thus, you can run it only on Windows. Follow these steps to install the IDE:</summary></entry><entry><title type="html">Syntax Basics</title><link href="http://localhost:4000/spectnetide/documents/unit-testing-basics" rel="alternate" type="text/html" title="Syntax Basics" /><published>2019-01-05T00:00:00+01:00</published><updated>2019-01-05T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/unit-testing-basics</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/unit-testing-basics">&lt;p&gt;&lt;strong&gt;SpectNetIde&lt;/strong&gt; provides a somple programming language to describe Z80-related unit tests. You can add the 
 &lt;code class=&quot;highlighter-rouge&quot;&gt;.z80test&lt;/code&gt; files to your project and run the test in the &lt;strong&gt;Unit Test Explorer&lt;/strong&gt; tool window. This document
 treats the syntax and semantics of the language.&lt;/p&gt;
 
@@ -3771,168 +3809,4 @@ object model. To get the shortest path to learn using them, I suggest starting w
       &lt;td&gt;This class provides event arguments the the &lt;code class=&quot;highlighter-rouge&quot;&gt;OperationExecuting&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;OperationExecuted&lt;/code&gt; events of the &lt;code class=&quot;highlighter-rouge&quot;&gt;CpuZ80&lt;/code&gt; class&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
-&lt;/table&gt;</content><author><name></name></author><summary type="html">SpectNetIde offers a set of .NET objects that you can use to create scripts that automate everyday tasks with ZX Spectrum virtual machines. You can use these objects in any .NET Framework application, or in scripting languages that allow accessing .NET Framework objects.</summary></entry><entry><title type="html">Scripting the Memory</title><link href="http://localhost:4000/spectnetide/documents/scripting-memory" rel="alternate" type="text/html" title="Scripting the Memory" /><published>2019-01-04T00:00:00+01:00</published><updated>2019-01-04T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/scripting-memory</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/scripting-memory">&lt;h1 id=&quot;the-memorypaginginfo-class&quot;&gt;The MemoryPagingInfo class&lt;/h1&gt;
-
-&lt;p&gt;This class provides properties and methods to obtain information about ROM and RAM paging.
-Though it works with ZX Spectrum 48K model, it provides benefits only for higher models.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Namespace&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;Spect.Net.SpectrumEmu.Scripting&lt;/code&gt;&lt;br /&gt;
-&lt;strong&gt;Assembly&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;Spect.Net.SpectrumEmu&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public sealed class MemoryPagingInfo
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;selectedromindex&quot;&gt;SelectedRomIndex&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public int SelectedRomIndex { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Gets the index of the currently selected ROM.&lt;/p&gt;
-
-&lt;h2 id=&quot;selectedrambankindex&quot;&gt;SelectedRamBankIndex&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public int SelectedRamBankIndex { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Gets the index of the selecter RAM bank for the &lt;code class=&quot;highlighter-rouge&quot;&gt;#C000&lt;/code&gt;-&lt;code class=&quot;highlighter-rouge&quot;&gt;#FFFF&lt;/code&gt; address range.&lt;/p&gt;
-
-&lt;h2 id=&quot;getbankindexforslotint&quot;&gt;GetBankIndexForSlot(int)&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public int GetBankIndexForSlot(int slot)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Gets the RAM bank index for the specified &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;slot&lt;/code&gt;&lt;/em&gt;.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;There are four slots, for the pages starting at &lt;code class=&quot;highlighter-rouge&quot;&gt;#0000&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#4000&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;#8000&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;#C000&lt;/code&gt;, respectively.
-Slot index should be set accordingly, from &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;3&lt;/code&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;usesshadowscreen&quot;&gt;UsesShadowScreen&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public bool UsesShadowScreen { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Indicates if the virtual machine uses the shadow screen (Bit 3 of port #7FFD). If false, the normal
-screen (Bank #5) is used. If true, the shadow screen (Bank #7) is displayed.&lt;/p&gt;
-
-&lt;h2 id=&quot;isinallrammode&quot;&gt;IsInAllRamMode&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public bool IsInAllRamMode { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Indicates if the virtul machine (ZX Spectrum +3E and ZX Spectrum Next) machine is
-in the special ALL RAM mode (Bit 0 of port #1FFD).&lt;/p&gt;
-
-&lt;h1 id=&quot;the-memoryslice-class&quot;&gt;The MemorySlice class&lt;/h1&gt;
-
-&lt;p&gt;This class represents a slice of the memory in the Spectrum virtual machine. Right now, it is used to
-represent the contents of a RAM bank.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Namespace&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;Spect.Net.SpectrumEmu.Scripting&lt;/code&gt;&lt;br /&gt;
-&lt;strong&gt;Assembly&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;Spect.Net.SpectrumEmu&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public sealed class MemorySlice
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;size&quot;&gt;Size&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public int Size { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The size of the memory slice, given in number of bytes.&lt;/p&gt;
-
-&lt;h2 id=&quot;thisint&quot;&gt;this[int]&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public byte this[int index] { get; set; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You can get and set the byte at the &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;index&lt;/code&gt;&lt;/em&gt; position in the memory slice.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Be aware, &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;index&lt;/code&gt;&lt;/em&gt; is not the absolute memory address of the byte, but a relative address from &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; to
-&lt;code class=&quot;highlighter-rouge&quot;&gt;Size - 1&lt;/code&gt;. For RAM banks, &lt;code class=&quot;highlighter-rouge&quot;&gt;Size&lt;/code&gt; is &lt;code class=&quot;highlighter-rouge&quot;&gt;#4000&lt;/code&gt;, thus you can address bytes from &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;#3FFF&lt;/code&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;the-readonlymemoryslice-class&quot;&gt;The ReadOnlyMemorySlice class&lt;/h1&gt;
-
-&lt;p&gt;This class represents a read-only slice of the memory in the Spectrum virtual machine. Right now, it is used to
-represent the contents of a ROM pages.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Namespace&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;Spect.Net.SpectrumEmu.Scripting&lt;/code&gt;&lt;br /&gt;
-&lt;strong&gt;Assembly&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;Spect.Net.SpectrumEmu&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public sealed class ReadOnlyMemorySlice
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;size-1&quot;&gt;Size&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public int Size { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The size of the memory slice, given in number of bytes.&lt;/p&gt;
-
-&lt;h2 id=&quot;thisint-1&quot;&gt;this[int]&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public byte this[int index] { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You can get the byte at the &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;index&lt;/code&gt;&lt;/em&gt; position in the memory slice. As the name of the class suggest,
-you cannot change the contents of a read-only memory slice.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Be aware, &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;index&lt;/code&gt;&lt;/em&gt; is not the absolute memory address of the byte, but a relative address from &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; to
-&lt;code class=&quot;highlighter-rouge&quot;&gt;Size - 1&lt;/code&gt;. For RAM banks, &lt;code class=&quot;highlighter-rouge&quot;&gt;Size&lt;/code&gt; is &lt;code class=&quot;highlighter-rouge&quot;&gt;#4000&lt;/code&gt;, thus you can address bytes from &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;#3FFF&lt;/code&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;the-spectrummemorycontents-class&quot;&gt;The SpectrumMemoryContents class&lt;/h1&gt;
-
-&lt;p&gt;This class provides access to the addressable 64KBytes memory contents of the Spectrum virtual machine.
-An instance of the class allows reading and writeng the memory.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Namespace&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;Spect.Net.SpectrumEmu.Scripting&lt;/code&gt;&lt;br /&gt;
-&lt;strong&gt;Assembly&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;Spect.Net.SpectrumEmu&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public sealed class SpectrumMemoryContents
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;thisushort&quot;&gt;this[ushort]&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public byte this[ushort address] { get; set; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Gets or sets the contents of the specified &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;address&lt;/code&gt;&lt;/em&gt;. Setting the content behaves as
-in the real hardware: if you try to set a ROM address, the contents of the particular
-memory address won’t change after the write operation.&lt;/p&gt;
-
-&lt;h2 id=&quot;readtrackingstate&quot;&gt;ReadTrackingState&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public AddressTrackingState ReadTrackingState { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The property’s value is an &lt;a href=&quot;/spectnetide/documents/scripting-z80.html#the-addresstrackingstate-class&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AddressTrackingState&lt;/code&gt;&lt;/a&gt; 
-instance. It provides a bit for each memory address in the &lt;code class=&quot;highlighter-rouge&quot;&gt;#0000&lt;/code&gt;-&lt;code class=&quot;highlighter-rouge&quot;&gt;#FFFF&lt;/code&gt; range to check if the 
-particular byte in the memory has been read during a CPU operation.&lt;/p&gt;
-
-&lt;h2 id=&quot;resetreadtracking&quot;&gt;ResetReadTracking()&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public void ResetReadTracking()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Resets the &lt;code class=&quot;highlighter-rouge&quot;&gt;ReadTrackingState&lt;/code&gt; property as if no memory had been read.&lt;/p&gt;
-
-&lt;h2 id=&quot;writetrackingstate&quot;&gt;WriteTrackingState&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public AddressTrackingState WriteTrackingState { get; }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The property’s value is an &lt;a href=&quot;/spectnetide/documents/scripting-z80.html#the-addresstrackingstate-class&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AddressTrackingState&lt;/code&gt;&lt;/a&gt; 
-instance. It provides a bit for each memory address in the &lt;code class=&quot;highlighter-rouge&quot;&gt;#0000&lt;/code&gt;-&lt;code class=&quot;highlighter-rouge&quot;&gt;#FFFF&lt;/code&gt; range to check if the 
-particular byte in the memory has been written during a CPU operation.&lt;/p&gt;
-
-&lt;h2 id=&quot;resetwritetracking&quot;&gt;ResetWriteTracking()&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public void ResetWriteTracking()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Resets the &lt;code class=&quot;highlighter-rouge&quot;&gt;WriteTrackingState&lt;/code&gt; property as if no memory had been read.&lt;/p&gt;</content><author><name></name></author><summary type="html">The MemoryPagingInfo class</summary></entry></feed>
+&lt;/table&gt;</content><author><name></name></author><summary type="html">SpectNetIde offers a set of .NET objects that you can use to create scripts that automate everyday tasks with ZX Spectrum virtual machines. You can use these objects in any .NET Framework application, or in scripting languages that allow accessing .NET Framework objects.</summary></entry></feed>

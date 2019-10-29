@@ -6,12 +6,44 @@ selector: home
 <div class="ui vertical stripe segment with-content-back as-first">
   <div class="ui container">
     <div class="ui grid">
+      <div class="sixteen wide computer column sixteen wide tablet sixteen wide mobile column">
+        <h2 class="feature">Version 2.0 is coming soon!</h2>
+        <p>
+          I have been actively working on version 2 since June 2019. The first public preview will 
+          be available in November 2019. The main themes of version 2:
+        </p>
+        <ul>
+          <li><strong>Totally rewitten Visual Studio integration</strong>. I removed many annoying issues related to solution loading</li>
+          <li><strong>Multiple ZX Spectrum projects</strong>. You can put more than one ZX Spectrum project into a single solution. 
+          While working, you can change the active project anytime.</li>
+          <li><strong>Boriel's BASIC (ZX BASIC) integration</strong>. Besides Z80 assembly, now, you can use ZX BASIC as your programming
+          language to create spectacular games and applications.</li>
+          <li><strong>New debugging tools</strong>. The ZX Spectrum emulator provides two extra options: ULA render point indication, and shadow screen rendering.</li>
+          <li><strong>New, more modern project item icons</strong></li>
+        </ul>
+        <p>
+          Preview 1 will have these limitations:
+        </p>
+        <ul>
+          <li>ZX BASIC source code debugging is not supported yet</li>
+          <li>Z80 Assembler Output and Z80 Unit Test Explorer is not supported yet</li>
+          <li>SpectNetIDE is available only on VS 2019 (all editions supported)</li>
+          <li>Spectrum Scripting Console App project type removed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui vertical stripe segment with-content-back even">
+  <div class="ui container">
+    <div class="ui grid">
       <div class="six wide computer column five wide tablet sixteen wide mobile column">
         <h2 class="feature">Essential Tools</h2>
         <p>
           SpectNet IDE encapsulates the tools you need to develop Z80 Programs
           for the ZX Spectrum 48K, 128+, and +3E. It integrates with Visual
-          Studio 2017 and 2019 <em>(Preview)</em> IDE, including the free Community editions.
+          Studio 2017 and 2019 IDE, including the free Community editions.
         </p>
         <p><a class="button-like" target="_blank" href='https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde'>Download SpectNet IDE</a></p>
         <p><a class="button-like" target="_blank" href='https://visualstudio.microsoft.com/free-developer-offers/'>Get VS 2017 or 2019 Community</a></p>
@@ -24,7 +56,7 @@ selector: home
   </div>
 </div>
 
-<div class="ui vertical stripe segment with-content-back even">
+<div class="ui vertical stripe segment with-content-back">
   <div class="ui container">
     <div class="ui grid">
       <div class="six wide computer column five wide tablet sixteen wide mobile column">
@@ -53,7 +85,7 @@ selector: home
   </div>
 </div>
 
-<div class="ui vertical stripe segment with-content-back">
+<div class="ui vertical stripe segment with-content-back even">
   <div class="ui container">
     <div class="ui grid">
       <div class="six wide computer column five wide tablet sixteen wide mobile column">
@@ -76,7 +108,7 @@ selector: home
   </div>
 </div>
 
-<div class="ui vertical stripe segment with-content-back even">
+<div class="ui vertical stripe segment with-content-back">
   <div class="ui container">
     <div class="ui grid">
       <div class="six wide computer column five wide tablet sixteen wide mobile column">
@@ -107,7 +139,7 @@ selector: home
   </div>
 </div>
 
-<div class="ui vertical stripe segment with-content-back">
+<div class="ui vertical stripe segment with-content-back even">
   <div class="ui container">
     <div class="ui grid">
       <div class="six wide computer column five wide tablet sixteen wide mobile column">
@@ -143,7 +175,7 @@ selector: home
   </div>
 </div>
 
-<div class="ui vertical stripe segment with-content-back even">
+<div class="ui vertical stripe segment with-content-back">
   <div class="ui container">
     <div class="ui grid">
       <div class="six wide computer column five wide tablet sixteen wide mobile column">
@@ -177,7 +209,7 @@ selector: home
   </div>
 </div>
 
-<div class="ui vertical stripe segment with-content-back">
+<div class="ui vertical stripe segment with-content-back even">
   <div class="ui container">
     <div class="ui grid">
       <div class="sixteen wide column">

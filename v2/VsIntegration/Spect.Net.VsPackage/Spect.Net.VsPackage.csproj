@@ -146,6 +146,12 @@
     <Compile Include="Debugging\BreakpointInfo.cs" />
     <Compile Include="Debugging\BreakpointsChangedEventArgs.cs" />
     <Compile Include="Debugging\VsIntegratedSpectrumDebugInfoProvider.cs" />
+    <Compile Include="Dialogs\Export\ExportFormat.cs" />
+    <Compile Include="Dialogs\Export\ExportFormatConverter.cs" />
+    <Compile Include="Dialogs\Export\ExportZ80ProgramDialog.xaml.cs">
+      <DependentUpon>ExportZ80ProgramDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Export\ExportZ80ProgramViewModel.cs" />
     <Compile Include="Dialogs\Vfdd\CreateVfddFileDialog.xaml.cs">
       <DependentUpon>CreateVfddFileDialog.xaml</DependentUpon>
     </Compile>
@@ -710,6 +716,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomEditors\TzxEditor\TzxTextDescriptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Export\ExportZ80ProgramDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
