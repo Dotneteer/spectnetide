@@ -128,7 +128,7 @@ namespace Spect.Net.VsPackage.Debugging
             // --- Keep CPU breakpoints set through the Disassembler tool
             foreach (var pair in Breakpoints.Where(bp => bp.Value.IsCpuBreakpoint))
             {
-                newBreakpointCollection.Add(pair.Key, pair.Value);
+                newBreakpointCollection[pair.Key] = pair.Value;
             }
 
             // --- Add existing VS breakpoints
@@ -136,7 +136,7 @@ namespace Spect.Net.VsPackage.Debugging
             {
                 foreach (var bp in existingBp)
                 {
-                    newBreakpointCollection.Add(bp.Key, bp.Value);
+                    newBreakpointCollection[bp.Key] = bp.Value;
                 }
             }
 

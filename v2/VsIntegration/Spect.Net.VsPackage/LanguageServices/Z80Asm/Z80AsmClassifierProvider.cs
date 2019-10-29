@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
@@ -17,7 +18,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
     {
         // --- We keep track of active classifiers
         private static Dictionary<string, Z80AsmClassifier> s_ActiveClassifiers =
-            new Dictionary<string, Z80AsmClassifier>();
+            new Dictionary<string, Z80AsmClassifier>(StringComparer.InvariantCultureIgnoreCase);
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
         [Import]

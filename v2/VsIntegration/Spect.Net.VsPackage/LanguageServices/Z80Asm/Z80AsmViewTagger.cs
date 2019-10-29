@@ -107,7 +107,8 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
 
                     var package = SpectNetPackage.Default;
                     if (package != null 
-                        && package.DebugInfoProvider.CurrentBreakpointFile == FilePath
+                        && string.Compare(package.DebugInfoProvider.CurrentBreakpointFile, FilePath, 
+                            StringComparison.InvariantCultureIgnoreCase) == 0
                         && package.DebugInfoProvider.CurrentBreakpointLine - 1 == line.LineNumber)
                     {
                         // --- Check for the current breakpoint

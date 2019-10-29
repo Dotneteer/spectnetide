@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using Spect.Net.VsPackage.Debugging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
     {
         // --- We keep track of active classifiers
         private static Dictionary<string, Z80AsmViewTagger> s_ActiveTaggers =
-            new Dictionary<string, Z80AsmViewTagger>();
+            new Dictionary<string, Z80AsmViewTagger>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// The service that maintains the collection of all known classification types.
