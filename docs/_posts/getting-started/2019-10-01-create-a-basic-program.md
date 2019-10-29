@@ -1,12 +1,12 @@
 ---
 layout: documents
 categories: 
-  - "Tutorials"
+  - "Tutorials v2"
 title:  "Create a BASIC Program"
-alias: create-a-basic-program
-seqno: 30
+alias: create-a-basic-program-2
+seqno: 1030
 selector: tutorial
-permalink: "getting-started/create-a-basic-program"
+permalink: "getting-started/create-a-basic-program-2"
 ---
 
 In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.
@@ -23,7 +23,7 @@ To enter this BASIC line, press these keys, in this order: "`1`", "`0`", "`B`", 
 
 As soon as you've added this program line, it appears in the screen listing:
 
-![Basic line 1]({{ site.baseurl }}/assets/images/tutorials/basic-line-1.png)
+![Basic line 1]({{ site.baseurl }}/assets/images/tutorials/basic-line-1-2.png)
 
 Now, add these lines to the code:
 
@@ -34,18 +34,18 @@ Now, add these lines to the code:
 50 GOTO 10
 ```
 
-![Basic line 2]({{ site.baseurl }}/assets/images/tutorials/basic-line-2.png)
+![Basic line 2]({{ site.baseurl }}/assets/images/tutorials/basic-line-2-2.png)
 
 Your first BASIC program is ready to run. Invoke the `RUN` command (press
 `R`, and then `Enter`) to start this code. As you can see from the listing, 
 it implements an infinite loop while changing the background color:
 
-![Basic code runs]({{ site.baseurl }}/assets/images/tutorials/basic-program-runs.png)
+![Basic code runs]({{ site.baseurl }}/assets/images/tutorials/basic-program-runs-2.png)
 
 To stop the program, press the `SPACE` and `SYM SHIFT` keys simultaneously
 or click the `BREAK` button in the ZX Spectrum Keyboard window with the right
 mouse button:
 
-![Basic program stopped]({{ site.baseurl }}/assets/images/tutorials/basic-program-stopped.png)
+![Basic program stopped]({{ site.baseurl }}/assets/images/tutorials/basic-program-stopped-2.png)
 
 Congratulations! It is time to move on and create a Z80 assembly program!

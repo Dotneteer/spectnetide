@@ -1,16 +1,16 @@
 ---
 layout: documents
 categories: 
-  - "Tutorials"
+  - "Tutorials v2"
 title:  "Use the Keyboard Tool"
-alias: use-keyboard-tool
-seqno: 21
+alias: use-keyboard-tool-2
+seqno: 1021
 selector: tutorial
-permalink: "getting-started/use-keyboard-tool"
+permalink: "getting-started/use-keyboard-tool-2"
 ---
 
 SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer's keyboard to type, but sometimes the Keyboard Tool makes your work easier.
-The IDE allows you using two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.
+The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.
 
 ![ZX Spectrum 48K keyboard]({{ site.baseurl }}/assets/images/tutorials/spectrum-48-keyboard.png)
 
@@ -65,7 +65,7 @@ The 1...8 keys allow you to enter graphic symbols. Click the particular symbol t
 ![Graphic keystroke 48K]({{ site.baseurl }}/assets/images/tutorials/graphic-keystroke-48.png)
 ![Graphic keystroke 128K]({{ site.baseurl }}/assets/images/tutorials/graphic-keystroke-128.png)
 
-> __Note__: On specific computers -- depending on the amount of free RAM and CPU load -- you may experience that entering graphic symbols sometimes fails, or the keyboard does not return the letter mode. In such a situation, click the GRAPHICS function (above key 9) and then to the digit beside the appropriate graphic symbol.
+> __Note__: On specific computers &mdash; depending on the amount of free RAM and CPU load &mdash; you may experience that entering graphic symbols sometimes fails, or the keyboard does not return the letter mode. In such a situation, click the GRAPHICS function (above key 9) and then to the digit beside the appropriate graphic symbol.
 
 ## Using the Physical and Virtual Keyboards Together
 
