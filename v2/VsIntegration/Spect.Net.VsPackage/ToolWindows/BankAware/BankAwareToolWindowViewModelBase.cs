@@ -382,13 +382,12 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
 
             if (FullViewMode)
             {
-                // TODO: Implement symbol lookup in the comiled code
                 // --- #1: check the compiled code
-                //if (CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue))
-                //{
-                //    value = symbolValue.Value;
-                //    return true;
-                //}
+                if (CompilerOutput != null && CompilerOutput.Symbols.TryGetValue(symbol, out var symbolValue))
+                {
+                    value = symbolValue.Value;
+                    return true;
+                }
 
                 // #2: Check user defined RAM annotations
                 var labelAddrs = AnnotationHandler.RamBankAnnotations[0].Labels

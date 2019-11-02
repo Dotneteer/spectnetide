@@ -667,14 +667,13 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         {
             var result = new List<string>();
             if (_bankViewModel == null) return result;
-            // TODO: Implement symbol lookup in the compiler output
-            //if (_bankViewModel.CompilerOutput != null)
-            //{
-            //    if (_bankViewModel.CompilerOutput.SymbolMap.TryGetValue(address, out var symbolList))
-            //    {
-            //        result.AddRange(symbolList);
-            //    }
-            //}
+            if (_bankViewModel.CompilerOutput != null)
+            {
+                if (_bankViewModel.CompilerOutput.SymbolMap.TryGetValue(address, out var symbolList))
+                {
+                    result.AddRange(symbolList);
+                }
+            }
 
             if (_bankViewModel?.AnnotationHandler != null)
             {
@@ -767,11 +766,10 @@ namespace Spect.Net.VsPackage.ToolWindows.Memory
         private Brush GetSymbolBrush(BankAwareToolWindowViewModelBase vm, int offset)
         {
             var addr = (ushort)(BaseAddress + offset);
-            // TODO: Implement compiler output lookup
-            //if (vm.CompilerOutput?.SymbolMap.ContainsKey(addr) == true)
-            //{
-            //    return s_SymbolBrush;
-            //}
+            if (vm.CompilerOutput?.SymbolMap.ContainsKey(addr) == true)
+            {
+                return s_SymbolBrush;
+            }
 
             var ann = vm.GetAnnotationFor(addr, out var memAddress);
             return ann != null && ann.Labels.ContainsKey(memAddress)

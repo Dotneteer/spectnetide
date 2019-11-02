@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Spect.Net.VsPackage.E4F1ECA8-963F-4E73-8205-CDB1E484BA09" Version="2.0.0" Language="en-US" Publisher="Istvan Novak" />
-        <DisplayName>SpectNetIde 2.0 (Preview 0)</DisplayName>
+        <Identity Id="Spect.Net.VsPackage.E4F1ECA8-963F-4E73-8205-CDB1E484BA09" Version="2.0.1" Language="en-US" Publisher="Istvan Novak" />
+        <DisplayName>SpectNetIde 2.0 (Preview 1)</DisplayName>
         <Description xml:space="preserve">ZX Spectrum IDE with Visual Studio 2019 integration</Description>
         <Icon>Resources\SpectNetIde.ico</Icon>
+        <Preview>true</Preview>
     </Metadata>
     <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 17.0)" />
-        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[15.0, 17.0)" />
-        <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[15.0, 17.0)" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[16.0, 17.0)" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[16.0, 17.0)" />
     </Installation>
     <Dependencies>
     </Dependencies>

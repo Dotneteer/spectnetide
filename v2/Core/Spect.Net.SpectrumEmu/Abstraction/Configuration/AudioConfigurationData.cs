@@ -24,7 +24,6 @@
 
         public AudioConfigurationData()
         {
-            // TODO: Remove this initial setup
             AudioSampleRate = 35000;
             SamplesPerFrame = 699;
             TactsPerSample = 100;

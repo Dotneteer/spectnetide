@@ -12,7 +12,6 @@ namespace Spect.Net.Assembler.SyntaxTree
         /// </summary>
         public string Mnemonic { get; set; }
 
-        // TODO: Eliminate the null default
         protected OperationBase(IParseTree context = null)
         {
             if (context != null)

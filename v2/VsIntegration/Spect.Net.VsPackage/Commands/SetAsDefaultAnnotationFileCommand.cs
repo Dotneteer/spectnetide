@@ -33,8 +33,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         protected override Task FinallyOnMainThreadAsync()
         {
-            // TODO: Raise this event
-            //Package.CodeManager.RaiseAnnotationFileChanged();
+            SpectNetPackage.Default.CodeManager.RaiseAnnotationFileChanged();
             return Task.FromResult(0);
         }
     }
