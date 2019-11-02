@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-10-29T16:49:30+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-11-02T08:03:15+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
 The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectrum-48-keyboard.png&quot; alt=&quot;ZX Spectrum 48K keyboard&quot; /&gt;&lt;/p&gt;
@@ -60,7 +60,154 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 
 &lt;h2 id=&quot;using-the-physical-and-virtual-keyboards-together&quot;&gt;Using the Physical and Virtual Keyboards Together&lt;/h2&gt;
 
-&lt;p&gt;You can use the physical keyboard to type into the ZX Spectrum emulator only when the emulator tool window has the keyboard focus. When you apply keystrokes in the Keyboard tool, that window receives the focus. So to be able to use the physical keyboard again, click the ZX Spectrum emulator to shift the focus.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier. The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.</summary></entry><entry><title type="html">Install SpectNetIDE</title><link href="http://localhost:4000/spectnetide/getting-started/install-spectnetide-2" rel="alternate" type="text/html" title="Install SpectNetIDE" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/install-spectnetide</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/install-spectnetide-2">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; is an open source project with MIT license, and it is free to install. The ZX Spectrum IDE is implemented as a Visual Studio 2019 extension (VSIX). Thus, you can run it only on Windows.&lt;/p&gt;
+&lt;p&gt;You can use the physical keyboard to type into the ZX Spectrum emulator only when the emulator tool window has the keyboard focus. When you apply keystrokes in the Keyboard tool, that window receives the focus. So to be able to use the physical keyboard again, click the ZX Spectrum emulator to shift the focus.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier. The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.</summary></entry><entry><title type="html">The ZX Spectrum Emulator</title><link href="http://localhost:4000/spectnetide/getting-started/zx-spectrum-emulator-window-2" rel="alternate" type="text/html" title="The ZX Spectrum Emulator" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/spectum-emulator-window</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/zx-spectrum-emulator-window-2">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; would not be useful without an emulator to develop programs. The ZX Spectrum Emulator tool window shows the screen of the embedded ZX Spectrum virtual machine that runs in the background.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-completed-2.png&quot; alt=&quot;Spectrum Emulator&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you see, the toolbar at the top of the window contains buttons to control the virtual machine.&lt;/p&gt;
+
+&lt;h3 id=&quot;start&quot;&gt;Start&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/start-button.png&quot; alt=&quot;Start&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This button turns of the virtual machine if it stopped, or continues running it if the machine is stopped.&lt;/p&gt;
+
+&lt;p&gt;As you see, the toolbar at the top of the window contains buttons to control the virtual machine. You can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl + F5&lt;/code&gt; key as a shortcut.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: shortcut keys are available only when the focus is in one of the emulator-related tool windows, including the emulator, ZX Spectrum Memory, Z80 Disassembly, Z80 Registers, and Watch Memory tool windows. You cannot use them while you are in the code editor or in Solution Explorer.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;stop&quot;&gt;Stop&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/stop-button.png&quot; alt=&quot;Stop&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Immediately turns off the virtual machine (&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl + M&lt;/code&gt;, then &lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl + S&lt;/code&gt;). It is as if you turned the hardware off.&lt;/p&gt;
+
+&lt;h3 id=&quot;pause&quot;&gt;Pause&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/pause-button.png&quot; alt=&quot;Pause&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can pause the running virtual machine at any time. Pausing suspends the execution, and the emulator-related tool windows display the state of the virtual machine, such as the current register values, the memory contents, or the execution point in the Disassembly view.&lt;/p&gt;
+
+&lt;p&gt;When you use step-by-step debugging, the virtual machine pauses every time it reaches a new breakpoint.&lt;/p&gt;
+
+&lt;h3 id=&quot;restart&quot;&gt;Restart&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/restart-button.png&quot; alt=&quot;restart&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Restarts the virtual machine, just as if you turned it off and on again.&lt;/p&gt;
+
+&lt;h3 id=&quot;start-debugging&quot;&gt;Start Debugging&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/debug-button.png&quot; alt=&quot;Debug&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can start the virtual machine in debug mode (&lt;code class=&quot;highlighter-rouge&quot;&gt;F5&lt;/code&gt;). In this mode, the virtual machine pauses when it reaches a breakpoint (and the optional breakpoint condition is satisfied). If you run the virtual machine with &lt;strong&gt;Start&lt;/strong&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl + F5&lt;/code&gt;), it won’t pause at breakpoints.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: The caption of the ZX Spectrum Emulator window shows the &lt;strong&gt;(Debugging)&lt;/strong&gt; label when it runs in debug mode.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;step-into&quot;&gt;Step-Into&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/step-into-button.png&quot; alt=&quot;Step-into&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;While the machine is paused, the Step-Into function (&lt;code class=&quot;highlighter-rouge&quot;&gt;F11&lt;/code&gt;) executes the next Z80 instruction. If the subsequent operation is a subroutine call (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;CALL&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;RST&lt;/code&gt;), &lt;em&gt;Step-Into&lt;/em&gt; pauses at the first operation of the subroutine. Should the next one be a block instruction (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;LDIR&lt;/code&gt;), &lt;em&gt;Step-Into&lt;/em&gt; breaks after the first loop of the block. Thus, if the block takes ten iterations, you have to &lt;em&gt;Step-Into&lt;/em&gt; ten time to get to the following operation.&lt;/p&gt;
+
+&lt;h3 id=&quot;step-over&quot;&gt;Step-Over&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/step-over-button.png&quot; alt=&quot;Step over&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Step-Over&lt;/em&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;F10&lt;/code&gt;) works the same for most instructions as &lt;em&gt;Step-Into&lt;/em&gt;. Nonetheless, if the next operation is a &lt;code class=&quot;highlighter-rouge&quot;&gt;CALL&lt;/code&gt; (or &lt;code class=&quot;highlighter-rouge&quot;&gt;RST&lt;/code&gt;), &lt;em&gt;Step-Over&lt;/em&gt; executes the entire subroutine and pauses at the next instruction following the call. If there’s a block instruction (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;LDIR&lt;/code&gt;), &lt;em&gt;Step-Over&lt;/em&gt; breaks at the next statement, completing the entire block operation.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: If a subroutine call manipulates the stack and returns to somewhere else, &lt;em&gt;Step-Over&lt;/em&gt; may not pause at the location you expect.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;step-out&quot;&gt;Step-Out&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/step-out-button.png&quot; alt=&quot;Sep out&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When you are within a subroutine call, &lt;em&gt;Step-Out&lt;/em&gt; continues the execution flow until the current subroutine returns to the caller, and pauses the machine right after returning.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: If a subroutine call manipulates the stack and returns to somewhere else, &lt;em&gt;Step-Out&lt;/em&gt; may not pause at the location you expect.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;save-virtual-machine-state&quot;&gt;Save Virtual Machine State&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/save-state-button.png&quot; alt=&quot;Save state&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Any time the virtual machine is stopped, you can save its state including the CPU, memory, execution flow, devices, etc. into a &lt;code class=&quot;highlighter-rouge&quot;&gt;.vmstate&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;h3 id=&quot;load-virtual-machine-state&quot;&gt;Load Virtual Machine State&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/load-state-button.png&quot; alt=&quot;Load state&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When the virtual machine is paused, you can restore its former state by loading it from a &lt;code class=&quot;highlighter-rouge&quot;&gt;.vmstate&lt;/code&gt; file. Saving and loading the state allows you to suspend debugging between Visual Studio sessions.&lt;/p&gt;
+
+&lt;h3 id=&quot;add-virtual-machine-state-to-the-project&quot;&gt;Add Virtual Machine State to the project&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/add-state-button.png&quot; alt=&quot;Add state&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you are analyzing code, it is useful if the virtual machine state files are the part of your project so that you can handle them with the same source control procedures as other project files. You can not only save a &lt;code class=&quot;highlighter-rouge&quot;&gt;.vmstate&lt;/code&gt; file, but also add it to your project’s &lt;code class=&quot;highlighter-rouge&quot;&gt;VmStates&lt;/code&gt; folder.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: In other articles, you can find more details about working with &lt;code class=&quot;highlighter-rouge&quot;&gt;.vmstate&lt;/code&gt; files.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;show-keyboard&quot;&gt;Show Keyboard&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/keyboard-button.png&quot; alt=&quot;Show keyboard&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Click this button to show the ZX Spectrum keyboard.&lt;/p&gt;
+
+&lt;h3 id=&quot;shadow-screen&quot;&gt;Shadow Screen&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/shadow-screen-button.png&quot; alt=&quot;Shadow Screen&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This toggle button turns on and off the shadow screen mode. When turned on, pausing your machine does not turn off display rendering, it goes on as if only the Z80 CPU has been paused. In this mode, you can immediately see the modifications in the screen memory and flashing works too.&lt;/p&gt;
+
+&lt;h3 id=&quot;ula-render-point&quot;&gt;ULA Render Point&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/ula-point-button.png&quot; alt=&quot;ULA Point&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This tiggle button turns on and off displaying the ULA render point. If you turn this mode on, in the paused machine state the emulator screen displays the pixel pair being rendered by the ULA.&lt;/p&gt;
+
+&lt;h2 id=&quot;emulator-behavior&quot;&gt;Emulator Behavior&lt;/h2&gt;
+
+&lt;p&gt;As soon as you load a ZX Spectrum project into Visual Studio, the IDE creates a new ZX Spectrum virtual machine according to the type specified when you created the project. This machine does not run; you need to start it explicitly.&lt;/p&gt;
+
+&lt;p&gt;Even if the ZX Spectrum Emulator tool window is closed, the virtual machine still runs in the background once you’ve started it. It halts if you explicitly stop it, close the current solutions, or exit the Visual Studio IDE.&lt;/p&gt;
+
+&lt;p&gt;While the ZX Spectrum Emulator tool window has the focus, the IDE forward the keystrokes to the emulator that senses them as if you pressed a key on the ZX Spectrum hardware.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE would not be useful without an emulator to develop programs. The ZX Spectrum Emulator tool window shows the screen of the embedded ZX Spectrum virtual machine that runs in the background.</summary></entry><entry><title type="html">LOAD a Program</title><link href="http://localhost:4000/spectnetide/getting-started/load-a-program-2" rel="alternate" type="text/html" title="LOAD a Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/load-a-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/load-a-program-2">&lt;p&gt;You can load a program from the tape into the memory with the &lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?&lt;/p&gt;
+
+&lt;p&gt;As a part of your project, you can add tape files with standard &lt;code class=&quot;highlighter-rouge&quot;&gt;.TAP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.TZX&lt;/code&gt; format. When the IDE creates a new ZX Spectrum project, it adds a sample tape file, &lt;code class=&quot;highlighter-rouge&quot;&gt;Welcome.tzx&lt;/code&gt;; it puts it into the &lt;code class=&quot;highlighter-rouge&quot;&gt;TapeFiles&lt;/code&gt; folder. With the Add Existing Item command of Visual Studio, you can attach more tape files to the project. The virtual machine – that runs the ZX Spectrum Emulator – can work only with a single tape file at a time. To load that one – called the default tape –, follow these steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;In Solution Explorer, select the tape file you want to attach to the virtual machine.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Right-click the &lt;strong&gt;Set as default tape file&lt;/strong&gt; command:&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/set-default-tape-file-2.png&quot; alt=&quot;Set default tape&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The IDE marks the default tape file with bold typeface.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/default-tape-file-set-2.png&quot; alt=&quot;Default tape file set&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Next time you enter the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt;&lt;/strong&gt; statement, the virtual machine will play the newly selected tape file.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/pacman-loads-2.png&quot; alt=&quot;Pacman loads&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: You can change the default tape file between loads while the machine runs – without stopping and restarting it.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">You can load a program from the tape into the memory with the LOAD &quot;&quot; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?</summary></entry><entry><title type="html">Install SpectNetIDE</title><link href="http://localhost:4000/spectnetide/getting-started/install-spectnetide-2" rel="alternate" type="text/html" title="Install SpectNetIDE" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/install-spectnetide</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/install-spectnetide-2">&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; is an open source project with MIT license, and it is free to install. The ZX Spectrum IDE is implemented as a Visual Studio 2019 extension (VSIX). Thus, you can run it only on Windows.&lt;/p&gt;
 
 &lt;p&gt;You need Visual Studio installed on your machine. You do not have to pay to get a legal license for VS, SpectNetIDE works with the free Community edition seamlessly. You can download the Visual Studio edition of your choice from its &lt;a href=&quot;https://visualstudio.microsoft.com/downloads/&quot;&gt;home page&lt;/a&gt;.&lt;/p&gt;
 
@@ -127,7 +274,29 @@ Though both versions can be installed simultaneously in the IDE, they do not wor
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectnetide-in-about-2.png&quot; alt=&quot;SpectNetIde in About&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;To get familiar with using the ZX Spectrum IDE, take a look at the other tutorials!&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE is an open source project with MIT license, and it is free to install. The ZX Spectrum IDE is implemented as a Visual Studio 2019 extension (VSIX). Thus, you can run it only on Windows.</summary></entry><entry><title type="html">Export a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/export-a-z80-program-2" rel="alternate" type="text/html" title="Export a Z80 Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/export-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/export-a-z80-program-2">&lt;p&gt;After you created your Z80 Assembler program, you can easily export it into a &lt;code class=&quot;highlighter-rouge&quot;&gt;.TAP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.TZX&lt;/code&gt; file so that you
+&lt;p&gt;To get familiar with using the ZX Spectrum IDE, take a look at the other tutorials!&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE is an open source project with MIT license, and it is free to install. The ZX Spectrum IDE is implemented as a Visual Studio 2019 extension (VSIX). Thus, you can run it only on Windows.</summary></entry><entry><title type="html">Fast (Instant) LOAD</title><link href="http://localhost:4000/spectnetide/getting-started/fast-load-2" rel="alternate" type="text/html" title="Fast (Instant) LOAD" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/fast-load</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/fast-load-2">&lt;p&gt;I like the retro feeling of the ZX Spectrum border stripes when a program is being loaded. Today’s kids cannot imagine being patient for three to five minutes while a bigger game gets into the memory from the tape.&lt;/p&gt;
+
+&lt;p&gt;Well, while you develop code, you probably do not the same time as you had in your childhood.&lt;/p&gt;
+
+&lt;p&gt;SpectNetIDE provides an option to load programs instantly. Open the &lt;strong&gt;Tools|Options&lt;/strong&gt; dialog in the Visual Studio IDE, and navigate to the &lt;strong&gt;Spect.Net IDE&lt;/strong&gt; tab. Under the &lt;strong&gt;Virtual machine&lt;/strong&gt; section, you find the &lt;strong&gt;Use Fast Load&lt;/strong&gt; configuration option. Set it to &lt;strong&gt;True&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/use-fast-load-2.png&quot; alt=&quot;Use fast load&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Setting this option requires that you restart the ZX Spectrum virtual machine – fortunately not your computer :-).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The next time you load a program, it happens instantly.&lt;/p&gt;
+
+&lt;h2 id=&quot;under-the-hood&quot;&gt;Under the Hood&lt;/h2&gt;
+
+&lt;p&gt;SpectNetIDE uses a technique called ROM hooking.&lt;/p&gt;
+
+&lt;p&gt;The virtual machine senses that the execution flow enters into the LOAD routine within the ZX Spectrum ROM (at address &lt;strong&gt;$056C&lt;/strong&gt;), and temporarily suspends the CPU. The virtual machine executes its custom loader subroutine to get the contents of the tape file and injects the code into the memory. Then, it sets the contents of the Z80 CPU’s registers as if the original ROM routine had run successfully, and resumes the CPU as if it just returned from the ROM routine (at address &lt;strong&gt;$05E2&lt;/strong&gt;).&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Fast load does not work with programs that dodge the LOAD routine in the ROM, e.g., the ones which use custom loaders. In such cases, turn off fast loading.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">I like the retro feeling of the ZX Spectrum border stripes when a program is being loaded. Today’s kids cannot imagine being patient for three to five minutes while a bigger game gets into the memory from the tape.</summary></entry><entry><title type="html">Export a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/export-a-z80-program-2" rel="alternate" type="text/html" title="Export a Z80 Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/export-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/export-a-z80-program-2">&lt;p&gt;After you created your Z80 Assembler program, you can easily export it into a &lt;code class=&quot;highlighter-rouge&quot;&gt;.TAP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.TZX&lt;/code&gt; file so that you
 could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum
 (with the help of TZXDuino or CASDuino hardware).&lt;/p&gt;
 
@@ -800,826 +969,4 @@ Cycle_4_Wait
 &lt;blockquote&gt;
   &lt;p&gt;Theoretically, you can use as long identifiers as you want. I suggest you to make them no longer than
 32 characters so that readers may read your code easily.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">SpectNetIde provides a somple programming language to describe Z80-related unit tests. You can add the .z80test files to your project and run the test in the Unit Test Explorer tool window. This document treats the syntax and semantics of the language.</summary></entry><entry><title type="html">The Testing Process</title><link href="http://localhost:4000/spectnetide/documents/unit-testing-process" rel="alternate" type="text/html" title="The Testing Process" /><published>2019-01-05T00:00:00+01:00</published><updated>2019-01-05T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/unit-testing-process</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/unit-testing-process">&lt;h1 id=&quot;the-testing-process&quot;&gt;The Testing Process&lt;/h1&gt;
-
-&lt;p&gt;You already learned that tests are organized into a hierarchy of &lt;em&gt;test files&lt;/em&gt;, &lt;em&gt;test sets&lt;/em&gt;, &lt;em&gt;tests&lt;/em&gt;, and parameterized
-&lt;em&gt;test cases&lt;/em&gt;. In this section you will learn how the test engine manages these tests.&lt;/p&gt;
-
-&lt;p&gt;The testing process start with the compilation of tests. During this step, all tests are turned into execution plans.
-If there is any compilation error, the engine won’t start running the tests.&lt;/p&gt;
-
-&lt;p&gt;The unit of execution is the &lt;strong&gt;test set&lt;/strong&gt;. Test sets are entirelly independent of each other. You can run them in any
-sequence; the order won’t change whether they fail or succeed. SpectNetIde loops through all test files declared in the
-project (you cannot assume deterministic order), and runs all test sets in their declaration order within a file.&lt;/p&gt;
-
-&lt;p&gt;Each test sets creates and starts a Spectrum virtual machine, and pauses it when the machine reaches its main execution 
-cycle. The point a machine is paused depends on its type (different for Spectrum 48K, 128K, +3E), and also the mode the machine
-runs. For example, in a Spectrum 128K machine you can run tests in BASIC 128 mode or in Spectrum 48K mode.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Right now, the unit test engine supports only Spectrum 48K mode, but soon you will be able to use the other modes, too.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;running-a-test-set&quot;&gt;Running a Test Set&lt;/h2&gt;
-
-&lt;p&gt;Every test within a test set uses this virtual machine. This machine is paused every time a test completes 
-(either successfully, with a failure, or in aborted state). &lt;em&gt;If a test disrupts the machine’s memory (for example, it changes
-the code being tested), the behavior of a particular test may prevent the subsequent test from running properly.&lt;/em&gt; This demeanor
-of test sets is intentional.&lt;/p&gt;
-
-&lt;p&gt;The engine uses these steps to run the tests defined within a tes set:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;After the Spectrum machine reaches its startup state and pauses, the engine copies the compiled source code into
-the memory.&lt;/li&gt;
-  &lt;li&gt;If the test set declares an &lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt; section, the engine sets up the registers and flags accordingly, copies byte array
-values into the memory. While initializing, it follows the order of &lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt; assignments.&lt;/li&gt;
-  &lt;li&gt;The engine loops through the nested &lt;code class=&quot;highlighter-rouge&quot;&gt;test&lt;/code&gt; blocks in their declaration order, and executes them.&lt;/li&gt;
-  &lt;li&gt;When all tests are completed, the engine stops the virtual machine and disposes its state.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;running-a-test-and-parameterized-cases&quot;&gt;Running a Test and Parameterized Cases&lt;/h2&gt;
-
-&lt;p&gt;To run a single test, the engine follows these steps:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;If the test has a &lt;code class=&quot;highlighter-rouge&quot;&gt;setup&lt;/code&gt; declaration, the engine invokes the Setup code. If that code fails 
-— it exceeds the timeout — the engine aborts the test.&lt;/li&gt;
-  &lt;li&gt;If the test has a single default case, the engine runs that case. If the test has multiple cases, 
-the engine iterates through all cases in their declaration order.&lt;/li&gt;
-  &lt;li&gt;Provided the test has a &lt;code class=&quot;highlighter-rouge&quot;&gt;cleanup&lt;/code&gt; section, the engine invokes the Cleanup code. If this code 
-exceeds the timeout, the Cleanup code aborts the test.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;According to this method, it might happen that all tests run successfully and still the test is
-aborted, because its Cleanup code fails. This behavior is intentional: a faulty cleanup code may influence
-the subsequent tests.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;The engine carries out the same steps for a default test case and parameterized test cases. If there are 
-more cases, these steps are executed in a loop:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Provided there are &lt;code class=&quot;highlighter-rouge&quot;&gt;arrange&lt;/code&gt; declarations, the engine sets up the registers and flags accordingly, 
-copies byte array values into the memory — in the order of their declaration. If any &lt;code class=&quot;highlighter-rouge&quot;&gt;arrange&lt;/code&gt; 
-assignment fails, the test is aborted.&lt;/li&gt;
-  &lt;li&gt;The engine invokes the &lt;code class=&quot;highlighter-rouge&quot;&gt;act&lt;/code&gt; code. If it completes within the timeout, the testing process goes on;
-otherwise, the test is aborted.&lt;/li&gt;
-  &lt;li&gt;If there is no &lt;code class=&quot;highlighter-rouge&quot;&gt;assert&lt;/code&gt; section, the test is successful.&lt;/li&gt;
-  &lt;li&gt;If there’s an &lt;code class=&quot;highlighter-rouge&quot;&gt;assert&lt;/code&gt; section, the engine evaluates all expresssions within until it iterates through 
-all or one of the expression evaluates to false.&lt;/li&gt;
-  &lt;li&gt;A false assertion value completes the test as failed. If all assertions are true, the test is successful.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;side-effects&quot;&gt;Side effects&lt;/h2&gt;
-
-&lt;p&gt;A test can have test options (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;timeout&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;di&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;ei&lt;/code&gt;). The engine uses these values whenever
-it invokes Z80 code, independently whether that is &lt;code class=&quot;highlighter-rouge&quot;&gt;setup&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;act&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;cleanup&lt;/code&gt;. Between these 
-code invocations, the engine simply pauses the Spectrum virtual machine and starts it again. There is one
-special action the test engine takes: if a code is invoked with &lt;code class=&quot;highlighter-rouge&quot;&gt;halt&lt;/code&gt;, the test removes the CPU from its
-halted state before the next test.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Again, the code is injected into the virtual machine only once, at the start of a test set. If any code
-changes the memory, it may disrupt the test code, and thus remaining test cases in the test set may fail of
-even may be aborted. Nonetheless, these tests won’t cause any harm in your project, they just cause tests fail.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;For example, the following code disrupts the Spectrum virtual machine, because it restarts it, and so it causes
-the clearing the RAM:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;testset Crashing
-{
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot;;
-
-    test CrashingCode
-    {
-        with timeout 1000;
-        act call #0000;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Running it will abort the test after a second.&lt;/p&gt;
-
-&lt;h2 id=&quot;using-callstub&quot;&gt;Using Callstub&lt;/h2&gt;
-
-&lt;p&gt;When you invoke the code with the &lt;code class=&quot;highlighter-rouge&quot;&gt;call&lt;/code&gt; instruction, the test engine generates a stub
-that call your subroutine. By default, the engine places three bytes with a Z80 &lt;code class=&quot;highlighter-rouge&quot;&gt;CALL&lt;/code&gt;
-instruction to the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;#5BA0&lt;/code&gt;&lt;/strong&gt; address, that is an empty area within the ZX Spectrum system
-variables (printer buffer in ZX Spectrum 48K). If you do not want to use this address for a
-stub, you can change it with the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;callstub&lt;/code&gt;&lt;/strong&gt; attribute of a test set:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;testset Introduction
-{
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot;;
-    callstub #8000;
-
-    // --- Other test code omitted
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;This sample code instructs the engine to use the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;#8000&lt;/code&gt;&lt;/strong&gt; address to generate the stub.
-Be careful with using your custom stub!&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;First, do not forget to provide 3 bytes that the test engine can override.&lt;/li&gt;
-  &lt;li&gt;Second, take care that you do not declare a &lt;code class=&quot;highlighter-rouge&quot;&gt;call&lt;/code&gt; code invocation that addresses a routine
-starting at the &lt;code class=&quot;highlighter-rouge&quot;&gt;callstub&lt;/code&gt; + 3 address. The test engine checks if your call is completed so
-that it compares &lt;strong&gt;PC&lt;/strong&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;callstub&lt;/code&gt; + 3.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This is a pattern you can use with your own custom &lt;code class=&quot;highlighter-rouge&quot;&gt;callstub&lt;/code&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.org #8000
-
-; --- Here is some code
-
-; --- We reserve 4 bytes
-CallstubAddress:
-    .defs 4;
-; --- SomeRoutine starts at CallstubAddress + 4
-SomeRoutine:
-; --- Add routine code here
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Now, you can define a test line this:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;testset Introduction
-{
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot;;
-    callstub CallstubAddress;
-
-    test 
-    {
-        // ...
-        act call SomeRoutine;
-    }
-}
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">The Testing Process</summary></entry><entry><title type="html">Expressions</title><link href="http://localhost:4000/spectnetide/documents/unit-testing-expressions" rel="alternate" type="text/html" title="Expressions" /><published>2019-01-05T00:00:00+01:00</published><updated>2019-01-05T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/unit-testing-expressions</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/unit-testing-expressions">&lt;p&gt;The test language has a rich syntax for evaluating expressions. You can use operands 
-and operators just like in most programming languages. Nevertheless, the test language
-implementation has its particular semantics of evaluating expression, as you will learn soon.&lt;/p&gt;
-
-&lt;h2 id=&quot;operands&quot;&gt;Operands&lt;/h2&gt;
-&lt;p&gt;You can use the following operands in epressions:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Decimal and hexadecimal literals&lt;/li&gt;
-  &lt;li&gt;Character literals&lt;/li&gt;
-  &lt;li&gt;Identifiers&lt;/li&gt;
-  &lt;li&gt;Test language specific constructs, such as the register, flag, and memory access operands&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;String literals cannot be used as operands.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;operators&quot;&gt;Operators&lt;/h2&gt;
-
-&lt;p&gt;You can use about a dozen operators, including unary, binary and ternary ones. In this section
-you will learn about them. I will introduce them in descending order of their precendence.&lt;/p&gt;
-
-&lt;h3 id=&quot;conditional-operator&quot;&gt;Conditional Operator&lt;/h3&gt;
-
-&lt;p&gt;The assembler supports using only one ternary operator, the conditional operator:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;conditional-expression&lt;/em&gt; &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;true-value&lt;/em&gt; &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;&lt;/strong&gt; &lt;em&gt;false-value&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;This operation results in -1:&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;2 &amp;gt; 3 ? 2 : -1&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;When the &lt;em&gt;conditional-expression&lt;/em&gt; evaluates to true, the operation results 
-in &lt;em&gt;true-value&lt;/em&gt;; otherwise in &lt;em&gt;false-value&lt;/em&gt;.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Conditional expressions are evaluated from right to left, in contrast to binary operators,
-which use left-to-right evaluation.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;binary-bitwise-operators&quot;&gt;Binary Bitwise Operators&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;Bitwise OR&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;^&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;2&lt;/td&gt;
-      &lt;td&gt;Bitwise XOR&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;3&lt;/td&gt;
-      &lt;td&gt;Bitwise AND&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;relational-operators&quot;&gt;Relational Operators&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;==&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;Equality&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;!=&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;Non-equality&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;Less than&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;Less than or equal&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;Greater than&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;=&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;Greater than or equal&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;shift-operators&quot;&gt;Shift Operators&lt;/h3&gt;
-
-&lt;p&gt;The bits of the left operand are shifted by the number of bits given by the right operand.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;6&lt;/td&gt;
-      &lt;td&gt;Shift left&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;6&lt;/td&gt;
-      &lt;td&gt;Shift right&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;basic-arithmetic-operators&quot;&gt;Basic Arithmetic Operators&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;7&lt;/td&gt;
-      &lt;td&gt;Addition&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;7&lt;/td&gt;
-      &lt;td&gt;Subtraction&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;8&lt;/td&gt;
-      &lt;td&gt;Multiplication&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;8&lt;/td&gt;
-      &lt;td&gt;Division&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;8&lt;/td&gt;
-      &lt;td&gt;Modulo calculation&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;unary-operators&quot;&gt;Unary operators&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Operator token&lt;/th&gt;
-      &lt;th&gt;Precedence&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;9&lt;/td&gt;
-      &lt;td&gt;Unary plus&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;9&lt;/td&gt;
-      &lt;td&gt;Unary minus&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;~&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;9&lt;/td&gt;
-      &lt;td&gt;Unary bitwise NOT&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;!&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;9&lt;/td&gt;
-      &lt;td&gt;Unary logical NOT&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Do not forget, you can change the defult precendence with &lt;code class=&quot;highlighter-rouge&quot;&gt;(&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;)&lt;/code&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;type-semantics&quot;&gt;Type semantics&lt;/h2&gt;
-
-&lt;p&gt;Expression values can be one of these types:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Boolean&lt;/li&gt;
-  &lt;li&gt;Number&lt;/li&gt;
-  &lt;li&gt;Byte array&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;There are implicit conversions amont these types. The test language compiler automatically applies
-these conversions, knowing the types to operate on.&lt;/p&gt;
-
-&lt;p&gt;Internally, values are stored either as 64-bit numbers, or byte arrays. The compiler utilizes these 
-conversions:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;When a byte array value is required but a numeric value is found, the numeric value is converted 
-into an array of a single byte using the rightmost 8 bits of the number stored in the memory.&lt;/li&gt;
-  &lt;li&gt;When a number is required but a byte array is found, the conversion goes like this: A byte array 
-of all 0 bytes results 0, any other values retrieve 1.&lt;/li&gt;
-  &lt;li&gt;When the compiler needs a boolean number, the zero numeric value results 0 (false), any other value 
-values retrieve 1 (true).&lt;/li&gt;
-  &lt;li&gt;When the compiler needs a boolean number but it finds a byte array, the conversion takes two steps.
-First, it turns the byte array into a number if first converts a byte array into a number (rule #1), 
-and then these number into a Boolean (rule #3).&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;operator-specific-behavior&quot;&gt;Operator-Specific Behavior&lt;/h2&gt;
-
-&lt;p&gt;The compiler does not apply the conversion rules above automatically for all operators to avoid
-unintended programming errors, instead retrieves an error:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;No binary operators (including relational operators) accept mixing numeric and byte array values&lt;/li&gt;
-  &lt;li&gt;Binary operators (except binary &lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt;) do not allow two byte array operands&lt;/li&gt;
-  &lt;li&gt;The conditional operator ( &lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt; ) does not allow a byte array as the condition&lt;/li&gt;
-  &lt;li&gt;Unary operators except &lt;code class=&quot;highlighter-rouge&quot;&gt;!&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;~&lt;/code&gt; allow only numbers.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;There are a few operators that work with byte arrays:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;The binary &lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt; operator concatenates two byte arrays.&lt;/li&gt;
-  &lt;li&gt;The bitwise logical operators work with two byte array operands. The result will be
-a byte array with the shorter size of the operands. The elements of the result array are the
-corresponding bitwise operations on the bits of the operand arrays.&lt;/li&gt;
-  &lt;li&gt;The bitwise NOT unary operation inverts all bits in the byte array.&lt;/li&gt;
-  &lt;li&gt;The logical NOT unary operator converts the byte array to a number and applies the logical NOT&lt;/li&gt;
-  &lt;li&gt;operator on that number.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">The test language has a rich syntax for evaluating expressions. You can use operands and operators just like in most programming languages. Nevertheless, the test language implementation has its particular semantics of evaluating expression, as you will learn soon.</summary></entry><entry><title type="html">Detailed Syntax</title><link href="http://localhost:4000/spectnetide/documents/unit-testing-details" rel="alternate" type="text/html" title="Detailed Syntax" /><published>2019-01-05T00:00:00+01:00</published><updated>2019-01-05T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/unit-testing-details</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/unit-testing-details">&lt;p&gt;In the following section, I will use a kind of abstract syntax notation to describe the grammar of the 
-SpectNetIde test language. Bold characters mark terminal symbols (keywords and other tokens), while 
-italic strings ara non-terminal symbols. The &lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt; after a symbol means that it’s optional. A &lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt; 
-means zero, one, or more occurrence. &lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt; means one or more occurrence. The &lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt; character separates options, exactly one of them can be used.
-The language uses parantheses to specify groups of tokens.&lt;/p&gt;
-
-&lt;h2 id=&quot;compilation-units&quot;&gt;Compilation Units&lt;/h2&gt;
-
-&lt;p&gt;Each file is a compilation unit that contains zero, one, or more test sets:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;compileUnit:&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testSet*&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;test-sets&quot;&gt;Test Sets&lt;/h2&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testSet:&lt;/code&gt;** 
-    &lt;strong&gt;testset&lt;/strong&gt; *&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;{&lt;/strong&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;strong&gt;sp48mode&lt;/strong&gt; *&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sourceContext&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;callstub?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dataBlock?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;initSettings?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testBlock*&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;strong&gt;}&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;using-sp48mode&quot;&gt;Using sp48mode&lt;/h3&gt;
-
-&lt;p&gt;When you work with Spectrum 128K, Spectrum ++, or Spectrum Next, you can specify that you intend to
-start the Spectrum virtual machine in Spectrum 48K mode:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;testset Introduction
-{
-    sp48mode;
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot;;
-    // ...
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;In this mode, you can be sure that the Spectrum 48K ROM is paged into the &lt;code class=&quot;highlighter-rouge&quot;&gt;#0000&lt;/code&gt;-&lt;code class=&quot;highlighter-rouge&quot;&gt;#3FFF&lt;/code&gt; address range,
-and memory paging is forbidden —, and thus, the test behaves exactly as if it were run on a Spectrum 48K model.&lt;/p&gt;
-
-&lt;h3 id=&quot;the-source-context&quot;&gt;The Source Context&lt;/h3&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sourceContext:&lt;/code&gt;&lt;/em&gt;	 &lt;strong&gt;source&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;(&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;symbols&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier+)?&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Each test set is named with a unique identifier. The only mandatory element of a &lt;strong&gt;testset&lt;/strong&gt; declaration is 
-the source context that names the source file used within the test set. You can add optional conditional symbols
-that to compile the source code. Here are a few samples:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;testset MyFirstSet
-{
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot;;
-}
-
-testset MySecondSet
-{
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot; symbols DEBUG SP128;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Both test sets use the &lt;code class=&quot;highlighter-rouge&quot;&gt;../Z80CodeFiles/CodeSamples.z80asm&lt;/code&gt; source code file (path relative to the test file).
-Nonetheless, &lt;code class=&quot;highlighter-rouge&quot;&gt;MySecondSet&lt;/code&gt; passes the &lt;code class=&quot;highlighter-rouge&quot;&gt;DEBUG&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;SP128&lt;/code&gt; pre-defined symbols to the Z80 Assembler.&lt;/p&gt;
-
-&lt;p&gt;The test engine recognizes the symbols you declare in the source context. For example, if you has a &lt;code class=&quot;highlighter-rouge&quot;&gt;MyRoutine&lt;/code&gt; 
-symbol in the source code, you can use it within the test file. The compiler will understand it, and replaces the
-symbol with its value.&lt;/p&gt;
-
-&lt;h3 id=&quot;the-callstub-option&quot;&gt;The Callstub Option&lt;/h3&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;callstub:&lt;/code&gt;&lt;/em&gt;	&lt;strong&gt;callstub&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;This option defines the address to use for a three-byte call stub when running unit tests. You will learn about 
-this option later when I treat the semantics of test execution.&lt;/p&gt;
-
-&lt;h3 id=&quot;defining-data-blocks&quot;&gt;Defining Data Blocks&lt;/h3&gt;
-
-&lt;p&gt;A test set’s data block is to define values and byte array patterns that represent a block of the memory. Data block 
-entries have unique identifiers you can use in the tests to reference them.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dataBlock:&lt;/code&gt;&lt;/em&gt;	&lt;strong&gt;data&lt;/strong&gt; &lt;strong&gt;{&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dataBlockBody*&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;}&lt;/strong&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dataBlockBody:&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;valueDef&lt;/code&gt;&lt;/em&gt; | &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;memPattern&lt;/code&gt;&lt;/em&gt; 
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;valueDef:&lt;/code&gt;&lt;/em&gt;	&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;:&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;memPattern:&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;{&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;memPatternBody+&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;}&lt;/strong&gt; | &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;:&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;text&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;memPatternBody:&lt;/code&gt;&lt;/em&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;(byteSet&lt;/code&gt;&lt;/em&gt; | &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;wordSet&lt;/code&gt;&lt;/em&gt; | &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;text)&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;byteSet:&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;byte&lt;/strong&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;,&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;)&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;wordSet:&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;word&lt;/strong&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;,&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;)&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;text:&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;text&lt;/strong&gt; *&lt;code class=&quot;highlighter-rouge&quot;&gt;?*&lt;/code&gt; ) *&lt;code class=&quot;highlighter-rouge&quot;&gt;string*&lt;/code&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;As the abstract syntax notation shows, it’s pretty easy to define values:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;data
-{
-     four: 1 + 3;
-     helloWorld: &quot;hello&quot;;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Here, the &lt;code class=&quot;highlighter-rouge&quot;&gt;four&lt;/code&gt; identifier represents the constant 4; &lt;code class=&quot;highlighter-rouge&quot;&gt;helloWorld&lt;/code&gt; represents an array of 5 bytes, each 
-byte stands for the corresponding character.&lt;/p&gt;
-
-&lt;p&gt;You can define more complex byte arrays with the &lt;code class=&quot;highlighter-rouge&quot;&gt;byte&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;word&lt;/code&gt;, and optional &lt;code class=&quot;highlighter-rouge&quot;&gt;text&lt;/code&gt; keywords:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;data
-{
-    myMemBlock
-    {
-        byte #12, #34, #36;
-        word #AC38, #23;
-        &quot;012&quot;; 
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Here, &lt;code class=&quot;highlighter-rouge&quot;&gt;myMemblock&lt;/code&gt; is a 10 bytes long array with these values:
-#12, #34, #36, #38, #AC, #23, #00, #30, #31, #32.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Observe, words are stored in LSB/MSB order. The word #23 is two bytes: #23 and #00.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;test-set-initialization-settings&quot;&gt;Test Set Initialization Settings&lt;/h3&gt;
-
-&lt;p&gt;Before running tests, you can initialize a test set by assigning values to Z80 registers, 
-setting or reseting flags, copying values into the memory.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;initSettings:&lt;/code&gt;&lt;/em&gt;	&lt;strong&gt;init&lt;/strong&gt; &lt;strong&gt;{&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;assignment+&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;}&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;assignment:&lt;/code&gt;&lt;/em&gt; ( &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;regAssignment&lt;/code&gt;&lt;/em&gt; | &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;flagStatus&lt;/code&gt;&lt;/em&gt; | &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;memAssignment&lt;/code&gt;&lt;/em&gt; ) &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;regAssignment:&lt;/code&gt;&lt;/em&gt;  &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;registerSpec&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;:&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;registerSpec:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;a&lt;/strong&gt; | &lt;strong&gt;A&lt;/strong&gt; | &lt;strong&gt;b&lt;/strong&gt; | &lt;strong&gt;B&lt;/strong&gt; | &lt;strong&gt;c&lt;/strong&gt; | &lt;strong&gt;C&lt;/strong&gt; | &lt;strong&gt;d&lt;/strong&gt; | &lt;strong&gt;D&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;e&lt;/strong&gt; | &lt;strong&gt;E&lt;/strong&gt;	| &lt;strong&gt;h&lt;/strong&gt; | &lt;strong&gt;H&lt;/strong&gt; | &lt;strong&gt;l&lt;/strong&gt; | &lt;strong&gt;L&lt;/strong&gt; | &lt;strong&gt;xl&lt;/strong&gt; | &lt;strong&gt;XL&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;xh&lt;/strong&gt; | &lt;strong&gt;XH&lt;/strong&gt; |	&lt;strong&gt;yl&lt;/strong&gt; | &lt;strong&gt;YL&lt;/strong&gt; | &lt;strong&gt;yh&lt;/strong&gt; | &lt;strong&gt;YH&lt;/strong&gt; |	&lt;strong&gt;ixl&lt;/strong&gt;| &lt;strong&gt;IXL&lt;/strong&gt; | &lt;strong&gt;IXl&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;ixh&lt;/strong&gt;| &lt;strong&gt;IXH&lt;/strong&gt; | &lt;strong&gt;IXh&lt;/strong&gt; | &lt;strong&gt;iyl&lt;/strong&gt; | &lt;strong&gt;IYL&lt;/strong&gt; | &lt;strong&gt;IYl&lt;/strong&gt; | &lt;strong&gt;iyh&lt;/strong&gt; | &lt;strong&gt;IYH&lt;/strong&gt; | &lt;strong&gt;IYh&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;i&lt;/strong&gt; | &lt;strong&gt;I&lt;/strong&gt; | &lt;strong&gt;r&lt;/strong&gt; | &lt;strong&gt;R&lt;/strong&gt; | &lt;strong&gt;bc&lt;/strong&gt; | &lt;strong&gt;BC&lt;/strong&gt; |	&lt;strong&gt;de&lt;/strong&gt; | &lt;strong&gt;DE&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;hl&lt;/strong&gt; | &lt;strong&gt;HL&lt;/strong&gt; | &lt;strong&gt;sp&lt;/strong&gt; | &lt;strong&gt;SP&lt;/strong&gt; | &lt;strong&gt;ix&lt;/strong&gt; | &lt;strong&gt;IX&lt;/strong&gt; | &lt;strong&gt;iy&lt;/strong&gt; | &lt;strong&gt;IY&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;af’&lt;/strong&gt; | &lt;strong&gt;AF’&lt;/strong&gt; | &lt;strong&gt;bc’&lt;/strong&gt; | &lt;strong&gt;BC’&lt;/strong&gt;	| &lt;strong&gt;de’&lt;/strong&gt; | &lt;strong&gt;DE’&lt;/strong&gt; | &lt;strong&gt;hl’&lt;/strong&gt; | &lt;strong&gt;HL’&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;flagStatus:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;.z&lt;/strong&gt; | &lt;strong&gt;.Z&lt;/strong&gt; | &lt;strong&gt;.nz&lt;/strong&gt; | &lt;strong&gt;.NZ&lt;/strong&gt; |	&lt;strong&gt;.c&lt;/strong&gt; | &lt;strong&gt;.C&lt;/strong&gt; | &lt;strong&gt;.nc&lt;/strong&gt; | &lt;strong&gt;.NC&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;.pe&lt;/strong&gt; | &lt;strong&gt;.PE&lt;/strong&gt; | &lt;strong&gt;.po&lt;/strong&gt; | &lt;strong&gt;.PO&lt;/strong&gt;	| &lt;strong&gt;.p&lt;/strong&gt; | &lt;strong&gt;.P&lt;/strong&gt; | &lt;strong&gt;.m&lt;/strong&gt; | &lt;strong&gt;.M&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;.n&lt;/strong&gt;| &lt;strong&gt;.N&lt;/strong&gt; | &lt;strong&gt;.a&lt;/strong&gt; | &lt;strong&gt;.A&lt;/strong&gt; | &lt;strong&gt;.h&lt;/strong&gt; | &lt;strong&gt;.H&lt;/strong&gt; | &lt;strong&gt;.nh&lt;/strong&gt; | &lt;strong&gt;.NH&lt;/strong&gt;&lt;br /&gt;
-    | &lt;strong&gt;.3&lt;/strong&gt; | &lt;strong&gt;.n3&lt;/strong&gt; | &lt;strong&gt;.N3&lt;/strong&gt; | &lt;strong&gt;.5&lt;/strong&gt; | &lt;strong&gt;.n5&lt;/strong&gt;| &lt;strong&gt;.N5&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;memAssignment:&lt;/code&gt;&lt;/em&gt;	 &lt;strong&gt;[&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;]&lt;/strong&gt; &lt;strong&gt;:&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;:&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;)&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Here is a short sample:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;init
-{
-    bc: 0;
-    hl: CustomBuffer;
-    .z;
-    .nc;
-    [#4000]: myLogoArray;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;This &lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt; declaration sets the valuu of the &lt;strong&gt;BC&lt;/strong&gt; and &lt;strong&gt;HL&lt;/strong&gt; register pairs to &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;CustomBuffer&lt;/code&gt;, respectively.
-The Zero flag is set, while Carry is reset. The declaration copies the contents of the &lt;code class=&quot;highlighter-rouge&quot;&gt;myLogoArray&lt;/code&gt; to the &lt;code class=&quot;highlighter-rouge&quot;&gt;#4000&lt;/code&gt; address.&lt;/p&gt;
-
-&lt;p&gt;With an alternative &lt;code class=&quot;highlighter-rouge&quot;&gt;memAssignment&lt;/code&gt; syntax, you can declare the length of a byte array before copying it into the memory.
-For example, the following code snippet copies only the first 32 bytes to the &lt;code class=&quot;highlighter-rouge&quot;&gt;#4000&lt;/code&gt; address:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;init
-{
-    [#4000]: myLogoArray:32;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;test-blocks&quot;&gt;Test Blocks&lt;/h2&gt;
-
-&lt;p&gt;You can declare default and parameterized test cases within test blocks:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testBlock:&lt;/code&gt;&lt;/em&gt;	&lt;strong&gt;test&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;{&lt;/strong&gt;&lt;br /&gt;
-    ( &lt;strong&gt;category&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testOptions?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;setupCode?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testParams?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testCase*&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;arrange?*&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;act&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;assert?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cleanupCode?&lt;/code&gt;&lt;/em&gt;&lt;br /&gt;
-    &lt;strong&gt;}&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Each test must have a uniuque indentifier, and may declare a category, which is reserved for future extension. Of course,
-multiple tests may have the same category. The only required part of a test is the &lt;code class=&quot;highlighter-rouge&quot;&gt;act&lt;/code&gt; declaration that describes what code
-to run within the test.&lt;/p&gt;
-
-&lt;h3 id=&quot;test-options&quot;&gt;Test Options&lt;/h3&gt;
-
-&lt;p&gt;Tests may have options the engine uses when running them:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testOptions:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;with&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testOption&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;,&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testOption&lt;/code&gt;&lt;/em&gt;)&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testOption:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;timeout&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; | &lt;strong&gt;di&lt;/strong&gt; | &lt;strong&gt;ei&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;The timeout option sets the timeout value for the specified test. When it expires, the engine aborts the test, and thus 
-you can even create code with infinite loops, it does not freezes the test engine.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The default timeout value in 100 milliseconds.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;With the &lt;code class=&quot;highlighter-rouge&quot;&gt;ei&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;di&lt;/code&gt; options you can enable or disable interrupts explicitly before running any code. These 
-options are just helpers. For tighter control, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;EI&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;DI&lt;/code&gt; Z80 instructions explicitly in your code.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;By default, interrupts are enabled.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;The following options run a test case with 40 milliseconds of timeout and disable the interrupt before starting the code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;with timeout 40, di;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;running-code-in-tests&quot;&gt;Running Code in Tests&lt;/h3&gt;
-
-&lt;p&gt;You can declare three kinds of code to run in a single test. Setup code runs once before each test cases, Cleanup code once 
-after all cases completed (either successfully or failed). The Act code runs for every test cases.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;setupCode:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;setup&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;invokeCode&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;act:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;act&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;invokeCode&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cleanupCode:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;cleanup&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;invokeCode&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;invokeCode:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;call&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; | &lt;strong&gt;start&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;stop&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; | &lt;strong&gt;halt&lt;/strong&gt; )&lt;/p&gt;
-
-&lt;p&gt;You have three ways to invoke code:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;call&lt;/code&gt;&lt;/strong&gt; uses the Z80 &lt;code class=&quot;highlighter-rouge&quot;&gt;CALL&lt;/code&gt; instruction to call the code with the specified address. Your code should have 
-a &lt;code class=&quot;highlighter-rouge&quot;&gt;RET&lt;/code&gt; instruction. When the code successfully executes the &lt;code class=&quot;highlighter-rouge&quot;&gt;RET&lt;/code&gt; statement, the engine completes the test code.&lt;/li&gt;
-  &lt;li&gt;With the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;start&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stop&lt;/code&gt;&lt;/strong&gt; combination, you can explicitly specify a start and a stop address. The engine jumps
-to the start address, and completes the test code as soon as it reaches the stop address. It does not executes the instruction
-at the stop address.&lt;/li&gt;
-  &lt;li&gt;With the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;start&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;halt&lt;/code&gt;&lt;/strong&gt; combination the test engine starts the code at the specified address, and completes it
-when it reaches a &lt;code class=&quot;highlighter-rouge&quot;&gt;HALT&lt;/code&gt; statement.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;test-parameters-and-test-cases&quot;&gt;Test Parameters and Test Cases&lt;/h3&gt;
-
-&lt;p&gt;You can define parameterized test cases. You name test parameters, and test cases declare values to substitute a
-particular parameter:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testParams:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;params&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;,&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;identifier&lt;/code&gt;&lt;/em&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;testCase:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;case&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;,&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Of course, the number of parameters and expressions after the &lt;code class=&quot;highlighter-rouge&quot;&gt;case&lt;/code&gt; keyword must match for each test cases.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Soon, you will see a complete sample that demonstrates these concepts.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;arrange-declarations&quot;&gt;Arrange Declarations&lt;/h3&gt;
-
-&lt;p&gt;Each test block has an &lt;code class=&quot;highlighter-rouge&quot;&gt;arrange&lt;/code&gt; declaration that runs before the engine invokes the &lt;code class=&quot;highlighter-rouge&quot;&gt;act&lt;/code&gt; code of a test case.
-It has the same assignment syntax, as the &lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt; construct of a test set:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;arrange:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;arrange&lt;/strong&gt; &lt;strong&gt;{&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;assignment+&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;}&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;assertions&quot;&gt;Assertions&lt;/h3&gt;
-
-&lt;p&gt;After the test code ran, you can run assertions. Assertions are a list of Boolean expressions, and the test engine 
-evaluates them in their declaration order. All of them should be true to make the test case successful:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;assert:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;assert&lt;/strong&gt; &lt;strong&gt;{&lt;/strong&gt; ( &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;;&lt;/strong&gt;)*&lt;code class=&quot;highlighter-rouge&quot;&gt;+*&lt;/code&gt; &lt;strong&gt;}&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;You can use special assertion expressions:&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;addrSpec:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;[&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;..&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;]&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;reachSpec:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;&amp;lt;.&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;..&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;.&amp;gt;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;memReadSpec:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;&amp;lt;|&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;..&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;|&amp;gt;&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;memWriteSpec:&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;&amp;lt;||&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt; ( &lt;strong&gt;..&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;&lt;/em&gt;) &lt;em&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;&lt;/em&gt; &lt;strong&gt;||&amp;gt;&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;These assertions retrieves a byte array. This may contain only a single byte (only one address specified)
-or a sequence of bytes (both a start address and an inclusive end address is specified).&lt;/p&gt;
-
-&lt;p&gt;An &lt;code class=&quot;highlighter-rouge&quot;&gt;addrSpec&lt;/code&gt; retrives the contenst of memory specified by the address range. Each byte in the array is the
-copy of the corresponding memory address.&lt;/p&gt;
-
-&lt;p&gt;In the &lt;code class=&quot;highlighter-rouge&quot;&gt;reachSpec&lt;/code&gt; byte array each byte indicates if the test’s control flow reached that address 
-(the instruction at that address was executed) with a Boolean value. Similarly, the arrays retrieved by 
-&lt;code class=&quot;highlighter-rouge&quot;&gt;memReadSpec&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;memWriteSpec&lt;/code&gt; indicate if the specified memory address was read, or written, respectively.&lt;/p&gt;
-
-&lt;p&gt;Let’s see an example of using these assertions:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;testset Introduction
-{
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot;;
-    data
-    {
-        str100: &quot;00100&quot;;
-        str1000:  &quot;001000&quot;;
-        str12345: &quot;12345&quot;;
-        str11211: &quot;11211&quot;;
-        str23456: &quot;23456&quot;;
-    }
-
-    test BufferIncEachByteWorks
-    {
-        params value, result;
-        case str100, str11211;
-        case str12345, str23456;
-        case str1000, str11211;
-        arrange
-        {
-            hl: ConversionBuffer;
-            b: 5;
-            [ConversionBuffer]:value;
-        }
-
-        act call IncLoop;
-
-        assert
-        {
-            [ConversionBuffer..ConversionBuffer+4] == result;
-            &amp;lt;. IncLoop .&amp;gt;;
-            &amp;lt;| ConversionBuffer .. ConversionBuffer + 4 |&amp;gt;;
-            &amp;lt;|| ConversionBuffer .. ConversionBuffer + 4 ||&amp;gt;;
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Here, the &lt;code class=&quot;highlighter-rouge&quot;&gt;IncLoop&lt;/code&gt; method accepts a bufferr address in &lt;strong&gt;HL&lt;/strong&gt; and 
-a byte count in &lt;strong&gt;B&lt;/strong&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;IncLoop&lt;/code&gt; increments each byte by 1 within the
-buffer. As you can see, the assert section checks these conditions:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;The contents of the conversion buffer is the one specified in &lt;code class=&quot;highlighter-rouge&quot;&gt;result&lt;/code&gt;.&lt;/li&gt;
-  &lt;li&gt;The code executions reaches the &lt;code class=&quot;highlighter-rouge&quot;&gt;IncLoop&lt;/code&gt; address.&lt;/li&gt;
-  &lt;li&gt;The contents of the buffer (5 bytes starting from &lt;code class=&quot;highlighter-rouge&quot;&gt;ConversionBuffer&lt;/code&gt;) is read.&lt;/li&gt;
-  &lt;li&gt;The contents of the buffer is written.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;test-sample&quot;&gt;Test Sample&lt;/h3&gt;
-
-&lt;p&gt;Here is a short sample that demonstrates the concepts you learned:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;testset Introduction
-{
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot;;
-
-    test AddAAndBCallWorksAsExpected
-    {
-        params parA, parB, parExpected;
-        case 1, 2, 3;
-        case 2, 3, 5;
-        case 6, 8, 14;
-
-        arrange
-        {
-            a: parA;
-            b: parB;
-        }
-
-        act call AddAAndB;
-
-        assert 
-        {
-            a == parExpected;
-        }
-    }
-
-    test AddAAndBWithStartWorksAsExpected
-    {
-        arrange
-        {
-            a: 3;
-            b: 5;
-        }
-
-        act start AddAAndBWithStop stop StopPoint;
-
-        assert 
-        {
-            a == 8;
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The code file behind this test is the following:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Start:
-	.org #8000
-
-; You can invoke this test with 'call AddAAndB'
-AddAAndB:
-    add a,b
-    ret
-
-; You can invoke this test with 'start AddAAndBWithStop stop StopPoint'
-AddAAndBWithStop:
-    add a,b
-StopPoint:
-    nop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The first test, &lt;code class=&quot;highlighter-rouge&quot;&gt;AddAAndBCallWorksAsExpected&lt;/code&gt;, has three test cases with parameters &lt;code class=&quot;highlighter-rouge&quot;&gt;parA&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;parB&lt;/code&gt;, 
-and &lt;code class=&quot;highlighter-rouge&quot;&gt;parExpected&lt;/code&gt;, respectively. The engine executes each test case with these steps:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Sets the &lt;strong&gt;A&lt;/strong&gt; and &lt;strong&gt;B&lt;/strong&gt; CPU registers with the current value of &lt;code class=&quot;highlighter-rouge&quot;&gt;parA&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;parB&lt;/code&gt;. For the first case, 
-these are 1, and 2. The second case runs with 2, and 3.&lt;/li&gt;
-  &lt;li&gt;Calls the &lt;code class=&quot;highlighter-rouge&quot;&gt;AddAAndB&lt;/code&gt; subroutine, that executes the &lt;code class=&quot;highlighter-rouge&quot;&gt;add a,b&lt;/code&gt; instruction, and then completes the 
-call with &lt;code class=&quot;highlighter-rouge&quot;&gt;RET&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Checks if the content of &lt;strong&gt;A&lt;/strong&gt; equals with the expected result, as declared in &lt;code class=&quot;highlighter-rouge&quot;&gt;parExpected&lt;/code&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The second test has only a default case. It sets up &lt;strong&gt;A&lt;/strong&gt; and &lt;strong&gt;B&lt;/strong&gt; explicitly in the &lt;code class=&quot;highlighter-rouge&quot;&gt;arrange&lt;/code&gt; section 
-and checks the result in &lt;code class=&quot;highlighter-rouge&quot;&gt;assert&lt;/code&gt;. You can observe that it does not call into the code, instead, it the test 
-jumps to the &lt;code class=&quot;highlighter-rouge&quot;&gt;AddAAndBWithStop&lt;/code&gt; address, and completes when it reaches &lt;code class=&quot;highlighter-rouge&quot;&gt;StopPoint&lt;/code&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">In the following section, I will use a kind of abstract syntax notation to describe the grammar of the SpectNetIde test language. Bold characters mark terminal symbols (keywords and other tokens), while italic strings ara non-terminal symbols. The ? after a symbol means that it’s optional. A * means zero, one, or more occurrence. + means one or more occurrence. The | character separates options, exactly one of them can be used. The language uses parantheses to specify groups of tokens.</summary></entry></feed>
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">SpectNetIde provides a somple programming language to describe Z80-related unit tests. You can add the .z80test files to your project and run the test in the Unit Test Explorer tool window. This document treats the syntax and semantics of the language.</summary></entry></feed>
