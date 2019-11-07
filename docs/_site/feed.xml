@@ -1,4 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-11-02T08:03:15+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-11-07T10:14:01+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
+  &lt;p&gt;To use &lt;strong&gt;ZX BASIC&lt;/strong&gt; — as it is a separate product from &lt;strong&gt;SpectNetIDE&lt;/strong&gt;, first, you should install it on your computer. The previous tutorial explains the setup procedure.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;SpectNetIDE supports ZX BASIC (Boriel’s BASIC). In this tutorial, you will learn how to create and run a ZX BASIC program.&lt;/p&gt;
+
+&lt;p&gt;To create your first ZX BASIC program, follow these steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create a new ZX Spectrum 48 project (see details &lt;a href=&quot;/spectnetide/getting-started/create-zx-spectrum-48k-project-2.html#article&quot;&gt;here&lt;/a&gt;).
+The &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ZxBasicFiles &lt;/code&gt;&lt;/strong&gt; project of the folder contains a &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Program.zxbas&lt;/code&gt;&lt;/strong&gt; file:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cls
+print at 4,6; ink 7; paper 1; flash 1;&quot; HELLO, ZX BASIC! &quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;Right-click the &lt;code class=&quot;highlighter-rouge&quot;&gt;Program.zxbas&lt;/code&gt; file in Solution Explorer, and use the &lt;strong&gt;Run program&lt;/strong&gt; command.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-zx-basic-command.png&quot; alt=&quot;Run ZX BASIC&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The IDE compiles the ZX BASIC code, displays the emulator window, and runs the code:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zx-basic-runs.png&quot; alt=&quot;Run ZX BASIC&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: You can use the &lt;strong&gt;Ctrl+M&lt;/strong&gt;, &lt;strong&gt;Ctrl+R&lt;/strong&gt; double shortcut keys to execute the &lt;strong&gt;Run Z80 program&lt;/strong&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let’s create a new ZX BASIC program!&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Right-click the &lt;strong&gt;ZxBasicFiles&lt;/strong&gt; folder in Solution Explorer, and select the &lt;strong&gt;Add → New item&lt;/strong&gt; command:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/new-zx-basic-item.png&quot; alt=&quot;New ZX BASIC item&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;
+    &lt;p&gt;Select the &lt;strong&gt;ZX BASIC Program&lt;/strong&gt; item type, set the name to &lt;code class=&quot;highlighter-rouge&quot;&gt;Clock.zxbas&lt;/code&gt;, and click &lt;strong&gt;Add&lt;/strong&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Type (copy) this code into the new &lt;code class=&quot;highlighter-rouge&quot;&gt;Cloxk.zxbas&lt;/code&gt; file:&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CLS
+CIRCLE 132, 105, 86
+FOR n = 1 to 12
+    PRINT AT 10 - (10 * COS(n * PI / 6) - 0.5), 16 + (0.5 + 10 * SIN(n * PI / 6)); n
+NEXT n
+CIRCLE 132, 105, 70
+
+PRINT AT 23, 0; &quot;PRESS ANY KEY TO EXIT&quot;;
+
+FUNCTION t AS ULONG
+    RETURN INT((65536 * PEEK (23674) + 256 * PEEK(23673) + PEEK (23672))/50)
+END FUNCTION
+
+DIM t1 as FLOAT
+
+OVER 1
+WHILE INKEY$ = &quot;&quot;
+    LET t1 = t()
+    LET a = t1 / 30 * PI
+    LET sx = 72 * SIN a : LET sy = 72 * COS a
+    PLOT 131, 107: DRAW sx, sy
+
+    LET t2 = t()
+    WHILE (t2 &amp;lt;= t1) AND (INKEY$ = &quot;&quot;)
+        let t2 = t()
+    END WHILE
+
+    PLOT 131, 107: DRAW sx, sy
+END WHILE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;Run the program (either with the Run program command or the &lt;strong&gt;Ctrl+M&lt;/strong&gt;, &lt;strong&gt;Ctrl+R&lt;/strong&gt; shortcut keys):&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zx-basic-clock-runs.png&quot; alt=&quot;ZX BASIC clock runs&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: For more details about ZX BASIC, visit this link: &lt;a href=&quot;http://www.zxbasic.net&quot;&gt;http://www.zxbasic.net&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">To use ZX BASIC — as it is a separate product from SpectNetIDE, first, you should install it on your computer. The previous tutorial explains the setup procedure.</summary></entry><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
 The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectrum-48-keyboard.png&quot; alt=&quot;ZX Spectrum 48K keyboard&quot; /&gt;&lt;/p&gt;
@@ -180,7 +267,42 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 
 &lt;p&gt;Even if the ZX Spectrum Emulator tool window is closed, the virtual machine still runs in the background once you’ve started it. It halts if you explicitly stop it, close the current solutions, or exit the Visual Studio IDE.&lt;/p&gt;
 
-&lt;p&gt;While the ZX Spectrum Emulator tool window has the focus, the IDE forward the keystrokes to the emulator that senses them as if you pressed a key on the ZX Spectrum hardware.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE would not be useful without an emulator to develop programs. The ZX Spectrum Emulator tool window shows the screen of the embedded ZX Spectrum virtual machine that runs in the background.</summary></entry><entry><title type="html">LOAD a Program</title><link href="http://localhost:4000/spectnetide/getting-started/load-a-program-2" rel="alternate" type="text/html" title="LOAD a Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/load-a-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/load-a-program-2">&lt;p&gt;You can load a program from the tape into the memory with the &lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?&lt;/p&gt;
+&lt;p&gt;While the ZX Spectrum Emulator tool window has the focus, the IDE forward the keystrokes to the emulator that senses them as if you pressed a key on the ZX Spectrum hardware.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE would not be useful without an emulator to develop programs. The ZX Spectrum Emulator tool window shows the screen of the embedded ZX Spectrum virtual machine that runs in the background.</summary></entry><entry><title type="html">Setup ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/setup-zx-basic" rel="alternate" type="text/html" title="Setup ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/setup-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/setup-zx-basic">&lt;p&gt;ZX BASIC (Boriel’s BASIC) is a separate product maintained by Jose Rodriguez-Rosa (Boriel). You can find more information about this product in &lt;a href=&quot;https://github.com/boriel/zxbasic&quot;&gt;Github&lt;/a&gt;. This site refers to several links that raise a 404 Error.&lt;/p&gt;
+
+&lt;p&gt;SpectNetIDE uses ZX BASIC as an external tool, so first, you have to install ZX BASIC to your computer. You can find the installation files here: &lt;a href=&quot;https://www.boriel.com/files/zxb/&quot;&gt;https://www.boriel.com/files/zxb/&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note: The newest versions can be found on the bottom of the page.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;To set up ZX BASIC integration with SpectNetIDE, follow these steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Download the ZXB version (Win32) you want to install (I suggest you to dowload the latest stable release).&lt;/li&gt;
+  &lt;li&gt;Unzip this file, and copy to contents into your preferred installation folder.&lt;/li&gt;
+  &lt;li&gt;Start a command prompt, select the installation folder with the &lt;code class=&quot;highlighter-rouge&quot;&gt;CD&lt;/code&gt; command, and then check the installation with this command line:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;zxb --version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If the current version number is displayed, your ZX BASIC installation is successful.&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;Start Visual Studio 2019, and run the &lt;strong&gt;Tools → Options&lt;/strong&gt; command.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zxb-path-option.png&quot; alt=&quot;ZXB path&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;5&quot;&gt;
+  &lt;li&gt;In The &lt;strong&gt;Spect.Net IDE&lt;/strong&gt; tab, set the &lt;strong&gt;ZXB utility path&lt;/strong&gt; option to the folder where you installed ZX BASIC.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: Alternatively, you can set up the &lt;strong&gt;PATH&lt;/strong&gt; environment variable of your computer to point out to the ZX BASIC installation folder.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;With these steps, you’re ready to use ZX BASIC. The next tutorial shows how you can write and run a ZX BASIC program in SpectNetIDE.&lt;/p&gt;</content><author><name></name></author><summary type="html">ZX BASIC (Boriel’s BASIC) is a separate product maintained by Jose Rodriguez-Rosa (Boriel). You can find more information about this product in Github. This site refers to several links that raise a 404 Error.</summary></entry><entry><title type="html">LOAD a Program</title><link href="http://localhost:4000/spectnetide/getting-started/load-a-program-2" rel="alternate" type="text/html" title="LOAD a Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/load-a-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/load-a-program-2">&lt;p&gt;You can load a program from the tape into the memory with the &lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?&lt;/p&gt;
 
 &lt;p&gt;As a part of your project, you can add tape files with standard &lt;code class=&quot;highlighter-rouge&quot;&gt;.TAP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.TZX&lt;/code&gt; format. When the IDE creates a new ZX Spectrum project, it adds a sample tape file, &lt;code class=&quot;highlighter-rouge&quot;&gt;Welcome.tzx&lt;/code&gt;; it puts it into the &lt;code class=&quot;highlighter-rouge&quot;&gt;TapeFiles&lt;/code&gt; folder. With the Add Existing Item command of Visual Studio, you can attach more tape files to the project. The virtual machine – that runs the ZX Spectrum Emulator – can work only with a single tape file at a time. To load that one – called the default tape –, follow these steps:&lt;/p&gt;
 
@@ -651,322 +773,4 @@ LongDelay:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; makes it extremely simple to reuse the Z80 assembly code, as you
-will learn in the next article.&lt;/p&gt;</content><author><name></name></author><summary type="html">In this article, you will learn that SpectNetIde provides you a straightforward way to create and run Z80 assembly programs.</summary></entry><entry><title type="html">Create a BASIC Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-basic-program-2" rel="alternate" type="text/html" title="Create a BASIC Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-basic-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-basic-program-2">&lt;p&gt;In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.&lt;/p&gt;
-
-&lt;p&gt;Here, you will create and run a simple BASIC program. Although you can use the keyboard of the PC to enter a program — provided, the ZX Spectrum Emulator window has the focus — if you’re not familiar with the Spectrum keys and BASIC editor, it may frustrate you while entering the code. To avoid such chaffing, use the ZX Spectrum Keyboard tool window to enter the program.&lt;/p&gt;
-
-&lt;p&gt;First, add this line:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;10 BORDER 2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;To enter this BASIC line, press these keys, in this order: “&lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;”, “&lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;”, “&lt;code class=&quot;highlighter-rouge&quot;&gt;B&lt;/code&gt;”, “&lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt;”, “&lt;code class=&quot;highlighter-rouge&quot;&gt;Enter&lt;/code&gt;” (of course, you do not need to click comma between the keys wrapped in double quotes)&lt;/p&gt;
-
-&lt;p&gt;As soon as you’ve added this program line, it appears in the screen listing:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/basic-line-1-2.png&quot; alt=&quot;Basic line 1&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now, add these lines to the code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;20 BORDER 5
-30 BORDER 6
-40 PAUSE 1
-50 GOTO 10
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/basic-line-2-2.png&quot; alt=&quot;Basic line 2&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Your first BASIC program is ready to run. Invoke the &lt;code class=&quot;highlighter-rouge&quot;&gt;RUN&lt;/code&gt; command (press
-&lt;code class=&quot;highlighter-rouge&quot;&gt;R&lt;/code&gt;, and then &lt;code class=&quot;highlighter-rouge&quot;&gt;Enter&lt;/code&gt;) to start this code. As you can see from the listing, 
-it implements an infinite loop while changing the background color:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/basic-program-runs-2.png&quot; alt=&quot;Basic code runs&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;To stop the program, press the &lt;code class=&quot;highlighter-rouge&quot;&gt;SPACE&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;SYM SHIFT&lt;/code&gt; keys simultaneously
-or click the &lt;code class=&quot;highlighter-rouge&quot;&gt;BREAK&lt;/code&gt; button in the ZX Spectrum Keyboard window with the right
-mouse button:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/basic-program-stopped-2.png&quot; alt=&quot;Basic program stopped&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Congratulations! It is time to move on and create a Z80 assembly program!&lt;/p&gt;</content><author><name></name></author><summary type="html">In a previous tutorial, you could see how easy is to create a new ZX Spectrum program from scratch.</summary></entry><entry><title type="html">Syntax Basics</title><link href="http://localhost:4000/spectnetide/documents/unit-testing-basics" rel="alternate" type="text/html" title="Syntax Basics" /><published>2019-01-05T00:00:00+01:00</published><updated>2019-01-05T00:00:00+01:00</updated><id>http://localhost:4000/spectnetide/documents/unit-testing-basics</id><content type="html" xml:base="http://localhost:4000/spectnetide/documents/unit-testing-basics">&lt;p&gt;&lt;strong&gt;SpectNetIde&lt;/strong&gt; provides a somple programming language to describe Z80-related unit tests. You can add the 
-&lt;code class=&quot;highlighter-rouge&quot;&gt;.z80test&lt;/code&gt; files to your project and run the test in the &lt;strong&gt;Unit Test Explorer&lt;/strong&gt; tool window. This document
-treats the syntax and semantics of the language.&lt;/p&gt;
-
-&lt;h2 id=&quot;syntax-basics&quot;&gt;Syntax Basics&lt;/h2&gt;
-
-&lt;p&gt;The test language uses a special way of case-sensitivity. You can write the reserved
-keywords on lowercase. When you refer to Z80 CPU registers or flags, you can use either with lowercase or
-uppercase letters, but you cannot mix these cases. You can mix cases for identifiers, though they are
-searched for a case-insensitive manner.&lt;/p&gt;
-
-&lt;h2 id=&quot;test-structure&quot;&gt;Test Structure&lt;/h2&gt;
-
-&lt;p&gt;A ZX Spectrum project may have zero, one, or more test files (files with &lt;code class=&quot;highlighter-rouge&quot;&gt;.z80test&lt;/code&gt; extension). Before 
-running them, the engine collects all &lt;code class=&quot;highlighter-rouge&quot;&gt;.z80test&lt;/code&gt; files from the current project, and compiles them all.&lt;/p&gt;
-
-&lt;p&gt;A single test file may contain one or more &lt;em&gt;test set&lt;/em&gt;. A test set is a collection of cohesive tests that 
-all use the very same source code, as the basis of testing:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;testset Introduction
-{
-    source &quot;../Z80CodeFiles/CodeSamples.z80asm&quot;;
-
-    // --- Other testset attributes    
-
-    test AddAAndBWorksAsExpected
-    {
-        // --- Other test attributes
-
-        act call AddAAndB;
-
-        assert
-        {
-            // --- Here we describe the test assertions
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;A &lt;em&gt;test&lt;/em&gt; can have a default &lt;em&gt;act&lt;/em&gt;, such as in the sample above, or may have parameterized test cases:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// --- Wrapping test set omitted
-test AddAAndBCallWorksAsExpected2
-{
-    params parA, parB, Z;
-    case 1, 2, 0;
-    case 2, 3, 0;
-    case -6, 6, 1;
-
-    arrange
-    {
-        a: parA;
-        b: parB;
-    }
-
-    act call AddAAndB;
-
-    assert
-    {
-        a == parA + parB;
-        b == parB;
-        .z == Z;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;This test has three cases, as declared by the lines starting with the &lt;code class=&quot;highlighter-rouge&quot;&gt;case&lt;/code&gt; keyword.
-When running them, the engine substitutes the &lt;code class=&quot;highlighter-rouge&quot;&gt;parA&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;parB&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;Z&lt;/code&gt; values with the
-values after &lt;code class=&quot;highlighter-rouge&quot;&gt;case&lt;/code&gt; (fore each &lt;code class=&quot;highlighter-rouge&quot;&gt;case&lt;/code&gt;).&lt;/p&gt;
-
-&lt;p&gt;To summarize:&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Concept&lt;/th&gt;
-      &lt;th&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;em&gt;test file&lt;/em&gt;&lt;/td&gt;
-      &lt;td&gt;A single container for &lt;em&gt;test sets&lt;/em&gt;. Besides keeping test sets together in a single file, there’s no additional semantics.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;em&gt;test set&lt;/em&gt;&lt;/td&gt;
-      &lt;td&gt;A cohesive set of tests. A test set has a single source code file — this contains the code to test — shared between the test within the set.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;em&gt;test&lt;/em&gt;&lt;/td&gt;
-      &lt;td&gt;A single test that runs a piece of the source code to test. It may nest test cases.&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;em&gt;test case&lt;/em&gt;&lt;/td&gt;
-      &lt;td&gt;Parameterized test. It runs the same code (although you can run different code) with the case-related parameters.&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;syntax-elements&quot;&gt;Syntax Elements&lt;/h2&gt;
-
-&lt;p&gt;The test language contains several constituting elements that you can use in many 
-places within the code, such as comments, expressions, identifiers, and so on. Here 
-you can learn about them.&lt;/p&gt;
-
-&lt;h3 id=&quot;comments&quot;&gt;Comments&lt;/h3&gt;
-
-&lt;p&gt;Comments can be single line or multi-line comments with the same syntax construct as you may 
-use them in many curly-brace-languages, such as C++, Java, C#, etc.:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// --- This is a single line comment you can add to the end of the code lines
-
-/* This is a multi-line comment the spans accross multiple lines, 
-   including empty ones
-
-*/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;literals&quot;&gt;Literals&lt;/h3&gt;
-
-&lt;p&gt;The language syntax provides these types of literals:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Decimal numbers.&lt;/strong&gt; You can use adjacent digits (0..9) to declare a decimal number. Examples:
-16, 32768, 2354.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Hexadecimal numbers.&lt;/strong&gt; You can use up to 4 hexadecimal digits (0..9, a..f or A..F) to declare
-a hexadecimal literal. The compiler looks for one of the &lt;code class=&quot;highlighter-rouge&quot;&gt;#&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;0x&lt;/code&gt; prefix, or one of 
-the &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;H&lt;/code&gt; suffixes to recognize them as hexadecimal. Here are a few samples:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    #12AC
-    0x12ac
-    12ACh
-    12acH
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Binary numbers.&lt;/strong&gt; Literal starting with the one of the &lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;0b&lt;/code&gt; prefix are taken into 
-account as binary literals. You can follow the prefix with up to 16 &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt; digits. To make
-them more readable, you can separate adjacent digits with the underscore (&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt;) character. These 
-are all valid binary literals:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    %01011111
-    0b01011111
-    0b_0101_1111
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;You can use negative number with the minus sign in front of them. Actually, the sign is not
-the part of the numeric literal, it is an operator.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Characters&lt;/strong&gt;. You can put a character between double quotes (for example: &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;Q&quot;&lt;/code&gt;).&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Strings&lt;/strong&gt;. You can put a series of character between double quotes (for example: &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;Sinclair&quot;&lt;/code&gt;).&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Here are a few samples:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;This is a string. The next sample is a single character&quot;
-&quot;c&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;character-and-string-escapes&quot;&gt;Character and String Escapes&lt;/h3&gt;
-
-&lt;p&gt;ZX Spectrum has a character set with special control characters such as AT, INK, PAPER, and so on.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;SpectNetIde&lt;/strong&gt; allows you to utilize special escape sequences to define ZX Spectrum-specific characters:&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Escape&lt;/th&gt;
-      &lt;th&gt;Code&lt;/th&gt;
-      &lt;th&gt;Character&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\i&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x10&lt;/td&gt;
-      &lt;td&gt;INK&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\p&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x11&lt;/td&gt;
-      &lt;td&gt;PAPER&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\f&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x12&lt;/td&gt;
-      &lt;td&gt;FLASH&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\b&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x13&lt;/td&gt;
-      &lt;td&gt;BRIGHT&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\I&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x14&lt;/td&gt;
-      &lt;td&gt;INVERSE&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\o&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x15&lt;/td&gt;
-      &lt;td&gt;OVER&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\a&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x16&lt;/td&gt;
-      &lt;td&gt;AT&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\t&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x17&lt;/td&gt;
-      &lt;td&gt;TAB&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\P&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x60&lt;/td&gt;
-      &lt;td&gt;pound sign&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\C&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x7F&lt;/td&gt;
-      &lt;td&gt;copyright sign&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\\&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x5C&lt;/td&gt;
-      &lt;td&gt;backslash&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\'&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x27&lt;/td&gt;
-      &lt;td&gt;single quote&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\&quot;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x22&lt;/td&gt;
-      &lt;td&gt;double quote&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\0&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;0x00&lt;/td&gt;
-      &lt;td&gt;binary zero&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Observe, some of these sequences have different values than their corresponding
-pairs in other languages, such as C, C++, C#, or Java.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;To declare a character by its binary code, you can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;\xH&lt;/code&gt; or&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;\xHH&lt;/code&gt; sequences (&lt;code class=&quot;highlighter-rouge&quot;&gt;H&lt;/code&gt; is a hexadecimal digit). For example, these
-escape sequence pairs are equivalent:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;\i&quot;
-&quot;\x10&quot;
-
-&quot;\C by me&quot;
-&quot;\x7f \x62y me&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;identifiers&quot;&gt;Identifiers&lt;/h3&gt;
-
-&lt;p&gt;You can use identifiers to refer to labels and other constants. Identifiers must start with 
-a letter (a..z or A..Z) or the underscore character (&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt;). The subsequent characters 
-can be digits (0..9), too. Here are a few samples:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyCycle
-ERR_NO
-Cycle_4_Wait  
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Theoretically, you can use as long identifiers as you want. I suggest you to make them no longer than
-32 characters so that readers may read your code easily.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">SpectNetIde provides a somple programming language to describe Z80-related unit tests. You can add the .z80test files to your project and run the test in the Unit Test Explorer tool window. This document treats the syntax and semantics of the language.</summary></entry></feed>
+will learn in the next article.&lt;/p&gt;</content><author><name></name></author><summary type="html">In this article, you will learn that SpectNetIde provides you a straightforward way to create and run Z80 assembly programs.</summary></entry></feed>

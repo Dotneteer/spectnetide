@@ -3,11 +3,13 @@ layout: documents
 categories: 
   - "Tutorials v2"
 title:  "Use ZX BASIC"
-alias: export-a-z80-program
-seqno: 1051
+alias: use-zx-basic
+seqno: 1052
 selector: tutorial
 permalink: "getting-started/use-zx-basic"
 ---
+
+> To use __ZX BASIC__ &mdash; as it is a separate product from __SpectNetIDE__, first, you should install it on your computer. The previous tutorial explains the setup procedure.
 
 SpectNetIDE supports ZX BASIC (Boriel's BASIC). In this tutorial, you will learn how to create and run a ZX BASIC program.
 
