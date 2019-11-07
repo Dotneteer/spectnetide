@@ -18,7 +18,11 @@ namespace Spect.Net.VsPackage.Compilers
         private const string ZXB_NOT_FOUND_MESSAGE =
             "SpectNetIDE cannot run ZXB.EXE ({0}). Please check that you specified the " +
             "correct path in the Spect.Net IDE options page (ZXB utility path) or added it " +
-            "to the PATH evnironment variable.";
+            "to the PATH evnironment variable.\nFor more details, check this article: " +
+            SETUP_URL +
+            "\n\nWhen you click OK, SpectNetIDE opens this link for you.";
+
+        private const string SETUP_URL = "https://dotneteer.github.io/spectnetide/getting-started/setup-zx-basic";
 
         private const string ZXBASIC_TEMP_FOLDER = "ZxBasic";
 
@@ -37,6 +41,7 @@ namespace Spect.Net.VsPackage.Compilers
             {
                 VsxDialogs.Show(string.Format(ZXB_NOT_FOUND_MESSAGE, ex.Message),
                     "Error when running ZXB", MessageBoxButton.OK, VsxMessageBoxIcon.Exclamation);
+                System.Diagnostics.Process.Start(SETUP_URL);
                 return false;
             }
             return true;
