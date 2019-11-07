@@ -1,6 +1,9 @@
+### Version 2.0.2 (Preview 1)
+
+__FIX__: ZX BASIC setup instructions added. In case of error, the IDE opens the help page for you.
+
 ### Version 1.20.0
 __FEATURE__: The virtual machine now supports Kempston joystick emulation.
-
 
 ### Version 1.19.5
 __FIX__: Bug in code generation for IX, IY bit instructions fixed.
