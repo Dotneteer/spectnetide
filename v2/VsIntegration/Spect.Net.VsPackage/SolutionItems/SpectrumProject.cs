@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using EnvDTE;
+﻿using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -12,6 +6,12 @@ using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Abstraction.Models;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Command;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Windows;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
@@ -199,6 +199,7 @@ namespace Spect.Net.VsPackage.SolutionItems
             SetVisuals(DefaultAnnotationItem, AnnotationProjectItems);
             SetVisuals(DefaultTapeItem, TapeFileProjectItems);
             SetVisuals(DefaultProgramItem, Z80CodeProjectItems);
+            SetVisuals(DefaultProgramItem, ZxBasicProjectItems);
         }
 
         /// <summary>
@@ -548,7 +549,9 @@ namespace Spect.Net.VsPackage.SolutionItems
                 DefaultTapeItem = GetProjectItemByIdentity(settings.DefaultTapeFile,
                     TapeFileProjectItems);
                 DefaultProgramItem = GetProjectItemByIdentity(settings.DefaultCodeFile,
-                    Z80CodeProjectItems);
+                    Z80CodeProjectItems)
+                        ?? (ProgramItemBase)GetProjectItemByIdentity(settings.DefaultCodeFile,
+                            ZxBasicProjectItems);
             }
             catch
             {

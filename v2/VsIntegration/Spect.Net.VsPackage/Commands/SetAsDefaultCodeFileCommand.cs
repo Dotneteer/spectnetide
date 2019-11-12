@@ -7,7 +7,7 @@ namespace Spect.Net.VsPackage.Commands
     /// Sets the specified annotation file as the default one to use
     /// </summary>
     [CommandId(0x0805)]
-    public class SetAsDefaultCodeFileCommand : SpectrumProgramCommandBase
+    public class SetAsDefaultCodeFileCommand : ExecutableSpectrumProgramCommandBase
     {
         /// <summary>
         /// Override this method to define the async command body te execute on the

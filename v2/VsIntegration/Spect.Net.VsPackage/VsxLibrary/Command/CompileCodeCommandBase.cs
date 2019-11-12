@@ -107,11 +107,8 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// </summary>
         protected override async Task ExecuteOnMainThreadAsync()
         {
-            await base.ExecuteOnMainThreadAsync();
-            if (IsCancelled) return;
-
             // --- Get the item
-            GetItem(out _hierarchy, out _itemId);
+            GetAffectedItem(out _hierarchy, out _itemId);
             if (_hierarchy == null || !(_hierarchy is IVsProject project))
             {
                 IsCancelled = true;
@@ -184,6 +181,16 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                 }
             }
             return options;
+        }
+
+        /// <summary>
+        /// Gets the document that this command should use
+        /// </summary>
+        /// <param name="hierarchy"></param>
+        /// <param name="itemId"></param>
+        protected virtual void GetAffectedItem(out IVsHierarchy hierarchy, out uint itemId)
+        {
+            GetItem(out hierarchy, out itemId);
         }
 
         /// <summary>

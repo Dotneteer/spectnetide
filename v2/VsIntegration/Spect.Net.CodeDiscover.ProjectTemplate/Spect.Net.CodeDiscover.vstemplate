@@ -12,6 +12,11 @@
     <DefaultName>SpectrumCodeDiscovery</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <CreateInPlace>true</CreateInPlace>
+    <LanguageTag>ZX Spectrum Languages</LanguageTag>
+    <ProjectTypeTag>Z80 Assembly</ProjectTypeTag>
+    <ProjectTypeTag>ZX BASIC</ProjectTypeTag>
+    <ProjectTypeTag>Games</ProjectTypeTag>
+    <ProjectTypeTag>ZX Spectrum</ProjectTypeTag>
   </TemplateData>
   <TemplateContent>
     <Project File="Spect.Net.CodeDiscover.z80cdproj" ReplaceParameters="true">

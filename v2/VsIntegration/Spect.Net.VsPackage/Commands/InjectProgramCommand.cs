@@ -8,8 +8,10 @@ using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Command;
 using Spect.Net.VsPackage.VsxLibrary.Output;
 using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace Spect.Net.VsPackage.Commands
@@ -55,7 +57,6 @@ namespace Spect.Net.VsPackage.Commands
         {
             // --- Prepare the appropriate file to compile/run
             CodeInjected = false;
-            GetCodeItem(out var hierarchy, out var itemId);
 
             // --- Step #1: Compile the code
             var success = await Task.Run(() => CompileCode());
@@ -213,7 +214,16 @@ namespace Spect.Net.VsPackage.Commands
             vm.MemViewPoint = (ushort)MemoryStartAddress;
             vm.DisAssViewPoint = (ushort)DisassemblyStartAddress;
             vm.StackDebugSupport.ClearStepOutStack();
-            if (ItemExtension.ToLower() == ".zxbas")
+
+            GetAffectedItem(out var hierarchy, out var itemId);
+            var ext = string.Empty;
+            if (hierarchy is IVsProject project)
+            {
+                project.GetMkDocument(itemId, out var itemFullPath);
+                ext = Path.GetExtension(itemFullPath) ?? string.Empty;
+            }
+
+            if (ext.ToLower() == ".zxbas")
             {
                 // --- Push the MAIN_EXECUTION loop address to the stack
                 var memDevice = vm.Machine.SpectrumVm.MemoryDevice;
