@@ -458,7 +458,7 @@ namespace Spect.Net.VsPackage.Machines
         /// <returns>True, if started within timeout; otherwise, false</returns>
         private static async Task<bool> WaitForTerminationPoint()
         {
-            const int TIME_OUT_IN_SECONDS = 5;
+            const int TIME_OUT_IN_SECONDS = 15;
 
             await Task.WhenAny(VmController.CompletionTask, Task.Delay(TIME_OUT_IN_SECONDS * 1000));
             if (VmController.CompletionTask.IsCompleted && VmController.MachineState == VmState.Paused)
