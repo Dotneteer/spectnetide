@@ -17,6 +17,8 @@ Preview 1 has these limitations:
 - SpectNetIDE is available only on VS 2019 (all editions supported).
 - Spectrum Scripting Console App project type removed.
 
+You can download the v2.0-preview 1 VSIX installer file [here](https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde2).
+
 __Stay tuned!__
 
 ## About the Project

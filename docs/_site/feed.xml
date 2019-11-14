@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-11-07T10:14:01+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-11-14T10:04:49+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
   &lt;p&gt;To use &lt;strong&gt;ZX BASIC&lt;/strong&gt; — as it is a separate product from &lt;strong&gt;SpectNetIDE&lt;/strong&gt;, first, you should install it on your computer. The previous tutorial explains the setup procedure.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -8,7 +8,7 @@
 
 &lt;ol&gt;
   &lt;li&gt;Create a new ZX Spectrum 48 project (see details &lt;a href=&quot;/spectnetide/getting-started/create-zx-spectrum-48k-project-2.html#article&quot;&gt;here&lt;/a&gt;).
-The &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ZxBasicFiles &lt;/code&gt;&lt;/strong&gt; project of the folder contains a &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Program.zxbas&lt;/code&gt;&lt;/strong&gt; file:&lt;/li&gt;
+The &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ZxBasicFiles &lt;/code&gt;&lt;/strong&gt; folder of the project contains a &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Program.zxbas&lt;/code&gt;&lt;/strong&gt; file:&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cls
@@ -84,7 +84,7 @@ END WHILE
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zx-basic-clock-runs.png&quot; alt=&quot;ZX BASIC clock runs&quot; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: For more details about ZX BASIC, visit this link: &lt;a href=&quot;http://www.zxbasic.net&quot;&gt;http://www.zxbasic.net&lt;/a&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: For more details about ZX BASIC, visit this link: &lt;a href=&quot;https://zxbasic.readthedocs.io/&quot;&gt;https://zxbasic.readthedocs.io/&lt;/a&gt;. You can find more example within the &lt;code class=&quot;highlighter-rouge&quot;&gt;examples&lt;/code&gt; folder within your ZX BASIC instalation folder, or &lt;a href=&quot;https://zxbasic.readthedocs.io/en/latest/sample_programs/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;</content><author><name></name></author><summary type="html">To use ZX BASIC — as it is a separate product from SpectNetIDE, first, you should install it on your computer. The previous tutorial explains the setup procedure.</summary></entry><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
 The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.&lt;/p&gt;
 
@@ -269,22 +269,35 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 
 &lt;p&gt;While the ZX Spectrum Emulator tool window has the focus, the IDE forward the keystrokes to the emulator that senses them as if you pressed a key on the ZX Spectrum hardware.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE would not be useful without an emulator to develop programs. The ZX Spectrum Emulator tool window shows the screen of the embedded ZX Spectrum virtual machine that runs in the background.</summary></entry><entry><title type="html">Setup ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/setup-zx-basic" rel="alternate" type="text/html" title="Setup ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/setup-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/setup-zx-basic">&lt;p&gt;ZX BASIC (Boriel’s BASIC) is a separate product maintained by Jose Rodriguez-Rosa (Boriel). You can find more information about this product in &lt;a href=&quot;https://github.com/boriel/zxbasic&quot;&gt;Github&lt;/a&gt;. This site refers to several links that raise a 404 Error.&lt;/p&gt;
 
+&lt;p&gt;You can find the ZX BASIC Wiki &lt;a href=&quot;https://zxbasic.readthedocs.io/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
 &lt;p&gt;SpectNetIDE uses ZX BASIC as an external tool, so first, you have to install ZX BASIC to your computer. You can find the installation files here: &lt;a href=&quot;https://www.boriel.com/files/zxb/&quot;&gt;https://www.boriel.com/files/zxb/&lt;/a&gt;.&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;Note: The newest versions can be found on the bottom of the page.&lt;/p&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: The newest versions can be found on the bottom of the page.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;To set up ZX BASIC integration with SpectNetIDE, follow these steps:&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;Download the ZXB version (Win32) you want to install (I suggest you to dowload the latest stable release).&lt;/li&gt;
+  &lt;li&gt;Download the ZXB version (with &lt;code class=&quot;highlighter-rouge&quot;&gt;zxbasic-n.n.n-win32.zip&lt;/code&gt;) you want to install (I suggest you to dowload the latest stable release).&lt;/li&gt;
   &lt;li&gt;Unzip this file, and copy to contents into your preferred installation folder.&lt;/li&gt;
-  &lt;li&gt;Start a command prompt, select the installation folder with the &lt;code class=&quot;highlighter-rouge&quot;&gt;CD&lt;/code&gt; command, and then check the installation with this command line:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: If you prefer the globally installed ZX BASIC version, please follow &lt;a href=&quot;https://zxbasic.readthedocs.io/en/latest/installation/&quot;&gt;these instructions&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Start a &lt;strong&gt;&lt;em&gt;command prompt&lt;/em&gt;&lt;/strong&gt;, select the installation folder with the &lt;code class=&quot;highlighter-rouge&quot;&gt;CD&lt;/code&gt; command, and then check the installation with this command line:&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;zxb --version
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: This command cannot be executed in Powershell on Windows (only with the CMD command-line prompt).&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;If the current version number is displayed, your ZX BASIC installation is successful.&lt;/p&gt;
 
@@ -298,11 +311,22 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
   &lt;li&gt;In The &lt;strong&gt;Spect.Net IDE&lt;/strong&gt; tab, set the &lt;strong&gt;ZXB utility path&lt;/strong&gt; option to the folder where you installed ZX BASIC.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: Alternatively, you can set up the &lt;strong&gt;PATH&lt;/strong&gt; environment variable of your computer to point out to the ZX BASIC installation folder.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;Alternatively, you can set up the &lt;strong&gt;PATH&lt;/strong&gt; environment variable of your computer to point out to the ZX BASIC installation folder:&lt;/p&gt;
 
-&lt;p&gt;With these steps, you’re ready to use ZX BASIC. The next tutorial shows how you can write and run a ZX BASIC program in SpectNetIDE.&lt;/p&gt;</content><author><name></name></author><summary type="html">ZX BASIC (Boriel’s BASIC) is a separate product maintained by Jose Rodriguez-Rosa (Boriel). You can find more information about this product in Github. This site refers to several links that raise a 404 Error.</summary></entry><entry><title type="html">LOAD a Program</title><link href="http://localhost:4000/spectnetide/getting-started/load-a-program-2" rel="alternate" type="text/html" title="LOAD a Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/load-a-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/load-a-program-2">&lt;p&gt;You can load a program from the tape into the memory with the &lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;In &lt;strong&gt;File Explorer&lt;/strong&gt; right-click on &lt;strong&gt;This PC&lt;/strong&gt; and run the &lt;strong&gt;Properties&lt;/strong&gt; command.&lt;/li&gt;
+  &lt;li&gt;Select &lt;strong&gt;Advanced System Settings&lt;/strong&gt;, and then click &lt;strong&gt;Environment Variables&lt;/strong&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/env-var-1.png&quot; alt=&quot;Environment variables&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Acording to your preference, you can edit User variables or System variables to add a PATH fragment that points to the ZX BASIC installation folder.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Great! With these steps, you’re ready to use ZX BASIC. Now you can proceed to the next tutorial, Use ZX BASIC.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">ZX BASIC (Boriel’s BASIC) is a separate product maintained by Jose Rodriguez-Rosa (Boriel). You can find more information about this product in Github. This site refers to several links that raise a 404 Error.</summary></entry><entry><title type="html">LOAD a Program</title><link href="http://localhost:4000/spectnetide/getting-started/load-a-program-2" rel="alternate" type="text/html" title="LOAD a Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/load-a-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/load-a-program-2">&lt;p&gt;You can load a program from the tape into the memory with the &lt;code class=&quot;highlighter-rouge&quot;&gt;LOAD &quot;&quot;&lt;/code&gt; statement. Hey, we do not have a tape, so how does SpectNetIDE know what program to load?&lt;/p&gt;
 
 &lt;p&gt;As a part of your project, you can add tape files with standard &lt;code class=&quot;highlighter-rouge&quot;&gt;.TAP&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.TZX&lt;/code&gt; format. When the IDE creates a new ZX Spectrum project, it adds a sample tape file, &lt;code class=&quot;highlighter-rouge&quot;&gt;Welcome.tzx&lt;/code&gt;; it puts it into the &lt;code class=&quot;highlighter-rouge&quot;&gt;TapeFiles&lt;/code&gt; folder. With the Add Existing Item command of Visual Studio, you can attach more tape files to the project. The virtual machine – that runs the ZX Spectrum Emulator – can work only with a single tape file at a time. To load that one – called the default tape –, follow these steps:&lt;/p&gt;
 
@@ -471,7 +495,9 @@ injects the binary code, and runs it:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/exported-code-in-project-2.png&quot; alt=&quot;Exported Z80 code in project&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;You have many other options to export your code, I will explain them in another tutorial.&lt;/p&gt;</content><author><name></name></author><summary type="html">After you created your Z80 Assembler program, you can easily export it into a .TAP or .TZX file so that you could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum (with the help of TZXDuino or CASDuino hardware).</summary></entry><entry><title type="html">Create a ZX Spectrum 48K Project</title><link href="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project-2" rel="alternate" type="text/html" title="Create a ZX Spectrum 48K Project" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-zx-spectrum-project</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project-2">&lt;ol&gt;
+&lt;p&gt;You have many other options to export your code, I will explain them in another tutorial.&lt;/p&gt;</content><author><name></name></author><summary type="html">After you created your Z80 Assembler program, you can easily export it into a .TAP or .TZX file so that you could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum (with the help of TZXDuino or CASDuino hardware).</summary></entry><entry><title type="html">Debug ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/debg-zx-basic" rel="alternate" type="text/html" title="Debug ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/debug-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/debg-zx-basic">&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;Coming soon.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">Coming soon.</summary></entry><entry><title type="html">Create a ZX Spectrum 48K Project</title><link href="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project-2" rel="alternate" type="text/html" title="Create a ZX Spectrum 48K Project" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-zx-spectrum-project</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project-2">&lt;ol&gt;
   &lt;li&gt;Run the &lt;strong&gt;File → New → Project&lt;/strong&gt; command (Ctrl+Shift+N). In the Create a new project dialog type “ZX Spectrum” in the search box. The dialog displays the ZX Spectrum Code Discovery Project. Select this type, and click Next.&lt;/li&gt;
 &lt;/ol&gt;
 
@@ -594,183 +620,4 @@ and then, press &lt;strong&gt;Enter&lt;/strong&gt;. The program starts, and disp
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-completed-2.png&quot; alt=&quot;Welcome in action&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You have just scratched the surface! There are many other features you can use in the
-IDE to discover the structure and internals of ZX Spectrum applications.&lt;/p&gt;</content><author><name></name></author><summary type="html">Run the File → New → Project command (Ctrl+Shift+N). In the Create a new project dialog type “ZX Spectrum” in the search box. The dialog displays the ZX Spectrum Code Discovery Project. Select this type, and click Next.</summary></entry><entry><title type="html">Create a Z80 Program</title><link href="http://localhost:4000/spectnetide/getting-started/create-a-z80-program-2" rel="alternate" type="text/html" title="Create a Z80 Program" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-z80-program</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-a-z80-program-2">&lt;p&gt;In this article, you will learn that SpectNetIde provides you a straightforward way to create and run Z80 assembly programs.&lt;/p&gt;
-
-&lt;p&gt;To create your first Z80 assembly program, follow these steps:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Create a new ZX Spectrum 48 project (see details &lt;a href=&quot;/spectnetide/getting-started/create-zx-spectrum-48k-project-2.html#article&quot;&gt;here&lt;/a&gt;).
-The &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CodeFiles &lt;/code&gt;&lt;/strong&gt; project of the folder contains a &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Code.z80asm&lt;/code&gt;&lt;/strong&gt; file:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Put your Z80 assembly code into code files
-Start:
-    .model Spectrum48
-    .org #8000
-    ld a,2;	      ; upper screen
-    call #1601    ; open the channel
-    ld hl,Message ; HL points the the message string
-NextCh:
-    ld a,(hl)     ; get next character
-    or a
-    jp z,#12a9    ; jump back to main cycle when terminated
-    rst #10       ; display character
-    inc hl        ; next character
-    jr NextCh     ; next loop
-
-Message:
-    .dm &quot;\a\x0A\x08&quot; ; AT 10, 4
-    .dm &quot;\p\x04&quot;     ; INK 4
-    .dm &quot;ZX Spectrum IDE&quot;
-    .db 0x00         ; terminate
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol start=&quot;2&quot;&gt;
-  &lt;li&gt;Insert these code lines right after &lt;code class=&quot;highlighter-rouge&quot;&gt;.org #8000&lt;/code&gt;:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	ld a,3        ; purple
-	out (#fe),a   ; set the border color
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol start=&quot;3&quot;&gt;
-  &lt;li&gt;In Solution Explorer, right-click the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Code.z80asm&lt;/code&gt;&lt;/strong&gt; file, and invoke the &lt;strong&gt;Run Z80 program&lt;/strong&gt; command:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-z80-code-command-2.png&quot; alt=&quot;Run Z80 code command&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: You can use the &lt;strong&gt;Ctrl+M&lt;/strong&gt;, &lt;strong&gt;Ctrl+R&lt;/strong&gt; double shortcut keys to execute the &lt;strong&gt;Run Z80 program&lt;/strong&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;This command compiles the Z80 assembly code to binary machine code, starts (or restarts) the Spectrum virtual machine,
-injects the binary code, and runs it:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/z80-code-runs-2.png&quot; alt=&quot;Z80 code runs&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You have just created your first Z80 assembly program in SpectNetIde!&lt;/p&gt;
-
-&lt;h2 id=&quot;errors-in-the-code&quot;&gt;Errors in the code&lt;/h2&gt;
-
-&lt;p&gt;If you make an error – either syntax or semantic error – the SpectNetIDE assembler gives an error message. Let’s assume you make an error in the code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Code file
-start:
-    org #8000
-    ld a,hl      ; &quot;hl&quot; is a semantic error
-    out (#fe),a 
-    jp #12a2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The Z80 Assembler displays the issue in the Error List:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/compile-error.png&quot; alt=&quot;Compile error&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;When you double click the error line, the IDE navigates you to the error line in the source code:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/error-marked-in-source.png&quot; alt=&quot;Error marked in source&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;a-bit-longer-z80-program&quot;&gt;A Bit Longer Z80 Program&lt;/h2&gt;
-
-&lt;p&gt;If you’re excited, you can try a bit longer Z80 code with border manipulations and delays. When you run it, the code sets the screen colors and uses the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;HALT&lt;/code&gt;&lt;/strong&gt; statement to synchronized border drawing. When you start it, it runs until you press &lt;code class=&quot;highlighter-rouge&quot;&gt;SPACE&lt;/code&gt;:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/banner-program-runs-2.png&quot; alt=&quot;Z80 baner runs&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Here is the entire source code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;; Define symbols
-LAST_K:		.equ #5c08
-MAIN_EX:	.equ #12a2
-
-Start:
-    .org #8000
-
-; Set Banner lines
-SetScreen:
-    call ClearScreen
-    ld a,0b00_010_010
-    ld b,0
-    call ClearLine
-    ld a,0b00_110_110
-    ld b,1
-    call ClearLine
-    ld a,0b00_101_101
-    ld b,2
-    call ClearLine
-    ld a,0b00_100_100
-    ld b,3
-    call ClearLine
-
-; Set banner border area
-Top:
-    ld bc,#200
-    call LongDelay
-    ld a,2
-    call SetBorder
-    ld a,6
-    call SetBorder
-    ld a,5
-    call SetBorder
-    ld a,4
-    call SetBorder
-    ld a,0
-    call SetBorder
-    halt        ; Wait for the next interrupt
-    ld hl,LAST_K
-    ld a, (hl)	; put last keyboard press into A
-    cp #20		; was &quot;space&quot; pressed?
-    jr nz,Top	; If not, back to the cycle
-    ld a,7
-    call SetBorder
-    jp MAIN_EX
-
-; Sets the entire screen to black
-ClearScreen:
-    ld bc,24*32-1 ; #of screen attribute bytes
-    ld hl,#5800 ; First attr address
-    ld de,#5801 ; Next attr address
-    ld (hl),0   ; Black on Black
-    ldir        ; Set all attribute bytes
-    ret
-
-; A = Attr byte to set
-; B = Line index
-ClearLine:
-    push af     ; Save A
-    ld a,b      ; Multiply the line count with 32
-    sla a
-    sla a
-    sla a
-    sla a
-    sla a
-    ld hl,#5800 ; Calculate the attribute address
-    ld d,0
-    ld e,a
-    add hl,de
-    pop af      ; Restore A
-    ld b,#20    ; Set all the 32 attribute bytes
-SetAttr:
-    ld (hl),a
-    inc hl
-    djnz SetAttr
-    ret
-
-; Sets the border color
-SetBorder:
-    out (#fe),a
-    ld b,#86
-Delay:
-    djnz Delay
-    ret
-
-; Delays code execution
-LongDelay:
-    dec bc
-    ld a,b
-    or c
-    jr nz,LongDelay
-    ret
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;SpectNetIDE&lt;/strong&gt; makes it extremely simple to reuse the Z80 assembly code, as you
-will learn in the next article.&lt;/p&gt;</content><author><name></name></author><summary type="html">In this article, you will learn that SpectNetIde provides you a straightforward way to create and run Z80 assembly programs.</summary></entry></feed>
+IDE to discover the structure and internals of ZX Spectrum applications.&lt;/p&gt;</content><author><name></name></author><summary type="html">Run the File → New → Project command (Ctrl+Shift+N). In the Create a new project dialog type “ZX Spectrum” in the search box. The dialog displays the ZX Spectrum Code Discovery Project. Select this type, and click Next.</summary></entry></feed>

@@ -16,7 +16,7 @@ SpectNetIDE supports ZX BASIC (Boriel's BASIC). In this tutorial, you will learn
 To create your first ZX BASIC program, follow these steps:
 
 1. Create a new ZX Spectrum 48 project (see details [here]({{ site.baseurl }}/getting-started/create-zx-spectrum-48k-project-2.html#article)).
-The __`ZxBasicFiles `__ project of the folder contains a __`Program.zxbas`__ file:
+The __`ZxBasicFiles `__ folder of the project contains a __`Program.zxbas`__ file:
 
 ```
 cls
@@ -82,4 +82,4 @@ END WHILE
 
 ![ZX BASIC clock runs]({{ site.baseurl }}/assets/images/tutorials/zx-basic-clock-runs.png)
 
-> __*Note*__: For more details about ZX BASIC, visit this link: [http://www.zxbasic.net](http://www.zxbasic.net)
+> __*Note*__: For more details about ZX BASIC, visit this link: [https://zxbasic.readthedocs.io/](https://zxbasic.readthedocs.io/). You can find more example within the `examples` folder within your ZX BASIC instalation folder, or [here](https://zxbasic.readthedocs.io/en/latest/sample_programs/).
