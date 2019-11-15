@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.Shell;
 using Spect.Net.VsPackage.SolutionItems;
 using Spect.Net.VsPackage.VsxLibrary.Command;
 using Task = System.Threading.Tasks.Task;
@@ -23,23 +22,12 @@ namespace Spect.Net.VsPackage.Commands
             };
 
         /// <summary>
-        /// Allows this command only within the active project
-        /// </summary>
-        protected override void OnQueryStatus(OleMenuCommand mc)
-        {
-            base.OnQueryStatus(mc);
-            if (!mc.Visible) return;
-
-            mc.Visible = IsInActiveProject;
-        }
-
-        /// <summary>
         /// Override this method to define the async command body te execute on the
         /// background thread
         /// </summary>
         protected override Task ExecuteAsync()
         {
-            HostPackage.ActiveProject.SetDefaultTapeItem(this);
+            SpectrumProject?.SetDefaultTapeItem(this);
             return Task.FromResult(0);
         }
     }

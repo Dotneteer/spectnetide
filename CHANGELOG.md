@@ -1,3 +1,12 @@
+### Version 2.0.3 (Preview 2)
+
+__FIX__: Several annoying bugs related to active ZX Spectrum project has been fixed.  
+__FIX__: The Run program command now works properly with ZX Spectrum +3E (Z80 Assembly and ZX BASIC)  
+__FIX__: You can set default items (program, tape file, annotation file) in inactive projects, too.  
+__FIX__: ZX BASIC compilation errors due to case-insensitive compilations removed. Z80 assembly files coming out from ZX BASIC are compiled in case-sensitive manner.  
+__FEATURE__: The ZX Spectrum Code Discovery project now has tags that can be seen in the New Project dialog.  
+__DOCUMENTATION__: ZX BASIC Setup and Usage documentation updated with useful info.
+
 ### Version 2.0.2 (Preview 1)
 
 __FIX__: ZX BASIC setup instructions added. In case of error, the IDE opens the help page for you.

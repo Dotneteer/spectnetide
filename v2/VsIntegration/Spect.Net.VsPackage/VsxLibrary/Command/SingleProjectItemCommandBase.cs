@@ -8,6 +8,7 @@ using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.VsPackage.SolutionItems;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
@@ -94,6 +95,13 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// </summary>
         public bool IsInActiveProject 
             => SpectNetPackage.Default.Solution.IsFileInActiveProject(ItemPath);
+
+        /// <summary>
+        /// Gets the ZX Spectrum project of this item
+        /// </summary>
+        public SpectrumProject SpectrumProject => 
+            SpectNetPackage.Default.Solution.Projects
+                .FirstOrDefault(project => project.ContainsFile(ItemPath));
 
         /// <summary>
         /// This method checks if there is only a single item selected in Solution Explorer.
