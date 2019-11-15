@@ -138,7 +138,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             _options = options ?? new AssemblerOptions();
             ConditionSymbols = new HashSet<string>(_options.PredefinedSymbols);
-            CurrentModule = Output = new AssemblerOutput(sourceItem);
+            CurrentModule = Output = new AssemblerOutput(sourceItem, options?.UseCaseSensitiveSymbols ?? false );
             CompareBins = new List<BinaryComparisonInfo>();
 
             // --- Do the compilation phases

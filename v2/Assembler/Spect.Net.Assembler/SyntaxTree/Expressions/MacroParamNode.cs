@@ -41,7 +41,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
             visitor.AddMacroParam(context);
             if (context.IDENTIFIER() != null)
             {
-                visitor.AddMacroParamName(context.IDENTIFIER().NormalizeToken());
+                visitor.AddMacroParamName(context.IDENTIFIER().GetText());
             }
             MacroParamId = context.IDENTIFIER()?.NormalizeToken();
         }

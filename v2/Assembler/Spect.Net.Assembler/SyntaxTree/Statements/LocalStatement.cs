@@ -25,7 +25,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
             Locals = new List<string>();
             foreach (var expr in context.IDENTIFIER())
             {
-                Locals.Add(expr.GetText().ToUpper());
+                Locals.Add(expr.GetText());
                 visitorContext.AddIdentifier(expr);
             }
         }

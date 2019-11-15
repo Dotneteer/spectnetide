@@ -32,7 +32,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Operations
             }
 
             KeywordSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex + 1);
-            Name = context.IDENTIFIER().NormalizeToken();
+            Name = context.IDENTIFIER().GetText();
         }
     }
 }

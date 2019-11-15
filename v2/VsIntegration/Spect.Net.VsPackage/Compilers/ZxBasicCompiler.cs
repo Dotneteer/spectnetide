@@ -77,14 +77,13 @@ namespace Spect.Net.VsPackage.Compilers
         /// </summary>
         /// <param name="itemPath">VS document item path</param>
         /// <param name="options">Assembler options to use</param>
-        /// <param name="output">Assembler output</param>
         /// <returns>True, if compilation is successful; otherwise, false</returns>
         public async Task<AssemblerOutput> CompileDocument(string itemPath,
             AssemblerOptions options)
         {
             var zxbOptions = PrepareZxbOptions(itemPath);
             MergeOptionsFromSource(zxbOptions);
-            var output = new AssemblerOutput(new SourceFileItem(itemPath));
+            var output = new AssemblerOutput(new SourceFileItem(itemPath), options?.UseCaseSensitiveSymbols ?? false);
             var runner = new ZxbRunner(SpectNetPackage.Default.Options.ZxbPath);
             var result = await runner.RunAsync(zxbOptions);
             if (result.ExitCode != 0)
@@ -107,7 +106,12 @@ namespace Spect.Net.VsPackage.Compilers
 
             // --- Second pass, compile the assembly file
             var compiler = new Z80Assembler();
+            if (options == null)
+            {
+                options = new AssemblerOptions();
+            }
             options.ProcExplicitLocalsOnly = true;
+            options.UseCaseSensitiveSymbols = true;
             if (_traceMessageHandler != null)
             {
                 compiler.AssemblerMessageCreated += _traceMessageHandler;

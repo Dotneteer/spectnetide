@@ -98,7 +98,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             def.ShouldNotBeNull();
             def.Section.FirstLine.ShouldBe(0);
             def.Section.LastLine.ShouldBe(1);
-            def.StructName.ShouldBe("MYSTRUCT");
+            def.StructName.ShouldBe("MyStruct");
         }
 
         [TestMethod]
@@ -113,6 +113,59 @@ namespace Spect.Net.Assembler.Test.Assembler
                 MyStruct: .struct
                     .ends
                 ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0434);
+        }
+
+        [TestMethod]
+        public void StructWithExistingLabelFailsCs1()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyStruct: nop
+                mystruct: .struct
+                    .ends
+                ", new AssemblerOptions { UseCaseSensitiveSymbols = false });
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0434);
+        }
+
+        [TestMethod]
+        public void StructWithExistingLabelFailsCs2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyStruct: nop
+                mystruct: .struct
+                    .ends
+                ", new AssemblerOptions { UseCaseSensitiveSymbols = true });
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void StructWithExistingLabelFailsCs3()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyStruct: nop
+                MyStruct: .struct
+                    .ends
+                ", new AssemblerOptions { UseCaseSensitiveSymbols = true });
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
@@ -139,7 +192,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             def.ShouldNotBeNull();
             def.Section.FirstLine.ShouldBe(1);
             def.Section.LastLine.ShouldBe(2);
-            def.StructName.ShouldBe("MYSTRUCT");
+            def.StructName.ShouldBe("MyStruct");
         }
 
         [TestMethod]
@@ -625,6 +678,77 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0438);
+        }
+
+        [TestMethod]
+        public void StructDefinitionWithDuplicatedFieldFailsCs1()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyStruct: 
+                    .struct
+                        field1: .defb 0x12, 0x13
+                        field2: ; This is a comment
+                                .defgx ""----OOOO OOOO----""
+                        Field1: .fillw 2, #12A3
+                        .defw #FEDC
+                    .ends
+                ",
+                new AssemblerOptions { UseCaseSensitiveSymbols = false });
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0438);
+        }
+
+        [TestMethod]
+        public void StructDefinitionWithDuplicatedFieldFailsCs2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyStruct: 
+                    .struct
+                        field1: .defb 0x12, 0x13
+                        field2: ; This is a comment
+                                .defgx ""----OOOO OOOO----""
+                        field1: .fillw 2, #12A3
+                        .defw #FEDC
+                    .ends
+                ",
+                new AssemblerOptions { UseCaseSensitiveSymbols = true });
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(1);
+            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0438);
+        }
+
+        [TestMethod]
+        public void StructDefinitionWithDuplicatedFieldFailsCs3()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                MyStruct: 
+                    .struct
+                        field1: .defb 0x12, 0x13
+                        field2: ; This is a comment
+                                .defgx ""----OOOO OOOO----""
+                        Field1: .fillw 2, #12A3
+                        .defw #FEDC
+                    .ends
+                ",
+                new AssemblerOptions { UseCaseSensitiveSymbols = true });
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
         }
 
         [TestMethod]

@@ -402,7 +402,7 @@ namespace Spect.Net.Assembler
             var labelCtx = context.label();
             if (labelCtx != null)
             {
-                CurrentLabel = labelCtx.GetChild(0).NormalizeToken();
+                CurrentLabel = labelCtx.GetChild(0).GetText();
                 CurrentLabelColon = labelCtx.COLON() != null;
                 LabelSpan = new TextSpan(labelCtx.Start.StartIndex, labelCtx.Start.StopIndex + 1);
             }
@@ -417,7 +417,7 @@ namespace Spect.Net.Assembler
                 if (macroParamCtx != null)
                 {
                     VisitMacroParam(macroParamCtx);
-                    mainInstructionPart = new MacroParamLine(macroParamCtx.IDENTIFIER()?.NormalizeToken());
+                    mainInstructionPart = new MacroParamLine(macroParamCtx.IDENTIFIER()?.GetText());
                 }
                 else
                 {
@@ -731,7 +731,7 @@ namespace Spect.Net.Assembler
             AddMacroParam(context);
             if (context.IDENTIFIER() != null)
             {
-                AddMacroParamName(context.IDENTIFIER().NormalizeToken());
+                AddMacroParamName(context.IDENTIFIER().GetText());
             }
             return null;
         }
@@ -1096,7 +1096,7 @@ namespace Spect.Net.Assembler
                         AddMacroParam(ctx.macroParam());
                         if (ctx.macroParam().IDENTIFIER() != null)
                         {
-                            AddMacroParamName(ctx.macroParam().IDENTIFIER().NormalizeToken());
+                            AddMacroParamName(ctx.macroParam().IDENTIFIER().GetText());
                         }
                     }
                     if (ctx.mnemonic() != null)

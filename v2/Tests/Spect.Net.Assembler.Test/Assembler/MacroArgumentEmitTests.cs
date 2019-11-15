@@ -73,6 +73,43 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void SingleMacroArgumentWithNumberWorksCs1()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(MyArg)
+                ld a,{{MyArg}}
+                .endm
+                MyMacro(#A3)";
+
+            CodeEmitWorksWithOptions(new AssemblerOptions { UseCaseSensitiveSymbols = true },  SOURCE, 0x3E, 0xA3);
+        }
+
+        [TestMethod]
+        public void SingleMacroArgumentWithNumberWorksCs2()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(myArg)
+                ld a,{{MyArg}}
+                .endm
+                myMacro(#A3)";
+
+            CodeEmitWorksWithOptions(new AssemblerOptions { UseCaseSensitiveSymbols = false }, SOURCE, 0x3E, 0xA3);
+        }
+
+        [TestMethod]
+        public void SingleMacroArgumentWithNumberWorksCs3()
+        {
+            const string SOURCE = @"
+                MyMacro: .macro(myArg)
+                ld a,{{MyArg}}
+                .endm
+                myMacro(#A3)";
+
+            CodeRaisesMultipleErrors(SOURCE, new AssemblerOptions { UseCaseSensitiveSymbols = true }, 
+                Errors.Z0403, Errors.Z0418);
+        }
+
+        [TestMethod]
         [DataRow("a", 0x7F)]
         [DataRow("b", 0x78)]
         [DataRow("c", 0x79)]

@@ -31,7 +31,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Statements
             foreach (var id in paramIds)
             {
                 visitorContext.AddIdentifier(id);
-                Arguments.Add(id.NormalizeToken());
+                Arguments.Add(id.GetText());
             }
         }
     }

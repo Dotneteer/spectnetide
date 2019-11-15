@@ -544,14 +544,14 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        [DataRow("Symbol", "SYMBOL")]
-        [DataRow("@Symbol", "@SYMBOL")]
-        [DataRow("S@ymbol", "S@YMBOL")]
-        [DataRow("`symbol", "`SYMBOL")]
-        [DataRow("S!ymbol!", "S!YMBOL!")]
-        [DataRow("S!ymbol?", "S!YMBOL?")]
-        [DataRow("S#ymbol!", "S#YMBOL!")]
-        [DataRow("Symbol#", "SYMBOL#")]
+        [DataRow("Symbol", "Symbol")]
+        [DataRow("@Symbol", "@Symbol")]
+        [DataRow("S@ymbol", "S@ymbol")]
+        [DataRow("`symbol", "`symbol")]
+        [DataRow("S!ymbol!", "S!ymbol!")]
+        [DataRow("S!ymbol?", "S!ymbol?")]
+        [DataRow("S#ymbol!", "S#ymbol!")]
+        [DataRow("Symbol#", "Symbol#")]
         public void IdentifierParsingWorks(string source, string symbol)
         {
             // --- Act

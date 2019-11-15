@@ -147,7 +147,7 @@ namespace Spect.Net.Assembler.SyntaxTree
                 visitorContext.AddMacroParam(context.macroParam());
                 if (context.macroParam().IDENTIFIER() != null)
                 {
-                    visitorContext.AddMacroParamName(context.macroParam().IDENTIFIER().NormalizeToken());
+                    visitorContext.AddMacroParamName(context.macroParam().IDENTIFIER().GetText());
                 }
             }
             else if (context.reg16Std() != null)

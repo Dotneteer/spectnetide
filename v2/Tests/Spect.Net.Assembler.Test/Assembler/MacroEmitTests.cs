@@ -62,7 +62,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             def.ShouldNotBeNull();
             def.Section.FirstLine.ShouldBe(0);
             def.Section.LastLine.ShouldBe(1);
-            def.MacroName.ShouldBe("MYMACRO");
+            def.MacroName.ShouldBe("MyMacro");
         }
 
         [TestMethod]
@@ -103,7 +103,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             def.ShouldNotBeNull();
             def.Section.FirstLine.ShouldBe(1);
             def.Section.LastLine.ShouldBe(2);
-            def.MacroName.ShouldBe("MYMACRO");
+            def.MacroName.ShouldBe("MyMacro");
         }
 
         [TestMethod]
@@ -125,7 +125,7 @@ namespace Spect.Net.Assembler.Test.Assembler
             def.ShouldNotBeNull();
             def.Section.FirstLine.ShouldBe(0);
             def.Section.LastLine.ShouldBe(1);
-            def.MacroName.ShouldBe("MYMACRO");
+            def.MacroName.ShouldBe("MyMacro");
         }
 
         [TestMethod]

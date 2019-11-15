@@ -54,8 +54,23 @@ namespace Spect.Net.Assembler.Test
 
             // --- Assert
             output.ErrorCount.ShouldBe(1);
-            Console.WriteLine(output.Errors[0].Message);
             output.Errors[0].ErrorCode.ShouldBe(errorCode);
+        }
+
+        public void CodeRaisesMultipleErrors(string instruction, AssemblerOptions options, params string[] errorCodes)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(instruction, options);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(errorCodes.Length);
+            for (var i = 0; i < errorCodes.Length; i++)
+            {
+                output.Errors[i].ErrorCode.ShouldBe(errorCodes[i]);
+            }
         }
     }
 }

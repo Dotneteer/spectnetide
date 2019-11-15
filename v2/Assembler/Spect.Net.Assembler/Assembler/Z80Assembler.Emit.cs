@@ -581,7 +581,10 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     foreach (var paramName in macroLine.MacroParamNames)
                     {
-                        if (macro.Arguments.Contains(paramName)) continue;
+                        var comparer = IsCaseSensitive
+                            ? StringComparer.InvariantCulture
+                            : StringComparer.InvariantCultureIgnoreCase;
+                        if (macro.Arguments.Contains(paramName, comparer)) continue;
 
                         errorFound = true;
                         ReportError(Errors.Z0403, macroLine, paramName);
@@ -638,7 +641,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Create structure definition
-            var structDef = new StructDefinition(label, firstLine, currentLineIndex);
+            var structDef = new StructDefinition(label, firstLine, currentLineIndex, IsCaseSensitive);
 
             // --- Check each macro line for valid instruction type
             var structErrors = 0;
@@ -791,14 +794,14 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Create a scope for the loop
-            var loopScope = new SymbolScope();
+            var loopScope = new SymbolScope(null, IsCaseSensitive);
             CurrentModule.LocalScopes.Push(loopScope);
             var errorsBefore = Output.ErrorCount;
 
             for (var i = 0; i < counter; i++)
             {
                 // --- Create a local scope for the loop body
-                var iterationScope = new SymbolScope(loopScope);
+                var iterationScope = new SymbolScope(loopScope, IsCaseSensitive);
                 CurrentModule.LocalScopes.Push(iterationScope);
                 iterationScope.LoopCounter = i + 1;
 
@@ -875,7 +878,10 @@ namespace Spect.Net.Assembler.Assembler
             var lastLine = currentLineIndex;
 
             // --- Create a scope for the proc
-            var procScope = new SymbolScope {IsLoopScope = false, IsProcScope = true };
+            var procScope = new SymbolScope(null, IsCaseSensitive)
+            {
+                IsLoopScope = false, IsProcScope = true
+            };
             CurrentModule.LocalScopes.Push(procScope);
 
             // --- Collect and process LOCAL statements
@@ -973,12 +979,15 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Create a new nested module
-            var newModule = new AssemblyModule(CurrentModule);
+            var newModule = new AssemblyModule(CurrentModule, IsCaseSensitive);
             CurrentModule.NestedModules.Add(moduleName, newModule);
             CurrentModule = newModule;
 
             // --- The module has a label, so create a temporary scope, too
-            newModule.LocalScopes.Push(new SymbolScope { IsTemporaryScope = true });
+            newModule.LocalScopes.Push(new SymbolScope(null, IsCaseSensitive)
+            {
+                IsTemporaryScope = true
+            });
 
             // --- Create a local scope for the loop body
             var loopLineIndex = firstLine + 1;
@@ -1038,7 +1047,7 @@ namespace Spect.Net.Assembler.Assembler
             var untilStmt = scopeLines[lastLine] as UntilStatement;
 
             // --- Create a scope for the repeat loop
-            var loopScope = new SymbolScope();
+            var loopScope = new SymbolScope(null, IsCaseSensitive);
             CurrentModule.LocalScopes.Push(loopScope);
             var errorsBefore = Output.ErrorCount;
 
@@ -1048,7 +1057,7 @@ namespace Spect.Net.Assembler.Assembler
             do
             {
                 // --- Create a local scope for the repeat body
-                var iterationScope = new SymbolScope(loopScope);
+                var iterationScope = new SymbolScope(loopScope, IsCaseSensitive);
                 CurrentModule.LocalScopes.Push(iterationScope);
                 iterationScope.LoopCounter = loopCount;
 
@@ -1145,7 +1154,7 @@ namespace Spect.Net.Assembler.Assembler
             var lastLine = currentLineIndex;
             
             // --- Create a scope for the while loop
-            var loopScope = new SymbolScope();
+            var loopScope = new SymbolScope(null, IsCaseSensitive);
             CurrentModule.LocalScopes.Push(loopScope);
             var errorsBefore = Output.ErrorCount;
 
@@ -1154,7 +1163,7 @@ namespace Spect.Net.Assembler.Assembler
             while (true)
             {
                 // --- Create a local scope for the repeat body
-                var iterationScope = new SymbolScope(loopScope);
+                var iterationScope = new SymbolScope(loopScope, IsCaseSensitive);
                 CurrentModule.LocalScopes.Push(iterationScope);
                 iterationScope.LoopCounter = loopCount;
 
@@ -1293,7 +1302,7 @@ namespace Spect.Net.Assembler.Assembler
             }
 
             // --- Create a scope for the FOR loop
-            var loopScope = new SymbolScope();
+            var loopScope = new SymbolScope(null, IsCaseSensitive);
             CurrentModule.LocalScopes.Push(loopScope);
 
             // --- Init the FOR variable
@@ -1338,7 +1347,7 @@ namespace Spect.Net.Assembler.Assembler
                 }
 
                 // --- Create a local scope for the FOR body
-                var iterationScope = new SymbolScope(loopScope);
+                var iterationScope = new SymbolScope(loopScope, IsCaseSensitive);
                 CurrentModule.LocalScopes.Push(iterationScope);
                 iterationScope.LoopCounter = loopCount;
 
@@ -1744,7 +1753,7 @@ namespace Spect.Net.Assembler.Assembler
             if (errorFound) return;
 
             // --- Create a scope for the macro
-            var macroScope = new SymbolScope
+            var macroScope = new SymbolScope(null, IsCaseSensitive)
             {
                 MacroArguments = arguments
             };
