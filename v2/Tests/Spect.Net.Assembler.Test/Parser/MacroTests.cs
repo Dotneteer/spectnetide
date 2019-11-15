@@ -45,10 +45,10 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        [DataRow(".macro(arg1)", "ARG1")]
-        [DataRow("macro(arg1)", "ARG1")]
-        [DataRow(".MACRO(arg1)", "ARG1")]
-        [DataRow(".MACRO(arg1)", "ARG1")]
+        [DataRow(".macro(arg1)", "arg1")]
+        [DataRow("macro(arg1)", "arg1")]
+        [DataRow(".MACRO(arg1)", "arg1")]
+        [DataRow(".MACRO(arg1)", "arg1")]
         public void MacroWithArgumentsWorks(string source, string arg1)
         {
             // --- Act
@@ -63,10 +63,10 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        [DataRow(".macro(arg1, secondArg)", "ARG1", "SECONDARG")]
-        [DataRow("macro(arg1, secondArg)", "ARG1", "SECONDARG")]
-        [DataRow(".MACRO(arg1, secondArg)", "ARG1", "SECONDARG")]
-        [DataRow("MACRO(arg1, secondArg)", "ARG1", "SECONDARG")]
+        [DataRow(".macro(arg1, secondArg)", "arg1", "secondArg")]
+        [DataRow("macro(arg1, secondArg)", "arg1", "secondArg")]
+        [DataRow(".MACRO(arg1, secondArg)", "arg1", "secondArg")]
+        [DataRow("MACRO(arg1, secondArg)", "arg1", "secondArg")]
         public void MacroWithTwoArgumentsWorks(string source, string arg1, string arg2)
         {
             // --- Act
@@ -82,10 +82,10 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        [DataRow(".macro(arg1, secondArg, third)", "ARG1", "SECONDARG", "THIRD")]
-        [DataRow("macro(arg1, secondArg, third)", "ARG1", "SECONDARG", "THIRD")]
-        [DataRow(".MACRO(arg1, secondArg, third)", "ARG1", "SECONDARG", "THIRD")]
-        [DataRow("MACRO(arg1, secondArg, third)", "ARG1", "SECONDARG", "THIRD")]
+        [DataRow(".macro(arg1, secondArg, third)", "arg1", "secondArg", "third")]
+        [DataRow("macro(arg1, secondArg, third)", "arg1", "secondArg", "third")]
+        [DataRow(".MACRO(arg1, secondArg, third)", "arg1", "secondArg", "third")]
+        [DataRow("MACRO(arg1, secondArg, third)", "arg1", "secondArg", "third")]
         public void MacroWithThreeArgumentsWorks(string source, string arg1, string arg2, string arg3)
         {
             // --- Act
@@ -111,9 +111,9 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as MacroParamLine;
             line.ShouldNotBeNull();
-            line.Identifier.ShouldBe("MYMACROPARAM");
+            line.Identifier.ShouldBe("MyMacroParam");
             line.MacroParamNames.Count.ShouldBe(1);
-            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
+            line.MacroParamNames[0].ShouldBe("MyMacroParam");
         }
 
         [TestMethod]
@@ -125,7 +125,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as MacroOrStructInvocation;
-            line.Name.ShouldBe("MYMACRO");
+            line.Name.ShouldBe("MyMacro");
         }
 
         [TestMethod]
@@ -139,8 +139,8 @@ namespace Spect.Net.Assembler.Test.Parser
             var origLine = visitor.Compilation.Lines[0];
             var line = visitor.Compilation.Lines[0] as MacroParamLine;
             line.ShouldNotBeNull();
-            line.Identifier.ShouldBe("MYMACROPARAM");
-            origLine.Label.ShouldBe("MYLABEL");
+            line.Identifier.ShouldBe("MyMacroParam");
+            origLine.Label.ShouldBe("MyLabel");
         }
 
         [TestMethod]
@@ -154,7 +154,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var origLine = visitor.Compilation.Lines[0];
             var line = visitor.Compilation.Lines[0] as MacroParamLine;
             line.ShouldNotBeNull();
-            line.Identifier.ShouldBe("MYMACROPARAM");
+            line.Identifier.ShouldBe("MyMacroParam");
             origLine.Comment.ShouldBe("; MyComment");
         }
 
@@ -169,8 +169,8 @@ namespace Spect.Net.Assembler.Test.Parser
             var origLine = visitor.Compilation.Lines[0];
             var line = visitor.Compilation.Lines[0] as MacroParamLine;
             line.ShouldNotBeNull();
-            line.Identifier.ShouldBe("MYMACROPARAM");
-            origLine.Label.ShouldBe("MYLABEL");
+            line.Identifier.ShouldBe("MyMacroParam");
+            origLine.Label.ShouldBe("MyLabel");
             origLine.Comment.ShouldBe("; MyComment");
         }
 
@@ -236,7 +236,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Operand.Type.ShouldBe(OperandType.Expr);
             line.MacroParamNames.Count.ShouldBe(1);
-            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
+            line.MacroParamNames[0].ShouldBe("MyMacroParam");
         }
 
         [TestMethod]
@@ -254,7 +254,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Operand.Type.ShouldBe(OperandType.Condition);
             line.MacroParamNames.Count.ShouldBe(1);
-            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
+            line.MacroParamNames[0].ShouldBe("MyMacroParam");
         }
 
         [TestMethod]
@@ -290,8 +290,8 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Operand.Type.ShouldBe(OperandType.Expr);
             line.MacroParamNames.Count.ShouldBe(2);
-            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
-            line.MacroParamNames[1].ShouldBe("PAR");
+            line.MacroParamNames[0].ShouldBe("MyMacroParam");
+            line.MacroParamNames[1].ShouldBe("par");
         }
 
         [TestMethod]
@@ -327,7 +327,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Operand2.Type.ShouldBe(OperandType.Expr);
             line.MacroParamNames.Count.ShouldBe(1);
-            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
+            line.MacroParamNames[0].ShouldBe("MyMacroParam");
         }
 
         [TestMethod]
@@ -345,7 +345,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.ShouldNotBeNull();
             line.Operand.Expression.HasMacroParameter.ShouldBeTrue();
             line.MacroParamNames.Count.ShouldBe(1);
-            line.MacroParamNames[0].ShouldBe("MYMACROPARAM");
+            line.MacroParamNames[0].ShouldBe("MyMacroParam");
         }
 
 
@@ -367,7 +367,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Operand2.Type.ShouldBe(OperandType.Expr);
             line.Operand2.Expression.HasMacroParameter.ShouldBeTrue();
             line.MacroParamNames.Count.ShouldBe(1);
-            line.MacroParamNames[0].ShouldBe("PAR");
+            line.MacroParamNames[0].ShouldBe("par");
         }
     }
 }

@@ -40,14 +40,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// The symbol table with properly defined symbols
         /// </summary>
-        public Dictionary<string, AssemblySymbolInfo> Symbols { get; } =
-            new Dictionary<string, AssemblySymbolInfo>(StringComparer.InvariantCultureIgnoreCase);
+        public Dictionary<string, AssemblySymbolInfo> Symbols { get; }
+            
 
         /// <summary>
         /// Local symbol bookings
         /// </summary>
         public HashSet<string> LocalSymbolBookings { get; } 
-            = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// The list of fixups to carry out as the last phase of the compilation
@@ -93,9 +92,14 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public SymbolScope(SymbolScope ownerScope = null)
+        public SymbolScope(SymbolScope ownerScope, bool caseSensitive)
         {
             OwnerScope = ownerScope;
+            var comparer = caseSensitive
+                ? StringComparer.InvariantCulture
+                : StringComparer.InvariantCultureIgnoreCase;
+            Symbols = new Dictionary<string, AssemblySymbolInfo>(comparer);
+            LocalSymbolBookings = new HashSet<string>(comparer);
         }
     }
 }

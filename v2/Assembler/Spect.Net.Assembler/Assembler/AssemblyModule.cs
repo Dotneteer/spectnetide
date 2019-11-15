@@ -25,22 +25,18 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Child modules within this module
         /// </summary>
-        public Dictionary<string, AssemblyModule> NestedModules { get;  } = 
-            new Dictionary<string, AssemblyModule>(StringComparer.InvariantCultureIgnoreCase);
-
+        public Dictionary<string, AssemblyModule> NestedModules { get;  }
+        
         /// <summary>
         /// The symbol table with properly defined symbols
         /// </summary>
-        public Dictionary<string, AssemblySymbolInfo> Symbols { get; } =
-            new Dictionary<string, AssemblySymbolInfo>(StringComparer.InvariantCultureIgnoreCase);
+        public Dictionary<string, AssemblySymbolInfo> Symbols { get; }
 
         /// <summary>
         /// The table of structures
         /// </summary>
-        public Dictionary<string, StructDefinition> Structs { get; } =
-            new Dictionary<string, StructDefinition>(StringComparer.InvariantCultureIgnoreCase);
-
-
+        public Dictionary<string, StructDefinition> Structs { get; }
+        
         /// <summary>
         /// The list of fixups to carry out as the last phase of the compilation
         /// </summary>
@@ -54,12 +50,18 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// The macro table
         /// </summary>
-        public Dictionary<string, MacroDefinition> Macros { get; } =
-            new Dictionary<string, MacroDefinition>(StringComparer.InvariantCultureIgnoreCase);
+        public Dictionary<string, MacroDefinition> Macros { get; }
 
-        public AssemblyModule(AssemblyModule parentModule = null)
+        public AssemblyModule(AssemblyModule parentModule, bool caseSensitive)
         {
             ParentModule = parentModule;
+            var comparer = caseSensitive
+                ? StringComparer.InvariantCulture 
+                : StringComparer.InvariantCultureIgnoreCase;
+            NestedModules = new Dictionary<string, AssemblyModule>(comparer);
+            Symbols = new Dictionary<string, AssemblySymbolInfo>(comparer);
+            Structs = new Dictionary<string, StructDefinition>(comparer);
+            Macros = new Dictionary<string, MacroDefinition>(comparer);
         }
 
         /// <summary>

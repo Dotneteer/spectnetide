@@ -59,7 +59,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as OrgPragma;
             line.ShouldNotBeNull();
-            line.Label.ShouldBe("ORIGIN");
+            line.Label.ShouldBe("origin");
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
 
@@ -112,7 +112,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as EntPragma;
             line.ShouldNotBeNull();
-            line.Label.ShouldBe("ENTRY");
+            line.Label.ShouldBe("entry");
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
 
@@ -165,7 +165,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as XentPragma;
             line.ShouldNotBeNull();
-            line.Label.ShouldBe("ENTRY");
+            line.Label.ShouldBe("entry");
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
 
@@ -218,7 +218,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as DispPragma;
             line.ShouldNotBeNull();
-            line.Label.ShouldBe("DISPLACEMENT");
+            line.Label.ShouldBe("displacement");
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
 
@@ -271,7 +271,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as XorgPragma;
             line.ShouldNotBeNull();
-            line.Label.ShouldBe("DISPLACEMENT");
+            line.Label.ShouldBe("displacement");
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
 
@@ -324,7 +324,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as EquPragma;
             line.ShouldNotBeNull();
-            line.Label.ShouldBe("EQUALS");
+            line.Label.ShouldBe("equals");
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
 
@@ -386,7 +386,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Exprs.Count.ShouldBe(2);
             line.Exprs[0].ShouldBeOfType<LiteralNode>();
             line.Exprs[1].ShouldBeOfType<LiteralNode>();
-            line.Label.ShouldBe("DEFINE");
+            line.Label.ShouldBe("define");
         }
 
         [TestMethod]
@@ -466,7 +466,7 @@ namespace Spect.Net.Assembler.Test.Parser
             line.Exprs.Count.ShouldBe(2);
             line.Exprs[0].ShouldBeOfType<LiteralNode>();
             line.Exprs[1].ShouldBeOfType<LiteralNode>();
-            line.Label.ShouldBe("DEFINE");
+            line.Label.ShouldBe("define");
         }
 
         [TestMethod]
@@ -627,7 +627,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0] as SkipPragma;
             line.ShouldNotBeNull();
-            line.Label.ShouldBe("ORIGIN");
+            line.Label.ShouldBe("origin");
             line.Expression.ShouldBeOfType<LiteralNode>();
         }
 

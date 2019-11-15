@@ -75,7 +75,7 @@ namespace Spect.Net.Assembler.Assembler
         public List<ListFileItem> ListFileItems { get; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public AssemblerOutput(SourceFileItem sourceItem)
+        public AssemblerOutput(SourceFileItem sourceItem, bool caseSensitive): base(null, caseSensitive)
         {
             SourceItem = sourceItem
                 ?? throw new ArgumentNullException(nameof(sourceItem));

@@ -31,11 +31,12 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
-        public StructDefinition(string structName, int macroDefLine, int macroEndLine)
+        public StructDefinition(string structName, int macroDefLine, int macroEndLine, bool caseSensitive)
         {
             StructName = structName;
             Section = new DefinitionSection(macroDefLine, macroEndLine);
-            Fields = new Dictionary<string, FieldDefinition>(StringComparer.InvariantCultureIgnoreCase);
+            Fields = new Dictionary<string, FieldDefinition>(
+                caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
         }
     }
 }

@@ -400,5 +400,53 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(SOURCE, 0x3E, 0x01, 0x00, 0x3E, 0x05, 0x3E, 0x01);
         }
 
+
+        [TestMethod]
+        public void LocalLabelsWorkInProcWithNoExplicitLocal()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .proc
+                myLabel: nop;
+                .endp
+                .proc
+                myLabel: nop;
+                .endp
+                ",
+                new AssemblerOptions { ProcExplicitLocalsOnly = false });
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void LocalLabelsWorkInProcWithExplicitLocal()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .proc
+                local myLabel
+                myLabel: nop
+                .endp
+                .proc
+                local myLabel
+                myLabel: nop
+                .endp
+                ",
+                new AssemblerOptions
+                {
+                    ProcExplicitLocalsOnly = true,
+                    UseCaseSensitiveSymbols = true
+                });
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+        }
     }
 }

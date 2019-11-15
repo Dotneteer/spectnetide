@@ -26,7 +26,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
-            line.Label.ShouldBe("STARTLABEL");
+            line.Label.ShouldBe("startLabel");
         }
 
         [TestMethod]
@@ -38,7 +38,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
-            line.Label.ShouldBe("STARTLABEL");
+            line.Label.ShouldBe("startLabel");
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace Spect.Net.Assembler.Test.Parser
             // --- Assert
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
-            line.Label.ShouldBe("STARTLABEL");
+            line.Label.ShouldBe("startLabel");
         }
 
         [TestMethod]
@@ -75,7 +75,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
             line.ShouldBeOfType<TrivialOperation>();
-            line.Label.ShouldBe("STARTLABEL");
+            line.Label.ShouldBe("startLabel");
         }
 
         [TestMethod]
@@ -90,7 +90,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(1);
             var line = visitor.Compilation.Lines[0];
             line.ShouldBeOfType<TrivialOperation>();
-            line.Label.ShouldBe("STARTLABEL");
+            line.Label.ShouldBe("startLabel");
         }
 
         [TestMethod]
@@ -122,7 +122,7 @@ namespace Spect.Net.Assembler.Test.Parser
             visitor.Compilation.Lines.Count.ShouldBe(2);
             var line = visitor.Compilation.Lines[0];
             line.ShouldBeOfType<TrivialOperation>();
-            line.Label.ShouldBe("STARTLABEL");
+            line.Label.ShouldBe("startLabel");
         }
 
         [TestMethod]

@@ -18,11 +18,6 @@ namespace Spect.Net.Assembler.Assembler
         public ushort? DefaultStartAddress { get; set; } = null;
 
         /// <summary>
-        /// The default displacement address of the compilation
-        /// </summary>
-        public int? DefaultDisplacement { get; set; } = null;
-
-        /// <summary>
         /// The current ZX Spectrum model
         /// </summary>
         public SpectrumModelType CurrentModel { get; set; } = SpectrumModelType.Spectrum48;
@@ -36,5 +31,10 @@ namespace Spect.Net.Assembler.Assembler
         /// Signs that PROC labels and symbols are not locals by default
         /// </summary>
         public bool ProcExplicitLocalsOnly { get; set; } = false;
+
+        /// <summary>
+        /// Indicates that assembly symbols should be case sensitively.
+        /// </summary>
+        public bool UseCaseSensitiveSymbols { get; set; } = false;
     }
 }

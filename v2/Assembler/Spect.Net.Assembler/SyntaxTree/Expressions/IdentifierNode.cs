@@ -71,7 +71,7 @@ namespace Spect.Net.Assembler.SyntaxTree.Expressions
         public IdentifierNode(Z80AsmParser.SymbolContext context) : base(context)
         {
             StartFromGlobal = context.GetChild(0).GetText() == "::";
-            SymbolName = context.IDENTIFIER()?.NormalizeToken();
+            SymbolName = context.IDENTIFIER()?.GetText();
         }
     }
 }

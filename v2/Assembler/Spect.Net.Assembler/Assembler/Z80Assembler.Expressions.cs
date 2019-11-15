@@ -15,6 +15,11 @@ namespace Spect.Net.Assembler.Assembler
     public partial class Z80Assembler: IEvaluationContext
     {
         /// <summary>
+        /// Indicates if the assembler is used in case sensitive mode
+        /// </summary>
+        public bool IsCaseSensitive => _options?.UseCaseSensitiveSymbols ?? false;
+
+        /// <summary>
         /// Gets the current assembly address
         /// </summary>
         ushort IEvaluationContext.GetCurrentAddress() => GetCurrentInstructionAddress();
@@ -123,7 +128,7 @@ namespace Spect.Net.Assembler.Assembler
                     ? CurrentModule.LocalScopes.Peek().Symbols
                     : CurrentModule.Symbols;
 
-            if (symbol == "__SET_ATTR2")
+            if (symbol == "checkParity")
             {
                 var x = 1;
             }
@@ -147,7 +152,10 @@ namespace Spect.Net.Assembler.Assembler
             else
             {
                 // --- Create a new temporary scope
-                CurrentModule.LocalScopes.Push(new SymbolScope { IsTemporaryScope = true });
+                CurrentModule.LocalScopes.Push(new SymbolScope(null, IsCaseSensitive)
+                {
+                    IsTemporaryScope = true
+                });
                 if (symbolIsTemporary)
                 {
                     // --- Temporary symbol should go into the new temporary scope

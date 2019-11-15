@@ -119,7 +119,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var output = Parse("ff0ah");
 
             // --- Assert
-            output.Compilation.Lines[0].Label.ShouldBe("FF0AH");
+            output.Compilation.Lines[0].Label.ShouldBe("ff0ah");
         }
 
         [TestMethod]
