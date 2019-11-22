@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using System.Linq;
+using EnvDTE;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
@@ -33,6 +34,25 @@ namespace Spect.Net.VsPackage.SolutionItems
             DteProjectItem = dteProjectItem;
             Filename = dteProjectItem.FileNames[0];
             Identity = dteProjectItem.Properties.Item("Identity").Value.ToString();
+        }
+
+        /// <summary>
+        /// Checks if this project item has a child item with the specified name.
+        /// </summary>
+        /// <param name="filename">File name to check</param>
+        /// <returns>True, if the item has the specified child item</returns>
+        public bool HasChild(string filename)
+        {
+            foreach (ProjectItem item in DteProjectItem.ProjectItems)
+            {
+                var itemPath = item.Properties.Item("FullPath").Value;
+                if (itemPath.Equals(filename))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }

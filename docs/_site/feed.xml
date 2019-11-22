@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-11-14T10:04:49+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2019-11-22T18:05:45+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
   &lt;p&gt;To use &lt;strong&gt;ZX BASIC&lt;/strong&gt; — as it is a separate product from &lt;strong&gt;SpectNetIDE&lt;/strong&gt;, first, you should install it on your computer. The previous tutorial explains the setup procedure.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -85,7 +85,63 @@ END WHILE
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: For more details about ZX BASIC, visit this link: &lt;a href=&quot;https://zxbasic.readthedocs.io/&quot;&gt;https://zxbasic.readthedocs.io/&lt;/a&gt;. You can find more example within the &lt;code class=&quot;highlighter-rouge&quot;&gt;examples&lt;/code&gt; folder within your ZX BASIC instalation folder, or &lt;a href=&quot;https://zxbasic.readthedocs.io/en/latest/sample_programs/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">To use ZX BASIC — as it is a separate product from SpectNetIDE, first, you should install it on your computer. The previous tutorial explains the setup procedure.</summary></entry><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;zx-basic-compilation&quot;&gt;ZX BASIC Compilation&lt;/h2&gt;
+
+&lt;p&gt;When you run any command that requires compiling a ZX BASIC file, SpectNetIDE carries out the compilation in two steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;First, it transpiles the ZX BASIC program to Z80 Assembly&lt;/li&gt;
+  &lt;li&gt;Then, it compiles the Z80 Assembly to machine code that runs in SpectNetIDE.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;By default, the IDE stored the temporary Z80 Assembly file in a working folder within the project structure. However, you can add it to the project files, if you want to work with it:&lt;/p&gt;
+
+&lt;p&gt;Open the &lt;strong&gt;Tools → Options&lt;/strong&gt; dialog. Under the &lt;strong&gt;ZX BASIC Options&lt;/strong&gt; category set the &lt;strong&gt;Store generated .z80asm file&lt;/strong&gt; option to &lt;strong&gt;true&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zxb-store-option.png&quot; alt=&quot;ZX BASIC store option&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;From now on, the compilation will add the generated Z80 Assembly file to the project folder, in the same folder as the ZX BASIC file:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zxb-asm-flat.png&quot; alt=&quot;ZX BASIC flat&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;.z80asm&lt;/code&gt; file the same way as if you had created it manually.&lt;/p&gt;
+
+&lt;p&gt;Alternatively, you can assign the generated &lt;code class=&quot;highlighter-rouge&quot;&gt;.z80asm&lt;/code&gt; file to be the nested (child) project item of the &lt;code class=&quot;highlighter-rouge&quot;&gt;.zxbas&lt;/code&gt; files by setting the &lt;strong&gt;Nest generated .z80asm file&lt;/strong&gt; option to &lt;strong&gt;true&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zxb-nest-option.png&quot; alt=&quot;ZX BASIC nest option&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Remove the generated &lt;code class=&quot;highlighter-rouge&quot;&gt;.zxbas.z80asm&lt;/code&gt; file, and next time you compile the ZX BASIC file, it will be the child of the ZX BASIC file:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/zxb-asm-nested.png&quot; alt=&quot;ZX BASIC nested&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;em&gt;Note&lt;/em&gt;&lt;/strong&gt;: Though the icon of the nested file does not indicate that it is a standard &lt;code class=&quot;highlighter-rouge&quot;&gt;.z80asm&lt;/code&gt; file — this is a Visual Studio limitation — you can still use the file normally. However, you cannot mark it as the default code file.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;When you examine the &lt;code class=&quot;highlighter-rouge&quot;&gt;.z80asm&lt;/code&gt; file generated during a ZX BASIC compilation, it starts with a &lt;code class=&quot;highlighter-rouge&quot;&gt;.zxbasic&lt;/code&gt; pragma like this snippet shows:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    .zxbasic
+    org 32768
+    ; Defines HEAP SIZE
+ZXBASIC_HEAP_SIZE EQU 4096
+__START_PROGRAM:
+    di
+    push ix
+    push iy
+    exx
+    push hl
+    ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The pragma instructs the Z80 Assembler to handle this code file with special options:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Label and symbol names are case-sensitive. (Normally, those are case-insensitive.)&lt;/li&gt;
+  &lt;li&gt;All labels within a &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt; are global unless specified local explicitly with &lt;code class=&quot;highlighter-rouge&quot;&gt;LOCAL&lt;/code&gt;. (Normally, labels in a &lt;code class=&quot;highlighter-rouge&quot;&gt;PROC&lt;/code&gt; are local by default.)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ZX BASIC compiles the code as a subroutine that can be CALL-ed. Z80 Assembler creates and injects code that can be started with jumping to the start address. The &lt;code class=&quot;highlighter-rouge&quot;&gt;.zxbasic&lt;/code&gt; pragma tells the IDE that the compiled code should be called as a subroutine. When you inject and run ZX BASIC code, the virtual machine returns to the $12AC (ZX Spectrum 48 main execution cycle) address and waits for a keypress. When any key is pressed, it clears the screen.&lt;/p&gt;</content><author><name></name></author><summary type="html">To use ZX BASIC — as it is a separate product from SpectNetIDE, first, you should install it on your computer. The previous tutorial explains the setup procedure.</summary></entry><entry><title type="html">Use the Keyboard Tool</title><link href="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2" rel="alternate" type="text/html" title="Use the Keyboard Tool" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-keyboard-tool</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-keyboard-tool-2">&lt;p&gt;SpectNetIDE provides a Keyboard Tool window to help you using the ZX Spectrum Keyboard. Of course, you can use your computer’s keyboard to type, but sometimes the Keyboard Tool makes your work easier.
 The IDE allows you to use two keyboard layouts, ZX Spectrum 48K, and ZX Spectrum 128K (+2, +2A, +3), respectively.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/spectrum-48-keyboard.png&quot; alt=&quot;ZX Spectrum 48K keyboard&quot; /&gt;&lt;/p&gt;

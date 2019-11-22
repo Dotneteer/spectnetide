@@ -223,7 +223,7 @@ namespace Spect.Net.VsPackage.Commands
                 ext = Path.GetExtension(itemFullPath) ?? string.Empty;
             }
 
-            if (ext.ToLower() == ".zxbas")
+            if (Output.SourceType == "zxbasic")
             {
                 // --- Push the MAIN_EXECUTION loop address to the stack
                 var memDevice = vm.Machine.SpectrumVm.MemoryDevice;

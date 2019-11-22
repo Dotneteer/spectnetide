@@ -410,6 +410,16 @@ namespace Spect.Net.VsPackage
         [Description("The --strict option of ZXB")]
         public bool StrictTypes { get; set; } = false;
 
+        [Category("ZX BASIC options")]
+        [DisplayName("Store generated .z80asm file")]
+        [Description("When compiling a ZX BASIC files, store the generated .z80asm file in the project.")]
+        public bool StoreGeneratedZ80Files { get; set; } = true;
+
+        [Category("ZX BASIC options")]
+        [DisplayName("Nest generated .z80asm file")]
+        [Description("When compiling a ZX BASIC files, add the generated .z80asm file to the project as a nested item of its .zxbas file.")]
+        public bool NestGeneratedZ80Files { get; set; } = false;
+
         [Category("Peripherals")]
         [DisplayName("Kempston Joystick Emulation")]
         [Description("Keyboard configuration to emulate Kempston Joystick. You need to restart the virtual machine so that changing this option takes effect.")]

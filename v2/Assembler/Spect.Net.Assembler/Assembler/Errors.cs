@@ -119,6 +119,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0447 = "Z0447";
         public const string Z0448 = "Z0448";
         public const string Z0449 = "Z0449";
+        public const string Z0450 = "Z0450";
 
         public const string Z0500 = "Z0500";
 
@@ -231,6 +232,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0447, "You cannot define a local symbol with a temporary name ({0})." },
             { Z0448, "LOCAL can be used only within PROC." },
             { Z0449, "This local symbol is already declared: ({0})." },
+            { Z0450, "The .ZXBASIC pragma should be used before any other pragma or instruction." },
             { Z0500, "ERROR: {0}" },
         };
 

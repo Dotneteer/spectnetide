@@ -83,3 +83,54 @@ END WHILE
 ![ZX BASIC clock runs]({{ site.baseurl }}/assets/images/tutorials/zx-basic-clock-runs.png)
 
 > __*Note*__: For more details about ZX BASIC, visit this link: [https://zxbasic.readthedocs.io/](https://zxbasic.readthedocs.io/). You can find more example within the `examples` folder within your ZX BASIC instalation folder, or [here](https://zxbasic.readthedocs.io/en/latest/sample_programs/).
+
+## ZX BASIC Compilation
+
+When you run any command that requires compiling a ZX BASIC file, SpectNetIDE carries out the compilation in two steps:
+
+1. First, it transpiles the ZX BASIC program to Z80 Assembly
+2. Then, it compiles the Z80 Assembly to machine code that runs in SpectNetIDE.
+
+By default, the IDE stored the temporary Z80 Assembly file in a working folder within the project structure. However, you can add it to the project files, if you want to work with it:
+
+Open the __Tools &rarr; Options__ dialog. Under the __ZX BASIC Options__ category set the __Store generated .z80asm file__ option to __true__:
+
+![ZX BASIC store option]({{ site.baseurl }}/assets/images/tutorials/zxb-store-option.png)
+
+From now on, the compilation will add the generated Z80 Assembly file to the project folder, in the same folder as the ZX BASIC file:
+
+![ZX BASIC flat]({{ site.baseurl }}/assets/images/tutorials/zxb-asm-flat.png)
+
+You can use the `.z80asm` file the same way as if you had created it manually.
+
+Alternatively, you can assign the generated `.z80asm` file to be the nested (child) project item of the `.zxbas` files by setting the __Nest generated .z80asm file__ option to __true__:
+
+![ZX BASIC nest option]({{ site.baseurl }}/assets/images/tutorials/zxb-nest-option.png)
+
+Remove the generated `.zxbas.z80asm` file, and next time you compile the ZX BASIC file, it will be the child of the ZX BASIC file:
+
+![ZX BASIC nested]({{ site.baseurl }}/assets/images/tutorials/zxb-asm-nested.png)
+
+> **_Note_**: Though the icon of the nested file does not indicate that it is a standard `.z80asm` file &mdash; this is a Visual Studio limitation &mdash; you can still use the file normally. However, you cannot mark it as the default code file.
+
+When you examine the `.z80asm` file generated during a ZX BASIC compilation, it starts with a `.zxbasic` pragma like this snippet shows:
+
+```
+    .zxbasic
+    org 32768
+    ; Defines HEAP SIZE
+ZXBASIC_HEAP_SIZE EQU 4096
+__START_PROGRAM:
+    di
+    push ix
+    push iy
+    exx
+    push hl
+    ...
+```
+
+The pragma instructs the Z80 Assembler to handle this code file with special options:
+- Label and symbol names are case-sensitive. (Normally, those are case-insensitive.)
+- All labels within a `PROC` are global unless specified local explicitly with `LOCAL`. (Normally, labels in a `PROC` are local by default.)
+
+ZX BASIC compiles the code as a subroutine that can be CALL-ed. Z80 Assembler creates and injects code that can be started with jumping to the start address. The `.zxbasic` pragma tells the IDE that the compiled code should be called as a subroutine. When you inject and run ZX BASIC code, the virtual machine returns to the $12AC (ZX Spectrum 48 main execution cycle) address and waits for a keypress. When any key is pressed, it clears the screen.

@@ -1311,6 +1311,32 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError(source, Errors.Z0500);
         }
 
+        [TestMethod]
+        [DataRow("zxbasic")]
+        [DataRow("ZXBASIC")]
+        [DataRow(".zxbasic")]
+        [DataRow(".ZXBASIC")]
+        public void ZxBasicPragmaSetsSourceType(string source)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
 
+            // --- Act
+            var output = compiler.Compile(source);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.SourceType.ShouldBe("zxbasic");
+        }
+
+        [TestMethod]
+        [DataRow(".org #8000 \n zxbasic")]
+        [DataRow("ld a,b \n zxbasic")]
+        [DataRow(".model spectrum48 \n zxbasic")]
+        [DataRow("#ifdef idvalue \n zxbasic \n #endif")]
+        public void ZxBasicFailsIfNotFirst(string source)
+        {
+            CodeRaisesError(source, Errors.Z0450);
+        }
     }
 }

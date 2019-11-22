@@ -74,6 +74,11 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public List<ListFileItem> ListFileItems { get; }
 
+        /// <summary>
+        /// The type of the source that resulted in this compilation
+        /// </summary>
+        public string SourceType { get; set; }
+        
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public AssemblerOutput(SourceFileItem sourceItem, bool caseSensitive): base(null, caseSensitive)
         {

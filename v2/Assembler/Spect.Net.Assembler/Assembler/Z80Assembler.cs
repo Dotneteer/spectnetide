@@ -203,39 +203,66 @@ namespace Spect.Net.Assembler.Assembler
             var ifdefStack = new Stack<bool?>();
             var processOps = true;
             parsedLines = new List<SourceLineBase>();
+            var anyProcessed = false;
 
             // --- Traverse through parsed lines
             while (currentLineIndex < visitedLines.Lines.Count)
             {
                 var line = visitedLines.Lines[currentLineIndex];
-                if (line is ModelPragma modelPragma)
+                switch (line)
                 {
-                    ProcessModelPragma(modelPragma);
-                }
-                else if (line is IncludeDirective incDirective)
-                {
-                    // --- Parse the included file
-                    if (ApplyIncludeDirective(incDirective, sourceItem,
-                        out var includedLines))
+                    case ZxBasicPragma _:
                     {
-                        // --- Add the parse result of the include file to the result
-                        parsedLines.AddRange(includedLines);
+                        if (anyProcessed)
+                        {
+                            ReportError(Errors.Z0450, line);
+                            break;
+                        }
+
+                        _options.UseCaseSensitiveSymbols = true;
+                        _options.ProcExplicitLocalsOnly = true;
+                        CurrentModule = Output = new AssemblerOutput(sourceItem, true);
+                        Output.SourceType = "zxbasic";
+                        anyProcessed = true;
+                        break;
                     }
-                }
-                else if (line is LineDirective lineDirective)
-                {
-                    // TODO: Process a #line directive
-                }
-                else if (line is Directive preProc)
-                {
-                    ApplyDirective(preProc, ifdefStack, ref processOps);
-                }
-                else if (processOps)
-                {
-                    line.FileIndex = fileIndex;
-                    line.MacroSourceText = sourceText.Substring(line.FirstPosition,
-                        line.LastPosition - line.FirstPosition + 1);
-                    parsedLines.Add(line);
+                    case ModelPragma modelPragma:
+                        ProcessModelPragma(modelPragma);
+                        anyProcessed = true;
+                        break;
+                    case IncludeDirective incDirective:
+                    {
+                        // --- Parse the included file
+                        if (ApplyIncludeDirective(incDirective, sourceItem,
+                            out var includedLines))
+                        {
+                            // --- Add the parse result of the include file to the result
+                            parsedLines.AddRange(includedLines);
+                            anyProcessed = true;
+                        }
+
+                        break;
+                    }
+                    case LineDirective lineDirective:
+                        // TODO: Process a #line directive
+                        break;
+                    case Directive preProc:
+                        ApplyDirective(preProc, ifdefStack, ref processOps);
+                        anyProcessed = true;
+                        break;
+                    default:
+                    {
+                        if (processOps)
+                        {
+                            line.FileIndex = fileIndex;
+                            line.MacroSourceText = sourceText.Substring(line.FirstPosition,
+                                line.LastPosition - line.FirstPosition + 1);
+                            parsedLines.Add(line);
+                            anyProcessed = true;
+                        }
+
+                        break;
+                    }
                 }
                 currentLineIndex++;
             }

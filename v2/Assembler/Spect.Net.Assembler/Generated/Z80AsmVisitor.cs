@@ -799,6 +799,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCompareBinPragma([NotNull] Z80AsmParser.CompareBinPragmaContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.zxBasicPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitZxBasicPragma([NotNull] Z80AsmParser.ZxBasicPragmaContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.byteEmPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -64,6 +64,7 @@ pragma
 	|   errorPragma
 	|	incBinPragma
 	|	compareBinPragma
+	|	zxBasicPragma
 	;
 
 directive
@@ -153,6 +154,7 @@ defgPragma	: DGPRAG ;
 errorPragma : ERRORPR expr ;
 incBinPragma: INCBIN expr ( ',' expr ( ',' expr)? )? ;
 compareBinPragma: COMPAREBIN expr ( ',' expr ( ',' expr)? )? ;
+zxBasicPragma: ZXBPRAG ;
 
 byteEmPragma
 	:  defbPragma 
@@ -621,6 +623,7 @@ INCBIN	: '.includebin' | 'includebin' | '.INCLUDEBIN' | 'INCLUDEBIN'
 		  | '.include_bin' | 'include_bin' | '.INCLUDE_BIN' | 'INCLUDE_BIN' ;
 COMPAREBIN
 		: '.comparebin' | 'comparebin' | '.COMPAREBIN' | 'COMPAREBIN' ;
+ZXBPRAG	: 'zxbasic' | 'ZXBASIC' | '.zxbasic' | '.ZXBASIC' ;
 
 // --- Compiler statements
 MACRO	: '.macro' | '.MACRO' | 'macro' | 'MACRO' ;

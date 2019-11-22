@@ -1222,5 +1222,21 @@ namespace Spect.Net.Assembler.Test.Parser
             line.OffsetExpr.ShouldBeOfType<LiteralNode>();
             line.LengthExpr.ShouldBeOfType<LiteralNode>();
         }
+
+        [TestMethod]
+        [DataRow("zxbasic")]
+        [DataRow(".zxbasic")]
+        [DataRow("ZXBASIC")]
+        [DataRow(".ZXBASIC")]
+        public void ZxBasicPragmaWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as ZxBasicPragma;
+            line.ShouldNotBeNull();
+        }
     }
 }

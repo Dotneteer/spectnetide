@@ -4,9 +4,11 @@ using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Output;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 
 namespace Spect.Net.VsPackage.Compilers
 {
@@ -32,7 +34,7 @@ namespace Spect.Net.VsPackage.Compilers
         /// <returns>True, if the compiler is installed, and so available.</returns>
         public async Task<bool> IsAvailable()
         {
-            var runner = new ZxbRunner(SpectNetPackage.Default.Options.ZxbPath, 10000);
+            var runner = new ZxbRunner(SpectNetPackage.Default.Options.ZxbPath);
             try
             {
                 await runner.RunAsync(new ZxbOptions());
@@ -81,7 +83,8 @@ namespace Spect.Net.VsPackage.Compilers
         public async Task<AssemblerOutput> CompileDocument(string itemPath,
             AssemblerOptions options)
         {
-            var zxbOptions = PrepareZxbOptions(itemPath);
+            var addToProject = SpectNetPackage.Default.Options.StoreGeneratedZ80Files;
+            var zxbOptions = PrepareZxbOptions(itemPath, addToProject);
             MergeOptionsFromSource(zxbOptions);
             var output = new AssemblerOutput(new SourceFileItem(itemPath), options?.UseCaseSensitiveSymbols ?? false);
             var runner = new ZxbRunner(SpectNetPackage.Default.Options.ZxbPath);
@@ -94,24 +97,36 @@ namespace Spect.Net.VsPackage.Compilers
                 return output;
             }
 
-            // --- HACK: Take care that "ZXBASIC_HEAP_SIZE EQU" is added to the assembly file
+            // --- Add the generated file to the project
+            if (addToProject)
+            {
+                var zxBasItem =
+                    SpectNetPackage.Default.ActiveProject.ZxBasicProjectItems.FirstOrDefault(pi =>
+                        pi.Filename == itemPath)?.DteProjectItem;
+                if (SpectNetPackage.Default.Options.NestGeneratedZ80Files && zxBasItem != null)
+                {
+                    var newItem = zxBasItem.ProjectItems.AddFromFile(zxbOptions.OutputFilename);
+                    newItem.Properties.Item("DependentUpon").Value = zxBasItem.Name;
+                }
+                else
+                {
+                    SpectNetPackage.Default.ActiveRoot.ProjectItems.AddFromFile(zxbOptions.OutputFilename);
+                }
+            }
+
             var asmContents = File.ReadAllText(zxbOptions.OutputFilename);
+            asmContents = "\t.zxbasic\r\n" + asmContents;
             var hasHeapSizeLabel = Regex.Match(asmContents, "ZXBASIC_HEAP_SIZE\\s+EQU");
             if (!hasHeapSizeLabel.Success)
             {
+                // --- HACK: Take care that "ZXBASIC_HEAP_SIZE EQU" is added to the assembly file
                 asmContents = Regex.Replace(asmContents, "ZXBASIC_USER_DATA_END\\s+EQU\\s+ZXBASIC_MEM_HEAP",
                     "ZXBASIC_USER_DATA_END EQU ZXBASIC_USER_DATA");
-                File.WriteAllText(zxbOptions.OutputFilename, asmContents);
             }
+            File.WriteAllText(zxbOptions.OutputFilename, asmContents);
 
             // --- Second pass, compile the assembly file
             var compiler = new Z80Assembler();
-            if (options == null)
-            {
-                options = new AssemblerOptions();
-            }
-            options.ProcExplicitLocalsOnly = true;
-            options.UseCaseSensitiveSymbols = true;
             if (_traceMessageHandler != null)
             {
                 compiler.AssemblerMessageCreated += _traceMessageHandler;
@@ -146,18 +161,20 @@ namespace Spect.Net.VsPackage.Compilers
         /// Prepares the ZXB options to run
         /// </summary>
         /// <returns></returns>
-        private ZxbOptions PrepareZxbOptions(string documentPath)
+        private ZxbOptions PrepareZxbOptions(string documentPath, bool addToProject)
         {
-            var outputBase = Path.Combine(SpectNetPackage.Default.Solution.SolutionDir,
-                SolutionStructure.PRIVATE_FOLDER, 
-                ZXBASIC_TEMP_FOLDER,
-                Path.GetFileName(documentPath));
+            var outputBase = addToProject
+                ? documentPath
+                : Path.Combine(SpectNetPackage.Default.Solution.SolutionDir,
+                    SolutionStructure.PRIVATE_FOLDER,
+                    ZXBASIC_TEMP_FOLDER,
+                    Path.GetFileName(documentPath));
             var outDir = Path.GetDirectoryName(outputBase);
             if (!Directory.Exists(outDir))
             {
                 Directory.CreateDirectory(outDir);
             }
-            var outputFile = Path.ChangeExtension(outputBase, ".z80asm");
+            var outputFile = Path.ChangeExtension(outputBase, ".zxbas.z80asm");
 
             var packageOptions = SpectNetPackage.Default.Options;
             var options = new ZxbOptions
