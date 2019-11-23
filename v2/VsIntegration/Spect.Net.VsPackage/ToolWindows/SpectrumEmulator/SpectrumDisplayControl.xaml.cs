@@ -365,18 +365,19 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         private async void StopShadowScreenRendering()
         {
-            if (_shadowRenderingTask == null || _cancellationSource == null) return;
+            if (_cancellationSource == null) return;
             _cancellationSource.Cancel();
+            _cancellationSource = null;
+            var tmpTask = _shadowRenderingTask;
+            _shadowRenderingTask = null;
             try
             {
-                await _shadowRenderingTask;
+                await tmpTask;
             }
             catch
             {
                 // --- This exception is intentionally ignored
             }
-            _shadowRenderingTask = null;
-            _cancellationSource = null;
             Dispatcher.Invoke(() =>
                 {
                     _lastBuffer = _savedBuffer.ToArray();

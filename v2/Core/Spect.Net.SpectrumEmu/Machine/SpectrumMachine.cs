@@ -836,6 +836,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             var lastRunStart = _clockProvider.GetCounter();
             var lastRenderFrameStart = lastRunStart;
             SpectrumVm.ShadowScreenDevice.FrameCount = SpectrumVm.ScreenDevice.FrameCount;
+            SpectrumVm.ShadowScreenDevice.BorderColor = SpectrumVm.ScreenDevice.BorderColor;
             var frameCount = 0;
             while (!cancellationToken.IsCancellationRequested)
             {

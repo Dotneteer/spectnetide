@@ -137,6 +137,10 @@ namespace Spect.Net.Wpf.Providers
             {
                 SetupSound();
             }
+
+            _waveOut.Volume = 1.0F;
+            _waveOut?.Play();
+            _waveOut?.Pause();
             _waveOut?.Play();
         }
 
