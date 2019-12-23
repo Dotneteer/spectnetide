@@ -169,6 +169,7 @@ namespace Spect.Net.SpectrumEmu.Machine
             BeeperSamples = new AudioSamples(SpectrumVm.BeeperDevice);
             BeeperProvider = SpectrumVm.BeeperProvider;
             SoundConfiguration = SpectrumVm.SoundConfiguration;
+            SoundProvider = SpectrumVm.SoundProvider;
             AudioSamples = new AudioSamples(SpectrumVm.SoundDevice);
             Breakpoints = new CodeBreakpoints(SpectrumVm.DebugInfoProvider);
 
@@ -520,6 +521,11 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Gets the sound (PSG) samples of the current rendering frame
         /// </summary>
         public AudioSamples AudioSamples { get; }
+
+        /// <summary>
+        /// The beeper provider associated with the machine
+        /// </summary>
+        public ISoundProvider SoundProvider { get; }
 
         /// <summary>
         /// The collection of breakpoints

@@ -13,6 +13,8 @@ __SpectNetIDE__ is an open source project with MIT license, and it is free to in
 
 You need Visual Studio installed on your machine. You do not have to pay to get a legal license for VS, SpectNetIDE works with the free Community edition seamlessly. You can download the Visual Studio edition of your choice from its [home page](https://visualstudio.microsoft.com/downloads/).
 
+When you install Visual Studio 2019, make sure you selected the **.Net desktop development** workload; otherwise you won't be able to create ZX Spectrum projects.
+
 > __*Note*__: Right now, there are two versions of __SpectNetIDE__. The old one (v1.x), runs on Visual Studio 2017 and Visual Studio 2019. The new one (v2.x), can be installed only on Visual Studio 2019.
 Though both versions can be installed simultaneously in the IDE, they do not work together, so you need to install only one of them.
 

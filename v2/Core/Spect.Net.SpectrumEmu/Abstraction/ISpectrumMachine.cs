@@ -116,6 +116,11 @@ namespace Spect.Net.SpectrumEmu.Abstraction
         AudioSamples AudioSamples { get; }
 
         /// <summary>
+        /// The beeper provider associated with the machine
+        /// </summary>
+        ISoundProvider SoundProvider { get; }
+
+        /// <summary>
         /// The collection of breakpoints
         /// </summary>
         CodeBreakpoints Breakpoints { get; }

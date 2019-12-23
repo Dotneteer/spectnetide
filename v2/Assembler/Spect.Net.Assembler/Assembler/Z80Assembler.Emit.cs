@@ -2333,10 +2333,21 @@ namespace Spect.Net.Assembler.Assembler
                 {
                     if (value.Type == ExpressionValueType.String)
                     {
-                        ReportError(Errors.Z0305, pragma);
-                        return;
+                        if (_options.FlexibleDefPragmas)
+                        {
+                            // --- In flexible mode, we allow strings...
+                            EmitString(value, false, false, emitAction);
+                        }
+                        else
+                        {
+                            // --- ...otherwise, we accept only numeric values
+                            ReportError(Errors.Z0305, pragma);
+                        }
                     }
-                    Emit((byte)value.Value);
+                    else
+                    {
+                        Emit((byte)value.Value);
+                    }
                 }
                 else if (value.IsNonEvaluated)
                 {
@@ -2411,8 +2422,41 @@ namespace Spect.Net.Assembler.Assembler
             var message = EvalImmediate(pragma, pragma.Message);
             if (message.IsValid && message.Type != ExpressionValueType.String)
             {
-                ReportError(Errors.Z0091, pragma);
+                if (_options.FlexibleDefPragmas)
+                {
+                    // --- In flexible mode, the argument expression can be numeric...
+                    var value = (byte)(message.AsByte() | (pragma.Bit7Terminator ? 0x80 : 0x00));
+                    if (emitAction != null)
+                    {
+                        emitAction(value);
+                        if (pragma.NullTerminator) emitAction(0x00);
+                    }
+                    else
+                    {
+                        EmitByte(value);
+                        if (pragma.NullTerminator) EmitByte(0x00);
+                    }
+                }
+                else
+                {
+                    // --- otherwise, only string is accepted.
+                    ReportError(Errors.Z0091, pragma);
+                }
+            } else
+            {
+                EmitString(message, pragma.Bit7Terminator, pragma.NullTerminator, emitAction);
             }
+        }
+
+        /// <summary>
+        /// Emits a string
+        /// </summary>
+        /// <param name="message">Expression with the string</param>
+        /// <param name="bit7Terminator">Bit 7 terminator flag</param>
+        /// <param name="nullTerminator">Null terminator flag</param>
+        /// <param name="emitAction">Action to emit a code byte</param>
+        private void EmitString(ExpressionValue message, bool bit7Terminator, bool nullTerminator, Action<byte> emitAction = null)
+        {
             var bytes = SpectrumStringToBytes(message.AsString());
             if (bytes.Count > 1)
             {
@@ -2421,9 +2465,9 @@ namespace Spect.Net.Assembler.Assembler
                     Emit(bytes[i]);
                 }
             }
-            var lastByte = (byte)(bytes[bytes.Count - 1] | (pragma.Bit7Terminator ? 0x80 : 0x00));
+            var lastByte = (byte)(bytes[bytes.Count - 1] | (bit7Terminator ? 0x80 : 0x00));
             Emit(lastByte);
-            if (pragma.NullTerminator)
+            if (nullTerminator)
             {
                 Emit(0x00);
             }

@@ -620,7 +620,8 @@ TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;
 RNDSEED	: '.rndseed' | 'rndseed' | '.RNDSEED' | 'RNDSEED' ;
 ERRORPR	: '.error' | '.ERROR' | 'error' | 'ERROR' ;
 INCBIN	: '.includebin' | 'includebin' | '.INCLUDEBIN' | 'INCLUDEBIN' 
-		  | '.include_bin' | 'include_bin' | '.INCLUDE_BIN' | 'INCLUDE_BIN' ;
+		  | '.include_bin' | 'include_bin' | '.INCLUDE_BIN' | 'INCLUDE_BIN' 
+		  | '.incbin' | 'incbin' | '.INCBIN' | 'INCBIN' ;
 COMPAREBIN
 		: '.comparebin' | 'comparebin' | '.COMPAREBIN' | 'COMPAREBIN' ;
 ZXBPRAG	: 'zxbasic' | 'ZXBASIC' | '.zxbasic' | '.ZXBASIC' ;

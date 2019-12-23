@@ -125,6 +125,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             if (_isReloaded && Vm.MachineState == VmState.Running)
             {
                 Vm.Machine.BeeperProvider?.PlaySound();
+                Vm.Machine.SoundProvider?.PlaySound();
             }
 
             // --- Register messages this control listens to
@@ -147,6 +148,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             if (Vm != null)
             {
                 Vm.Machine.BeeperProvider?.PauseSound();
+                Vm.Machine.SoundProvider?.PauseSound();
                 Vm.Machine.VmStateChanged -= OnVmStateChanged;
                 Vm.KeyScanning -= MachineOnKeyScanning;
                 Vm.CpuFrameCompleted -= MachineOnCpuFrameCompleted;
@@ -172,17 +174,20 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                     {
                         case VmState.Stopped:
                             Vm.Machine.BeeperProvider?.KillSound();
+                            Vm.Machine.SoundProvider?.KillSound();
                             Vm.FastLoadCompleted -= OnFastLoadCompleted;
                             ShowUlaRaster();
                             break;
                         case VmState.Running:
                             Vm.Machine.BeeperProvider?.PlaySound();
+                            Vm.Machine.SoundProvider?.PlaySound();
                             Vm.FastLoadCompleted += OnFastLoadCompleted;
                             ShowUlaRaster();
                             StopShadowScreenRendering();
                             break;
                         case VmState.Paused:
                             Vm.Machine.BeeperProvider?.PauseSound();
+                            Vm.Machine.SoundProvider?.PauseSound();
                             MachineOnRenderFrameCompleted(this,
                                 new RenderFrameEventArgs(Vm.Machine.SpectrumVm.ScreenDevice.GetPixelBuffer()));
                             StartShadowScreenRendering();
@@ -232,7 +237,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         {
             Dispatcher.Invoke(() =>
             {
-                Vm.Machine.BeeperProvider.PlaySound();
+                Vm.Machine.BeeperProvider?.PlaySound();
+                Vm.Machine.SoundProvider?.PlaySound();
             });
         }
 

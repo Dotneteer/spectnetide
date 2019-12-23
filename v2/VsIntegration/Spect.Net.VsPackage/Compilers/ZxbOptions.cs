@@ -190,20 +190,20 @@
                 + $"--optimize {Optimize} "
                 + $"--org {OrgValue} "
                 + $"--heap-size {HeapSize} "
-                + (ArrayBaseOne ?? false ? "--array-base " : "")
-                + (StringBaseOne ?? false ? "--string-base" : "")
-                + (SinclairFlag ?? false ? "--sinclair" : "")
-                + (TzxFormat ?? false ? "--tzx" : "")
-                + (TapFormat ?? false ? "--tap" : "")
-                + (BasicLoader ?? false ? "--BASIC" : "")
-                + (AutoRun ?? false ? "--autorun" : "")
-                + (AsmFormat ?? false ? "--asm" : "")
-                + (DebugMemory ?? false ? "--debug-memory" : "")
-                + (DebugArray ?? false ? "--debug-array" : "")
-                + (StrictBool ?? false ? "--strict-bool" : "")
-                + (EnableBreak ?? false ? "--enable-break" : "")
-                + (ExplicitDim ?? false ? "--explicit" : "")
-                + (StrictTypes ?? false ? "--strict" : "")).Trim();
+                + (ArrayBaseOne ?? false ? "--array-base=1 " : "")
+                + (StringBaseOne ?? false ? "--string-base=1 " : "")
+                + (SinclairFlag ?? false ? "--sinclair " : "")
+                + (TzxFormat ?? false ? "--tzx " : "")
+                + (TapFormat ?? false ? "--tap " : "")
+                + (BasicLoader ?? false ? "--BASIC " : "")
+                + (AutoRun ?? false ? "--autorun " : "")
+                + (AsmFormat ?? false ? "--asm " : "")
+                + (DebugMemory ?? false ? "--debug-memory " : "")
+                + (DebugArray ?? false ? "--debug-array " : "")
+                + (StrictBool ?? false ? "--strict-bool " : "")
+                + (EnableBreak ?? false ? "--enable-break " : "")
+                + (ExplicitDim ?? false ? "--explicit " : "")
+                + (StrictTypes ?? false ? "--strict " : "")).Trim();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Spect.Net.VsPackage.Compilers
         private readonly string _zxbPath;
         private readonly int _timeOut;
 
-        public ZxbRunner(string zxbPath, int timeout = 10000)
+        public ZxbRunner(string zxbPath, int timeout = 1000000)
         {
             _zxbPath = zxbPath;
             _timeOut = timeout;

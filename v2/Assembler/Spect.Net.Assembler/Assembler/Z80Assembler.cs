@@ -221,6 +221,7 @@ namespace Spect.Net.Assembler.Assembler
 
                         _options.UseCaseSensitiveSymbols = true;
                         _options.ProcExplicitLocalsOnly = true;
+                        _options.FlexibleDefPragmas = true;
                         CurrentModule = Output = new AssemblerOutput(sourceItem, true);
                         Output.SourceType = "zxbasic";
                         anyProcessed = true;

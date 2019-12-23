@@ -36,5 +36,10 @@ namespace Spect.Net.Assembler.Assembler
         /// Indicates that assembly symbols should be case sensitively.
         /// </summary>
         public bool UseCaseSensitiveSymbols { get; set; } = false;
+
+        /// <summary>
+        /// Allows flexible use of DEFx pragmas
+        /// </summary>
+        public bool FlexibleDefPragmas { get; set; } = false;
     }
 }

@@ -571,6 +571,27 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void DefbPragmaWorksInFlexiblemode()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0x12, 0x10, 0x14, 0x61, 0x62, 0x63, 0x60 };
+
+            // --- Act
+            var output = compiler.Compile(".zxbasic\n.defb \"\\x12\\i\\Iabc\\P\"");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
         public void DefwPragmaWorksWithImmediateEvaluation()
         {
             // --- Arrange
@@ -681,6 +702,27 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void DefmPragmaWorksInFlexibleMode()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 123 };
+
+            // --- Act
+            var output = compiler.Compile(".zxbasic\n.defm 123");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
         public void DefnPragmaWorksAsExpected()
         {
             // --- Arrange
@@ -717,6 +759,27 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void DefnPragmaWorksInFlexibleMode()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 123, 0 };
+
+            // --- Act
+            var output = compiler.Compile(".zxbasic\n.defn 123");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
+        }
+
+        [TestMethod]
         public void DefcPragmaWorksAsExpected()
         {
             // --- Arrange
@@ -750,6 +813,27 @@ namespace Spect.Net.Assembler.Test.Assembler
             // --- Assert
             output.ErrorCount.ShouldBe(1);
             output.Errors[0].ErrorCode.ShouldBe(Errors.Z0091);
+        }
+
+        [TestMethod]
+        public void DefcPragmaWorksInFlexibleMode()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+            var expected = new byte[] { 0xA2 };
+
+            // --- Act
+            var output = compiler.Compile(".zxbasic\n.defc 0x22");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            var segment = output.Segments[0];
+            segment.EmittedCode.Count.ShouldBe(expected.Length);
+            for (var i = 0; i < expected.Length; i++)
+            {
+                segment.EmittedCode[i].ShouldBe(expected[i]);
+            }
         }
 
         [TestMethod]
