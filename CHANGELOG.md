@@ -1,3 +1,9 @@
+### Version 2.0.4 (Preview 3)
+
+__DOCUMENTATION__: The "Install SpectNetIDE" article updated with prerequisits information.  
+__FIX__: Sound issue with pause/continue fixed.  
+__FEATURE__: When compiling a ZX BASIC file, the intermediate `.z80asm` file can be added to the project.  
+
 ### Version 2.0.3 (Preview 2)
 
 __FIX__: Several annoying bugs related to active ZX Spectrum project has been fixed.  
