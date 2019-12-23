@@ -8,6 +8,11 @@
         private ushort _optimize = 1;
 
         /// <summary>
+        /// Signs in raw arguments are used.
+        /// </summary>
+        public string RawArgs { get; set; }
+
+        /// <summary>
         /// Sets the program file name.
         /// </summary>
         public string ProgramFilename { get; set; }
@@ -70,13 +75,6 @@
         /// will automatically run if loaded with LOAD "". If --BASIC is not used this option is ignored.
         /// </summary>
         public bool? AutoRun { get; set; }
-
-        /// <summary>
-        /// --asm
-        /// This will create the .asm (assembler) file. Useful to see / edit the assembler code. You could
-        /// later assemble it using ZXbasm included assembler.
-        /// </summary>
-        public bool? AsmFormat { get; set; }
 
         /// <summary>
         /// --org
@@ -184,26 +182,29 @@
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ($"\"{ProgramFilename}\" "
+            var argRoot = $"\"{ProgramFilename}\" "
                 + $"--output \"{OutputFilename}\" "
-                + $"--errmsg \"{ErrorFilename}\" "
+                //+ $"--errmsg \"{ErrorFilename}\" "
                 + $"--optimize {Optimize} "
                 + $"--org {OrgValue} "
                 + $"--heap-size {HeapSize} "
-                + (ArrayBaseOne ?? false ? "--array-base=1 " : "")
-                + (StringBaseOne ?? false ? "--string-base=1 " : "")
-                + (SinclairFlag ?? false ? "--sinclair " : "")
-                + (TzxFormat ?? false ? "--tzx " : "")
-                + (TapFormat ?? false ? "--tap " : "")
-                + (BasicLoader ?? false ? "--BASIC " : "")
-                + (AutoRun ?? false ? "--autorun " : "")
-                + (AsmFormat ?? false ? "--asm " : "")
-                + (DebugMemory ?? false ? "--debug-memory " : "")
-                + (DebugArray ?? false ? "--debug-array " : "")
-                + (StrictBool ?? false ? "--strict-bool " : "")
-                + (EnableBreak ?? false ? "--enable-break " : "")
-                + (ExplicitDim ?? false ? "--explicit " : "")
-                + (StrictTypes ?? false ? "--strict " : "")).Trim();
+                + "--asm ";
+            var additional = string.IsNullOrWhiteSpace(RawArgs)
+                ? (ArrayBaseOne ?? false ? "--array-base=1 " : "")
+                    + (StringBaseOne ?? false ? "--string-base=1 " : "")
+                    + (SinclairFlag ?? false ? "--sinclair " : "")
+                    + (TzxFormat ?? false ? "--tzx " : "")
+                    + (TapFormat ?? false ? "--tap " : "")
+                    + (BasicLoader ?? false ? "--BASIC " : "")
+                    + (AutoRun ?? false ? "--autorun " : "")
+                    + (DebugMemory ?? false ? "--debug-memory " : "")
+                    + (DebugArray ?? false ? "--debug-array " : "")
+                    + (StrictBool ?? false ? "--strict-bool " : "")
+                    + (EnableBreak ?? false ? "--enable-break " : "")
+                    + (ExplicitDim ?? false ? "--explicit " : "")
+                    + (StrictTypes ?? false ? "--strict " : "")
+                : RawArgs;
+            return (argRoot + additional).Trim();
         }
     }
 }

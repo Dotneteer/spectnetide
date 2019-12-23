@@ -85,7 +85,6 @@ namespace Spect.Net.VsPackage.Compilers
         {
             var addToProject = SpectNetPackage.Default.Options.StoreGeneratedZ80Files;
             var zxbOptions = PrepareZxbOptions(itemPath, addToProject);
-            MergeOptionsFromSource(zxbOptions);
             var output = new AssemblerOutput(new SourceFileItem(itemPath), options?.UseCaseSensitiveSymbols ?? false);
             var runner = new ZxbRunner(SpectNetPackage.Default.Options.ZxbPath);
             var result = await runner.RunAsync(zxbOptions);
@@ -160,9 +159,15 @@ namespace Spect.Net.VsPackage.Compilers
         /// <summary>
         /// Prepares the ZXB options to run
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Options to use when compiling ZX BASIC project</returns>
         private ZxbOptions PrepareZxbOptions(string documentPath, bool addToProject)
         {
+            // --- Try to find options declaration in the source file
+            var contents = File.ReadAllText(documentPath);
+            var commentRegExp = new Regex("\\s*(rem|REM)\\s*(@options|@OPTIONS)\\s*(.*)");
+            var match = commentRegExp.Match(contents);
+            var rawArgs = match.Success ? match.Groups[3].Value : null;
+
             var outputBase = addToProject
                 ? documentPath
                 : Path.Combine(SpectNetPackage.Default.Solution.SolutionDir,
@@ -179,9 +184,9 @@ namespace Spect.Net.VsPackage.Compilers
             var packageOptions = SpectNetPackage.Default.Options;
             var options = new ZxbOptions
             {
+                RawArgs = rawArgs,
                 ProgramFilename = documentPath,
                 OutputFilename = outputFile,
-                AsmFormat = true,
                 Optimize = packageOptions.Optimize,
                 OrgValue = packageOptions.OrgValue,
                 ArrayBaseOne = packageOptions.ArrayBaseOne,
@@ -196,14 +201,6 @@ namespace Spect.Net.VsPackage.Compilers
                 StrictTypes = packageOptions.StrictTypes
             };
             return options;
-        }
-
-        /// <summary>
-        /// Parses the source code and merges options from head comment
-        /// </summary>
-        /// <param name="options"></param>
-        private void MergeOptionsFromSource(ZxbOptions options)
-        {
         }
     }
 }

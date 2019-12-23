@@ -44,6 +44,11 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         protected AssemblerOutput Output { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool CompileSuccess { get; set; }
+
+        /// <summary>
         /// The start address of the memory view
         /// </summary>
         public int MemoryStartAddress
@@ -221,7 +226,20 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// </summary>
         protected override async Task ExecuteAsync()
         {
-            await Task.Run(() => CompileCode());
+            IVsStatusbar statusBar = (IVsStatusbar)await SpectNetPackage.Default.GetServiceAsync(typeof(SVsStatusbar));
+            statusBar.IsFrozen(out int frozen);
+            if (frozen != 0)
+            {
+                statusBar.FreezeOutput(0);
+            }
+            statusBar.SetText("Building ZX Spectrum code");
+            statusBar.FreezeOutput(1);
+            object icon = (short)Constants.SBAI_Build;
+            statusBar.Animation(1, ref icon);
+            CompileSuccess = await Task.Run(() => CompileCode());
+            statusBar.FreezeOutput(0);
+            statusBar.Animation(0, ref icon);
+            statusBar.Clear();
         }
 
         /// <summary>

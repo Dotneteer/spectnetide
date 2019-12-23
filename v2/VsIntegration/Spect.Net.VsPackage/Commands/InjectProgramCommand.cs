@@ -59,8 +59,8 @@ namespace Spect.Net.VsPackage.Commands
             CodeInjected = false;
 
             // --- Step #1: Compile the code
-            var success = await Task.Run(() => CompileCode());
-            if (!success) return;
+            await base.ExecuteAsync();
+            if (!CompileSuccess) return;
 
             // --- Step #2: Check machine compatibility
             var modelName = SpectNetPackage.Default.Solution.ActiveProject?.ModelName;

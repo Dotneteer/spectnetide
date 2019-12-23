@@ -128,10 +128,6 @@ namespace Spect.Net.Assembler.Assembler
                     ? CurrentModule.LocalScopes.Peek().Symbols
                     : CurrentModule.Symbols;
 
-            if (symbol == "checkParity")
-            {
-                var x = 1;
-            }
             var currentScopeIsTemporary = CurrentModule.LocalScopes.Count != 0 
                 && CurrentModule.LocalScopes.Peek().IsTemporaryScope;
             var symbolIsTemporary = symbol.StartsWith("`");
