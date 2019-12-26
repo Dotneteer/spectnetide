@@ -184,13 +184,12 @@
         {
             var argRoot = $"\"{ProgramFilename}\" "
                 + $"--output \"{OutputFilename}\" "
-                //+ $"--errmsg \"{ErrorFilename}\" "
-                + $"--optimize {Optimize} "
-                + $"--org {OrgValue} "
-                + $"--heap-size {HeapSize} "
                 + "--asm ";
             var additional = string.IsNullOrWhiteSpace(RawArgs)
                 ? (ArrayBaseOne ?? false ? "--array-base=1 " : "")
+                    + $"--optimize {Optimize} "
+                    + $"--org {OrgValue} "
+                    + $"--heap-size {HeapSize} "
                     + (StringBaseOne ?? false ? "--string-base=1 " : "")
                     + (SinclairFlag ?? false ? "--sinclair " : "")
                     + (TzxFormat ?? false ? "--tzx " : "")

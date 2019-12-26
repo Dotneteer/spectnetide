@@ -87,7 +87,17 @@ namespace Spect.Net.VsPackage.Compilers
             var zxbOptions = PrepareZxbOptions(itemPath, addToProject);
             var output = new AssemblerOutput(new SourceFileItem(itemPath), options?.UseCaseSensitiveSymbols ?? false);
             var runner = new ZxbRunner(SpectNetPackage.Default.Options.ZxbPath);
-            var result = await runner.RunAsync(zxbOptions);
+            ZxbResult result;
+            try
+            {
+                result = await runner.RunAsync(zxbOptions);
+            }
+            catch (Exception ex)
+            {
+                output.Errors.Clear();
+                output.Errors.Add(new AssemblerErrorInfo("ZXB", "", 1, 0, ex.Message));
+                return output;
+            }
             if (result.ExitCode != 0)
             {
                 // --- Compile error - stop here

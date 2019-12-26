@@ -132,5 +132,29 @@ __START_PROGRAM:
 The pragma instructs the Z80 Assembler to handle this code file with special options:
 - Label and symbol names are case-sensitive. (Normally, those are case-insensitive.)
 - All labels within a `PROC` are global unless specified local explicitly with `LOCAL`. (Normally, labels in a `PROC` are local by default.)
+- The assembler handles `DEFB` and `DEFM` pragmas in a flexible way. While normally `DEFB` allows declaring numeric values and `DEFM` strings, in ZX BASIC mode `DEFB` can use strings too and `DEFM` may declare numeric values besides strings.
 
 ZX BASIC compiles the code as a subroutine that can be CALL-ed. Z80 Assembler creates and injects code that can be started with jumping to the start address. The `.zxbasic` pragma tells the IDE that the compiled code should be called as a subroutine. When you inject and run ZX BASIC code, the virtual machine returns to the $12AC (ZX Spectrum 48 main execution cycle) address and waits for a keypress. When any key is pressed, it clears the screen.
+
+## Option Comments
+
+You can define and pass compilation options to the ZX BASIC compiler (ZBX.EXE utility). To define them, you need to use the `@options` syntax in the first single line comment (`REM` or `'`) in the main file of your ZX BASIC program, like this:
+
+```
+REM @options --array-base=1 --string-base=1 -O3 -H 2100 -S 24600
+```
+
+> **_Note_**: You can use either @options or @OPTIONS. Nonetheless, the compiler considers only the very firts comments, others are ignored.
+
+With the `@options` comment, you can use the command line syntax. SpectNetIDE does not parse the command line options you declare, it simply passes them to the compiler. To ensure your code compiles the way SpectnetIDE can handle it, do not use these command line options: 
+- `-h`, `--help` (help)
+- `-d`, `--debug`
+- `-o`, `--output` (output file, SpectNetIDE will fill it for you)
+- `-T`, `--tzx` (TZX format)
+- `-t`, `--tap` (TAP format)
+- `-B`, `--BASIC`
+- `-a`, `--autorun`
+- `-A`, `--asm` (ASM format, SpectNetIDE automatically adds it)
+- `-e`, `--errmsg` (STDERR)
+- `-E`, `--emit-backend`
+- `-m`, `--mmap`
