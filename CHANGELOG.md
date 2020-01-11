@@ -1,3 +1,10 @@
+### Version 2.0.4 (Preview 4)
+
+__FIX__: Race condition issue when creating the first project with VS 2019 v16.4.x is eliminated.  
+__FEATURE__: Large ZX BASIC file support added.
+__FEATURE__: You can add ZX BASIC command line options to the main `.zxbas` file (https://dotneteer.github.io/spectnetide/getting-started/use-zx-basic#option-comments)
+
+
 ### Version 2.0.4 (Preview 3)
 
 __DOCUMENTATION__: The "Install SpectNetIDE" article updated with prerequisits information.  

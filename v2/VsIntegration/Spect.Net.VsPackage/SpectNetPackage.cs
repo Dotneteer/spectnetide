@@ -55,7 +55,7 @@ namespace Spect.Net.VsPackage
     [InstalledProductRegistration(
         "#110", 
         "#112", 
-        "2.0.4", 
+        "2.0.5", 
         IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
