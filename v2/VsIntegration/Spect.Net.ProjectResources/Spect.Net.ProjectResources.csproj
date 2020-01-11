@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props" Link="Spect.Net.CodeDiscover.props" />
+    <EmbeddedResource Include="..\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets" Link="Spect.Net.CodeDiscover.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\BuildSystem\Rules\DisassAnn.xaml" Link="DisassAnn.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\folder.xaml" Link="folder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\general.browseobject.xaml" Link="general.browseobject.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\general.xaml" Link="general.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\none.xaml" Link="none.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\ProjectItemsSchema.xaml" Link="ProjectItemsSchema.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\Rom.xaml" Link="Rom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\scc.xaml" Link="scc.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\SpConf.xaml" Link="SpConf.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\Tap.xaml" Link="Tap.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\Tzx.xaml" Link="Tzx.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\Vfdd.xaml" Link="Vfdd.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\VmState.xaml" Link="VmState.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\Z80Asm.xaml" Link="Z80Asm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\Z80Test.xaml" Link="Z80Test.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BuildSystem\Rules\ZxBasic.xaml" Link="ZxBasic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

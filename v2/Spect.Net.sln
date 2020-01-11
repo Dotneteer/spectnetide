@@ -58,6 +58,36 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spect.Net.ZxBasicParser.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spect.Net.BasicParser", "Assembler\Spect.Net.BasicParser\Spect.Net.BasicParser.csproj", "{0C184291-215A-459E-B4A7-A8F23A619700}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildSystem", "BuildSystem", "{7B6A9AAF-26F1-482F-B1E8-9E9E25C053FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeployedBuildSystem", "DeployedBuildSystem", "{11D433D3-2EAC-4572-9B5A-62A95FB5704B}"
+	ProjectSection(SolutionItems) = preProject
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props = VsIntegration\Spect.Net.VsPackage\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets = VsIntegration\Spect.Net.VsPackage\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rules", "Rules", "{8C2F12FA-C09D-4D03-9FCA-0D3EB93901F4}"
+	ProjectSection(SolutionItems) = preProject
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\DisassAnn.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\DisassAnn.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\folder.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\folder.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\general.browseobject.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\general.browseobject.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\general.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\general.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\none.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\none.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ProjectItemsSchema.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ProjectItemsSchema.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Rom.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Rom.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\scc.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\scc.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\SpConf.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\SpConf.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Tap.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Tap.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Tzx.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Tzx.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Vfdd.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Vfdd.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\VmState.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\VmState.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Z80Asm.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Z80Asm.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Z80Test.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Z80Test.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ZxBasic.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ZxBasic.xaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.ProjectResources", "VsIntegration\Spect.Net.ProjectResources\Spect.Net.ProjectResources.csproj", "{47B17533-F094-4AA9-81DE-8BD4A2566ADD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -144,6 +174,10 @@ Global
 		{0C184291-215A-459E-B4A7-A8F23A619700}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C184291-215A-459E-B4A7-A8F23A619700}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C184291-215A-459E-B4A7-A8F23A619700}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47B17533-F094-4AA9-81DE-8BD4A2566ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47B17533-F094-4AA9-81DE-8BD4A2566ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47B17533-F094-4AA9-81DE-8BD4A2566ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47B17533-F094-4AA9-81DE-8BD4A2566ADD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +203,10 @@ Global
 		{075E5409-6330-431E-BF56-36DA111896A3} = {D18D297C-1469-4ABB-A658-20369A0EC476}
 		{EC408245-9F73-4BAD-B884-CBA34D57BFFD} = {1F056754-1667-485D-B9E3-6736C0BD63E7}
 		{0C184291-215A-459E-B4A7-A8F23A619700} = {A98E01C9-FAA2-40F7-BFE1-C5481CA9F178}
+		{7B6A9AAF-26F1-482F-B1E8-9E9E25C053FA} = {D18D297C-1469-4ABB-A658-20369A0EC476}
+		{11D433D3-2EAC-4572-9B5A-62A95FB5704B} = {7B6A9AAF-26F1-482F-B1E8-9E9E25C053FA}
+		{8C2F12FA-C09D-4D03-9FCA-0D3EB93901F4} = {7B6A9AAF-26F1-482F-B1E8-9E9E25C053FA}
+		{47B17533-F094-4AA9-81DE-8BD4A2566ADD} = {D18D297C-1469-4ABB-A658-20369A0EC476}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C179A551-7272-4A51-A0F2-3E1E8A7E405B}

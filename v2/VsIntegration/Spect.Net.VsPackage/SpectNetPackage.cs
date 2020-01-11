@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Spect.Net.ProjectResources;
 using Spect.Net.SpectrumEmu;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Machine;
@@ -57,6 +59,7 @@ namespace Spect.Net.VsPackage
         IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideAutoLoad(PACKAGE_GUID, PackageAutoLoadFlags.BackgroundLoad)]
 
     // --- Tool windows
@@ -154,6 +157,15 @@ namespace Spect.Net.VsPackage
         /// The base URL for command help topics
         /// </summary>
         public const string COMMANDS_BASE_URL = "https://dotneteer.github.io/spectnetide/documents";
+
+        /// <summary>
+        /// CPS deployment strings
+        /// </summary>
+        public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
+        public const string CPS_VERSION_FILE = "cps.version";
+        public const string CURRENT_CPS_VERSION = "2.0.5";
+        public const string CPS_RESOURCE_PREFIX = "Spect.Net.ProjectResources";
+        public const string CPS_RULES = "Rules";
 
         /// <summary>
         /// The singleton instance of this class, set in InitializeAsync
@@ -277,6 +289,10 @@ namespace Spect.Net.VsPackage
 
             // --- Background initialization part
             Default = this;
+
+            // --- Prepare project system extension files
+            CheckCpsFiles();
+
             Z80AsmLanguage = new Z80AsmLanguageService(this);
 
             // --- Special providers for the ZX Spectrum virtual machine
@@ -463,6 +479,64 @@ namespace Spect.Net.VsPackage
                         new SymbolAwareSpectrumEvaluationContext(EmulatorViewModel.Machine.SpectrumVm);
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks CPS files, and refreshes them when it's time
+        /// </summary>
+        private static void CheckCpsFiles()
+        {
+            var localAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var cpsFolder = Path.Combine(localAppDataFolder, CPS_FOLDER);
+            if (!Directory.Exists(cpsFolder))
+            {
+                Directory.CreateDirectory(cpsFolder);
+            }
+
+            var versionFile = Path.Combine(cpsFolder, CPS_VERSION_FILE);
+            var logFile = Path.Combine(cpsFolder, "cpslog.txt");
+            if (File.Exists(versionFile))
+            {
+                var content = File.ReadAllText(versionFile);
+                var parts = content.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length > 0 && parts[0] == CURRENT_CPS_VERSION) return;
+            }
+
+            // --- Refresh CPS files
+            var asm = typeof(ResourceMarker).Assembly;
+            var resources = asm.GetManifestResourceNames();
+            File.WriteAllText(logFile, string.Join("\n", resources));
+            foreach (var resource in resources)
+            {
+                string subFolder;
+                if (resource.EndsWith(".props") || resource.EndsWith("targets"))
+                {
+                    subFolder = "";
+                }
+                else if (resource.EndsWith(".xaml"))
+                {
+                    subFolder = CPS_RULES;
+                }
+                else continue;
+
+                var destFolder = Path.Combine(cpsFolder, subFolder);
+                if (resource.StartsWith(CPS_RESOURCE_PREFIX))
+                {
+                    var destFile = resource.Substring(CPS_RESOURCE_PREFIX.Length + 1);
+                    if (!Directory.Exists(destFolder))
+                    {
+                        Directory.CreateDirectory(destFolder);
+                    }
+                    var resMan = asm.GetManifestResourceStream(resource);
+                    if (resMan == null) continue;
+                    var fileReader = new StreamReader(resMan);
+                    var fileContent = fileReader.ReadToEnd();
+                    File.WriteAllText(Path.Combine(destFolder, destFile), fileContent);
+                }
+            }
+
+            // --- Write back the version file
+            File.WriteAllText(versionFile, CURRENT_CPS_VERSION);
         }
     }
 

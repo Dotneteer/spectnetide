@@ -433,17 +433,18 @@
       <TargetPath>Newtonsoft.Json.dll</TargetPath>
       <VSIXSubPath>..</VSIXSubPath>
     </Content>
+    <Content Include="..\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
+      <Link>BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
+      <Link>BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include=".editorconfig" />
     <None Include="app.config" />
-    <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.props">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="BuildSystem\DeployedBuildSystem\Spect.Net.CodeDiscover.targets">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="Key.snk" />
     <Content Include="ProjectImages.imagemanifest">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -541,6 +542,10 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
+    <ProjectReference Include="..\Spect.Net.ProjectResources\Spect.Net.ProjectResources.csproj">
+      <Project>{47b17533-f094-4aa9-81de-8bd4a2566add}</Project>
+      <Name>Spect.Net.ProjectResources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
       <Project>{7f2dc1ea-d3d4-43a9-8f69-95e90014a828}</Project>
       <Name>Spect.Net.ProjectWizard</Name>
@@ -568,122 +573,102 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BuildSystem\Rules\DisassAnn.xaml">
+    <Content Include="..\BuildSystem\Rules\DisassAnn.xaml">
+      <Link>BuildSystem\Rules\DisassAnn.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\folder.xaml">
+    <Content Include="..\BuildSystem\Rules\folder.xaml">
+      <Link>BuildSystem\Rules\folder.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\general.browseobject.xaml">
+    <Content Include="..\BuildSystem\Rules\general.browseobject.xaml">
+      <Link>BuildSystem\Rules\general.browseobject.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\general.xaml">
+    <Content Include="..\BuildSystem\Rules\general.xaml">
+      <Link>BuildSystem\Rules\general.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\none.xaml">
+    <Content Include="..\BuildSystem\Rules\none.xaml">
+      <Link>BuildSystem\Rules\none.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
+    <Content Include="..\BuildSystem\Rules\ProjectItemsSchema.xaml">
+      <Link>BuildSystem\Rules\ProjectItemsSchema.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\Rom.xaml">
+    <Content Include="..\BuildSystem\Rules\Rom.xaml">
+      <Link>BuildSystem\Rules\Rom.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\scc.xaml">
+    <Content Include="..\BuildSystem\Rules\scc.xaml">
+      <Link>BuildSystem\Rules\scc.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\SpConf.xaml">
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    <Content Include="..\BuildSystem\Rules\SpConf.xaml">
+      <Link>BuildSystem\Rules\SpConf.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\Tap.xaml">
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    <Content Include="..\BuildSystem\Rules\Tap.xaml">
+      <Link>BuildSystem\Rules\Tap.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\Tzx.xaml">
+    <Content Include="..\BuildSystem\Rules\Tzx.xaml">
+      <Link>BuildSystem\Rules\Tzx.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\Vfdd.xaml">
+    <Content Include="..\BuildSystem\Rules\Vfdd.xaml">
+      <Link>BuildSystem\Rules\Vfdd.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\VmState.xaml">
+    <Content Include="..\BuildSystem\Rules\VmState.xaml">
+      <Link>BuildSystem\Rules\VmState.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\Z80Asm.xaml">
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    <Content Include="..\BuildSystem\Rules\Z80Asm.xaml">
+      <Link>BuildSystem\Rules\Z80Asm.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\Z80Test.xaml">
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    <Content Include="..\BuildSystem\Rules\Z80Test.xaml">
+      <Link>BuildSystem\Rules\Z80Test.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BuildSystem\Rules\ZxBasic.xaml">
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    <Content Include="..\BuildSystem\Rules\ZxBasic.xaml">
+      <Link>BuildSystem\Rules\ZxBasic.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="CustomEditors\RomEditor\RomEditorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -845,7 +830,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DeploymentResources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="AfterBuild">
