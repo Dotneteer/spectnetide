@@ -57,6 +57,12 @@
     </ContentType>
 
     <ContentType
+        Name="ProjConf" 
+        DisplayName="Project configuration file" 
+        ItemType="ProjConf">
+    </ContentType>
+
+    <ContentType
         Name="VmState" 
         DisplayName="ZX Spectrum virtual machine state file" 
         ItemType="VmState">
@@ -77,6 +83,7 @@
     <ItemType Name="Tzx" DisplayName="ZX Spectrum TZX tape file"/>
     <ItemType Name="Tap" DisplayName="ZX Spectrum TAP tape file"/>
     <ItemType Name="Vfdd" DisplayName="ZX Spectrum Virtual FDD file"/>
+    <ItemType Name="ProjConf" DisplayName="Project configuration file"/>
     <ItemType Name="SpConf" DisplayName="ZX Spectrum configuration file"/>
     <ItemType Name="VmState" DisplayName="ZX Spectrum virtual machine state file"/>
 
@@ -90,6 +97,7 @@
     <FileExtension Name=".tap" ContentType="Tap" />
     <FileExtension Name=".vfdd" ContentType="vfdd" />
     <FileExtension Name=".spconf" ContentType="SpConf" />
+    <FileExtension Name=".projconf" ContentType="ProjConf" />
     <FileExtension Name=".vmstate" ContentType="VmState" />
 
 </ProjectSchemaDefinitions>

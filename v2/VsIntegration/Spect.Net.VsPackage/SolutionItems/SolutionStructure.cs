@@ -40,7 +40,7 @@ namespace Spect.Net.VsPackage.SolutionItems
         public const string ROM_FOLDER = @"Rom";
 
         /// <summary>
-        /// Check period waiting time in milleseconds
+        /// Check period waiting time in milliseconds
         /// </summary>
         public const int WATCH_PERIOD = 1000;
 

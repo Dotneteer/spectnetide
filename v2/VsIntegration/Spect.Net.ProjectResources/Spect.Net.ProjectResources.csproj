@@ -62,4 +62,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="..\BuildSystem\Rules\ProjConf.xaml" Link="ProjConf.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

@@ -30,6 +30,11 @@ namespace Spect.Net.VsPackage.SolutionItems
         public const string CONFIG_FILE = @"Rom\ZxSpectrum.spconf";
 
         /// <summary>
+        /// The name of the settings file within the project folder
+        /// </summary>
+        public const string PROJECT_CONFIG_FILE = "Spectrum.projconf";
+
+        /// <summary>
         /// Message to display when a project folder is invalid
         /// </summary>
         public const string DEFAULT_INV_FOLDER_MESSAGE =

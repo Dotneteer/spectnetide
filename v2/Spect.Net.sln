@@ -73,6 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rules", "Rules", "{8C2F12FA
 		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\general.browseobject.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\general.browseobject.xaml
 		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\general.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\general.xaml
 		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\none.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\none.xaml
+		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ProjConf.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ProjConf.xaml
 		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ProjectItemsSchema.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ProjectItemsSchema.xaml
 		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Rom.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\Rom.xaml
 		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\scc.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\scc.xaml
@@ -86,7 +87,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rules", "Rules", "{8C2F12FA
 		VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ZxBasic.xaml = VsIntegration\Spect.Net.VsPackage\BuildSystem\Rules\ZxBasic.xaml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spect.Net.ProjectResources", "VsIntegration\Spect.Net.ProjectResources\Spect.Net.ProjectResources.csproj", "{47B17533-F094-4AA9-81DE-8BD4A2566ADD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spect.Net.ProjectResources", "VsIntegration\Spect.Net.ProjectResources\Spect.Net.ProjectResources.csproj", "{47B17533-F094-4AA9-81DE-8BD4A2566ADD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -57,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Spectrum.projconf" />
     <None Include=".z80settings" />
     <None Include="Annotations.disann" />
     <None Include="Rom\ZxSpectrum.spconf" />

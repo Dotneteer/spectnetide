@@ -62,6 +62,11 @@
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
 
+    <!-- ZX Spectrum project configuration file -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjConf.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
     <!-- ZX Spectrum virtual machine state file types -->
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\VmState.xaml;">
       <Context>File;BrowseObject</Context>

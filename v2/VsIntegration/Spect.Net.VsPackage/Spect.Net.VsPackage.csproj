@@ -89,6 +89,7 @@
     <Compile Include="Compilers\CodeManager.cs" />
     <Compile Include="Compilers\CompilationCompletedEventArgs.cs" />
     <Compile Include="Compilers\ICompilerService.cs" />
+    <Compile Include="Compilers\SpectrumProjectConfiguration.cs" />
     <Compile Include="Compilers\Z80AssemblyCompiler.cs" />
     <Compile Include="Compilers\ZxBasicCompiler.cs" />
     <Compile Include="Compilers\ZxbOptions.cs" />
@@ -665,6 +666,12 @@
     </Content>
     <Content Include="..\BuildSystem\Rules\ZxBasic.xaml">
       <Link>BuildSystem\Rules\ZxBasic.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\BuildSystem\Rules\ProjConf.xaml">
+      <Link>BuildSystem\Rules\ProjConf.xaml</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

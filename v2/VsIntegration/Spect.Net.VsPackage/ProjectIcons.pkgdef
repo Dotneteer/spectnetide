@@ -22,6 +22,9 @@
 [$RootKey$\ShellFileAssociations\.spconf]
 "DefaultIconMoniker"="a9d5b7d1-2f7d-45c2-b8cf-9205db07de5b:7"
 
+[$RootKey$\ShellFileAssociations\.projconf]
+"DefaultIconMoniker"="a9d5b7d1-2f7d-45c2-b8cf-9205db07de5b:7"
+
 [$RootKey$\ShellFileAssociations\.z80test]
 "DefaultIconMoniker"="a9d5b7d1-2f7d-45c2-b8cf-9205db07de5b:8"
 
