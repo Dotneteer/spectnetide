@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
@@ -175,7 +176,7 @@ namespace Spect.Net.SpectrumEmu.Disassembler
                     opCodes.Add(nextByte);
                 }
                 item.Instruction = ".defb " + string.Join(", ", opCodes.Select(o => $"#{o:X2}"));
-                item.HardComment = $"({FloatNumber.FromCompactBytes(opCodes)})";
+                item.HardComment = $"({FloatNumber.FromCompactBytes(opCodes).ToString(CultureInfo.InvariantCulture)})";
                 _seriesCount--;
                 return item;
             }

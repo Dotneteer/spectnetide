@@ -2738,7 +2738,7 @@ namespace Spect.Net.Assembler.Assembler
                         }
                         break;
                     case ExpressionValueType.Real:
-                        message.Append(exprValue.AsReal());
+                        message.AppendFormat(CultureInfo.InvariantCulture, "{0}", exprValue.AsReal());
                         break;
                     case ExpressionValueType.String:
                         if (pragma.IsHex)

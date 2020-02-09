@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
@@ -20,10 +19,6 @@ namespace Spect.Net.VsPackage.Debugging
         ISpectrumDebugInfoProvider,
         IDisposable
     {
-        // --- Store previous breakpoints for comparison
-        private readonly Dictionary<Breakpoint, Dictionary<ushort, IBreakpointInfo>> _previousVsBreakpoints =
-            new Dictionary<Breakpoint, Dictionary<ushort, IBreakpointInfo>>();
-
         /// <summary>
         /// Contains the compiled output, provided the compilation was successful
         /// </summary>
@@ -66,14 +61,6 @@ namespace Spect.Net.VsPackage.Debugging
         }
 
         /// <summary>
-        /// Clears the provider
-        /// </summary>
-        public void Clear()
-        {
-            Breakpoints.Clear();
-        }
-
-        /// <summary>
         /// Us this method to prepare the breakpoints when running the
         /// virtual machine in debug mode
         /// </summary>
@@ -85,43 +72,6 @@ namespace Spect.Net.VsPackage.Debugging
                 return;
             }
 
-            var currentVsBreakpoints = new HashSet<Breakpoint>();
-            var newVsBreakpoints = new HashSet<Breakpoint>();
-
-            // --- Identify new breakpoints
-            foreach (Breakpoint bp in SpectNetPackage.Default.ApplicationObject.Debugger.Breakpoints)
-            {
-                if (!_previousVsBreakpoints.ContainsKey(bp))
-                {
-                    newVsBreakpoints.Add(bp);
-                }
-                currentVsBreakpoints.Add(bp);
-            }
-
-            var oldBreakpoints = new HashSet<Breakpoint>();
-
-            // --- Identify breakpoints to remove
-            foreach (var bp in _previousVsBreakpoints.Keys)
-            {
-                if (!currentVsBreakpoints.Contains(bp))
-                {
-                    oldBreakpoints.Add(bp);
-                }
-            }
-
-            // --- In there any change?
-            if (newVsBreakpoints.Count == 0 && oldBreakpoints.Count == 0)
-            {
-                // --- No change, use existing breakpoints
-                return;
-            }
-
-            // --- Remove old breakpoints
-            foreach (var oldBp in oldBreakpoints)
-            {
-                _previousVsBreakpoints.Remove(oldBp);
-            }
-
             // --- Start assembling the new breakpoint collection
             var newBreakpointCollection = new BreakpointCollection();
 
@@ -131,17 +81,8 @@ namespace Spect.Net.VsPackage.Debugging
                 newBreakpointCollection[pair.Key] = pair.Value;
             }
 
-            // --- Add existing VS breakpoints
-            foreach (var existingBp in _previousVsBreakpoints.Values)
-            {
-                foreach (var bp in existingBp)
-                {
-                    newBreakpointCollection[bp.Key] = bp.Value;
-                }
-            }
-
             // --- Create new breakpoints
-            foreach (var newBp in newVsBreakpoints)
+            foreach (Breakpoint newBp in SpectNetPackage.Default.ApplicationObject.Debugger.Breakpoints)
             {
                 // --- Check for the file
                 var fileIndex = -1;
@@ -206,7 +147,6 @@ namespace Spect.Net.VsPackage.Debugging
 
                         newBreakpointCollection.Add(addr, newVsBreakpoint);
                     }
-                    _previousVsBreakpoints.Add(newBp, newBreakpointCollection);
                 }
 
             }

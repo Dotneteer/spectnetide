@@ -1004,7 +1004,9 @@ namespace Spect.Net.Assembler
 
                 case Z80AsmParser.RealLiteralContext ctx:
                     AddNumber(ctx);
-                    return double.TryParse(ctx.REALNUM().GetText(), out var realValue)
+                    return double.TryParse(ctx.REALNUM().GetText(), 
+                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent, 
+                        CultureInfo.InvariantCulture, out var realValue)
                         ? new LiteralNode(ctx, realValue)
                         : new LiteralNode(ctx, ExpressionValue.Error);
 
