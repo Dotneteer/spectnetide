@@ -108,7 +108,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         private static void ScanActiveClassifierWindows()
         {
             var windows = SpectNetPackage.Default.ApplicationObject.Windows;
-            var activeClassifiers = new Dictionary<string, Z80AsmViewTagger>();
+            var activeClassifiers = new Dictionary<string, Z80AsmViewTagger>(StringComparer.InvariantCultureIgnoreCase);
 
             // --- Collect active document names
             foreach (EnvDTE.Window window in windows)
