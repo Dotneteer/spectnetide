@@ -87,43 +87,46 @@ namespace Spect.Net.VsPackage.Compilers
         /// <summary>
         /// Runs the pre-build event
         /// </summary>
+        /// <param name="codeFilePath">The path of the code file being compiled</param>
         /// <returns>True, if the event completed successfully.</returns>
-        public async Task<bool> RunPreBuildEvent()
+        public async Task<string> RunPreBuildEvent(string codeFilePath)
         {
             var config = GetSpectrumProjectConfiguration();
-            if (config == null || string.IsNullOrWhiteSpace(config.PreBuildCommand))
+            if (config == null || string.IsNullOrWhiteSpace(config.PreBuild))
             {
-                return true;
+                return null;
             }
-            return await RunCommand(config.PreBuildCommand);
+            return await RunCommand("pre-build command", config.PreBuild, codeFilePath);
         }
 
         /// <summary>
         /// Runs the post-build event
         /// </summary>
+        /// <param name="codeFilePath">The path of the code file being compiled</param>
         /// <returns>True, if the event completed successfully.</returns>
-        public async Task<bool> RunPostBuildEvent()
+        public async Task<string> RunPostBuildEvent(string codeFilePath)
         {
             var config = GetSpectrumProjectConfiguration();
-            if (config == null || string.IsNullOrWhiteSpace(config.PostBuildCommand))
+            if (config == null || string.IsNullOrWhiteSpace(config.PostBuild))
             {
-                return true;
+                return null;
             }
-            return await RunCommand(config.PostBuildCommand);
+            return await RunCommand("post-build command", config.PostBuild, codeFilePath);
         }
 
         /// <summary>
         /// Runs the build-error event
         /// </summary>
+        /// <param name="codeFilePath">The path of the code file being compiled</param>
         /// <returns>True, if the event completed successfully.</returns>
-        public async Task<bool> RunBuildErrorEvent()
+        public async Task<string> RunBuildErrorEvent(string codeFilePath)
         {
             var config = GetSpectrumProjectConfiguration();
-            if (config == null || string.IsNullOrWhiteSpace(config.BuildErrorCommand))
+            if (config == null || string.IsNullOrWhiteSpace(config.BuildError))
             {
-                return true;
+                return null;
             }
-            return await RunCommand(config.BuildErrorCommand);
+            return await RunCommand("cleanup command", config.BuildError, codeFilePath);
         }
 
         /// <summary>
@@ -153,17 +156,38 @@ namespace Spect.Net.VsPackage.Compilers
         /// <summary>
         /// Runs the specified command in a separate project
         /// </summary>
-        /// <param name="command"></param>
-        /// <returns></returns>
-        private Task<bool> RunCommand(string command)
+        /// <param name="type">Command type</param>
+        /// <param name="codeFilePath">The path of the code file being compiled</param>
+        /// <param name="command">Command to run</param>
+        private Task<string> RunCommand(string type, string command, string codeFilePath)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            // --- Calculate macro values
+            var sp = SpectNetPackage.Default;
+            var solutionPath = sp.Solution.Root.FullName;
+            var solutionDir = sp.Solution.SolutionDir;
+            var projectFile = sp.ActiveProject.Root.FileName;
+            var projectDir = sp.ActiveProject.ProjectDir;
+            var sourcePath = codeFilePath;
+            var sourceDir = Path.GetDirectoryName(sourcePath);
+
+            // --- Replace macros in the string
+            command = command.Replace("$(SolutionPath)", solutionPath);
+            command = command.Replace("$(SolutionDir)", solutionDir);
+            command = command.Replace("$(ProjectFile)", projectFile);
+            command = command.Replace("$(ProjectDir)", projectDir);
+            command = command.Replace("$(SourcePath)", sourcePath);
+            command = command.Replace("$(SourceDir)", sourceDir);
+
+            var pane = OutputWindow.GetPane<Z80AssemblerOutputPane>();
+            pane.WriteLine($"Running {type}:");
+            pane.WriteLine(command);
+            var tcs = new TaskCompletionSource<string>();
             var cmdProcess = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = Path.Combine("cmd.exe"),
-                    Arguments = command,
+                    FileName = "cmd.exe",
+                    Arguments = $"/C {command}",
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -189,10 +213,13 @@ namespace Spect.Net.VsPackage.Compilers
                     {
                         var exitCode = cmdProcess.ExitCode;
                         var output = cmdProcess.StandardError.ReadToEnd();
-                        var pane = OutputWindow.GetPane<Z80AssemblerOutputPane>();
-                        pane.WriteLine(output);
+                        if (!string.IsNullOrWhiteSpace(output))
+                        {
+                            pane.Write(output);
+                        }
 
-                        tcs.SetResult(exitCode == 0);
+                        pane.WriteLine($"Executing {type} completed with exit code {exitCode}.");
+                        tcs.SetResult(output.Length == 0 ? null : output);
                     }
                 }
                 catch (Exception ex)

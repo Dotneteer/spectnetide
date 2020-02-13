@@ -10,8 +10,10 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Spect.Net.VsPackage.VsxLibrary.Output;
 using Task = System.Threading.Tasks.Task;
 using VsTask = Microsoft.VisualStudio.Shell.Task;
+using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 // ReSharper disable SuspiciousTypeConversion.Global
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
@@ -42,6 +44,21 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// The output of the compilation
         /// </summary>
         protected AssemblerOutput Output { get; set; }
+
+        /// <summary>
+        /// Error message of the pre-build event
+        /// </summary>
+        protected string PrebuildError { get; set; }
+
+        /// <summary>
+        /// Error message of the post-build event
+        /// </summary>
+        protected string PostbuildError { get; set; }
+
+        /// <summary>
+        /// Error message of the cleanup event
+        /// </summary>
+        protected string CleanupError { get; set; }
 
         /// <summary>
         /// 
@@ -96,7 +113,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                   ?? Output.Segments[0].StartAddress;
 
         /// <summary>
-        /// Disables the command if compliation is in progress
+        /// Disables the command if compilation is in progress
         /// </summary>
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
@@ -204,11 +221,26 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// <returns>True, if compilation successful; otherwise, false</returns>
         public async Task<bool> CompileCode()
         {
+            // --- Execute pre-build event
+            var codeManager = SpectNetPackage.Default.CodeManager;
+            PrebuildError = null;
+            PostbuildError = null;
+            CleanupError = null;
+            var eventOutput = await codeManager.RunPreBuildEvent(_itemFullPath);
+            if (eventOutput != null)
+            {
+                PrebuildError = eventOutput;
+                CleanupError = await codeManager.RunBuildErrorEvent(_itemFullPath);
+                DisplayBuildErrors();
+                return false;
+            }
+
             var start = DateTime.Now;
-            SpectNetPackage.Log(_compiler.ServiceName);
+            var pane = OutputWindow.GetPane<Z80AssemblerOutputPane>();
+            await pane.WriteLineAsync(_compiler.ServiceName);
             var output = await _compiler.CompileDocument(_itemFullPath, PrepareAssemblerOptions());
             var duration = (DateTime.Now - start).TotalMilliseconds;
-            SpectNetPackage.Log($"Compile time: {duration}ms");
+            await pane.WriteLineAsync($"Compile time: {duration}ms");
             var compiled = output != null;
             if (compiled)
             {
@@ -217,6 +249,22 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                 CreateCompilationListFile(_hierarchy, _itemId);
             }
             HostPackage.CodeManager.RaiseCompilationCompleted(output);
+
+            // --- Execute post-build event
+            if (compiled && output.Errors.Count == 0)
+            {
+                eventOutput = await codeManager.RunPostBuildEvent(_itemFullPath);
+                if (eventOutput != null)
+                {
+                    PostbuildError = eventOutput;
+                    CleanupError = await codeManager.RunBuildErrorEvent(_itemFullPath);
+                    return false;
+                }
+            }
+            else
+            {
+                CleanupError = await codeManager.RunBuildErrorEvent(_itemFullPath);
+            }
             return compiled;
         }
 
@@ -247,7 +295,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// </summary>
         protected override Task CompleteOnMainThreadAsync()
         {
-            DisplayAssemblyErrors();
+            DisplayBuildErrors();
             HandleAssemblyTasks();
             return Task.FromResult(0);
         }
@@ -258,18 +306,37 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         protected override Task FinallyOnMainThreadAsync()
         {
             HostPackage.CompilationInProgress = false;
+            if (Output.Errors.Count > 0 ||
+                PrebuildError != null
+                || PostbuildError != null
+                || CleanupError != null)
+            {
+                HostPackage.ApplicationObject.ExecuteCommand("View.ErrorList");
+            }
             return Task.FromResult(0);
         }
 
         /// <summary>
         /// Collect errors
         /// </summary>
-        protected void DisplayAssemblyErrors()
+        protected void DisplayBuildErrors()
         {
             HostPackage.ErrorList.Clear();
-            if (Output.ErrorCount == 0) return;
 
             GetCodeItem(out var hierarchy, out _);
+            if (PrebuildError != null)
+            {
+                var prebuildTask = new ErrorTask
+                {
+                    Category = TaskCategory.User,
+                    ErrorCategory = TaskErrorCategory.Error,
+                    HierarchyItem = hierarchy,
+                    Text = $"Pre-build: {PrebuildError}",
+                    CanDelete = true
+                };
+                HostPackage.ErrorList.AddErrorTask(prebuildTask);
+            }
+
             foreach (var error in Output.Errors)
             {
                 var errorTask = new ErrorTask
@@ -289,7 +356,29 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                 HostPackage.ErrorList.AddErrorTask(errorTask);
             }
 
-            HostPackage.ApplicationObject.ExecuteCommand("View.ErrorList");
+            if (PostbuildError != null)
+            {
+                var postbuildTask = new ErrorTask
+                {
+                    Category = TaskCategory.User,
+                    ErrorCategory = TaskErrorCategory.Error,
+                    HierarchyItem = hierarchy,
+                    Text = $"Post-build: {PostbuildError}",
+                    CanDelete = true
+                };
+                HostPackage.ErrorList.AddErrorTask(postbuildTask);
+            }
+
+            if (CleanupError == null) return;
+            var cleanupTask = new ErrorTask
+            {
+                Category = TaskCategory.User,
+                ErrorCategory = TaskErrorCategory.Error,
+                HierarchyItem = hierarchy,
+                Text = $"Cleanup: {CleanupError}",
+                CanDelete = true
+            };
+            HostPackage.ErrorList.AddErrorTask(cleanupTask);
         }
 
         /// <summary>

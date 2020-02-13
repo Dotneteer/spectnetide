@@ -8,16 +8,16 @@
         /// <summary>
         /// Command to run during the pre-build event
         /// </summary>
-        public string PreBuildCommand { get; set; }
+        public string PreBuild { get; set; }
 
         /// <summary>
         /// Command to run during the post-build event
         /// </summary>
-        public string PostBuildCommand { get; set; }
+        public string PostBuild { get; set; }
 
         /// <summary>
         /// Command to run during the pre-build event
         /// </summary>
-        public string BuildErrorCommand { get; set; }
+        public string BuildError { get; set; }
     }
 }
