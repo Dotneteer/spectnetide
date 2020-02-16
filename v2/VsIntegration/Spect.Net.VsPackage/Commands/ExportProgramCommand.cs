@@ -57,7 +57,11 @@ namespace Spect.Net.VsPackage.Commands
             GetCodeItem(out var hierarchy, out var itemId);
 
             // --- Step #1: Compile the code
-            if (!await CompileCode()) return;
+            if (!await CompileCode())
+            {
+                Success = false;
+                return;
+            }
 
             // --- Step #2: Check for zero code length
             if (Output.Segments.Sum(s => s.EmittedCode.Count) == 0)
@@ -69,66 +73,96 @@ namespace Spect.Net.VsPackage.Commands
                 return;
             }
 
-            // --- Step #2: Collect export parameters from the UI
+            // --- Step #3: Collect export parameters from the UI
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (DisplayExportParameterDialog(out var vm)) return;
 
-            if (vm.Format == ExportFormat.IntelHex)
+            // --- Step #4: Execute pre-export event
+            var codeManager = SpectNetPackage.Default.CodeManager;
+            PreexportError = null;
+            PostexportError = null;
+            var eventOutput = await codeManager.RunPreExportEvent(ItemFullPath, vm.Filename);
+            if (eventOutput != null)
             {
-                SaveIntelHexFile(vm.Filename, Output);
-                return;
-            }
-
-            // --- Step #3: Check screen file again
-            var useScreenFile = !string.IsNullOrEmpty(vm.ScreenFile) && vm.ScreenFile.Trim().Length > 0;
-            if (useScreenFile && !CommonTapeFilePlayer.CheckScreenFile(vm.ScreenFile))
-            {
-                VsxDialogs.Show("The specified screen file cannot be read as a ZX Spectrum compatible screen file.",
-                    "Screen file error.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                PreexportError = eventOutput;
+                CleanupError = await codeManager.RunBuildErrorEvent(ItemFullPath);
+                DisplayBuildErrors();
                 Success = false;
                 return;
             }
 
-            // --- Step #4: Create code segments
-            var codeBlocks = CreateTapeBlocks(vm.Name, Output, vm.SingleBlock);
-            List<byte[]> screenBlocks = null;
-            if (useScreenFile)
+            if (vm.Format == ExportFormat.IntelHex)
             {
-                screenBlocks = CreatScreenBlocks(vm.ScreenFile);
+                // --- Step #5: Export to Intel format
+                SaveIntelHexFile(vm.Filename, Output);
+            }
+            else
+            {
+                // --- Step #5: Check screen file again
+                var useScreenFile = !string.IsNullOrEmpty(vm.ScreenFile) && vm.ScreenFile.Trim().Length > 0;
+                if (useScreenFile && !CommonTapeFilePlayer.CheckScreenFile(vm.ScreenFile))
+                {
+                    VsxDialogs.Show("The specified screen file cannot be read as a ZX Spectrum compatible screen file.",
+                        "Screen file error.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                    Success = false;
+                    return;
+                }
+
+                // --- Step #6: Create code segments
+                var codeBlocks = CreateTapeBlocks(vm.Name, Output, vm.SingleBlock);
+                List<byte[]> screenBlocks = null;
+                if (useScreenFile)
+                {
+                    screenBlocks = CreatScreenBlocks(vm.ScreenFile);
+                }
+
+                // --- Step #7: Create Auto Start header block, if required
+                var blocksToSave = new List<byte[]>();
+                if (!ushort.TryParse(vm.StartAddress, out var startAddress))
+                {
+                    startAddress = (ushort) ExportStartAddress;
+                }
+
+                var autoStartBlocks = CreateAutoStartBlock(
+                    vm.Name,
+                    useScreenFile,
+                    vm.AddPause0,
+                    vm.Border,
+                    codeBlocks.Count >> 1,
+                    startAddress,
+                    vm.ApplyClear
+                        ? Output.Segments.Min(s => s.StartAddress)
+                        : (ushort?) null);
+                blocksToSave.AddRange(autoStartBlocks);
+
+                // --- Step #8: Save all the blocks
+                if (screenBlocks != null)
+                {
+                    blocksToSave.AddRange(screenBlocks);
+                }
+
+                blocksToSave.AddRange(codeBlocks);
+                SaveDataBlocks(vm, blocksToSave);
+
+                if (vm.AddToProject)
+                {
+                    // --- Step #9: Add the saved item to the project
+                    // --- Check path segment names
+                    SpectrumProject.AddFileToProject(SpectNetPackage.Default.Options.TapeFolder, vm.Filename,
+                        INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);
+                }
             }
 
-            // --- Step #5: Create Auto Start header block, if required
-            var blocksToSave = new List<byte[]>();
-            if (!ushort.TryParse(vm.StartAddress, out var startAddress))
+            // --- Run post-export event
+            // --- Execute post-build event
+            eventOutput = await codeManager.RunPostExportEvent(ItemFullPath, vm.Filename);
+            if (eventOutput != null)
             {
-                startAddress = (ushort)ExportStartAddress;
+                PostexportError = eventOutput;
+                CleanupError = await codeManager.RunBuildErrorEvent(ItemFullPath);
+                DisplayBuildErrors();
+                Success = false;
             }
-            var autoStartBlocks = CreateAutoStartBlock(
-                vm.Name,
-                useScreenFile,
-                vm.AddPause0,
-                vm.Border,
-                codeBlocks.Count >> 1,
-                startAddress,
-                vm.ApplyClear
-                    ? Output.Segments.Min(s => s.StartAddress)
-                    : (ushort?)null);
-            blocksToSave.AddRange(autoStartBlocks);
-
-            // --- Step #6: Save all the blocks
-            if (screenBlocks != null)
-            {
-                blocksToSave.AddRange(screenBlocks);
-            }
-            blocksToSave.AddRange(codeBlocks);
-            SaveDataBlocks(vm, blocksToSave);
-
-            if (!vm.AddToProject) return;
-
-            // --- Step #6: Add the saved item to the project
-            // --- Check path segment names
-            SpectrumProject.AddFileToProject(SpectNetPackage.Default.Options.TapeFolder, vm.Filename,
-                INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);
         }
 
         /// <summary>

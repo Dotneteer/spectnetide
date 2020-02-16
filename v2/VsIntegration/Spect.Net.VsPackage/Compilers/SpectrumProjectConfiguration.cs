@@ -19,5 +19,15 @@
         /// Command to run during the pre-build event
         /// </summary>
         public string BuildError { get; set; }
+
+        /// <summary>
+        /// Command to run during the pre-export event
+        /// </summary>
+        public string PreExport { get; set; }
+
+        /// <summary>
+        /// Command to run during the post-export event
+        /// </summary>
+        public string PostExport { get; set; }
     }
 }

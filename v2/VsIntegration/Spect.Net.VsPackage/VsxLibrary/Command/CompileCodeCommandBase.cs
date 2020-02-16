@@ -36,9 +36,13 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
 
         // --- Compiler state variables
         private ICompilerService _compiler;
-        private string _itemFullPath;
         private IVsHierarchy _hierarchy;
         private uint _itemId;
+
+        /// <summary>
+        /// The full path of item compiled
+        /// </summary>
+        protected string ItemFullPath { get; set; }
 
         /// <summary>
         /// The output of the compilation
@@ -59,6 +63,16 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// Error message of the cleanup event
         /// </summary>
         protected string CleanupError { get; set; }
+
+        /// <summary>
+        /// Error message of the pre-export event
+        /// </summary>
+        protected string PreexportError { get; set; }
+
+        /// <summary>
+        /// Error message of the post-export event
+        /// </summary>
+        protected string PostexportError { get; set; }
 
         /// <summary>
         /// 
@@ -137,8 +151,9 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                 return;
             }
 
-            project.GetMkDocument(_itemId, out _itemFullPath);
-            var extension = Path.GetExtension(_itemFullPath);
+            project.GetMkDocument(_itemId, out var itemFullPath);
+            ItemFullPath = itemFullPath;
+            var extension = Path.GetExtension(ItemFullPath);
 
             _compiler = null;
             switch (extension?.ToLower())
@@ -226,11 +241,13 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             PrebuildError = null;
             PostbuildError = null;
             CleanupError = null;
-            var eventOutput = await codeManager.RunPreBuildEvent(_itemFullPath);
+            PreexportError = null;
+            PostexportError = null;
+            var eventOutput = await codeManager.RunPreBuildEvent(ItemFullPath);
             if (eventOutput != null)
             {
                 PrebuildError = eventOutput;
-                CleanupError = await codeManager.RunBuildErrorEvent(_itemFullPath);
+                CleanupError = await codeManager.RunBuildErrorEvent(ItemFullPath);
                 DisplayBuildErrors();
                 return false;
             }
@@ -238,7 +255,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             var start = DateTime.Now;
             var pane = OutputWindow.GetPane<Z80AssemblerOutputPane>();
             await pane.WriteLineAsync(_compiler.ServiceName);
-            var output = await _compiler.CompileDocument(_itemFullPath, PrepareAssemblerOptions());
+            var output = await _compiler.CompileDocument(ItemFullPath, PrepareAssemblerOptions());
             var duration = (DateTime.Now - start).TotalMilliseconds;
             await pane.WriteLineAsync($"Compile time: {duration}ms");
             var compiled = output != null;
@@ -253,17 +270,19 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             // --- Execute post-build event
             if (compiled && output.Errors.Count == 0)
             {
-                eventOutput = await codeManager.RunPostBuildEvent(_itemFullPath);
+                eventOutput = await codeManager.RunPostBuildEvent(ItemFullPath);
                 if (eventOutput != null)
                 {
                     PostbuildError = eventOutput;
-                    CleanupError = await codeManager.RunBuildErrorEvent(_itemFullPath);
+                    CleanupError = await codeManager.RunBuildErrorEvent(ItemFullPath);
+                    DisplayBuildErrors();
                     return false;
                 }
             }
             else
             {
-                CleanupError = await codeManager.RunBuildErrorEvent(_itemFullPath);
+                CleanupError = await codeManager.RunBuildErrorEvent(ItemFullPath);
+                DisplayBuildErrors();
             }
             return compiled;
         }
@@ -337,23 +356,26 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                 HostPackage.ErrorList.AddErrorTask(prebuildTask);
             }
 
-            foreach (var error in Output.Errors)
+            if (Output != null)
             {
-                var errorTask = new ErrorTask
+                foreach (var error in Output.Errors)
                 {
-                    Category = TaskCategory.User,
-                    ErrorCategory = TaskErrorCategory.Error,
-                    HierarchyItem = hierarchy,
-                    Document = error.Filename ?? ItemPath,
-                    Line = error.Line - 1,
-                    Column = error.Column,
-                    Text = error.ErrorCode == null
-                        ? error.Message
-                        : $"{error.ErrorCode}: {error.Message}",
-                    CanDelete = true
-                };
-                errorTask.Navigate += ErrorTaskOnNavigate;
-                HostPackage.ErrorList.AddErrorTask(errorTask);
+                    var errorTask = new ErrorTask
+                    {
+                        Category = TaskCategory.User,
+                        ErrorCategory = TaskErrorCategory.Error,
+                        HierarchyItem = hierarchy,
+                        Document = error.Filename ?? ItemPath,
+                        Line = error.Line - 1,
+                        Column = error.Column,
+                        Text = error.ErrorCode == null
+                            ? error.Message
+                            : $"{error.ErrorCode}: {error.Message}",
+                        CanDelete = true
+                    };
+                    errorTask.Navigate += ErrorTaskOnNavigate;
+                    HostPackage.ErrorList.AddErrorTask(errorTask);
+                }
             }
 
             if (PostbuildError != null)
@@ -369,16 +391,44 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                 HostPackage.ErrorList.AddErrorTask(postbuildTask);
             }
 
-            if (CleanupError == null) return;
-            var cleanupTask = new ErrorTask
+            if (PreexportError != null)
             {
-                Category = TaskCategory.User,
-                ErrorCategory = TaskErrorCategory.Error,
-                HierarchyItem = hierarchy,
-                Text = $"Cleanup: {CleanupError}",
-                CanDelete = true
-            };
-            HostPackage.ErrorList.AddErrorTask(cleanupTask);
+                var cleanupTask = new ErrorTask
+                {
+                    Category = TaskCategory.User,
+                    ErrorCategory = TaskErrorCategory.Error,
+                    HierarchyItem = hierarchy,
+                    Text = $"Pre-export: {PreexportError}",
+                    CanDelete = true
+                };
+                HostPackage.ErrorList.AddErrorTask(cleanupTask);
+            }
+
+            if (PostexportError != null)
+            {
+                var cleanupTask = new ErrorTask
+                {
+                    Category = TaskCategory.User,
+                    ErrorCategory = TaskErrorCategory.Error,
+                    HierarchyItem = hierarchy,
+                    Text = $"Post-export: {PostexportError}",
+                    CanDelete = true
+                };
+                HostPackage.ErrorList.AddErrorTask(cleanupTask);
+            }
+
+            if (CleanupError != null)
+            {
+                var cleanupTask = new ErrorTask
+                {
+                    Category = TaskCategory.User,
+                    ErrorCategory = TaskErrorCategory.Error,
+                    HierarchyItem = hierarchy,
+                    Text = $"Cleanup: {CleanupError}",
+                    CanDelete = true
+                };
+                HostPackage.ErrorList.AddErrorTask(cleanupTask);
+            }
         }
 
         /// <summary>

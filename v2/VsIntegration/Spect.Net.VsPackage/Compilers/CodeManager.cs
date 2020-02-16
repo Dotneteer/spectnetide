@@ -96,7 +96,7 @@ namespace Spect.Net.VsPackage.Compilers
             {
                 return null;
             }
-            return await RunCommand("pre-build command", config.PreBuild, codeFilePath);
+            return await RunBuildCommand("pre-build command", config.PreBuild, codeFilePath);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Spect.Net.VsPackage.Compilers
             {
                 return null;
             }
-            return await RunCommand("post-build command", config.PostBuild, codeFilePath);
+            return await RunBuildCommand("post-build command", config.PostBuild, codeFilePath);
         }
 
         /// <summary>
@@ -126,7 +126,39 @@ namespace Spect.Net.VsPackage.Compilers
             {
                 return null;
             }
-            return await RunCommand("cleanup command", config.BuildError, codeFilePath);
+            return await RunBuildCommand("cleanup command", config.BuildError, codeFilePath);
+        }
+
+        /// <summary>
+        /// Runs the pre-export event
+        /// </summary>
+        /// <param name="codeFilePath">The path of the code file being compiled</param>
+        /// <param name="exportFilePath">The path of the export file</param>
+        /// <returns>True, if the event completed successfully.</returns>
+        public async Task<string> RunPreExportEvent(string codeFilePath, string exportFilePath)
+        {
+            var config = GetSpectrumProjectConfiguration();
+            if (config == null || string.IsNullOrWhiteSpace(config.PreExport))
+            {
+                return null;
+            }
+            return await RunExportCommand("pre-export command", config.PreExport, codeFilePath, exportFilePath);
+        }
+
+        /// <summary>
+        /// Runs the post-export event
+        /// </summary>
+        /// <param name="codeFilePath">The path of the code file being compiled</param>
+        /// <param name="exportFilePath">The path of the export file</param>
+        /// <returns>True, if the event completed successfully.</returns>
+        public async Task<string> RunPostExportEvent(string codeFilePath, string exportFilePath)
+        {
+            var config = GetSpectrumProjectConfiguration();
+            if (config == null || string.IsNullOrWhiteSpace(config.PostExport))
+            {
+                return null;
+            }
+            return await RunExportCommand("post-export command", config.PostExport, codeFilePath, exportFilePath);
         }
 
         /// <summary>
@@ -154,12 +186,12 @@ namespace Spect.Net.VsPackage.Compilers
         }
 
         /// <summary>
-        /// Runs the specified command in a separate project
+        /// Runs the specified build command in a separate process
         /// </summary>
         /// <param name="type">Command type</param>
         /// <param name="codeFilePath">The path of the code file being compiled</param>
         /// <param name="command">Command to run</param>
-        private Task<string> RunCommand(string type, string command, string codeFilePath)
+        private Task<string> RunBuildCommand(string type, string command, string codeFilePath)
         {
             // --- Calculate macro values
             var sp = SpectNetPackage.Default;
@@ -178,6 +210,49 @@ namespace Spect.Net.VsPackage.Compilers
             command = command.Replace("$(SourcePath)", sourcePath);
             command = command.Replace("$(SourceDir)", sourceDir);
 
+            return RunCommand(type, command);
+        }
+
+        /// <summary>
+        /// Runs the specified export command in a separate process
+        /// </summary>
+        /// <param name="type">Command type</param>
+        /// <param name="codeFilePath">The path of the code file being compiled</param>
+        /// <param name="exportFilePath">The path of the export file</param>
+        /// <param name="command">Command to run</param>
+        private Task<string> RunExportCommand(string type, string command, string codeFilePath, string exportFilePath)
+        {
+            // --- Calculate macro values
+            var sp = SpectNetPackage.Default;
+            var solutionPath = sp.Solution.Root.FullName;
+            var solutionDir = sp.Solution.SolutionDir;
+            var projectFile = sp.ActiveProject.Root.FileName;
+            var projectDir = sp.ActiveProject.ProjectDir;
+            var sourcePath = codeFilePath;
+            var sourceDir = Path.GetDirectoryName(sourcePath);
+            var exportDir = Path.GetDirectoryName(exportFilePath);
+
+            // --- Replace macros in the string
+            command = command.Replace("$(SolutionPath)", solutionPath);
+            command = command.Replace("$(SolutionDir)", solutionDir);
+            command = command.Replace("$(ProjectFile)", projectFile);
+            command = command.Replace("$(ProjectDir)", projectDir);
+            command = command.Replace("$(SourcePath)", sourcePath);
+            command = command.Replace("$(SourceDir)", sourceDir);
+            command = command.Replace("$(ExportPath)", exportFilePath);
+            command = command.Replace("$(ExportDir)", exportDir);
+
+            return RunCommand(type, command);
+        }
+
+
+        /// <summary>
+        /// Runs the specified command in a separate project
+        /// </summary>
+        /// <param name="type">Command type</param>
+        /// <param name="command">Command to run</param>
+        private Task<string> RunCommand(string type, string command)
+        {
             var pane = OutputWindow.GetPane<Z80AssemblerOutputPane>();
             pane.WriteLine($"Running {type}:");
             pane.WriteLine(command);
@@ -196,7 +271,7 @@ namespace Spect.Net.VsPackage.Compilers
                 }
             };
 
-            _ = Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(() =>
             {
                 try
                 {

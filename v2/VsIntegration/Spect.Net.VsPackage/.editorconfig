@@ -2,3 +2,6 @@
 
 # VSTHRD200: Use "Async" suffix for async methods
 dotnet_diagnostic.VSTHRD200.severity = none
+
+# VSTHRD105: Avoid method overloads that assume TaskScheduler.Current
+dotnet_diagnostic.VSTHRD105.severity = none
