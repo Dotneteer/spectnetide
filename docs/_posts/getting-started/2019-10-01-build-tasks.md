@@ -13,7 +13,11 @@ __SpectNetIDE__ allows you to extend the build chain with these kinds of tasks:
 
 - *Pre-build*: command to run before the Z80/BASIC compilation.
 - *Post-build*: command to run after the Z80/BASIC compilation.
+- *Pre-export*: command to run after the successful Z80/BASIC compilation before the export operation.
+- *Post-export*: command to run after the successful Z80/BASIC compilation and the export operation.
 - *Build-error*: command to run when any of the pre-build, post-build, or compilation events fails. You can use this build action for cleanup activities.
+
+The *Pre-build* and *Post-build* events run with the **Compile code**, **Inject program**, **Run program**, and **Debug program** commands. The *Pre-export* and *Post-export* events work with the **Export program** command only.
 
 You can define these tasks in the `Spectrum.projconf` file, which you find in the root folder of your ZX Spectrum project.
 
@@ -27,7 +31,7 @@ If you created your ZX Spectrum project before v2 Preview 5, you need to add thi
 
 In Solution Explorer, right-click the project node and use the **Add \| Existing item** command to add the `Spectrum.projconf` file to the project.
 
-## Creating Build Tasks
+## Creating Build and Export Tasks
 
 Build tasks use instructions that you can run from a Windows command-line prompt. You can define them in `Spectrum.projconf` (JSON format, case-sensitive):
 
@@ -36,6 +40,8 @@ Build tasks use instructions that you can run from a Windows command-line prompt
   "preBuild": "<Place pre-build command line here>",
   "postBuild": "<Place post-build command line here>",
   "errorBuild": "<Place post-build command line here>",
+  "preExport": "<Place pre-export command line here>",
+  "postExport": "<Place post-export command line here>"
 }
 ```
 Each of these tasks is optional. By default, a ZX Spectrum project leaves all of them empty.
@@ -56,7 +62,7 @@ In this sample, the pre-build and build-error tasks display a message, while the
 
 ## Macros
 
-You can place macros into the commands using these case-sensitive placeholders:
+You can place macros into the build commands using these case-sensitive placeholders:
 - `$(SolutionPath)`: Full path of the .sln file
 - `$(SolutionDir)`: Solution folder
 - `$(ProjectFile)`: Name of the project file (without path information)
@@ -65,12 +71,18 @@ You can place macros into the commands using these case-sensitive placeholders:
 - `$(SourcePath)`: Full path of the main file being compiled
 - `$(SourceDir)`: Name of the directory in which the main file being compiled is stored
 
-Here is an example that displays the directory of the source file to compile and uses the `output` folder within the current directory to put some build artifacts:
+Export commands provide additional macros:
+
+- `$(ExportPath)`: Full path of the target export file
+- `$(ExportDir)`: Name of the directory of the target export file
+
+Here is an example that displays the directory of the source file to compile and uses the `output` folder within the current directory to put some build artifacts, and the `bin` directory to store extra exported information:
 
 ```
 {
   "preBuild": "echo $(SourceDir)",
-  "postBuild": "myExtraBuildStep.bat $(ProjectDir)\output"
+  "postBuild": "myExtraBuildStep.bat $(ProjectDir)\output",
+  "postExport": "myExtraExportStep.bat $(ProjectDir)\bin $(ExportPath)",
 }
 ```
 
