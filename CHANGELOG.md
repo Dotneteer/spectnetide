@@ -1,9 +1,14 @@
-### Version 2.0.4 (Preview 4)
+### Version 2.0.6 (Preview 5)
+
+__FIX__: Z80 Source code debugging now handles correcly when you change the `ORG` address.  
+__FIX__: The marker of the current debug line now works properly.  
+__FEATURE__: You can add build events to your project (https://dotneteer.github.io/spectnetide/getting-started/build-tasks)  
+
+### Version 2.0.5 (Preview 4)
 
 __FIX__: Race condition issue when creating the first project with VS 2019 v16.4.x is eliminated.  
 __FEATURE__: Large ZX BASIC file support added.
 __FEATURE__: You can add ZX BASIC command line options to the main `.zxbas` file (https://dotneteer.github.io/spectnetide/getting-started/use-zx-basic#option-comments)
-
 
 ### Version 2.0.4 (Preview 3)
 

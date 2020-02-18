@@ -231,6 +231,7 @@ namespace Spect.Net.VsPackage.Compilers
             var sourcePath = codeFilePath;
             var sourceDir = Path.GetDirectoryName(sourcePath);
             var exportDir = Path.GetDirectoryName(exportFilePath);
+            var exportFile = Path.GetFileName(exportFilePath);
 
             // --- Replace macros in the string
             command = command.Replace("$(SolutionPath)", solutionPath);
@@ -241,6 +242,7 @@ namespace Spect.Net.VsPackage.Compilers
             command = command.Replace("$(SourceDir)", sourceDir);
             command = command.Replace("$(ExportPath)", exportFilePath);
             command = command.Replace("$(ExportDir)", exportDir);
+            command = command.Replace("$(ExportFile)", exportFile);
 
             return RunCommand(type, command);
         }

@@ -75,6 +75,7 @@ Export commands provide additional macros:
 
 - `$(ExportPath)`: Full path of the target export file
 - `$(ExportDir)`: Name of the directory of the target export file
+- `$(ExportFile)`: The name of the target export file
 
 Here is an example that displays the directory of the source file to compile and uses the `output` folder within the current directory to put some build artifacts, and the `bin` directory to store extra exported information:
 
