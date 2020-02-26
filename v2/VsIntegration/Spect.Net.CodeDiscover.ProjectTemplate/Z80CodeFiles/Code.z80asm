@@ -15,6 +15,6 @@ NextCh:
 
 Message:
 	.dm "\a\x0A\x08" ; AT 10, 4
-	.dm "\p\x04"     ; INK 4
+	.dm "\p\x04"     ; PAPER 4
 	.dm "ZX Spectrum IDE"
 	.db 0x00         ; terminate

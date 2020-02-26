@@ -97,7 +97,7 @@ namespace Spect.Net.VsPackage.Commands
             if (!SpectrumModels.IsModelCompatibleWith(modelName, modelType))
             {
                 VsxDialogs.Show("The model type defined in the code is not compatible with the " +
-                    "Spectum virtual machine of this project.",
+                    "Spectrum virtual machine of this project.",
                     "Cannot run code.");
                 return;
             }
@@ -105,7 +105,7 @@ namespace Spect.Net.VsPackage.Commands
             // --- Step #3: Check for zero code length
             if (Output.Segments.Sum(s => s.EmittedCode.Count) == 0)
             {
-                VsxDialogs.Show("The lenght of the compiled code is 0, " +
+                VsxDialogs.Show("The length of the compiled code is 0, " +
                     "so there is no code to inject into the virtual machine and run.",
                     "No code to run.");
                 return;

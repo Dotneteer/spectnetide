@@ -877,6 +877,17 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// <remarks>The code leaves the ROM area untouched.</remarks>
         public void InjectCodeToMemory(ushort addr, IReadOnlyCollection<byte> code)
         {
+            // --- Clear the screen
+            for (var i = 0; i < 0x1800; i++)
+            {
+                MemoryDevice.Write((ushort)(0x4000 + i), 0x00);
+            }
+            for (var i = 0; i < 0x300; i++)
+            {
+                MemoryDevice.Write((ushort)(0x5800 + i), 0x38);
+            }
+
+            // --- Now, inject the code
             foreach (var codeByte in code)
             {
                 MemoryDevice.Write(addr++, codeByte);
