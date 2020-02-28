@@ -120,6 +120,10 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0448 = "Z0448";
         public const string Z0449 = "Z0449";
         public const string Z0450 = "Z0450";
+        public const string Z0451 = "Z0451";
+        public const string Z0452 = "Z0452";
+        public const string Z0453 = "Z0453";
+        public const string Z0454 = "Z0454";
 
         public const string Z0500 = "Z0500";
 
@@ -233,6 +237,10 @@ namespace Spect.Net.Assembler.Assembler
             { Z0448, "LOCAL can be used only within PROC." },
             { Z0449, "This local symbol is already declared: ({0})." },
             { Z0450, "The .ZXBASIC pragma should be used before any other pragma or instruction." },
+            { Z0451, "The .BANK pragma cannot have a label." },
+            { Z0452, "The .BANK pragma cannot be used with the ZX Spectrum 48 model type." },
+            { Z0453, "The .BANK pragma's value must be between 0 and 7." },
+            { Z0454, "You have already used the .BANK pragma for bank {0}." },
             { Z0500, "ERROR: {0}" },
         };
 

@@ -64,6 +64,58 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
+        public void BankPragmaWorksAsExpected1()
+        {
+            // --- Act
+            var visitor = Parse(".bank 0");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as BankPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksAsExpected2()
+        {
+            // --- Act
+            var visitor = Parse(".BANK 1");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as BankPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksAsExpected3()
+        {
+            // --- Act
+            var visitor = Parse("bank 2");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as BankPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksAsExpected4()
+        {
+            // --- Act
+            var visitor = Parse("BANK 3");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as BankPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+        }
+
+        [TestMethod]
         public void EntPragmaWorksAsExpected1()
         {
             // --- Act

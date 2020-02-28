@@ -927,6 +927,17 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitOrgPragma([NotNull] Z80AsmParser.OrgPragmaContext context) { return VisitChildren(context); }
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.bankPragma"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitBankPragma([NotNull] Z80AsmParser.BankPragmaContext context) { return VisitChildren(context); }
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.xorgPragma"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>

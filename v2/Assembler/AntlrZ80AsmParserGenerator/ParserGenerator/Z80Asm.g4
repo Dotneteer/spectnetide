@@ -38,6 +38,7 @@ comment
 
 pragma
 	:	orgPragma
+	|	bankPragma
 	|	xorgPragma
 	|	entPragma
 	|	xentPragma
@@ -128,6 +129,7 @@ macroArgument: operand? ;
 fieldAssignment: GOESTO byteEmPragma ;
 
 orgPragma	: ORGPRAG expr ;
+bankPragma	: BANKPRAG expr ;
 xorgPragma	: XORGPR expr ;
 entPragma	: ENTPRAG expr ;
 xentPragma	: XENTPRAG expr ;
@@ -594,6 +596,7 @@ LINEDIR	: '#line';
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
+BANKPRAG: '.bank' | '.BANK' | 'bank' | 'BANK' ;
 XORGPR	: '.xorg' | '.XORG' | 'xorg' | 'XORG' ;
 ENTPRAG	: '.ent' | '.ENT' | 'ent' | 'ENT' ;
 XENTPRAG: '.xent' | '.XENT' | 'xent' | 'XENT' ;

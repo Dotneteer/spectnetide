@@ -551,6 +551,9 @@ namespace Spect.Net.Assembler
         public override object VisitOrgPragma(Z80AsmParser.OrgPragmaContext context) 
             => new OrgPragma(this, context);
 
+        public override object VisitBankPragma(Z80AsmParser.BankPragmaContext context)
+            => new BankPragma(this, context);
+
         public override object VisitXorgPragma(Z80AsmParser.XorgPragmaContext context)
             => new XorgPragma(this, context);
 

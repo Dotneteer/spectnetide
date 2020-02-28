@@ -1951,6 +1951,9 @@ namespace Spect.Net.Assembler.Assembler
                     ProcessOrgPragma(orgPragma, label);
                     return;
 
+                case BankPragma bankPragma:
+                    ProcessBankPragma(bankPragma, label);
+                    return;
                 case XorgPragma xorgPragma:
                     ProcessXorgPragma(xorgPragma);
                     return;
@@ -2111,6 +2114,54 @@ namespace Spect.Net.Assembler.Assembler
         private void EmitStructByte(byte data)
         {
             _currentStructBytes[(ushort)_currentStructOffset++] = data;
+        }
+
+        /// <summary>
+        /// Processes the BANK pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of ORG pragma</param>
+        /// <param name="label">Label to use</param>
+        private void ProcessBankPragma(BankPragma pragma, string label)
+        {
+            if (!string.IsNullOrWhiteSpace(label))
+            {
+                // --- No label is allowed
+                ReportError(Errors.Z0451, pragma);
+                return;
+            }
+
+            // --- Check pragma value
+            var value = EvalImmediate(pragma, pragma.Expression);
+            if (!value.IsValid) return;
+            if (value.AsWord() > 7)
+            {
+                ReportError(Errors.Z0453, pragma);
+                return;
+            }
+
+            // --- Check for appropriate model type
+            if (Output.ModelType == null || Output.ModelType == SpectrumModelType.Spectrum48)
+            {
+                ReportError(Errors.Z0452, pragma);
+                return;
+            }
+
+            EnsureCodeSegment(0xC000);
+            if (CurrentSegment.CurrentOffset != 0 || CurrentSegment.Bank != null)
+            {
+                // --- There is already code emitted for the current segment,
+                // --- thus create a new segment
+                CurrentSegment = new BinarySegment();
+                Output.Segments.Add(CurrentSegment);
+            }
+            if (Output.Segments.Any(s => s.Bank == value.Value))
+            {
+                // --- A bank can be used only once
+                ReportError(Errors.Z0454, pragma, value.Value);
+                return;
+            }
+            CurrentSegment.StartAddress = 0xC000;
+            CurrentSegment.Bank = value.Value;
         }
 
         /// <summary>
@@ -4456,13 +4507,13 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Ensures that there's a code segment by the time the code is emitted
         /// </summary>
-        private void EnsureCodeSegment()
+        private void EnsureCodeSegment(ushort? defaultAddress = null)
         {
             if (CurrentSegment == null)
             {
                 CurrentSegment = new BinarySegment
                 {
-                    StartAddress = _options?.DefaultStartAddress ?? 0x8000,
+                    StartAddress = defaultAddress ?? (_options?.DefaultStartAddress ?? 0x8000),
                     CurrentInstructionOffset = 0
                 };
                 Output.Segments.Add(CurrentSegment);

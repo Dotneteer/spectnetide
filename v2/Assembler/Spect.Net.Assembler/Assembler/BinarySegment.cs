@@ -8,6 +8,11 @@ namespace Spect.Net.Assembler.Assembler
     public class BinarySegment
     {
         /// <summary>
+        /// The bank of this segment
+        /// </summary>
+        public ushort? Bank { get; set; }
+
+        /// <summary>
         /// Start address of the compiled block
         /// </summary>
         public ushort StartAddress { get; set; }
@@ -16,11 +21,6 @@ namespace Spect.Net.Assembler.Assembler
         /// Displacement of the this segment
         /// </summary>
         public ushort? Displacement { get; set; }
-
-        /// <summary>
-        /// Indicates if this segment is displaced
-        /// </summary>
-        public bool IsDisplaced => Displacement.HasValue;
 
         /// <summary>
         /// Intel HEX start address of the this segment

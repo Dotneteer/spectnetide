@@ -1127,6 +1127,19 @@ public partial class Z80AsmBaseListener : IZ80AsmListener {
 	public virtual void ExitOrgPragma([NotNull] Z80AsmParser.OrgPragmaContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.bankPragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBankPragma([NotNull] Z80AsmParser.BankPragmaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.bankPragma"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBankPragma([NotNull] Z80AsmParser.BankPragmaContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.xorgPragma"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

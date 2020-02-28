@@ -1422,5 +1422,267 @@ namespace Spect.Net.Assembler.Test.Assembler
         {
             CodeRaisesError(source, Errors.Z0450);
         }
+
+        [TestMethod]
+        public void BankPragmaWorksWithExistingSegment1()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128
+                .org #6400
+                ld a,b
+                .bank 1
+            ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(2);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
+            output.Segments[0].Bank.ShouldBeNull();
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+            output.Segments[1].StartAddress.ShouldBe((ushort)0xC000);
+            output.Segments[1].Bank.ShouldBe((ushort)1);
+            output.Segments[1].Displacement.ShouldBeNull();
+            output.Segments[1].EmittedCode.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksWithExistingSegment2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128
+                .org #6400
+                ld a,b
+                .bank 1
+                ld a,b
+                call .
+            ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(2);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
+            output.Segments[0].Bank.ShouldBeNull();
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+            output.Segments[1].StartAddress.ShouldBe((ushort)0xC000);
+            output.Segments[1].Bank.ShouldBe((ushort)1);
+            output.Segments[1].Displacement.ShouldBeNull();
+            output.Segments[1].EmittedCode.Count.ShouldBe(4);
+            output.Segments[1].EmittedCode[0].ShouldBe((byte)0x78);
+            output.Segments[1].EmittedCode[1].ShouldBe((byte)0xCD);
+            output.Segments[1].EmittedCode[2].ShouldBe((byte)0x01);
+            output.Segments[1].EmittedCode[3].ShouldBe((byte)0xC0);
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksWithExistingSegment3()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128
+                .org #6400
+                ld a,b
+                .bank 7
+                .org #E000
+                ld a,b
+                call .
+            ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(2);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0x6400);
+            output.Segments[0].Bank.ShouldBeNull();
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(1);
+            output.Segments[1].StartAddress.ShouldBe((ushort)0xE000);
+            output.Segments[1].Bank.ShouldBe((ushort)7);
+            output.Segments[1].Displacement.ShouldBeNull();
+            output.Segments[1].EmittedCode.Count.ShouldBe(4);
+            output.Segments[1].EmittedCode[0].ShouldBe((byte)0x78);
+            output.Segments[1].EmittedCode[1].ShouldBe((byte)0xCD);
+            output.Segments[1].EmittedCode[2].ShouldBe((byte)0x01);
+            output.Segments[1].EmittedCode[3].ShouldBe((byte)0xE0);
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksWithNewSegment1()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128
+                .bank 3
+            ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0xC000);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(0);
+            output.Segments[0].Bank.ShouldBe((ushort)3);
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksWithNewSegment2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128
+                .bank 1
+                ld a,b
+                call .
+            ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0xC000);
+            output.Segments[0].Bank.ShouldBe((ushort)1);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(4);
+            output.Segments[0].EmittedCode[0].ShouldBe((byte)0x78);
+            output.Segments[0].EmittedCode[1].ShouldBe((byte)0xCD);
+            output.Segments[0].EmittedCode[2].ShouldBe((byte)0x01);
+            output.Segments[0].EmittedCode[3].ShouldBe((byte)0xC0);
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksWithNewSegment3()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128
+                .bank 4
+                .org #e000
+                ld a,b
+                call .
+            ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(1);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0xE000);
+            output.Segments[0].Bank.ShouldBe((ushort)4);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(4);
+            output.Segments[0].EmittedCode[0].ShouldBe((byte)0x78);
+            output.Segments[0].EmittedCode[1].ShouldBe((byte)0xCD);
+            output.Segments[0].EmittedCode[2].ShouldBe((byte)0x01);
+            output.Segments[0].EmittedCode[3].ShouldBe((byte)0xE0);
+        }
+
+        [TestMethod]
+        public void MultipleBankPragmasWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128
+                .bank 1
+                ld a,b
+                call .
+                .bank 3
+                ld a,b
+                call .
+            ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.Segments.Count.ShouldBe(2);
+            output.Segments[0].StartAddress.ShouldBe((ushort)0xC000);
+            output.Segments[0].Bank.ShouldBe((ushort)1);
+            output.Segments[0].Displacement.ShouldBeNull();
+            output.Segments[0].EmittedCode.Count.ShouldBe(4);
+            output.Segments[0].EmittedCode[0].ShouldBe((byte)0x78);
+            output.Segments[0].EmittedCode[1].ShouldBe((byte)0xCD);
+            output.Segments[0].EmittedCode[2].ShouldBe((byte)0x01);
+            output.Segments[0].EmittedCode[3].ShouldBe((byte)0xC0);
+            output.Segments[1].StartAddress.ShouldBe((ushort)0xC000);
+            output.Segments[1].Bank.ShouldBe((ushort)3);
+            output.Segments[1].Displacement.ShouldBeNull();
+            output.Segments[1].EmittedCode.Count.ShouldBe(4);
+            output.Segments[1].EmittedCode[0].ShouldBe((byte)0x78);
+            output.Segments[1].EmittedCode[1].ShouldBe((byte)0xCD);
+            output.Segments[1].EmittedCode[2].ShouldBe((byte)0x01);
+            output.Segments[1].EmittedCode[3].ShouldBe((byte)0xC0);
+        }
+
+        [TestMethod]
+        public void BankWithInvalidModelFails()
+        {
+            CodeRaisesError(".bank 4", Errors.Z0452);
+        }
+
+        [TestMethod]
+        public void BankWithLabelFails()
+        {
+            CodeRaisesError(@"
+                .model Spectrum128
+                myLabel .bank 4
+            ", Errors.Z0451);
+        }
+
+        [TestMethod]
+        public void BankWithInvalidValueFails1()
+        {
+            CodeRaisesError(@"
+                .model SpectrumP3
+                .bank -1
+            ", Errors.Z0453);
+        }
+
+        [TestMethod]
+        public void BankWithInvalidValueFails2()
+        {
+            CodeRaisesError(@"
+                .model SpectrumP3
+                .bank 8
+            ", Errors.Z0453);
+        }
+
+        [TestMethod]
+        public void BankWithInvalidValueFails3()
+        {
+            CodeRaisesError(@"
+                .model SpectrumP3
+                .bank 123
+            ", Errors.Z0453);
+        }
+
+        [TestMethod]
+        public void CannotResuseBank()
+        {
+            CodeRaisesError(@"
+                .model SpectrumP3
+                .bank 1
+                .bank 3
+                .bank 1
+            ", Errors.Z0454);
+        }
+
     }
 }

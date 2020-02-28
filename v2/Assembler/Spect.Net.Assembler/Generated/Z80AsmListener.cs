@@ -969,6 +969,17 @@ public interface IZ80AsmListener : IParseTreeListener {
 	void ExitOrgPragma([NotNull] Z80AsmParser.OrgPragmaContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Z80AsmParser.bankPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBankPragma([NotNull] Z80AsmParser.BankPragmaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Z80AsmParser.bankPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBankPragma([NotNull] Z80AsmParser.BankPragmaContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Z80AsmParser.xorgPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
