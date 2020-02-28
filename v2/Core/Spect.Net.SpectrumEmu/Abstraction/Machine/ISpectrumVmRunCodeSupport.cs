@@ -17,6 +17,13 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Machine
         void InjectCodeToMemory(ushort addr, IReadOnlyCollection<byte> code);
 
         /// <summary>
+        /// Injects code to the specified bank, starting at address 0
+        /// </summary>
+        /// <param name="bankIndex">Index of the bank</param>
+        /// <param name="code">Code to insert</param>
+        void InjectCodeToBank(int bankIndex, IReadOnlyCollection<byte> code);
+
+        /// <summary>
         /// Prepares the custom code for running, as if it were started
         /// with the RUN command.
         /// </summary>

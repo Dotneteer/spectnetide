@@ -1684,5 +1684,34 @@ namespace Spect.Net.Assembler.Test.Assembler
             ", Errors.Z0454);
         }
 
+        [TestMethod]
+        public void MaximumBankLengthWorks()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(@"
+                .model Spectrum128
+                .bank 4
+                .defs 0x4000, 0x34
+            ");
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public void MaximumBankLengthOverflows()
+        {
+            CodeRaisesError(@"
+                .model Spectrum128
+                .bank 4
+                .org #8000
+                .defs 0x4000, 0x34
+                .defb 0x00
+            ", Errors.Z0309);
+        }
+
     }
 }

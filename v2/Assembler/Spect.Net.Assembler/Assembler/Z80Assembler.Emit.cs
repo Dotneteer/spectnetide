@@ -2162,6 +2162,7 @@ namespace Spect.Net.Assembler.Assembler
             }
             CurrentSegment.StartAddress = 0xC000;
             CurrentSegment.Bank = value.Value;
+            CurrentSegment.MaxCodeLength = 0x4000;
         }
 
         /// <summary>
@@ -2180,7 +2181,8 @@ namespace Spect.Net.Assembler.Assembler
                 // --- There is already code emitted for the current segment
                 CurrentSegment = new BinarySegment
                 {
-                    StartAddress = value.Value
+                    StartAddress = value.Value,
+                    MaxCodeLength = 0x10000
                 };
                 Output.Segments.Add(CurrentSegment);
             }
@@ -4470,9 +4472,9 @@ namespace Spect.Net.Assembler.Assembler
         {
             EnsureCodeSegment();
             var overflow = CurrentSegment.EmitByte(data);
-            if (overflow)
+            if (overflow != null)
             {
-                ReportError(Errors.Z0304, CurrentSourceLine);
+                ReportError(overflow, CurrentSourceLine);
             }
         }
 
@@ -4507,14 +4509,15 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Ensures that there's a code segment by the time the code is emitted
         /// </summary>
-        private void EnsureCodeSegment(ushort? defaultAddress = null)
+        private void EnsureCodeSegment(ushort? defaultAddress = null, ushort maxLength = 0xffff )
         {
             if (CurrentSegment == null)
             {
                 CurrentSegment = new BinarySegment
                 {
                     StartAddress = defaultAddress ?? (_options?.DefaultStartAddress ?? 0x8000),
-                    CurrentInstructionOffset = 0
+                    CurrentInstructionOffset = 0,
+                    MaxCodeLength = maxLength
                 };
                 Output.Segments.Add(CurrentSegment);
             }

@@ -202,9 +202,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public byte[][] RamBanks { get; set; }
             public int SelectedRomIndex { get; set; }
 
-            public BankedMemoryDeviceState()
-            {
-            }
             public BankedMemoryDeviceState(BankedMemoryDeviceBase device)
             {
                 RomCount = device.RomCount;
@@ -223,7 +220,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
 
             /// <summary>
-            /// Restores the dvice state from this state object
+            /// Restores the device state from this state object
             /// </summary>
             /// <param name="device">Device instance</param>
             public virtual void RestoreDeviceState(IDevice device)

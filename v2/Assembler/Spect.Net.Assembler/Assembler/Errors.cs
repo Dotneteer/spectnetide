@@ -68,6 +68,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0306 = "Z0306";
         public const string Z0307 = "Z0307";
         public const string Z0308 = "Z0308";
+        public const string Z0309 = "Z0309";
 
         public const string Z0400 = "Z0400";
         public const string Z0401 = "Z0401";
@@ -181,11 +182,12 @@ namespace Spect.Net.Assembler.Assembler
             { Z0301, "Error reading include file: '{0}' ({1})" },
             { Z0302, "Include file '{0}' is included more than once into the same parent source file" },
             { Z0303, "Include file '{0}' causes circular file reference" },
-            { Z0304, "The current assembly address overflew #FFFF." },
+            { Z0304, "The current assembly address overflew #FFFF" },
             { Z0305, "A string value is used where a numeric value is expected." },
             { Z0306, "A string value is expected." },
             { Z0307, "Cannot use an empty pattern with DEFG pragma." },
             { Z0308, "An integral value is expected." },
+            { Z0309, "The emitted code overflows the segment/bank." },
             { Z0400, "You cannot define a macro without a name." },
             { Z0401, "Missing {0} statement." },
             { Z0402, "Macro name '{0}' has already been declared." },

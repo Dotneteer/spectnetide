@@ -74,8 +74,15 @@ namespace Spect.Net.VsPackage.Compilers
                 // --- Go through all code segments and inject them
                 foreach (var segment in output.Segments)
                 {
-                    var addr = segment.StartAddress + (segment.Displacement ?? 0);
-                    runSupport.InjectCodeToMemory((ushort)addr, segment.EmittedCode);
+                    if (segment.Bank != null)
+                    {
+                        runSupport.InjectCodeToBank(segment.Bank.Value, segment.EmittedCode);
+                    }
+                    else
+                    {
+                        var addr = segment.StartAddress + (segment.Displacement ?? 0);
+                        runSupport.InjectCodeToMemory((ushort)addr, segment.EmittedCode);
+                    }
                 }
 
                 // --- Prepare the machine for RUN mode

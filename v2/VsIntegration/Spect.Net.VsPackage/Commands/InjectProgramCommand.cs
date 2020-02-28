@@ -216,11 +216,9 @@ namespace Spect.Net.VsPackage.Commands
             vm.StackDebugSupport.ClearStepOutStack();
 
             GetAffectedItem(out var hierarchy, out var itemId);
-            var ext = string.Empty;
             if (hierarchy is IVsProject project)
             {
                 project.GetMkDocument(itemId, out var itemFullPath);
-                ext = Path.GetExtension(itemFullPath) ?? string.Empty;
             }
 
             if (Output.SourceType == "zxbasic")

@@ -13,6 +13,11 @@ namespace Spect.Net.Assembler.Assembler
         public ushort? Bank { get; set; }
 
         /// <summary>
+        /// Maximum code length
+        /// </summary>
+        public int MaxCodeLength { get; set; }
+
+        /// <summary>
         /// Start address of the compiled block
         /// </summary>
         public ushort StartAddress { get; set; }
@@ -51,15 +56,20 @@ namespace Spect.Net.Assembler.Assembler
         /// Emits a new data byte
         /// </summary>
         /// <param name="data"></param>
-        public bool EmitByte(byte data)
+        public string EmitByte(byte data)
         {
             EmittedCode.Add(data);
             if (StartAddress + EmittedCode.Count > 0x10000 && !OverflowDetected)
             {
                 OverflowDetected = true;
-                return true;
+                return Errors.Z0304;
             }
-            return false;
+            if (EmittedCode.Count > MaxCodeLength && !OverflowDetected)
+            {
+                OverflowDetected = true;
+                return Errors.Z0309;
+            }
+            return null;
         }
     }
 }
