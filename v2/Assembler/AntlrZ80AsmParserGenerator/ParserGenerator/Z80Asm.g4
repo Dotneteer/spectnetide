@@ -129,7 +129,7 @@ macroArgument: operand? ;
 fieldAssignment: GOESTO byteEmPragma ;
 
 orgPragma	: ORGPRAG expr ;
-bankPragma	: BANKPRAG expr ;
+bankPragma	: BANKPRAG expr (COMMA expr)?;
 xorgPragma	: XORGPR expr ;
 entPragma	: ENTPRAG expr ;
 xentPragma	: XENTPRAG expr ;

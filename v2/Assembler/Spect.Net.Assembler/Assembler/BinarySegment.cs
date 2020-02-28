@@ -13,6 +13,11 @@ namespace Spect.Net.Assembler.Assembler
         public ushort? Bank { get; set; }
 
         /// <summary>
+        /// Start offset used for banks
+        /// </summary>
+        public ushort BankOffset { get; set; }
+
+        /// <summary>
         /// Maximum code length
         /// </summary>
         public int MaxCodeLength { get; set; }

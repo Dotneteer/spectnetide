@@ -216,6 +216,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             public byte[] Memory { get; set; }
 
+            // ReSharper disable once UnusedMember.Global
             public Spectrum48MemoryDeviceState()
             {
             }

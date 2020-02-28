@@ -2139,6 +2139,20 @@ namespace Spect.Net.Assembler.Assembler
                 return;
             }
 
+            // --- Check offsetValue
+            ushort offset = 0;
+            if (pragma.StartOffset != null)
+            {
+                var offsetValue = EvalImmediate(pragma, pragma.StartOffset);
+                if (!offsetValue.IsValid) return;
+                offset = offsetValue.AsWord();
+                if (offset > 0x3fff)
+                {
+                    ReportError(Errors.Z0455, pragma);
+                    return;
+                }
+            }
+
             // --- Check for appropriate model type
             if (Output.ModelType == null || Output.ModelType == SpectrumModelType.Spectrum48)
             {
@@ -2146,7 +2160,7 @@ namespace Spect.Net.Assembler.Assembler
                 return;
             }
 
-            EnsureCodeSegment(0xC000);
+            EnsureCodeSegment((ushort)(0xC000 + offset));
             if (CurrentSegment.CurrentOffset != 0 || CurrentSegment.Bank != null)
             {
                 // --- There is already code emitted for the current segment,
@@ -2160,9 +2174,10 @@ namespace Spect.Net.Assembler.Assembler
                 ReportError(Errors.Z0454, pragma, value.Value);
                 return;
             }
-            CurrentSegment.StartAddress = 0xC000;
+            CurrentSegment.StartAddress = (ushort)(0xC000 + offset);
             CurrentSegment.Bank = value.Value;
-            CurrentSegment.MaxCodeLength = 0x4000;
+            CurrentSegment.BankOffset = offset;
+            CurrentSegment.MaxCodeLength = 0x4000 - offset;
         }
 
         /// <summary>

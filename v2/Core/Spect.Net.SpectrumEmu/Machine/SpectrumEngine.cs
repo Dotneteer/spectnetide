@@ -898,15 +898,16 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Injects code to the specified bank, starting at address 0
         /// </summary>
         /// <param name="bankIndex">Index of the bank</param>
+        /// <param name="bankOffset">Offset within the bank</param>
         /// <param name="code">Code to insert</param>
-        public void InjectCodeToBank(int bankIndex, IReadOnlyCollection<byte> code)
+        public void InjectCodeToBank(int bankIndex, int bankOffset, IReadOnlyCollection<byte> code)
         {
             if (!(MemoryDevice is BankedMemoryDeviceBase bankedDevice) 
                 || bankIndex < 0 
                 || bankIndex > bankedDevice.RamBanks.Length) return;
 
             // --- Now, inject the code
-            var addr = 0;
+            var addr = bankOffset;
             foreach (var codeByte in code)
             {
                 bankedDevice.RamBanks[bankIndex][addr++] = codeByte;

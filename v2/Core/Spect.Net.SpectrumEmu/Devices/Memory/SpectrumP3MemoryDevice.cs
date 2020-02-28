@@ -252,6 +252,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public int[] Slots { get; set; }
             public bool IsInAllRamMode { get; set; }
 
+            // ReSharper disable once UnusedMember.Global
             public SpectrumP3MemoryDeviceState()
             {
             }
@@ -263,7 +264,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             }
 
             /// <summary>
-            /// Restores the dvice state from this state object
+            /// Restores the device state from this state object
             /// </summary>
             /// <param name="device">Device instance</param>
             public override void RestoreDeviceState(IDevice device)

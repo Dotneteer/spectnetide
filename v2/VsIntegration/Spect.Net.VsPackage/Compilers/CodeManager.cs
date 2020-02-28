@@ -76,7 +76,7 @@ namespace Spect.Net.VsPackage.Compilers
                 {
                     if (segment.Bank != null)
                     {
-                        runSupport.InjectCodeToBank(segment.Bank.Value, segment.EmittedCode);
+                        runSupport.InjectCodeToBank(segment.Bank.Value, segment.BankOffset, segment.EmittedCode);
                     }
                     else
                     {

@@ -125,6 +125,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0452 = "Z0452";
         public const string Z0453 = "Z0453";
         public const string Z0454 = "Z0454";
+        public const string Z0455 = "Z0455";
 
         public const string Z0500 = "Z0500";
 
@@ -243,6 +244,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0452, "The .BANK pragma cannot be used with the ZX Spectrum 48 model type." },
             { Z0453, "The .BANK pragma's value must be between 0 and 7." },
             { Z0454, "You have already used the .BANK pragma for bank {0}." },
+            { Z0455, "The .BANK pragma's offset value must be between 0 and #03fff." },
             { Z0500, "ERROR: {0}" },
         };
 

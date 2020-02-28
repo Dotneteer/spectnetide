@@ -17,6 +17,14 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         protected int SelectedRomIndex;
 
         /// <summary>
+        /// This constructor is used by state deserialization.
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        protected BankedMemoryDeviceBase()
+        {
+        }
+
+        /// <summary>
         /// Initializes the device with the specified number of ROM and ROM banks
         /// </summary>
         /// <param name="defaultRomCount">ROM count</param>
@@ -201,6 +209,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
             public byte[][] Roms { get; set; }
             public byte[][] RamBanks { get; set; }
             public int SelectedRomIndex { get; set; }
+
+            // ReSharper disable once UnusedMember.Global
+            public BankedMemoryDeviceState()
+            {
+            }
 
             public BankedMemoryDeviceState(BankedMemoryDeviceBase device)
             {

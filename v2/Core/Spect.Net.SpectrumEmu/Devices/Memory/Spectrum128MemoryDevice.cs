@@ -212,13 +212,18 @@ namespace Spect.Net.SpectrumEmu.Devices.Memory
         {
             public int CurrentSlot3Bank { get; set; }
 
+            // ReSharper disable once UnusedMember.Global
+            public Spectrum128MemoryDeviceState()
+            {
+            }
+
             public Spectrum128MemoryDeviceState(Spectrum128MemoryDevice device) : base(device)
             {
                 CurrentSlot3Bank = device._currentSlot3Bank;
             }
 
             /// <summary>
-            /// Restores the dvice state from this state object
+            /// Restores the device state from this state object
             /// </summary>
             /// <param name="device">Device instance</param>
             public override void RestoreDeviceState(IDevice device)

@@ -74,6 +74,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as BankPragma;
             line.ShouldNotBeNull();
             line.Expression.ShouldBeOfType<LiteralNode>();
+            line.StartOffset.ShouldBeNull();
         }
 
         [TestMethod]
@@ -87,6 +88,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as BankPragma;
             line.ShouldNotBeNull();
             line.Expression.ShouldBeOfType<LiteralNode>();
+            line.StartOffset.ShouldBeNull();
         }
 
         [TestMethod]
@@ -100,6 +102,7 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as BankPragma;
             line.ShouldNotBeNull();
             line.Expression.ShouldBeOfType<LiteralNode>();
+            line.StartOffset.ShouldBeNull();
         }
 
         [TestMethod]
@@ -113,6 +116,21 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as BankPragma;
             line.ShouldNotBeNull();
             line.Expression.ShouldBeOfType<LiteralNode>();
+            line.StartOffset.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void BankPragmaWorksAsExpected5()
+        {
+            // --- Act
+            var visitor = Parse("BANK 3, #1000");
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as BankPragma;
+            line.ShouldNotBeNull();
+            line.Expression.ShouldBeOfType<LiteralNode>();
+            line.StartOffset.ShouldBeOfType<LiteralNode>();
         }
 
         [TestMethod]

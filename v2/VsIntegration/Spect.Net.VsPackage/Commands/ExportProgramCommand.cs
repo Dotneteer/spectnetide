@@ -340,8 +340,9 @@ namespace Spect.Net.VsPackage.Commands
                 var startAddr = output.Segments.Min(s => s.StartAddress);
                 var endAddr = output.Segments.Max(s => s.StartAddress + s.EmittedCode.Count - 1);
 
+                // --- Normal code segments
                 var mergedSegment = new byte[endAddr - startAddr + 3];
-                foreach (var segment in output.Segments)
+                foreach (var segment in output.Segments.Where(s => s.Bank == null))
                 {
                     segment.EmittedCode.CopyTo(mergedSegment, segment.StartAddress - startAddr + 1);
                 }
@@ -368,7 +369,9 @@ namespace Spect.Net.VsPackage.Commands
             {
                 // --- Create separate block for each segment
                 var segmentIdx = 0;
-                foreach (var segment in output.Segments)
+
+                // --- Normal code segments
+                foreach (var segment in output.Segments.Where(s => s.Bank == null))
                 {
                     segmentIdx++;
                     var startAddr = segment.StartAddress;
@@ -395,6 +398,12 @@ namespace Spect.Net.VsPackage.Commands
                     result.Add(header.HeaderBytes);
                     result.Add(codeSegment);
                 }
+            }
+
+            // --- Create blocks for the banks
+            foreach (var bank in output.Segments.Where(s => s.Bank != null).OrderBy(s => s.Bank))
+            {
+                
             }
             return result;
         }
