@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2020-02-18T06:55:31+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2020-02-29T16:41:25+01:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
   &lt;p&gt;To use &lt;strong&gt;ZX BASIC&lt;/strong&gt; — as it is a separate product from &lt;strong&gt;SpectNetIDE&lt;/strong&gt;, first, you should install it on your computer. The previous tutorial explains the setup procedure.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -580,7 +580,60 @@ injects the binary code, and runs it:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/exported-code-in-project-2.png&quot; alt=&quot;Exported Z80 code in project&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;You have many other options to export your code, I will explain them in another tutorial.&lt;/p&gt;</content><author><name></name></author><summary type="html">After you created your Z80 Assembler program, you can easily export it into a .TAP or .TZX file so that you could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum (with the help of TZXDuino or CASDuino hardware).</summary></entry><entry><title type="html">Debug ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/debg-zx-basic" rel="alternate" type="text/html" title="Debug ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/debug-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/debg-zx-basic">&lt;blockquote&gt;
+&lt;h2 id=&quot;auto-loaders-for-zx-spectrum-48k&quot;&gt;Auto-loaders for ZX Spectrum 48K&lt;/h2&gt;
+
+&lt;p&gt;The &lt;strong&gt;Export program&lt;/strong&gt; command function creates a simple auto-loader that loads the code file, and starts it:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;10 CLEAR 24575 : LOAD &quot;&quot; CODE : RANDOMIZE USR 24576
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: The above code belongs to a program that starts at #6000.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;When you use a loading screen and set a load-time border, the auto-loader is a bit more complicated:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;10 CLEAR 24575 : BORDER 4 : LET o = PEEK 23739 : LOAD &quot;&quot; SCREEN$ : POKE 23739,111 :
+LOAD &quot;&quot; CODE : POKE 23739,o : RANDOMIZE USR 24576
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Setting the byte at 23739 to 111 (“o”) prevents the load messages from being written to the main screen.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: The above code belongs to a program that starts at #6000. The user has set the &lt;em&gt;Border&lt;/em&gt; value in the Export dialog to 4 and selected a screen file.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;auto-loaders-for-zx-spectrum-12823&quot;&gt;Auto-loaders for ZX Spectrum 128/+2/+3&lt;/h2&gt;
+
+&lt;p&gt;When using the ZX Spectrum 128K model, you may create a Z80 Assembly code that uses the &lt;code class=&quot;highlighter-rouge&quot;&gt;BANK&lt;/code&gt; pragma. If you do not, the &lt;strong&gt;Export program&lt;/strong&gt; command generates the same auto-loader code as if you’d use a ZX Spectrum 48K model.&lt;/p&gt;
+
+&lt;p&gt;As soon as the compiled output contains at least a single bank, &lt;strong&gt;SpectNetIDE&lt;/strong&gt; applies another loader that reads each bank from a separate code file. With the help of a 21-byte long paging subroutine, it moves the code to the appropriate bank. This is how the simples form of this code looks like (it gets a bit more complicated when you use the &lt;em&gt;border&lt;/em&gt; or &lt;em&gt;screen file&lt;/em&gt; export options):&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;10 REM 012345678901234567890
+20 CLEAR 24575 : LET c = (PEEK 23635 + 256 * PEEK 23636) + 5
+30 FOR i = 0 TO 20 : READ d : POKE c + i, d : NEXT i
+40 LOAD &quot;&quot; CODE
+50 READ b
+60 IF b = 8 THEN GO TO 80
+70 POKE 23608,b : RANDOMIZE USR c : LOAD &quot;&quot; CODE : GO TO 50
+80 RANDOMIZE USR 24576 : STOP
+90 DATA 243, 58, 92, 91, 230, 248, 71, 58, 56, 92, 176, 50, 92, 91, 1, 253, 127, 237,  121, 251, 201
+100 DATA 2,6,8
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Short explanation:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Line #20 stores the location of the first &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; in line #10, as will be the starting address of the code that puts a particular page into slot 3.&lt;/li&gt;
+  &lt;li&gt;Line #30 reads the machine code bytes (from line #90) and stores it to the memory area of line #10, as the REM statement is just a placeholder.&lt;/li&gt;
+  &lt;li&gt;Line #40 reads the code into normal memory. &lt;em&gt;Your machine code needs to have some initial/startup code&lt;/em&gt;.&lt;/li&gt;
+  &lt;li&gt;Lines #50, #60, and #70 takes care that all banks are read from code files. The numbers of exported banks are stored in line #100; the last &lt;code class=&quot;highlighter-rouge&quot;&gt;8&lt;/code&gt; is a terminator.&lt;/li&gt;
+  &lt;li&gt;Line #80 starts the user code.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: The above code belongs to a program that starts at #6000.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">After you created your Z80 Assembler program, you can easily export it into a .TAP or .TZX file so that you could load it into a ZX Spectrum emulator, or into a real hardware, such as a ZX Spectrum Next, or ZX Spectrum (with the help of TZXDuino or CASDuino hardware).</summary></entry><entry><title type="html">Debug ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/debg-zx-basic" rel="alternate" type="text/html" title="Debug ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/debug-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/debg-zx-basic">&lt;blockquote&gt;
   &lt;p&gt;&lt;em&gt;Coming soon.&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;</content><author><name></name></author><summary type="html">Coming soon.</summary></entry><entry><title type="html">Create a ZX Spectrum 48K Project</title><link href="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project-2" rel="alternate" type="text/html" title="Create a ZX Spectrum 48K Project" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/create-a-zx-spectrum-project</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/create-zx-spectrum-48k-project-2">&lt;ol&gt;
   &lt;li&gt;Run the &lt;strong&gt;File → New → Project&lt;/strong&gt; command (Ctrl+Shift+N). In the Create a new project dialog type “ZX Spectrum” in the search box. The dialog displays the ZX Spectrum Code Discovery Project. Select this type, and click Next.&lt;/li&gt;

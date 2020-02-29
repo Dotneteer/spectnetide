@@ -55,7 +55,6 @@ namespace Spect.Net.VsPackage.Commands
         private const byte NEW_LINE = 0x0D;
         private const byte PAUSE_TKN = 0xF2;
         private const byte BORDER_TKN = 0xE7;
-        private const int RAMTOP_GAP = 0x100;
 
         protected bool Success { get; set; }
 
@@ -66,8 +65,7 @@ namespace Spect.Net.VsPackage.Commands
         {
             // --- Prepare the appropriate file to export
             Success = true;
-            //GetCodeItem(out var hierarchy, out var itemId);
-
+        
             // --- Step #1: Compile the code
             if (!await CompileCode())
             {
@@ -217,7 +215,7 @@ namespace Spect.Net.VsPackage.Commands
                 Name = programName,
                 Filename = filename,
                 SingleBlock = true,
-                AddToProject = false,
+                AddToProject = true,
                 AutoStart = true,
                 ApplyClear = true,
                 AddPause0 = false,
@@ -537,11 +535,11 @@ namespace Spect.Net.VsPackage.Commands
 
             // --- Step #1: Create the code line for auto start
             var codeLine = new List<byte>(100);
-            if (clearAddr.HasValue && clearAddr.Value >= 0x6200)
+            if (clearAddr.HasValue && clearAddr.Value >= 0x6000)
             {
                 // --- Add clear statement
                 codeLine.Add(CLEAR_TKN);
-                WriteNumber(codeLine, (ushort)(clearAddr.Value - RAMTOP_GAP));
+                WriteNumber(codeLine, (ushort)(clearAddr.Value - 1));
                 codeLine.Add(COLON);
             }
 
@@ -554,9 +552,14 @@ namespace Spect.Net.VsPackage.Commands
                 codeLine.Add(COLON);
             }
 
-            // --- Add optional screen loader, 'LOAD "" SCREEN$ : POKE 23739,111
+            // --- Add optional screen loader, LET o = PEEK 23739 : LOAD "" SCREEN$ : POKE 23739,111
             if (useScreenFile)
             {
+                codeLine.Add(LET_TKN);
+                WriteString(codeLine, "o=");
+                codeLine.Add(PEEK_TKN);
+                WriteNumber(codeLine, 23739);
+                codeLine.Add(COLON);
                 codeLine.Add(LOAD_TKN);
                 codeLine.Add(DQUOTE);
                 codeLine.Add(DQUOTE);
@@ -585,6 +588,14 @@ namespace Spect.Net.VsPackage.Commands
                 codeLine.Add(PAUSE_TKN);
                 WriteNumber(codeLine, 0);
                 codeLine.Add(COLON);
+            }
+
+            // --- Some SCREEN$ related poking
+            if (useScreenFile)
+            {
+                codeLine.Add(POKE_TKN);
+                WriteNumber(codeLine, 23739);
+                WriteString(codeLine, ",o:");
             }
 
             // --- Add 'RANDOMIZE USR address'
@@ -663,7 +674,7 @@ namespace Spect.Net.VsPackage.Commands
             {
                 // --- Add clear statement
                 codeLine.Add(CLEAR_TKN);
-                WriteNumber(codeLine, clearAddr.Value);
+                WriteNumber(codeLine, (ushort)(clearAddr.Value - 1));
                 codeLine.Add(COLON);
             }
 
