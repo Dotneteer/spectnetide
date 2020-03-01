@@ -8,6 +8,8 @@
         private KeyboardLayoutTypeOptions _keyboardLayoutType;
         private KeyboardFitTypeOptions _keyboardFitType;
 
+        public bool Initialized { get; set; } = false;
+
         /// <summary>
         /// Keyboard layout type
         /// </summary>
@@ -60,6 +62,14 @@
                 return;
             }
 
+            Initialized = false;
+        }
+
+        public void Initialize()
+        {
+            if (Initialized) return;
+            Initialized = true;
+
             KeyboardLayoutType = SpectNetPackage.Default.Options.KeyboardLayoutType;
             KeyboardFitType = SpectNetPackage.Default.Options.KeyboardFitType;
 
@@ -68,7 +78,6 @@
             SpectNetPackage.Default.Options.KeyboardFitTypeChanged
                 += OnKeyboardFitTypeChanged;
         }
-
         /// <summary>
         /// Handle the event when the keyboard layout type has changed
         /// </summary>

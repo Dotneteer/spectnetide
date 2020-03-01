@@ -13,7 +13,9 @@ namespace Spect.Net.VsPackage.ToolWindows.Keyboard
     {
         protected override KeyboardToolWindowViewModel GetVmInstance()
         {
-            return SpectNetPackage.Default.KeyboardToolModel;
+            var vm = SpectNetPackage.Default.KeyboardToolModel;
+            vm.Initialize();
+            return vm;
         }
     }
 }
