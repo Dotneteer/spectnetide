@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Spect.Net.SpectrumEmu.Abstraction.Devices.Keyboard;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Input;
-using Spect.Net.SpectrumEmu.Abstraction.Devices.Keyboard;
-using WindowsKeyboard=System.Windows.Input.Keyboard;
+using WindowsKeyboard = System.Windows.Input.Keyboard;
 
 namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
 {
@@ -23,6 +23,63 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         // --- You can create a default layout, provided you have non-implemented custom layout
         private const string DEFAULT_LAYOUT = "default";
 
+        // --- Hungarian 101 Symbol Shift normal mappings
+        private static readonly List<Key> s_Hun101SShiftNormal =
+            new List<Key> 
+            {
+                Key.LeftShift, 
+                Key.RightShift,
+                Key.OemComma, 
+                Key.OemPeriod, 
+                Key.Decimal, 
+                Key.Divide, 
+                Key.Multiply,
+                Key.Add, 
+                Key.Subtract
+            };
+
+        // --- Hungarian 101 Caps Shift normal mappings
+        private static readonly List<Key> s_Hun101CShiftNormal =
+            new List<Key> 
+            { 
+                Key.RightAlt, 
+                Key.Back,
+                Key.Left, 
+                Key.Up, 
+                Key.Down, 
+                Key.Right, 
+                Key.Home
+            };
+
+        // --- Hungarian 101 Symbol Shift swapped mappings
+        private static readonly List<Key> s_Hun101SShiftSwapped =
+            new List<Key>
+            {
+                Key.RightAlt,
+                Key.OemComma,
+                Key.OemPeriod,
+                Key.Decimal,
+                Key.Divide,
+                Key.Multiply,
+                Key.Add,
+                Key.Subtract
+            };
+
+        // --- Hungarian 101 Caps Shift swapped mappings
+        private static readonly List<Key> s_Hun101CShiftSwapped =
+            new List<Key>
+            {
+                Key.LeftShift,
+                Key.RightShift,
+                Key.Back,
+                Key.Left,
+                Key.Up,
+                Key.Down,
+                Key.Right,
+                Key.Home
+            };
+
+
         /// <summary>
         /// Maps Spectrum keys to the PC keyboard keys for Hungarian 101 keyboard layout
         /// </summary>
@@ -34,11 +91,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private static readonly Dictionary<SpectrumKeyCode, List<Key>> s_Hun101KeyMappings =
             new Dictionary<SpectrumKeyCode, List<Key>>
             {
-                { SpectrumKeyCode.SShift, new List<Key> { Key.LeftShift, Key.RightShift,
-                    Key.OemComma, Key.OemPeriod, Key.Decimal, Key.Divide, Key.Multiply,
-                    Key.Add, Key.Subtract } },
-                { SpectrumKeyCode.CShift, new List<Key> { Key.RightAlt, Key.Back,
-                    Key.Left, Key.Up, Key.Down, Key.Right, Key.Home } },
+                { SpectrumKeyCode.SShift, s_Hun101SShiftNormal },
+                { SpectrumKeyCode.CShift, s_Hun101CShiftNormal },
                 { SpectrumKeyCode.Space, new List<Key> { Key.Space} },
                 { SpectrumKeyCode.Enter, new List<Key> { Key.Enter } },
                 { SpectrumKeyCode.Q, new List<Key> { Key.Q } },
@@ -79,6 +133,62 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 { SpectrumKeyCode.N9, new List<Key> { Key.D9, Key.NumPad9 } },
             };
 
+        // --- Hungarian Symbol Shift normal mappings
+        private static readonly List<Key> s_HunSShiftNormal =
+            new List<Key> 
+            { 
+                Key.LeftShift, 
+                Key.RightShift,
+                Key.OemComma, 
+                Key.OemPeriod, 
+                Key.Decimal, 
+                Key.Divide, 
+                Key.Multiply,
+                Key.Add, 
+                Key.Subtract
+            };
+
+        // --- Hungarian Caps Shift normal mappings
+        private static readonly List<Key> s_HunCShiftNormal =
+            new List<Key> 
+            { 
+                Key.RightAlt, 
+                Key.Back,
+                Key.Left, 
+                Key.Up, 
+                Key.Down, 
+                Key.Right, 
+                Key.Home
+            };
+
+        // --- Hungarian Symbol Shift normal mappings
+        private static readonly List<Key> s_HunSShiftSwapped =
+            new List<Key>
+            {
+                Key.RightAlt,
+                Key.OemComma,
+                Key.OemPeriod,
+                Key.Decimal,
+                Key.Divide,
+                Key.Multiply,
+                Key.Add,
+                Key.Subtract
+            };
+
+        // --- Hungarian Caps Shift normal mappings
+        private static readonly List<Key> s_HunCShiftSwapped =
+            new List<Key>
+            {
+                Key.LeftShift,
+                Key.RightShift,
+                Key.Back,
+                Key.Left,
+                Key.Up,
+                Key.Down,
+                Key.Right,
+                Key.Home
+            };
+
         /// <summary>
         /// Maps Spectrum keys to the PC keyboard keys for Hungarian keyboard layout
         /// </summary>
@@ -90,11 +200,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private static readonly Dictionary<SpectrumKeyCode, List<Key>> s_HunKeyMappings =
             new Dictionary<SpectrumKeyCode, List<Key>>
             {
-                { SpectrumKeyCode.SShift, new List<Key> { Key.LeftShift, Key.RightShift,
-                    Key.OemComma, Key.OemPeriod, Key.Decimal, Key.Divide, Key.Multiply,
-                    Key.Add, Key.Subtract } },
-                { SpectrumKeyCode.CShift, new List<Key> { Key.RightAlt, Key.Back,
-                    Key.Left, Key.Up, Key.Down, Key.Right, Key.Home } },
+                { SpectrumKeyCode.SShift, s_HunSShiftNormal },
+                { SpectrumKeyCode.CShift, s_HunCShiftNormal },
                 { SpectrumKeyCode.Space, new List<Key> { Key.Space} },
                 { SpectrumKeyCode.Enter, new List<Key> { Key.Enter } },
                 { SpectrumKeyCode.Q, new List<Key> { Key.Q } },
@@ -135,6 +242,62 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 { SpectrumKeyCode.N9, new List<Key> { Key.D9, Key.NumPad9 } },
             };
 
+        // --- English US Symbol Shift normal mappings
+        private static readonly List<Key> s_EngUsSShiftNormal =
+            new List<Key> 
+            { 
+                Key.LeftShift, 
+                Key.RightShift,
+                Key.OemComma, 
+                Key.OemPeriod, 
+                Key.Decimal, 
+                Key.Divide, 
+                Key.Multiply,
+                Key.Add, 
+                Key.Subtract
+            };
+
+        // --- English US Caps Shift normal mappings
+        private static readonly List<Key> s_EngUsCShiftNormal =
+            new List<Key> 
+            { 
+                Key.RightAlt, 
+                Key.Back,
+                Key.Left,
+                Key.Up,
+                Key.Down,
+                Key.Right,
+                Key.Home
+            };
+
+        // --- English US Symbol Shift swapped mappings
+        private static readonly List<Key> s_EngUsSShiftSwapped =
+            new List<Key>
+            {
+                Key.RightAlt,
+                Key.OemComma,
+                Key.OemPeriod,
+                Key.Decimal,
+                Key.Divide,
+                Key.Multiply,
+                Key.Add,
+                Key.Subtract
+            };
+
+        // --- English US Caps Shift swapped mappings
+        private static readonly List<Key> s_EngUsCShiftSwapped =
+            new List<Key>
+            {
+                Key.LeftShift,
+                Key.RightShift,
+                Key.Back,
+                Key.Left,
+                Key.Up,
+                Key.Down,
+                Key.Right,
+                Key.Home
+            };
+
         /// <summary>
         /// Maps Spectrum keys to the PC keyboard keys for English US keyboard layout
         /// </summary>
@@ -146,11 +309,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private static readonly Dictionary<SpectrumKeyCode, List<Key>> s_EngUsKeyMappings =
             new Dictionary<SpectrumKeyCode, List<Key>>
             {
-                { SpectrumKeyCode.SShift, new List<Key> { Key.LeftShift, Key.RightShift,
-                    Key.OemComma, Key.OemPeriod, Key.Decimal, Key.Divide, Key.Multiply,
-                    Key.Add, Key.Subtract } },
-                { SpectrumKeyCode.CShift, new List<Key> { Key.RightAlt, Key.Back,
-                    Key.Left, Key.Up, Key.Down, Key.Right, Key.Home } },
+                { SpectrumKeyCode.SShift, s_EngUsSShiftNormal },
+                { SpectrumKeyCode.CShift, s_EngUsCShiftNormal },
                 { SpectrumKeyCode.Space, new List<Key> { Key.Space} },
                 { SpectrumKeyCode.Enter, new List<Key> { Key.Enter } },
                 { SpectrumKeyCode.Q, new List<Key> { Key.Q } },
@@ -241,6 +401,48 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Binds keyboard shift type change to this object
+        /// </summary>
+        public void BindShiftChange()
+        {
+            SpectNetPackage.Default.Options.KeyboardShiftTypeChanged += OnKeyboardShiftChange;
+        }
+
+        /// <summary>
+        /// Releases keyboard shift type change from this object
+        /// </summary>
+        public void ReleaseShiftChange()
+        {
+            SpectNetPackage.Default.Options.KeyboardShiftTypeChanged -= OnKeyboardShiftChange;
+        }
+
+        /// <summary>
+        /// Responds to keyboard shift type change events
+        /// </summary>
+        /// <param name="shiftType"></param>
+        private void OnKeyboardShiftChange(object sender, KeyboardShiftTypeChangedEventArgs args)
+        {
+            if (args.KeyboardShiftOptions == KeyboardShiftOptions.Normal)
+            {
+                s_Hun101KeyMappings[SpectrumKeyCode.SShift] = s_Hun101SShiftNormal;
+                s_Hun101KeyMappings[SpectrumKeyCode.CShift] = s_Hun101CShiftNormal;
+                s_HunKeyMappings[SpectrumKeyCode.SShift] = s_HunSShiftNormal;
+                s_HunKeyMappings[SpectrumKeyCode.CShift] = s_HunCShiftNormal;
+                s_EngUsKeyMappings[SpectrumKeyCode.SShift] = s_EngUsSShiftNormal;
+                s_EngUsKeyMappings[SpectrumKeyCode.CShift] = s_EngUsCShiftNormal;
+            }
+            else
+            {
+                s_Hun101KeyMappings[SpectrumKeyCode.SShift] = s_Hun101SShiftSwapped;
+                s_Hun101KeyMappings[SpectrumKeyCode.CShift] = s_Hun101CShiftSwapped;
+                s_HunKeyMappings[SpectrumKeyCode.SShift] = s_HunSShiftSwapped;
+                s_HunKeyMappings[SpectrumKeyCode.CShift] = s_HunCShiftSwapped;
+                s_EngUsKeyMappings[SpectrumKeyCode.SShift] = s_EngUsSShiftSwapped;
+                s_EngUsKeyMappings[SpectrumKeyCode.CShift] = s_EngUsCShiftSwapped;
+            }
         }
 
         /// <summary>

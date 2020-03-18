@@ -128,6 +128,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 Vm.Machine.SoundProvider?.PlaySound();
             }
 
+            // --- Keyboard event handling
+            KeyboardScanner.BindShiftChange();
+
             // --- Register messages this control listens to
             Vm.VmStateChanged += OnVmStateChanged;
             Vm.KeyScanning += MachineOnKeyScanning;
@@ -144,6 +147,9 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         /// </summary>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
+            // --- Keyboard event handling
+            KeyboardScanner.ReleaseShiftChange();
+
             // --- Un-register messages this control listens to
             if (Vm != null)
             {

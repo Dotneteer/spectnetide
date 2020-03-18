@@ -15,6 +15,7 @@ namespace Spect.Net.VsPackage
         private KeyboardLayoutTypeOptions _keyboardLayoutType = KeyboardLayoutTypeOptions.Default;
         private KeyboardFitTypeOptions _keyboardFitType = KeyboardFitTypeOptions.OriginalSize;
         private ZoomFactor _zoomFactor = ZoomFactor.One;
+        private KeyboardShiftOptions _keyboardShift = KeyboardShiftOptions.Normal;
         private byte _optimize = 1;
 
         // --- Virtual machine options
@@ -256,6 +257,22 @@ namespace Spect.Net.VsPackage
             }
         }
 
+        [Category("Keyboard Tool")]
+        [DisplayName("Keyboard shift keys")]
+        [Description("You can select how the physical keys are bound to the ZX Spectrum shift keys.")]
+        [TypeConverter(typeof(TypedEnumConverter<KeyboardShiftOptions>))]
+        public KeyboardShiftOptions KeyboardShift
+        {
+            get => _keyboardShift;
+            set
+            {
+                if (_keyboardShift == value) return;
+                _keyboardShift = value;
+                KeyboardShiftTypeChanged?.Invoke(this,
+                    new KeyboardShiftTypeChangedEventArgs(value));
+            }
+        }
+
         [Category("Unit Tests")]
         [DisplayName("Confirm successful test compilation")]
         [Description("Displays a confirmation message about successfully compiling unit tests.")]
@@ -437,6 +454,11 @@ namespace Spect.Net.VsPackage
         public event EventHandler<KeyboardFitTypeChangedEventArgs> KeyboardFitTypeChanged;
 
         /// <summary>
+        /// Signs that the keyboard shift type has changed
+        /// </summary>
+        public event EventHandler<KeyboardShiftTypeChangedEventArgs> KeyboardShiftTypeChanged;
+
+        /// <summary>
         /// Signs that the tool window zoom factor changes
         /// </summary>
         public event EventHandler<ZoomFactorChangedEventArgs> ZoomFactorChanged;
@@ -513,6 +535,18 @@ namespace Spect.Net.VsPackage
     }
 
     /// <summary>
+    /// Options for Kempston Joystick keyboard emulation
+    /// </summary>
+    public enum KeyboardShiftOptions
+    {
+        [Description("Shift: Symbol, AltGr: Caps")]
+        Normal,
+        [Description("Shift: Caps, AltGr: Symbol")]
+        Swapped
+    }
+
+
+    /// <summary>
     /// Arguments of keyboard layout type changed event
     /// </summary>
     public class KeyboardLayoutTypeChangedEventArgs : EventArgs
@@ -564,4 +598,22 @@ namespace Spect.Net.VsPackage
             ZoomFactor = zoomFactor;
         }
     }
+
+    /// <summary>
+    /// Keyboard shift changed event
+    /// </summary>
+    public class KeyboardShiftTypeChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Fit type set
+        /// </summary>
+        public KeyboardShiftOptions KeyboardShiftOptions { get; }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.EventArgs" /> class.</summary>
+        public KeyboardShiftTypeChangedEventArgs(KeyboardShiftOptions keyboardShiftOptions)
+        {
+            KeyboardShiftOptions = keyboardShiftOptions;
+        }
+    }
+
 }
