@@ -2002,5 +2002,23 @@ namespace Spect.Net.Assembler.Test.Assembler
                 .defb 0x00
             ", Errors.Z0309);
         }
+
+        [TestMethod]
+        [DataRow(".injectopt cursork")]
+        [DataRow(".INJECTOPT cursorK")]
+        [DataRow("injectopt CURSORk")]
+        [DataRow("INJECTOPT CURSORK")]
+        public void InjectOptPragmaWorks(string source)
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var output = compiler.Compile(source);
+
+            // --- Assert
+            output.ErrorCount.ShouldBe(0);
+            output.InjectOptions.ShouldContain("cursork");
+        }
     }
 }

@@ -918,12 +918,15 @@ namespace Spect.Net.SpectrumEmu.Machine
         /// Prepares the custom code for running, as if it were started
         /// with the RUN command
         /// </summary>
-        public void PrepareRunMode()
+        public void PrepareRunMode(HashSet<string> options)
         {
-            // --- Set the keyboard in "L" mode
-            var flags = MemoryDevice.Read(0x5C3B);
-            flags |= 0x08;
-            MemoryDevice.Write(0x5C3B, flags);
+            if (!options.Contains("cursork"))
+            {
+                // --- Set the keyboard in "L" mode
+                var flags = MemoryDevice.Read(0x5C3B);
+                flags |= 0x08;
+                MemoryDevice.Write(0x5C3B, flags);
+            }
         }
 
         #endregion

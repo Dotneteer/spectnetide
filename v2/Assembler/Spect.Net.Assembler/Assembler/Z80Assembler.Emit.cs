@@ -2104,6 +2104,10 @@ namespace Spect.Net.Assembler.Assembler
                 case CompareBinPragma compareBinPragma:
                     ProcessCompareBinPragma(compareBinPragma);
                     break;
+
+                case InjectOptionPragma injectOptPragma:
+                    ProcessInjectOptPragma(injectOptPragma);
+                    break;
             }
         }
 
@@ -2178,6 +2182,15 @@ namespace Spect.Net.Assembler.Assembler
             CurrentSegment.Bank = value.Value;
             CurrentSegment.BankOffset = offset;
             CurrentSegment.MaxCodeLength = 0x4000 - offset;
+        }
+
+        /// <summary>
+        /// Processes the INJECTOPT pragma
+        /// </summary>
+        /// <param name="pragma">Assembly line of INJECTOPT pragma</param>
+        private void ProcessInjectOptPragma(InjectOptionPragma pragma)
+        {
+            Output.InjectOptions.Add(pragma.Option);
         }
 
         /// <summary>

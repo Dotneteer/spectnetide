@@ -813,6 +813,13 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitZxBasicPragma([NotNull] Z80AsmParser.ZxBasicPragmaContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Z80AsmParser.injectOptPragma"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInjectOptPragma([NotNull] Z80AsmParser.InjectOptPragmaContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.byteEmPragma"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -635,6 +635,9 @@ namespace Spect.Net.Assembler
         public override object VisitZxBasicPragma(Z80AsmParser.ZxBasicPragmaContext context)
             => new ZxBasicPragma();
 
+        public override object VisitInjectOptPragma(Z80AsmParser.InjectOptPragmaContext context)
+            => new InjectOptionPragma(context);
+
         #endregion
 
         #region Field assignment

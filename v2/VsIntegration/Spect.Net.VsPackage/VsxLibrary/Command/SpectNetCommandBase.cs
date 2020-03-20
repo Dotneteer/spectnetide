@@ -153,7 +153,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                       try
                       {
                           await Task.Yield(); // get off the caller's callstack.
-                        await ExecuteAsync();
+                          await ExecuteAsync();
                           await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                           await CompleteOnMainThreadAsync();
                       }

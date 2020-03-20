@@ -1308,5 +1308,21 @@ namespace Spect.Net.Assembler.Test.Parser
             var line = visitor.Compilation.Lines[0] as ZxBasicPragma;
             line.ShouldNotBeNull();
         }
+
+        [TestMethod]
+        [DataRow(".injectopt cursork")]
+        [DataRow(".INJECTOPT cursork")]
+        [DataRow("injectopt cursork")]
+        [DataRow("INJECTOPT cursork")]
+        public void InjectOptPragmaWorks(string source)
+        {
+            // --- Act
+            var visitor = Parse(source);
+
+            // --- Assert
+            visitor.Compilation.Lines.Count.ShouldBe(1);
+            var line = visitor.Compilation.Lines[0] as InjectOptionPragma;
+            line.ShouldNotBeNull();
+        }
     }
 }

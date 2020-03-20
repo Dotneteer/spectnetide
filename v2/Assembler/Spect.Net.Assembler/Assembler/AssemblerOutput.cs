@@ -50,6 +50,11 @@ namespace Spect.Net.Assembler.Assembler
         public ushort? ExportEntryAddress { get; set; }
 
         /// <summary>
+        /// Inject options
+        /// </summary>
+        public HashSet<string> InjectOptions { get; set; }
+
+        /// <summary>
         /// The root source file item of the compilation
         /// </summary>
         public SourceFileItem SourceItem { get; }
@@ -88,6 +93,7 @@ namespace Spect.Net.Assembler.Assembler
             SourceMap = new Dictionary<ushort, (int FileIndex, int Line)>();
             AddressMap = new Dictionary<(int FileIndex, int Line), List<ushort>>();
             ListFileItems = new List<ListFileItem>();
+            InjectOptions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
         }
 
         /// <summary>

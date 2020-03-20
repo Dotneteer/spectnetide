@@ -28,6 +28,6 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Machine
         /// Prepares the custom code for running, as if it were started
         /// with the RUN command.
         /// </summary>
-        void PrepareRunMode();
+        void PrepareRunMode(HashSet<string> options);
     }
 }

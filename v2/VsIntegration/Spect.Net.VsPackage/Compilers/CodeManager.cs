@@ -86,7 +86,7 @@ namespace Spect.Net.VsPackage.Compilers
                 }
 
                 // --- Prepare the machine for RUN mode
-                runSupport.PrepareRunMode();
+                runSupport.PrepareRunMode(output.InjectOptions);
                 CodeInjected?.Invoke(this, EventArgs.Empty);
             }
         }

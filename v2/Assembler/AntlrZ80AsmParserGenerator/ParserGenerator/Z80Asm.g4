@@ -66,6 +66,7 @@ pragma
 	|	incBinPragma
 	|	compareBinPragma
 	|	zxBasicPragma
+	|   injectOptPragma
 	;
 
 directive
@@ -157,6 +158,7 @@ errorPragma : ERRORPR expr ;
 incBinPragma: INCBIN expr ( ',' expr ( ',' expr)? )? ;
 compareBinPragma: COMPAREBIN expr ( ',' expr ( ',' expr)? )? ;
 zxBasicPragma: ZXBPRAG ;
+injectOptPragma: IOPTPRAG IDENTIFIER;
 
 byteEmPragma
 	:  defbPragma 
@@ -617,6 +619,7 @@ DSPRAG	: '.defs' | '.DEFS' | 'defs' | 'DEFS' | '.ds' | '.DS' | 'ds' | 'DS' ;
 FBPRAG	: '.fillb' | '.FILLB' | 'fillb' | 'FILLB' ;
 FWPRAG	: '.fillw' | '.FILLW' | 'fillw' | 'FILLW' ;
 MODPRAG : '.model' | '.MODEL' | 'model' | 'MODEL' ;
+IOPTPRAG: '.injectopt' | '.INJECTOPT' | 'injectopt' | 'INJECTOPT';
 ALGPRAG	: '.align' | '.ALIGN' | 'align' | 'ALIGN' ;
 TRACE	: '.trace' | '.TRACE' | 'trace' | 'TRACE' ;
 TRACEHEX: '.tracehex' | '.TRACEHEX' | 'tracehex' | 'TRACEHEX' ;

@@ -100,7 +100,7 @@ namespace Spect.Net.VsPackage
         MatchBracesAtCaret = true,
         ShowMatchingBrace = true,
         ShowSmartIndent = true)]
-    [ProvideLanguageExtension(typeof(ZxBasicLanguageService), ".zxbas")]
+    [ProvideLanguageExtension(typeof(Z80TestLanguageService), ".z80test")]
 
     [ProvideLanguageService(
         typeof(ZxBasicLanguageService),
