@@ -84,7 +84,7 @@ namespace Spect.Net.Assembler.Assembler
         /// <summary>
         /// Tests if the current assembly instruction is in the global scope of the current module
         /// </summary>
-        public bool IsInGlobalScope => CurrentModule.LocalScopes.Count == 0;
+        public bool IsInGlobalScope => CurrentModule.LocalScopes.Count(s => !s.IsTemporaryScope) == 0;
 
         /// <summary>
         /// Checks is the specified error should be reported in the local scope

@@ -15,7 +15,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
     /// <summary>
     /// Represents a listener that processes the ZX BASIC grammar
     /// </summary>
-    public class ZxBasicParserListener: ZxBasicBaseListener
+    public class ZxBasicParserListener : ZxBasicBaseListener
     {
         // --- Store a reference to the text buffer
         private readonly ITextBuffer _buffer;
@@ -28,7 +28,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
         /// </summary>
         public readonly Dictionary<int, List<TokenInfo>> TokenMap
             = new Dictionary<int, List<TokenInfo>>();
-        
+
         public ZxBasicParserListener(ITextBuffer buffer)
         {
             _buffer = buffer;
@@ -53,7 +53,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
         {
             if (_asmProcessing) return;
 
-            var text = context.GetText();            
+            var text = context.GetText();
             if (text.ToUpper().StartsWith("REM"))
             {
                 AddSpan(TokenType.ZxbStatement, context.Start, 3);
@@ -171,8 +171,19 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
             var bodyStart = bodyContext.Start.StartIndex;
             var bodyEnd = bodyContext.Stop.StopIndex;
             var startLine = bodyContext.Start.Line;
+            var currentSnapshot = _buffer.CurrentSnapshot;
+            var snapshotLength = currentSnapshot.Length;
+            var length = bodyEnd - bodyStart + 1;
+            if (bodyStart + length > snapshotLength)
+            {
+                length = snapshotLength - bodyStart;
+            }
+            if (length < 0)
+            {
+                length = 0;
+            }
             var body = bodyEnd > bodyStart
-                ? _buffer.CurrentSnapshot.GetText(bodyStart, bodyEnd - bodyStart + 1)
+                ? currentSnapshot.GetText(bodyStart, length)
                 : string.Empty;
 
             // --- Parse the embedded Z80 assembly code
@@ -184,7 +195,7 @@ namespace Spect.Net.VsPackage.LanguageServices.ZxBasic
             for (var i = 0; i < parts.Length; i++)
             {
                 var offset = i == 0 ? bodyContext.Start.Column : 0;
-                var asmLineIdx = Z80AsmVisitor.GetAsmLineIndex(lines, i+1);
+                var asmLineIdx = Z80AsmVisitor.GetAsmLineIndex(lines, i + 1);
                 if (asmLineIdx == null) continue;
 
                 // --- Handle block comments

@@ -36,8 +36,6 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="itemId"></param>
         protected override void GetAffectedItem(out IVsHierarchy hierarchy, out uint itemId)
         {
-            IsSingleItemSelection(out hierarchy, out itemId);
-            if (itemId != VSConstants.VSITEMID_ROOT) return;
             // --- We have a project item, let's query the default code file
             var currentProject = SpectNetPackage.Default.Solution.ActiveProject;
             currentProject.GetHierarchyByIdentity(currentProject.DefaultProgramItem.Identity,

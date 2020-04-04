@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.VsPackage.VsxLibrary.Command;
 
 namespace Spect.Net.VsPackage.Commands
@@ -25,6 +26,19 @@ namespace Spect.Net.VsPackage.Commands
                 visible &= hierarchy != null;
             }
             mc.Visible = visible;
+        }
+
+        /// <summary>
+        /// Gets the document that this command should use
+        /// </summary>
+        /// <param name="hierarchy"></param>
+        /// <param name="itemId"></param>
+        protected override void GetAffectedItem(out IVsHierarchy hierarchy, out uint itemId)
+        {
+            // --- We have a project item, let's query the default code file
+            var currentProject = SpectNetPackage.Default.Solution.ActiveProject;
+            currentProject.GetHierarchyByIdentity(currentProject.DefaultProgramItem.Identity,
+                out hierarchy, out itemId);
         }
     }
 }
