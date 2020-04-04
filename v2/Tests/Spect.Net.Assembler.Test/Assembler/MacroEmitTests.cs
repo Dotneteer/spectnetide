@@ -2233,5 +2233,797 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeRaisesError(source, Errors.Z0421);
         }
 
+        [TestMethod]
+        public void IsRegAWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isrega({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(a)";
+
+            CodeEmitWorks(source, (byte)0x7F);
+        }
+
+        [TestMethod]
+        public void IsRegAFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isrega({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegBWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregb({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(b)";
+
+            CodeEmitWorks(source, (byte)0x78);
+        }
+
+        [TestMethod]
+        public void IsRegBFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregb({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegCWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregc({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(c)";
+
+            CodeEmitWorks(source, (byte)0x79);
+        }
+
+        [TestMethod]
+        public void IsRegCFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregc({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegDWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregd({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(d)";
+
+            CodeEmitWorks(source, (byte)0x7a);
+        }
+
+        [TestMethod]
+        public void IsRegDFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregd({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegEWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isrege({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(e)";
+
+            CodeEmitWorks(source, (byte)0x7b);
+        }
+
+        [TestMethod]
+        public void IsRegEFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isrege({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegHWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregh({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(h)";
+
+            CodeEmitWorks(source, (byte)0x7c);
+        }
+
+        [TestMethod]
+        public void IsRegHFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregh({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegLWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregl({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(l)";
+
+            CodeEmitWorks(source, (byte)0x7d);
+        }
+
+        [TestMethod]
+        public void IsRegLFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregl({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegIWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregi({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(i)";
+
+            CodeEmitWorks(source, (byte)0xed, (byte)0x57);
+        }
+
+        [TestMethod]
+        public void IsRegIFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregi({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegRWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregr({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(r)";
+
+            CodeEmitWorks(source, (byte)0xed, (byte)0x5f);
+        }
+
+        [TestMethod]
+        public void IsRegRFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregr({{mpar}})
+                            ld a,{{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegBCWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregbc({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(bc)";
+
+            CodeEmitWorks(source, (byte)0x03);
+        }
+
+        [TestMethod]
+        public void IsRegBCFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregbc({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegDEWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregde({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(de)";
+
+            CodeEmitWorks(source, (byte)0x13);
+        }
+
+        [TestMethod]
+        public void IsRegDEFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregde({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegHLWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreghl({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(hl)";
+
+            CodeEmitWorks(source, (byte)0x23);
+        }
+
+        [TestMethod]
+        public void IsRegHLFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isreghl({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegXHWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregxh({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(xh)";
+
+            CodeEmitWorks(source, (byte)0xdd, (byte)0x24);
+        }
+
+        [TestMethod]
+        public void IsRegXHFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregxh({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegXLWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregxl({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(xl)";
+
+            CodeEmitWorks(source, (byte)0xdd, (byte)0x2c);
+        }
+
+        [TestMethod]
+        public void IsRegXLFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregxl({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegYHWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregyh({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(yh)";
+
+            CodeEmitWorks(source, (byte)0xfd, (byte)0x24);
+        }
+
+        [TestMethod]
+        public void IsRegYHFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregyh({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegYLWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregyl({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(yl)";
+
+            CodeEmitWorks(source, (byte)0xfd, (byte)0x2c);
+        }
+
+        [TestMethod]
+        public void IsRegYLFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregyl({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegIXHWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregxh({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(ixh)";
+
+            CodeEmitWorks(source, (byte)0xdd, (byte)0x24);
+        }
+
+        [TestMethod]
+        public void IsRegIXLWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregxl({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(ixl)";
+
+            CodeEmitWorks(source, (byte)0xdd, (byte)0x2c);
+        }
+
+        [TestMethod]
+        public void IsRegIYHWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregyh({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(iyh)";
+
+            CodeEmitWorks(source, (byte)0xfd, (byte)0x24);
+        }
+
+        [TestMethod]
+        public void IsRegIYLWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregyl({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(yl)";
+
+            CodeEmitWorks(source, (byte)0xfd, (byte)0x2c);
+        }
+
+        [TestMethod]
+        public void IsRegIXWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregix({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(ix)";
+
+            CodeEmitWorks(source, (byte)0xdd, (byte)0x23);
+        }
+
+        [TestMethod]
+        public void IsRegIXFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregix({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegIYWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregiy({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(iy)";
+
+            CodeEmitWorks(source, (byte)0xfd, (byte)0x23);
+        }
+
+        [TestMethod]
+        public void IsRegIYFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregiy({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegSPWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregsp({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x33);
+        }
+
+        [TestMethod]
+        public void IsRegSPFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregsp({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(af)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
+        [TestMethod]
+        public void IsRegAFWorksAsExpected()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregaf({{mpar}})
+                            push {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(af)";
+
+            CodeEmitWorks(source, (byte)0xf5);
+        }
+
+        [TestMethod]
+        public void IsRegAFFails()
+        {
+            // --- Arrange
+            var source = @"
+                MyMacro:
+                    .macro(mpar)
+                        .if isregaf({{mpar}})
+                            inc {{mpar}}
+                        .else
+                            nop
+                        .endif
+                .endm
+                MyMacro(sp)";
+
+            CodeEmitWorks(source, (byte)0x00);
+        }
+
     }
 }

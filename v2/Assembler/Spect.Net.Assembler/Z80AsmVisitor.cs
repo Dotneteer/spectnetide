@@ -1197,6 +1197,111 @@ namespace Spect.Net.Assembler
                     CheckForMacroParamNode(ctx.operand());
                     return new LiteralNode(ctx, ctx.operand()?.expr() != null
                         && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegAInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8() != null && ctx.operand()?.GetText()?.ToLower() == "a"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegBInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8() != null && ctx.operand()?.GetText()?.ToLower() == "b"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegCInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8() != null && ctx.operand()?.GetText()?.ToLower() == "c"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegDInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8() != null && ctx.operand()?.GetText()?.ToLower() == "d"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegEInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8() != null && ctx.operand()?.GetText()?.ToLower() == "e"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegHInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8() != null && ctx.operand()?.GetText()?.ToLower() == "h"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegLInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8() != null && ctx.operand()?.GetText()?.ToLower() == "l"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegIInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8Spec() != null && ctx.operand()?.GetText()?.ToLower() == "i"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegRInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8Spec() != null && ctx.operand()?.GetText()?.ToLower() == "r"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegBCInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16() != null && ctx.operand()?.GetText()?.ToLower() == "bc"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegDEInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16() != null && ctx.operand()?.GetText()?.ToLower() == "de"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegHLInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16() != null && ctx.operand()?.GetText()?.ToLower() == "hl"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegXHInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8Idx() != null && 
+                        (ctx.operand()?.GetText()?.ToLower() == "xh" || ctx.operand()?.GetText()?.ToLower() == "ixh")
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegXLInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8Idx() != null &&
+                        (ctx.operand()?.GetText()?.ToLower() == "xl" || ctx.operand()?.GetText()?.ToLower() == "ixl")
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegYHInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8Idx() != null &&
+                        (ctx.operand()?.GetText()?.ToLower() == "yh" || ctx.operand()?.GetText()?.ToLower() == "iyh")
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegYLInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg8Idx() != null &&
+                        (ctx.operand()?.GetText()?.ToLower() == "yl" || ctx.operand()?.GetText()?.ToLower() == "iyl")
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegIXInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16Idx() != null && ctx.operand()?.GetText()?.ToLower() == "ix"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegIYInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16Idx() != null && ctx.operand()?.GetText()?.ToLower() == "iy"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegSPInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16() != null && ctx.operand()?.GetText()?.ToLower() == "sp"
+                        && ctx.operand().NONEARG() == null);
+
+                case Z80AsmParser.IsRegAfInvokeContext ctx:
+                    CheckForMacroParamNode(ctx.operand());
+                    return new LiteralNode(ctx, ctx.operand()?.reg16Spec() != null && ctx.operand()?.GetText()?.ToLower() == "af"
+                        && ctx.operand().NONEARG() == null);
+
             }
             return null;
         }

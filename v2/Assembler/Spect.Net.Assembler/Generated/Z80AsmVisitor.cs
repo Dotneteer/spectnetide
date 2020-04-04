@@ -201,6 +201,110 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitRelExpr([NotNull] Z80AsmParser.RelExprContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg16Invoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsReg16Invoke([NotNull] Z80AsmParser.IsReg16InvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg8StdInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsReg8StdInvoke([NotNull] Z80AsmParser.IsReg8StdInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>DefInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDefInvoke([NotNull] Z80AsmParser.DefInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsExprInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsExprInvoke([NotNull] Z80AsmParser.IsExprInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegIInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegIInvoke([NotNull] Z80AsmParser.IsRegIInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsCportInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsCportInvoke([NotNull] Z80AsmParser.IsCportInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegDInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegDInvoke([NotNull] Z80AsmParser.IsRegDInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegLInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegLInvoke([NotNull] Z80AsmParser.IsRegLInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegAInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegAInvoke([NotNull] Z80AsmParser.IsRegAInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegXLInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegXLInvoke([NotNull] Z80AsmParser.IsRegXLInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegXHInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegXHInvoke([NotNull] Z80AsmParser.IsRegXHInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegIndirectInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegIndirectInvoke([NotNull] Z80AsmParser.IsRegIndirectInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegCInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegCInvoke([NotNull] Z80AsmParser.IsRegCInvokeContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by the <c>TextOfInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// </summary>
@@ -217,36 +321,12 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitIsIndexedAddrInvoke([NotNull] Z80AsmParser.IsIndexedAddrInvokeContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg16IdxInvoke</c>
+	/// Visit a parse tree produced by the <c>IsRegSPInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitIsReg16IdxInvoke([NotNull] Z80AsmParser.IsReg16IdxInvokeContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg16Invoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIsReg16Invoke([NotNull] Z80AsmParser.IsReg16InvokeContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg8IdxInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIsReg8IdxInvoke([NotNull] Z80AsmParser.IsReg8IdxInvokeContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg8StdInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIsReg8StdInvoke([NotNull] Z80AsmParser.IsReg8StdInvokeContext context);
+	Result VisitIsRegSPInvoke([NotNull] Z80AsmParser.IsRegSPInvokeContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>IsReg8StdSpecInvoke</c>
@@ -257,36 +337,20 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitIsReg8StdSpecInvoke([NotNull] Z80AsmParser.IsReg8StdSpecInvokeContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>DefInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDefInvoke([NotNull] Z80AsmParser.DefInvokeContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsConditionInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIsConditionInvoke([NotNull] Z80AsmParser.IsConditionInvokeContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegIndirectInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIsRegIndirectInvoke([NotNull] Z80AsmParser.IsRegIndirectInvokeContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>IsReg8Invoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIsReg8Invoke([NotNull] Z80AsmParser.IsReg8InvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegIYInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegIYInvoke([NotNull] Z80AsmParser.IsRegIYInvokeContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>IsReg16StdInvoke</c>
@@ -297,20 +361,116 @@ public interface IZ80AsmVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitIsReg16StdInvoke([NotNull] Z80AsmParser.IsReg16StdInvokeContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsExprInvoke</c>
+	/// Visit a parse tree produced by the <c>IsRegHLInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitIsExprInvoke([NotNull] Z80AsmParser.IsExprInvokeContext context);
+	Result VisitIsRegHLInvoke([NotNull] Z80AsmParser.IsRegHLInvokeContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsCportInvoke</c>
+	/// Visit a parse tree produced by the <c>IsRegEInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitIsCportInvoke([NotNull] Z80AsmParser.IsCportInvokeContext context);
+	Result VisitIsRegEInvoke([NotNull] Z80AsmParser.IsRegEInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg16IdxInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsReg16IdxInvoke([NotNull] Z80AsmParser.IsReg16IdxInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegDEInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegDEInvoke([NotNull] Z80AsmParser.IsRegDEInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegYHInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegYHInvoke([NotNull] Z80AsmParser.IsRegYHInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegAfInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegAfInvoke([NotNull] Z80AsmParser.IsRegAfInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg8IdxInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsReg8IdxInvoke([NotNull] Z80AsmParser.IsReg8IdxInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegBInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegBInvoke([NotNull] Z80AsmParser.IsRegBInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsConditionInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsConditionInvoke([NotNull] Z80AsmParser.IsConditionInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegBCInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegBCInvoke([NotNull] Z80AsmParser.IsRegBCInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegHInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegHInvoke([NotNull] Z80AsmParser.IsRegHInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegYLInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegYLInvoke([NotNull] Z80AsmParser.IsRegYLInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegIXInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegIXInvoke([NotNull] Z80AsmParser.IsRegIXInvokeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegRInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIsRegRInvoke([NotNull] Z80AsmParser.IsRegRInvokeContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>StringLiteral</c>

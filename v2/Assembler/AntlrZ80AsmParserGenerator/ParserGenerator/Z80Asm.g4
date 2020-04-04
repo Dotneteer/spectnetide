@@ -351,6 +351,26 @@ builtinFunctionInvocation
 	| ISINDEXEDADDR LPAR operand? RPAR                     #IsIndexedAddrInvoke
 	| ISCONDITION LPAR operand? RPAR                       #IsConditionInvoke
 	| ISEXPR LPAR operand? RPAR                            #IsExprInvoke
+	| ISREGA LPAR operand? RPAR                            #IsRegAInvoke
+	| ISREGAF LPAR operand? RPAR                           #IsRegAfInvoke
+	| ISREGB LPAR operand? RPAR                            #IsRegBInvoke
+	| ISREGC LPAR operand? RPAR                            #IsRegCInvoke
+	| ISREGBC LPAR operand? RPAR                           #IsRegBCInvoke
+	| ISREGD LPAR operand? RPAR                            #IsRegDInvoke
+	| ISREGE LPAR operand? RPAR                            #IsRegEInvoke
+	| ISREGDE LPAR operand? RPAR                           #IsRegDEInvoke
+	| ISREGH LPAR operand? RPAR                            #IsRegHInvoke
+	| ISREGL LPAR operand? RPAR                            #IsRegLInvoke
+	| ISREGHL LPAR operand? RPAR                           #IsRegHLInvoke
+	| ISREGI LPAR operand? RPAR                            #IsRegIInvoke
+	| ISREGR LPAR operand? RPAR                            #IsRegRInvoke
+	| ISREGXH LPAR operand? RPAR                           #IsRegXHInvoke
+	| ISREGXL LPAR operand? RPAR                           #IsRegXLInvoke
+	| ISREGIX LPAR operand? RPAR                           #IsRegIXInvoke
+	| ISREGYH LPAR operand? RPAR                           #IsRegYHInvoke
+	| ISREGYL LPAR operand? RPAR                           #IsRegYLInvoke
+	| ISREGIY LPAR operand? RPAR                           #IsRegIYInvoke
+	| ISREGSP LPAR operand? RPAR                           #IsRegSPInvoke
 	;
 
 literal
@@ -683,6 +703,26 @@ ISCPORT: 'iscport' | 'ISCPORT' ;
 ISINDEXEDADDR: 'isindexedaddr' | 'ISINDEXEDADDR' ;
 ISCONDITION: 'iscondition' | 'ISCONDITION' ;
 ISEXPR: 'isexpr' | 'ISEXPR' ;
+ISREGA: 'isrega' | 'ISREGA' ;
+ISREGAF: 'isregaf' | 'ISREGAF' ;
+ISREGB: 'isregb' | 'ISREGB' ;
+ISREGC: 'isregc' | 'ISREGC' ;
+ISREGBC: 'isregbc' | 'ISREGBC' ;
+ISREGD: 'isregd' | 'ISREGD' ;
+ISREGE: 'isrege' | 'ISREGE' ;
+ISREGDE: 'isregde' | 'ISREGDE' ;
+ISREGH: 'isregh' | 'ISREGH' ;
+ISREGL: 'isregl' | 'ISREGL' ;
+ISREGHL: 'isreghl' | 'ISREGHL' ;
+ISREGI: 'isregi' | 'ISREGI' ;
+ISREGR: 'isregr' | 'ISREGR' ;
+ISREGSP: 'isregsp' | 'ISREGSP' ;
+ISREGXH: 'isregxh' | 'ISREGXH' ;
+ISREGXL: 'isregxl' | 'ISREGXL' ;
+ISREGIX: 'isregix' | 'ISREGIX' ;
+ISREGYH: 'isregyh' | 'ISREGYH' ;
+ISREGYL: 'isregyl' | 'ISREGYL' ;
+ISREGIY: 'isregiy' | 'ISREGIY' ;
 
 // --- Basic literals
 HEXNUM	: ('#'|'0x'|'$') HexDigit HexDigit? HexDigit? HexDigit?
