@@ -1710,8 +1710,11 @@ namespace Spect.Net.Assembler.Assembler
                         argValue = new ExpressionValue(op.Register);
                         break;
                     case OperandType.Expr:
-                        argValue = EvalImmediate(macroOrStructStmt, op.Expression);
-                        if (!argValue.IsValid) errorFound = true;
+                        argValue = Eval(macroOrStructStmt, op.Expression);
+                        if (argValue.IsNonEvaluated)
+                        {
+                            argValue = new ExpressionValue(op.Expression.SourceText);
+                        }
                         break;
                     case OperandType.MemIndirect:
                         argValue = EvalImmediate(macroOrStructStmt, op.Expression);

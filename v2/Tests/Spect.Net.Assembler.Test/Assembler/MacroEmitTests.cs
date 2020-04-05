@@ -368,8 +368,7 @@ namespace Spect.Net.Assembler.Test.Assembler
                 ");
 
             // --- Assert
-            output.ErrorCount.ShouldBe(1);
-            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
+            output.ErrorCount.ShouldBe(0);
         }
 
         [TestMethod]
@@ -427,9 +426,7 @@ namespace Spect.Net.Assembler.Test.Assembler
                 ");
 
             // --- Assert
-            output.ErrorCount.ShouldBe(2);
-            output.Errors[0].ErrorCode.ShouldBe(Errors.Z0201);
-            output.Errors[1].ErrorCode.ShouldBe(Errors.Z0201);
+            output.ErrorCount.ShouldBe(0);
         }
 
         [TestMethod]
