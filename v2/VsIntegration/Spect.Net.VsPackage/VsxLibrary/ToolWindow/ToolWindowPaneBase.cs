@@ -34,6 +34,11 @@ namespace Spect.Net.VsPackage.VsxLibrary.ToolWindow
         protected string BaseCaption { get; set; }
 
         /// <summary>
+        /// Tests, if the tool window is visible
+        /// </summary>
+        public bool IsVisible { get; private set; }
+
+        /// <summary>
         /// Creates an instance of this class
         /// </summary>
         protected ToolWindowPaneBase() : base(null)
@@ -108,6 +113,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.ToolWindow
         /// <param name="newIsVisible">The new IsVisible value.</param>
         public virtual void OnFrameIsVisibleChanged(IVsWindowFrame frame, bool newIsVisible)
         {
+            IsVisible = newIsVisible;
         }
 
         /// <summary>Called when the IsOnScreen property of an IVsWindowFrame changes.</summary>

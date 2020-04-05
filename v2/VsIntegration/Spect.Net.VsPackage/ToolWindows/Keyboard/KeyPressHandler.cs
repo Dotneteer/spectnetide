@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.VisualStudio.Shell.Interop;
 using Spect.Net.SpectrumEmu.Abstraction.Devices.Keyboard;
 using Spect.Net.SpectrumEmu.Machine;
 
@@ -148,6 +149,14 @@ namespace Spect.Net.VsPackage.ToolWindows.Keyboard
                 await Task.Delay(refreshPeriod);
                 
             } while (_isDown);
+
+            // --- Put the focus back to the ZX Spectrum emulator tool window
+            var emuWindow = SpectNetPackage.Default.GetToolWindow<SpectrumEmulator.SpectrumEmulatorToolWindow>();
+            if (emuWindow?.IsVisible == true)
+            {
+                var frame = (IVsWindowFrame)emuWindow.Frame;
+                frame.Show();
+            }
         }
 
         /// <summary>
