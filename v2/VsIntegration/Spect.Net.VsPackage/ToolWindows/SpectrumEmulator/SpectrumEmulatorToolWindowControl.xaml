@@ -10,6 +10,7 @@
              Focusable="True"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
+             PreviewKeyDown="OnPreviewKeyDown"
              d:DataContext="{d:DesignInstance {x:Type spectrumEmulator:SpectrumEmulatorToolWindowViewModel}, IsDesignTimeCreatable=True}" >
 
     <toolWindows:SpectrumToolWindowControlBase.Resources>

@@ -163,7 +163,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
         public const string CPS_VERSION_FILE = "cps.version";
-        public const string CURRENT_CPS_VERSION = "2.0.5";
+        public const string CURRENT_CPS_VERSION = "2.0.7";
         public const string CPS_RESOURCE_PREFIX = "Spect.Net.ProjectResources";
         public const string CPS_RULES = "Rules";
 

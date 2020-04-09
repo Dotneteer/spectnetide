@@ -36,7 +36,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             // --- We prevent the up and down arrow keys to move the focus to the 
             // --- toolbar buttons. If we did not do that, pressing space or Enter
             // --- might activate the Stop or Pause buttons while those have the focus.
-            if (arg.Key == Key.Down || arg.Key == Key.Up)
+            if (arg.Key == Key.Down || arg.Key == Key.Up || arg.Key == Key.Left || arg.Key == Key.Right)
             {
                 arg.Handled = true;
             }

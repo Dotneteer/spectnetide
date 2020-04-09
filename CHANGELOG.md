@@ -1,3 +1,13 @@
+### Version 2.0.7 (Preview 6)
+
+__FEATURE__: The [INJECTOP pragma](https://dotneteer.github.io/spectnetide/documents/pragmas#the-injectopt-pragma) allows you to change the "L" cursor to "K" cursor.  
+__FEATURE__: You have a SpectNetIDE option to swap SHIFT and ALT-GR, which represent Symbol Shift, ans Caps Shift.  
+__FEATURE__: [New parse-time functions](https://dotneteer.github.io/spectnetide/documents/macros#macro-related-parse-time-functions) are available in SpectNetIDE Assembler.  
+__FEATURE__: Macro parameters now support late-evaluation.  
+__FIX__: The **Run program** and **Debug program** command now start the default code file, even if another code file is open.  
+__FIX__: The **Left** and **Right** arrow keys in the emulator do not move the focus.  
+
+
 ### Version 2.0.6 (Preview 5)
 
 __FIX__: Z80 Source code debugging now handles correcly when you change the `ORG` address.  
