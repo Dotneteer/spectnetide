@@ -90,7 +90,7 @@ namespace Spect.Net.VsPackage.Compilers
             ZxbResult result;
             try
             {
-                result = await runner.RunAsync(zxbOptions);
+                result = await runner.RunAsync(zxbOptions, true);
             }
             catch (Exception ex)
             {

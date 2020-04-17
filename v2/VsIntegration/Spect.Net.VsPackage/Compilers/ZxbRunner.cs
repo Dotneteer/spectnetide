@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Spect.Net.VsPackage.VsxLibrary.Output;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 
 namespace Spect.Net.VsPackage.Compilers
 {
@@ -20,7 +22,7 @@ namespace Spect.Net.VsPackage.Compilers
             _timeOut = timeout;
         }
 
-        public Task<ZxbResult> RunAsync(ZxbOptions options)
+        public Task<ZxbResult> RunAsync(ZxbOptions options, bool log = false)
         {
             var tcs = new TaskCompletionSource<ZxbResult>();
             var zxbProcess = new Process
@@ -40,6 +42,11 @@ namespace Spect.Net.VsPackage.Compilers
               {
                   try
                   {
+                      if (log)
+                      {
+                          var pane = OutputWindow.GetPane<Z80AssemblerOutputPane>();
+                          pane.WriteLine($"Starting ZXB with: {zxbProcess.StartInfo.Arguments}");
+                      }
                       zxbProcess.Start();
 
                       // --- Wait up to 10 seconds to run the process
