@@ -178,6 +178,11 @@ namespace Spect.Net.VsPackage
         public bool ConfirmCodeExport { get; set; } = true;
 
         [Category("Export Z80 Code")]
+        [DisplayName("Export after compile")]
+        [Description("Specifies optional export on compile: <format:(tap|tzx|hex)>; <auto-start:(0|1)>; <clear:(0|1)>; <pause-0:(0|1)>; <start-address:(int)>; <border-color:(int)>; <screen-file-path:(path)>")]
+        public string ExportOnCompile { get; set; } = null;
+
+        [Category("Export Z80 Code")]
         [DisplayName("Default export path")]
         [Description("The default path to show in the Export Z80 Code dialog")]
         public string CodeExportPath { get; set; } = @"C:\Temp";

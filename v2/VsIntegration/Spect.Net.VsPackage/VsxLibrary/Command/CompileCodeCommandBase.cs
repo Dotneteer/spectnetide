@@ -14,6 +14,7 @@ using Spect.Net.VsPackage.VsxLibrary.Output;
 using Task = System.Threading.Tasks.Task;
 using VsTask = Microsoft.VisualStudio.Shell.Task;
 using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
+using Spect.Net.VsPackage.Dialogs.Export;
 // ReSharper disable SuspiciousTypeConversion.Global
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
@@ -270,6 +271,133 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             // --- Execute post-build event
             if (compiled && output.Errors.Count == 0)
             {
+                // --- Export if required
+                if (!string.IsNullOrEmpty(SpectNetPackage.Default.Options.ExportOnCompile))
+                {
+                    var parts = SpectNetPackage.Default.Options.ExportOnCompile.Split(';');
+                    var vm = new ExportZ80ProgramViewModel
+                    {
+                        Name = Path.GetFileNameWithoutExtension(ItemPath) ?? "MyCode"
+                    };
+                    if (parts.Length > 0)
+                    {
+                        // --- Validate format
+                        var format = parts[0].Trim().ToLower();
+                        if (format == "tap")
+                        {
+                            vm.Format = ExportFormat.Tap;
+                        }
+                        else if (format == "tzx")
+                        {
+                            vm.Format = ExportFormat.Tzx;
+                        }
+                        else if (format == "hex")
+                        {
+                            vm.Format = ExportFormat.IntelHex;
+                        }
+                        else
+                        {
+                            PostbuildError = $"Invalid export format: {parts[0]}";
+                        }
+                    }
+
+                    if (PostbuildError == null && parts.Length > 1)
+                    {
+                        var flag = parts[1].Trim();
+                        if (flag == "" || flag == "1")
+                        {
+                            vm.AutoStart = true;
+                        }
+                        else if (flag == "0")
+                        {
+                            vm.AutoStart = false;
+                        }
+                        else
+                        {
+                            PostbuildError = $"Invalid export Auto-Start flag (use 0 or 1): {parts[1]}";
+                        }
+                    }
+
+                    if (PostbuildError == null && parts.Length > 2)
+                    {
+                        var flag = parts[2].Trim();
+                        if (flag == "" || flag == "1")
+                        {
+                            vm.ApplyClear = true;
+                        }
+                        else if (flag == "0")
+                        {
+                            vm.ApplyClear = false;
+                        }
+                        else
+                        {
+                            PostbuildError = $"Invalid export Apply CLEAR flag (use 0 or 1): {parts[2]}";
+                        }
+                    }
+
+                    vm.SingleBlock = true;
+                    vm.AddToProject = false;
+
+                    if (PostbuildError == null && parts.Length > 3)
+                    {
+                        var flag = parts[3].Trim();
+                        if (flag == "" || flag == "0")
+                        {
+                            vm.AddPause0 = false;
+                        }
+                        else if (flag == "1")
+                        {
+                            vm.AddPause0 = true;
+                        }
+                        else
+                        {
+                            PostbuildError = $"Invalid export Add PAUSE flag (use 0 or 1): {parts[3]}";
+                        }
+                    }
+
+                    if (PostbuildError == null && parts.Length > 4 && parts[4].Trim() != "")
+                    {
+                        if (ushort.TryParse(parts[4], out var startAddr))
+                        {
+                            vm.StartAddress = startAddr.ToString();
+                        }
+                        else
+                        {
+                            PostbuildError = $"Invalid Start Address (use 0-65535): {parts[4]}";
+                        }
+                    }
+
+                    if (PostbuildError == null && parts.Length > 5 && parts[5].Trim() != "")
+                    {
+                        if (ushort.TryParse(parts[5], out var border))
+                        {
+                            if (border >= 0 && border <= 7)
+                            {
+                                vm.Border = border.ToString();
+                            }
+                            else
+                            {
+                                PostbuildError = $"Invalid Border value (use 0-7): {parts[5]}";
+                            }
+                        }
+                        else
+                        {
+                            PostbuildError = $"Invalid Border value (use 0-7): {parts[5]}";
+                        }
+                    }
+
+                    if (PostbuildError == null && parts.Length > 6)
+                    {
+                        vm.ScreenFile = parts[6];
+                    }
+
+                    if (PostbuildError == null)
+                    {
+                        ExportProgramCommand.ExportCompiledCode(Output, vm);
+                    }
+                }
+
+                // --- Run post-build tasks
                 eventOutput = await codeManager.RunPostBuildEvent(ItemFullPath);
                 if (eventOutput != null)
                 {

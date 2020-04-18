@@ -56,6 +56,8 @@ namespace Spect.Net.VsPackage.Commands
         private const byte PAUSE_TKN = 0xF2;
         private const byte BORDER_TKN = 0xE7;
 
+        public const string EXPORT_PATH = @".SpectNetIde\Exports";
+
         protected bool Success { get; set; }
 
         /// <summary>
@@ -65,7 +67,7 @@ namespace Spect.Net.VsPackage.Commands
         {
             // --- Prepare the appropriate file to export
             Success = true;
-        
+
             // --- Step #1: Compile the code
             if (!await CompileCode())
             {
@@ -101,68 +103,24 @@ namespace Spect.Net.VsPackage.Commands
                 return;
             }
 
-            if (vm.Format == ExportFormat.IntelHex)
+            vm.Name = Path.GetFileNameWithoutExtension(ItemPath) ?? "MyCode";
+            var result = ExportCompiledCode(Output, vm);
+            if (result != 0)
             {
-                // --- Step #5: Export to Intel format
-                SaveIntelHexFile(vm.Filename, Output);
+                VsxDialogs.Show("The specified screen file cannot be read as a ZX Spectrum compatible screen file.",
+                    "Screen file error.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                Success = false;
+                return;
             }
-            else
+
+
+
+            if (vm.AddToProject)
             {
-                // --- Step #5: Check screen file again
-                var useScreenFile = !string.IsNullOrEmpty(vm.ScreenFile) && vm.ScreenFile.Trim().Length > 0;
-                if (useScreenFile && !CommonTapeFilePlayer.CheckScreenFile(vm.ScreenFile))
-                {
-                    VsxDialogs.Show("The specified screen file cannot be read as a ZX Spectrum compatible screen file.",
-                        "Screen file error.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
-                    Success = false;
-                    return;
-                }
-
-                // --- Step #6: Create code segments
-                var codeBlocks = CreateTapeBlocks(vm.Name, vm.SingleBlock);
-                List<byte[]> screenBlocks = null;
-                if (useScreenFile)
-                {
-                    screenBlocks = CreatScreenBlocks(vm.ScreenFile);
-                }
-
-                // --- Step #7: Create Auto Start header block, if required
-                var blocksToSave = new List<byte[]>();
-                if (!ushort.TryParse(vm.StartAddress, out var startAddress))
-                {
-                    startAddress = (ushort) ExportStartAddress;
-                }
-
-                if (vm.AutoStartEnabled)
-                {
-                    var autoStartBlocks = CreateAutoStartBlock(
-                        vm.Name,
-                        useScreenFile,
-                        vm.AddPause0,
-                        vm.Border,
-                        startAddress,
-                        vm.ApplyClear
-                            ? Output.Segments.Min(s => s.StartAddress)
-                            : (ushort?) null);
-                    blocksToSave.AddRange(autoStartBlocks);
-                }
-
-                // --- Step #8: Save all the blocks
-                if (screenBlocks != null)
-                {
-                    blocksToSave.AddRange(screenBlocks);
-                }
-
-                blocksToSave.AddRange(codeBlocks);
-                SaveDataBlocks(vm, blocksToSave);
-
-                if (vm.AddToProject)
-                {
-                    // --- Step #9: Add the saved item to the project
-                    // --- Check path segment names
-                    SpectrumProject.AddFileToProject(SpectNetPackage.Default.Options.TapeFolder, vm.Filename,
-                        INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);
-                }
+                // --- Step #9: Add the saved item to the project
+                // --- Check path segment names
+                SpectrumProject.AddFileToProject(SpectNetPackage.Default.Options.TapeFolder, vm.Filename,
+                    INVALID_FOLDER_MESSAGE, FILE_EXISTS_MESSAGE);
             }
 
             // --- Run post-export event
@@ -191,6 +149,81 @@ namespace Spect.Net.VsPackage.Commands
                 VsxDialogs.Show("The code has been exported.");
             }
         }
+
+        /// <summary>
+        /// Exports the specified compiler output
+        /// </summary>
+        /// <param name="output">Compiler output</param>
+        /// <param name="programName">Name of the program</param>
+        /// <param name="vm">Export options</param>
+        /// <returns></returns>
+        public static int ExportCompiledCode(AssemblerOutput output, ExportZ80ProgramViewModel vm)
+        {
+            vm.Filename = Path.Combine(Path.GetDirectoryName(SpectNetPackage.Default.ActiveProject.Root.FullName), 
+                EXPORT_PATH, 
+                vm.Name);
+            var oldExt = vm.Format;
+            vm.Format = ExportFormat.Unknown;
+            vm.Format = oldExt;
+
+            if (vm.Format == ExportFormat.IntelHex)
+            {
+                SaveIntelHexFile(vm.Filename, output);
+                return 0;
+            }
+
+            // --- Check for screen file error
+            var useScreenFile = !string.IsNullOrEmpty(vm.ScreenFile) && vm.ScreenFile.Trim().Length > 0;
+            if (useScreenFile && !CommonTapeFilePlayer.CheckScreenFile(vm.ScreenFile))
+            {
+                return 1;
+            }
+
+            // --- Step #6: Create code segments
+            var codeBlocks = CreateTapeBlocks(output, vm.Name, vm.SingleBlock);
+            List<byte[]> screenBlocks = null;
+            if (useScreenFile)
+            {
+                screenBlocks = CreateScreenBlocks(vm.ScreenFile);
+            }
+
+            // --- Step #7: Create Auto Start header block, if required
+            var blocksToSave = new List<byte[]>();
+            if (!ushort.TryParse(vm.StartAddress, out var startAddress))
+            {
+                startAddress = (ushort)(output == null
+                    ? -1
+                    : output.ExportEntryAddress
+                        ?? output.EntryAddress
+                        ?? output.Segments[0].StartAddress);
+            }
+
+            if (vm.AutoStartEnabled)
+            {
+                var autoStartBlocks = CreateAutoStartBlock(
+                    output,
+                    vm.Name,
+                    useScreenFile,
+                    vm.AddPause0,
+                    vm.Border,
+                    startAddress,
+                    vm.ApplyClear
+                        ? output.Segments.Min(s => s.StartAddress)
+                        : (ushort?)null);
+                blocksToSave.AddRange(autoStartBlocks);
+            }
+
+            // --- Step #8: Save all the blocks
+            if (screenBlocks != null)
+            {
+                blocksToSave.AddRange(screenBlocks);
+            }
+
+            blocksToSave.AddRange(codeBlocks);
+            SaveDataBlocks(vm, blocksToSave);
+            return 0;
+        }
+
 
         /// <summary>
         /// Displays the Export Z80 Code dialog to collect parameter data
@@ -259,7 +292,7 @@ namespace Spect.Net.VsPackage.Commands
                         var tzxBlock = new TzxStandardSpeedDataBlock
                         {
                             Data = block,
-                            DataLength = (ushort) block.Length
+                            DataLength = (ushort)block.Length
                         };
                         tzxBlock.WriteTo(writer);
                     }
@@ -271,7 +304,7 @@ namespace Spect.Net.VsPackage.Commands
                 {
                     foreach (var block in blocksToSave)
                     {
-                        writer.Write((ushort) block.Length);
+                        writer.Write((ushort)block.Length);
                         writer.Write(block);
                     }
                 }
@@ -317,7 +350,7 @@ namespace Spect.Net.VsPackage.Commands
             void WriteDataRecord(BinarySegment segment, int offset, int bytesCount)
             {
                 if (bytesCount == 0) return;
-                var addr = (ushort) ((segment.XorgValue ?? segment.StartAddress) + offset);
+                var addr = (ushort)((segment.XorgValue ?? segment.StartAddress) + offset);
                 hexOut.Append($":{bytesCount:X2}{addr:X4}00"); // --- Data record header
                 var checksum = bytesCount + (addr >> 8) + (addr & 0xFF);
                 for (var i = offset; i < offset + bytesCount; i++)
@@ -327,7 +360,7 @@ namespace Spect.Net.VsPackage.Commands
                     hexOut.Append($"{data:X2}");
                 }
 
-                var chk = (byte) (256 - (checksum & 0xff));
+                var chk = (byte)(256 - (checksum & 0xff));
                 hexOut.Append($"{chk:X2}");
                 hexOut.AppendLine();
             }
@@ -336,15 +369,16 @@ namespace Spect.Net.VsPackage.Commands
         /// <summary>
         /// Creates tape blocks from the assembler output.
         /// </summary>
+        /// <param name="output">Assembler outpuy</param>
         /// <param name="name">Program name</param>
         /// <param name="singleBlock">
         /// Indicates if a single block should be created from all segments
         /// </param>
         /// <returns>The list that contains headers and data blocks to save</returns>
-        private List<byte[]> CreateTapeBlocks(string name, bool singleBlock)
+        private static List<byte[]> CreateTapeBlocks(AssemblerOutput output, string name, bool singleBlock)
         {
             var result = new List<byte[]>();
-            if (Output.Segments.Sum(s => s.EmittedCode.Count) == 0)
+            if (output.Segments.Sum(s => s.EmittedCode.Count) == 0)
             {
                 // --- No code to return
                 return null;
@@ -353,14 +387,14 @@ namespace Spect.Net.VsPackage.Commands
             if (singleBlock)
             {
                 // --- Merge all blocks together
-                var startAddr = Output.Segments.Min(s => s.StartAddress);
-                var endAddr = Output.Segments
+                var startAddr = output.Segments.Min(s => s.StartAddress);
+                var endAddr = output.Segments
                     .Where(s => s.Bank == null)
                     .Max(s => s.StartAddress + s.EmittedCode.Count - 1);
 
                 // --- Normal code segments
                 var mergedSegment = new byte[endAddr - startAddr + 3];
-                foreach (var segment in Output.Segments.Where(s => s.Bank == null))
+                foreach (var segment in output.Segments.Where(s => s.Bank == null))
                 {
                     segment.EmittedCode.CopyTo(mergedSegment, segment.StartAddress - startAddr + 1);
                 }
@@ -374,7 +408,7 @@ namespace Spect.Net.VsPackage.Commands
                 {
                     Type = 3, // --- Code block
                     Name = name,
-                    DataLength = (ushort) (mergedSegment.Length - 2),
+                    DataLength = (ushort)(mergedSegment.Length - 2),
                     Parameter1 = startAddr,
                     Parameter2 = 0x8000
                 };
@@ -389,7 +423,7 @@ namespace Spect.Net.VsPackage.Commands
                 var segmentIdx = 0;
 
                 // --- Normal code segments
-                foreach (var segment in Output.Segments.Where(s => s.Bank == null))
+                foreach (var segment in output.Segments.Where(s => s.Bank == null))
                 {
                     segmentIdx++;
                     var startAddr = segment.StartAddress;
@@ -407,7 +441,7 @@ namespace Spect.Net.VsPackage.Commands
                     {
                         Type = 3, // --- Code block
                         Name = $"{segmentIdx}_{name}",
-                        DataLength = (ushort) (codeSegment.Length - 2),
+                        DataLength = (ushort)(codeSegment.Length - 2),
                         Parameter1 = startAddr,
                         Parameter2 = 0x8000
                     };
@@ -419,9 +453,9 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Create blocks for the banks
-            foreach (var bankSegment in Output.Segments.Where(s => s.Bank != null).OrderBy(s => s.Bank))
+            foreach (var bankSegment in output.Segments.Where(s => s.Bank != null).OrderBy(s => s.Bank))
             {
-                var startAddr = (ushort) (0xC000 + bankSegment.BankOffset);
+                var startAddr = (ushort)(0xC000 + bankSegment.BankOffset);
                 var endAddr = startAddr + bankSegment.EmittedCode.Count - 1;
 
                 var codeSegment = new byte[endAddr - startAddr + 3];
@@ -436,7 +470,7 @@ namespace Spect.Net.VsPackage.Commands
                 {
                     Type = 3, // --- Code block
                     Name = $"bank{bankSegment.Bank}.code",
-                    DataLength = (ushort) (codeSegment.Length - 2),
+                    DataLength = (ushort)(codeSegment.Length - 2),
                     Parameter1 = startAddr,
                     Parameter2 = 0x8000
                 };
@@ -457,7 +491,7 @@ namespace Spect.Net.VsPackage.Commands
         /// Checksum is stored in the last item of the byte array,
         /// it is the value of bytes XORed.
         /// </remarks>
-        private void SetTapeCheckSum(byte[] bytes)
+        private static void SetTapeCheckSum(byte[] bytes)
         {
             var chk = 0x00;
             for (var i = 0; i < bytes.Length - 1; i++)
@@ -465,7 +499,7 @@ namespace Spect.Net.VsPackage.Commands
                 chk ^= bytes[i];
             }
 
-            bytes[bytes.Length - 1] = (byte) chk;
+            bytes[bytes.Length - 1] = (byte)chk;
         }
 
         /// <summary>
@@ -473,15 +507,15 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         /// <param name="screenFile">Screen file name</param>
         /// <returns></returns>
-        private List<byte[]> CreatScreenBlocks(string screenFile)
+        private static List<byte[]> CreateScreenBlocks(string screenFile)
         {
             var result = new List<byte[]>();
             using (var reader = new BinaryReader(File.OpenRead(screenFile)))
             {
                 var player = new CommonTapeFilePlayer(reader);
                 player.ReadContent();
-                result.Add(((ITapeData) player.DataBlocks[0]).Data);
-                result.Add(((ITapeData) player.DataBlocks[1]).Data);
+                result.Add(((ITapeData)player.DataBlocks[0]).Data);
+                result.Add(((ITapeData)player.DataBlocks[1]).Data);
             }
 
             return result;
@@ -490,6 +524,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <summary>
         /// Creates auto start block (header+data) to save 
         /// </summary>
+        /// <param name="output">Assembler output</param>
         /// <param name="name">Program name</param>
         /// <param name="useScreenFile">Indicates if a screen file is used</param>
         /// <param name="addPause0">Indicates if a "PAUSE 0" should be added</param>
@@ -497,26 +532,27 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="startAddr">Auto start address</param>
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns>Block contents</returns>
-        private List<byte[]> CreateAutoStartBlock(string name,
+        private static List<byte[]> CreateAutoStartBlock(AssemblerOutput output, string name,
             bool useScreenFile,
             bool addPause0,
             string borderColor,
             ushort startAddr,
             ushort? clearAddr = null)
         {
-            return Output.ModelType == SpectrumModelType.Spectrum48
-                   || Output.Segments.Count(s => s.Bank != null) == 0
+            return output.ModelType == SpectrumModelType.Spectrum48
+                   || output.Segments.Count(s => s.Bank != null) == 0
                 // --- No banks to emit, use the ZX Spectrum 48 auto-loader format
-                ? CreateSpectrum48StartBlock(name, useScreenFile, addPause0,
+                ? CreateSpectrum48StartBlock(output, name, useScreenFile, addPause0,
                     borderColor, startAddr, clearAddr)
                 // --- There are banks to emit, use the ZX Spectrum 128 auto-loader format
-                : CreateSpectrum128StartBlock(name, useScreenFile, addPause0,
+                : CreateSpectrum128StartBlock(output, name, useScreenFile, addPause0,
                     borderColor, startAddr, clearAddr);
         }
 
         /// <summary>
         /// Creates an auto start block for Spectrum 48K
         /// </summary>
+        /// <param name="output">Assembler output</param>
         /// <param name="name">Program name</param>
         /// <param name="useScreenFile">Indicates if a screen file is used</param>
         /// <param name="addPause0">Indicates if a "PAUSE 0" should be added</param>
@@ -524,7 +560,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="startAddr">Auto start address</param>
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns>Block contents</returns>
-        private List<byte[]> CreateSpectrum48StartBlock(string name,
+        private static List<byte[]> CreateSpectrum48StartBlock(AssemblerOutput output, string name,
             bool useScreenFile,
             bool addPause0,
             string borderColor,
@@ -573,7 +609,7 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Add 'LOAD "" CODE' for each block
-            for (var i = 0; i < Output.Segments.Count; i++)
+            for (var i = 0; i < output.Segments.Count; i++)
             {
                 codeLine.Add(LOAD_TKN);
                 codeLine.Add(DQUOTE);
@@ -643,6 +679,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <summary>
         /// Creates an auto start block for Spectrum 128K
         /// </summary>
+        /// <param name="output">Assembler output</param>
         /// <param name="name">Program name</param>
         /// <param name="useScreenFile">Indicates if a screen file is used</param>
         /// <param name="addPause0">Indicates if a "PAUSE 0" should be added</param>
@@ -650,7 +687,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="startAddr">Auto start address</param>
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns>Block contents</returns>
-        private List<byte[]> CreateSpectrum128StartBlock(string name,
+        private static List<byte[]> CreateSpectrum128StartBlock(AssemblerOutput output, string name,
             bool useScreenFile,
             bool addPause0,
             string borderColor,
@@ -663,7 +700,7 @@ namespace Spect.Net.VsPackage.Commands
             var lines = new List<List<byte>>();
 
             // --- Create placeholder for the paging code (line 10)
-            var codeLine = new List<byte>(100) {REM_TKN};
+            var codeLine = new List<byte>(100) { REM_TKN };
             WriteString(codeLine, "012345678901234567890");
             codeLine.Add(NEW_LINE);
             lines.Add(codeLine);
@@ -694,7 +731,7 @@ namespace Spect.Net.VsPackage.Commands
             lines.Add(codeLine);
 
             // --- Setup the machine code
-            codeLine = new List<byte>(100) {FOR_TKN};
+            codeLine = new List<byte>(100) { FOR_TKN };
             WriteString(codeLine, "i=");
             WriteNumber(codeLine, 0);
             codeLine.Add(TO_TKN);
@@ -740,7 +777,7 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Add 'LOAD "" CODE' for each block
-            for (var i = 0; i < Output.Segments.Count(s => s.Bank == null); i++)
+            for (var i = 0; i < output.Segments.Count(s => s.Bank == null); i++)
             {
                 if (i > 0)
                 {
@@ -751,18 +788,18 @@ namespace Spect.Net.VsPackage.Commands
                 codeLine.Add(DQUOTE);
                 codeLine.Add(CODE_TKN);
             }
-            
+
             codeLine.Add(NEW_LINE);
             lines.Add(codeLine);
 
             // --- Code for reading banks
-            codeLine = new List<byte>(100) {READ_TKN};
+            codeLine = new List<byte>(100) { READ_TKN };
             WriteString(codeLine, "b");
             codeLine.Add(NEW_LINE);
             lines.Add(codeLine);
 
             // --- "IF b = 8 THEN GO TO 80";
-            codeLine = new List<byte>(100) {IF_TKN};
+            codeLine = new List<byte>(100) { IF_TKN };
             WriteString(codeLine, "b=");
             WriteNumber(codeLine, 8);
             codeLine.Add(THEN_TKN);
@@ -772,7 +809,7 @@ namespace Spect.Net.VsPackage.Commands
             lines.Add(codeLine);
 
             // --- "POKE 23608,b: RANDOMIZE USR c: LOAD "" CODE: GO TO 50"
-            codeLine = new List<byte>(100) {POKE_TKN};
+            codeLine = new List<byte>(100) { POKE_TKN };
             WriteNumber(codeLine, 23608);
             WriteString(codeLine, ",b:");
             codeLine.Add(RAND_TKN);
@@ -824,7 +861,7 @@ namespace Spect.Net.VsPackage.Commands
 
             // --- Add data lines with used banks and terminating 8
             codeLine = new List<byte>(100);
-            var banks = Output
+            var banks = output
                 .Segments
                 .Where(s => s.Bank != null)
                 .Select(s => (ushort)s.Bank)
@@ -861,7 +898,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         /// <param name="codeArray">Code array to add the number information to</param>
         /// <param name="number">Number to write out</param>
-        private void WriteNumber(ICollection<byte> codeArray, ushort number)
+        private static void WriteNumber(ICollection<byte> codeArray, ushort number)
         {
             // --- Number in string form
             foreach (var ch in number.ToString()) codeArray.Add((byte)ch);
@@ -879,7 +916,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         /// <param name="codeArray">Code array to add the number information to</param>
         /// <param name="data">String to write out</param>
-        private void WriteString(ICollection<byte> codeArray, string data)
+        private static void WriteString(ICollection<byte> codeArray, string data)
         {
             foreach (var ch in data) codeArray.Add((byte)ch);
         }
@@ -889,7 +926,7 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         /// <param name="codeLine"></param>
         /// <param name="data"></param>
-        private void WriteDataStatement(ICollection<byte> codeLine, ushort[] data)
+        private static void WriteDataStatement(ICollection<byte> codeLine, ushort[] data)
         {
             codeLine.Add(DATA_TKN);
             var comma = false;
@@ -912,7 +949,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <returns>
         /// Byte array representing the data block with header and checksum info
         /// </returns>
-        private byte[] CreateDataBlockForCodeLines(List<List<byte>> lines)
+        private static byte[] CreateDataBlockForCodeLines(List<List<byte>> lines)
         {
             var length = lines.Sum(cl => cl.Count + 4) + 2;
             var dataBlock = new byte[length];
@@ -922,7 +959,7 @@ namespace Spect.Net.VsPackage.Commands
             foreach (var line in lines)
             {
                 // --- Line number in MSB/LSB format
-                dataBlock[index++] = (byte) (lineNo >> 8);
+                dataBlock[index++] = (byte)(lineNo >> 8);
                 dataBlock[index++] = (byte)lineNo;
 
                 // --- Set line length in LSB/MSB format
@@ -931,7 +968,7 @@ namespace Spect.Net.VsPackage.Commands
 
                 // --- Copy the code line
                 line.CopyTo(dataBlock, index);
-                
+
                 // --- Move to the next line
                 index += line.Count;
                 lineNo += 10;

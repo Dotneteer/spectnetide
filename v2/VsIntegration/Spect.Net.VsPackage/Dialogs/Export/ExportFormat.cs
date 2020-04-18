@@ -5,8 +5,9 @@
     /// </summary>
     public enum ExportFormat
     {
+        Unknown,
         Tap,
         Tzx,
-        IntelHex
+        IntelHex,
     }
 }

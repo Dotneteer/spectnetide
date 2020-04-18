@@ -106,3 +106,26 @@ Short explanation:
 
 > __Note__: The above code belongs to a program that starts at #6000.
 
+## Auto-Export
+
+You can configure SpectNetIDE to automatically export the result of successful compilation whenever you execute any of the **Run program**, **Debug program**, **Compile code**, or **Inject code** commands. By default, this option is turned off. Nonetheless, you can quickly activate it in the **Tools \| Options** dialog through the **Export after compile** options:
+
+![Export after compile]({{ site.baseurl }}/assets/images/tutorials/auto-export-option.png)
+
+This option allows you to define up to seven parameters separated by semicolons. The first parameters (_tape file format_) is mandatory, and the others are optional. You can omit any parameters from the and of the list, and use an empty one to indicate you intend to use that with its default value. These are the available parameters:
+
+- #1: **Tape file format**. You need to use any of these values: **TAP**, **TZX**, or **HEX** (Intel Hex format).
+- #2: **Auto-Start Loader**. **0**: off, **1**: on (_default_).
+- #3: **Apply CLEAR** flag. **0**: off, **1**: on (_default_).
+- #4: **Apply PAUSE 0** flag. **0**: off (_default_), **1**: on.
+- #5: **Start Address**. Use the specified address to start the code. If you leave it empty, the export will use the entry address specified during compilation. _Default: empty_.
+- #6: **BORDER Color**: Specify a BORDER color (0-7) to apply. _Default: no border color_.
+- #7: **Screen file**: Specify the path of the screen file (absolute path). _Default: no screen file_.
+
+For example, the `TAP;1;1;;3` settings in the screenshot above creates a TAP file with auto-start loader, CLEAR, and magenta border color. You can write it even shorter: `TAP;;;;3`.
+
+The exported file goes into the `.SpectNetIde/Export` folder within your project folder. Should you use an invalid option, the auto-export command would show the related error. For example, the `TAP;;;;12` parameter list would raise this error:
+
+![Auto export error]({{ site.baseurl }}/assets/images/tutorials/auto-export-error.png)
+
+If you are using [Build Tasks]({{ site.baseurl }}/getting-started/build-tasks), the auto-export function runs right after the compile phase, before the post-build task. So, in your post-build task, you can use the exported file.
