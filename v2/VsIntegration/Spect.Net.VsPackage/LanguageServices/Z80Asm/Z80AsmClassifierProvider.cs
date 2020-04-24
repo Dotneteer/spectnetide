@@ -50,7 +50,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         }
 
         /// <summary>
-        /// Gets th classifier object for the specified text buffer
+        /// Gets the classifier object for the specified text buffer
         /// </summary>
         /// <param name="buffer">Text buffer to get the specifier for</param>
         /// <returns>Classifier object</returns>

@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Antlr4.Runtime;
-using EnvDTE;
+﻿using EnvDTE;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Spect.Net.Assembler;
-using Spect.Net.Assembler.Generated;
 using Spect.Net.Assembler.SyntaxTree;
 using Spect.Net.Assembler.SyntaxTree.Operations;
 using Spect.Net.Assembler.SyntaxTree.Statements;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
 {
     /// <summary>
     /// This class carries out the classification of the Z80 Assembly language text
     /// </summary>
-    internal class Z80AsmClassifier: IClassifier, IDisposable
+    internal class Z80AsmClassifier : IClassifier, IDisposable
     {
         // --- Store registered classification types here
         private readonly IClassificationType
@@ -41,6 +39,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
 
         private readonly ITextBuffer _buffer;
         private bool _isProcessing;
+        private bool _reParse;
         private Z80AsmVisitor _z80SyntaxTreeVisitor;
         private readonly object _locker = new object();
 
@@ -111,13 +110,47 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
             var currentLine = span.Start.GetContainingLine();
             var textOfLine = currentLine.GetText();
 
-            // --- Get the range of lines
-            var firstLine = Z80AsmVisitor.GetAsmLineIndex(lines, span.Start.GetContainingLine().LineNumber + 1) ?? 0;
-            var lastLine = Z80AsmVisitor.GetAsmLineIndex(lines, span.End.GetContainingLine().LineNumber + 1) ?? lines.Count - 1;
+            // --- Get line indexes
+            var firstLineNo = span.Start.GetContainingLine().LineNumber;
+            var lastLineNo = span.End.GetContainingLine().LineNumber;
 
-            for (var line = firstLine; line <= lastLine; line++)
+            int firstAsmLine;
+            int lastAsmLine;
+            bool partialCompile;
+            if (lastLineNo - firstLineNo < 50)
+            {
+                partialCompile = true;
+                lines = new List<SourceLineBase>();
+                for (var line = firstLineNo; line <= lastLineNo; line++)
+                {
+                    var source = span.Snapshot.GetLineFromLineNumber(line).GetText();
+                    var visitor = Z80AsmVisitor.VisitSource(source);
+                    if (visitor.Compilation.Lines.Count > 0)
+                    {
+                        lines.Add(visitor.Compilation.Lines[0]);
+                    }
+                    else
+                    {
+                        lines.Add(new NoInstructionLine());
+                    }
+                }
+                firstAsmLine = 0;
+                lastAsmLine = lines.Count - 1;
+            }
+            else
+            {
+                partialCompile = false;
+                firstAsmLine = Z80AsmVisitor.GetAsmLineIndex(lines, span.Start.GetContainingLine().LineNumber + 1) ?? 0;
+                lastAsmLine = Z80AsmVisitor.GetAsmLineIndex(lines, span.End.GetContainingLine().LineNumber + 1) ?? lines.Count - 1;
+            }
+
+            // --- Get the range of lines
+            for (var line = firstAsmLine; line <= lastAsmLine; line++)
             {
                 var sourceLine = lines[line];
+                var startOffset = partialCompile
+                    ? span.Snapshot.GetLineFromLineNumber(firstLineNo + line).Start.Position 
+                    : 0;
 
                 // --- Check for a block comment
                 var lastStartIndex = 0;
@@ -130,15 +163,15 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
 
                     // --- Block comment found
                     lastStartIndex = blockEndsPos + 2;
-                    AddClassificationSpan(list, snapshot, 
-                        new TextSpan(sourceLine.FirstPosition + blockBeginsPos - 1, sourceLine.FirstPosition + blockEndsPos + 1), 
-                        _comment);
+                    AddClassificationSpan(list, snapshot,
+                        new TextSpan(sourceLine.FirstPosition + blockBeginsPos - 1, sourceLine.FirstPosition + blockEndsPos + 1),
+                        _comment, startOffset);
                 }
 
                 // --- Create labels
                 if (sourceLine.LabelSpan != null)
                 {
-                    AddClassificationSpan(list, snapshot, sourceLine.LabelSpan, _label);
+                    AddClassificationSpan(list, snapshot, sourceLine.LabelSpan, _label, startOffset);
                 }
 
                 // --- Create keywords
@@ -169,13 +202,13 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                     }
 
                     // --- Retrieve a pragma/directive/instruction
-                    AddClassificationSpan(list, snapshot, sourceLine.KeywordSpan, type);
+                    AddClassificationSpan(list, snapshot, sourceLine.KeywordSpan, type, startOffset);
                 }
 
                 // --- Create comments
                 if (sourceLine.CommentSpan != null)
                 {
-                    AddClassificationSpan(list, snapshot, sourceLine.CommentSpan, _comment);
+                    AddClassificationSpan(list, snapshot, sourceLine.CommentSpan, _comment, startOffset);
                 }
 
                 // --- Create numbers
@@ -183,7 +216,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var numberSpan in sourceLine.NumberSpans)
                     {
-                        AddClassificationSpan(list, snapshot, numberSpan, _number);
+                        AddClassificationSpan(list, snapshot, numberSpan, _number, startOffset);
                     }
                 }
 
@@ -192,7 +225,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var stringSpan in sourceLine.StringSpans)
                     {
-                        AddClassificationSpan(list, snapshot, stringSpan, _string);
+                        AddClassificationSpan(list, snapshot, stringSpan, _string, startOffset);
                     }
                 }
 
@@ -201,7 +234,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var functionSpan in sourceLine.FunctionSpans)
                     {
-                        AddClassificationSpan(list, snapshot, functionSpan, _function);
+                        AddClassificationSpan(list, snapshot, functionSpan, _function, startOffset);
                     }
                 }
 
@@ -210,7 +243,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var semiVarSpan in sourceLine.SemiVarSpans)
                     {
-                        AddClassificationSpan(list, snapshot, semiVarSpan, _semiVar);
+                        AddClassificationSpan(list, snapshot, semiVarSpan, _semiVar, startOffset);
                     }
                 }
 
@@ -219,7 +252,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var macroParamSpan in sourceLine.MacroParamSpans)
                     {
-                        AddClassificationSpan(list, snapshot, macroParamSpan, _macroParam);
+                        AddClassificationSpan(list, snapshot, macroParamSpan, _macroParam, startOffset);
                     }
                 }
 
@@ -228,7 +261,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var id in sourceLine.IdentifierSpans)
                     {
-                        AddClassificationSpan(list, snapshot, id, _identifier);
+                        AddClassificationSpan(list, snapshot, id, _identifier, startOffset);
                     }
                 }
 
@@ -237,7 +270,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var statement in sourceLine.StatementSpans)
                     {
-                        AddClassificationSpan(list, snapshot, statement, _statement);
+                        AddClassificationSpan(list, snapshot, statement, _statement, startOffset);
                     }
                 }
 
@@ -246,7 +279,7 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var operand in sourceLine.OperandSpans)
                     {
-                        AddClassificationSpan(list, snapshot, operand, _operand);
+                        AddClassificationSpan(list, snapshot, operand, _operand, startOffset);
                     }
                 }
 
@@ -255,161 +288,13 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
                 {
                     foreach (var mnemonic in sourceLine.MnemonicSpans)
                     {
-                        AddClassificationSpan(list, snapshot, mnemonic, _operand);
+                        AddClassificationSpan(list, snapshot, mnemonic, _operand, startOffset);
                     }
                 }
             }
 
             return list;
         }
-
-        //public void DoHighLighting(List<SourceLineBase> lines, int firstLine, int lastLine)
-        //{
-        //    for (var line = firstLine; line <= lastLine; line++)
-        //    {
-        //        var sourceLine = lines[line];
-
-        //        // --- Check for a block comment
-        //        var lastStartIndex = 0;
-        //        while (true)
-        //        {
-        //            var blockBeginsPos = textOfLine.IndexOf("/*", lastStartIndex, StringComparison.Ordinal);
-        //            if (blockBeginsPos < 0) break;
-        //            var blockEndsPos = textOfLine.IndexOf("*/", blockBeginsPos, StringComparison.Ordinal);
-        //            if (blockEndsPos <= blockBeginsPos) break;
-
-        //            // --- Block comment found
-        //            lastStartIndex = blockEndsPos + 2;
-        //            AddClassificationSpan(list, snapshot,
-        //                new TextSpan(sourceLine.FirstPosition + blockBeginsPos - 1, sourceLine.FirstPosition + blockEndsPos + 1),
-        //                _comment);
-        //        }
-
-        //        // --- Create labels
-        //        if (sourceLine.LabelSpan != null)
-        //        {
-        //            AddClassificationSpan(list, snapshot, sourceLine.LabelSpan, _label);
-        //        }
-
-        //        // --- Create keywords
-        //        if (sourceLine.KeywordSpan != null)
-        //        {
-        //            var type = _instruction;
-        //            switch (sourceLine)
-        //            {
-        //                case PragmaBase _:
-        //                    type = _pragma;
-        //                    break;
-        //                case Directive _:
-        //                    type = _directive;
-        //                    break;
-        //                case IncludeDirective _:
-        //                    type = _includeDirective;
-        //                    break;
-        //                case MacroOrStructInvocation _:
-        //                    type = _macroInvocation;
-        //                    break;
-        //                case ModuleStatement _:
-        //                case ModuleEndStatement _:
-        //                    type = _module;
-        //                    break;
-        //                case StatementBase _:
-        //                    type = _statement;
-        //                    break;
-        //            }
-
-        //            // --- Retrieve a pragma/directive/instruction
-        //            AddClassificationSpan(list, snapshot, sourceLine.KeywordSpan, type);
-        //        }
-
-        //        // --- Create comments
-        //        if (sourceLine.CommentSpan != null)
-        //        {
-        //            AddClassificationSpan(list, snapshot, sourceLine.CommentSpan, _comment);
-        //        }
-
-        //        // --- Create numbers
-        //        if (sourceLine.NumberSpans != null)
-        //        {
-        //            foreach (var numberSpan in sourceLine.NumberSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, numberSpan, _number);
-        //            }
-        //        }
-
-        //        // --- Create strings
-        //        if (sourceLine.StringSpans != null)
-        //        {
-        //            foreach (var stringSpan in sourceLine.StringSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, stringSpan, _string);
-        //            }
-        //        }
-
-        //        // --- Create functions
-        //        if (sourceLine.FunctionSpans != null)
-        //        {
-        //            foreach (var functionSpan in sourceLine.FunctionSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, functionSpan, _function);
-        //            }
-        //        }
-
-        //        // --- Create semi-variables
-        //        if (sourceLine.SemiVarSpans != null)
-        //        {
-        //            foreach (var semiVarSpan in sourceLine.SemiVarSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, semiVarSpan, _semiVar);
-        //            }
-        //        }
-
-        //        // --- Create macro parameters
-        //        if (sourceLine.MacroParamSpans != null)
-        //        {
-        //            foreach (var macroParamSpan in sourceLine.MacroParamSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, macroParamSpan, _macroParam);
-        //            }
-        //        }
-
-        //        // --- Create identifiers
-        //        if (sourceLine.IdentifierSpans != null)
-        //        {
-        //            foreach (var id in sourceLine.IdentifierSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, id, _identifier);
-        //            }
-        //        }
-
-        //        // --- Create statements
-        //        if (sourceLine.StatementSpans != null)
-        //        {
-        //            foreach (var statement in sourceLine.StatementSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, statement, _statement);
-        //            }
-        //        }
-
-        //        // --- Create operands
-        //        if (sourceLine.OperandSpans != null)
-        //        {
-        //            foreach (var operand in sourceLine.OperandSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, operand, _operand);
-        //            }
-        //        }
-
-        //        // --- Create mnemonics
-        //        if (sourceLine.MnemonicSpans != null)
-        //        {
-        //            foreach (var mnemonic in sourceLine.MnemonicSpans)
-        //            {
-        //                AddClassificationSpan(list, snapshot, mnemonic, _operand);
-        //            }
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// This event is fired whenever the classification changes.
@@ -482,32 +367,46 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         private async void ParseDocument()
         {
             // --- Do not start parsing over existing parsing
-            if (_isProcessing) return;
-            _isProcessing = true;
-
-            await Task.Run(() =>
+            if (_isProcessing)
             {
-                try
-                {
-                    // --- Get the entire text of the source code
-                    var span = new SnapshotSpan(_buffer.CurrentSnapshot, 0, _buffer.CurrentSnapshot.Length);
-                    var source = _buffer.CurrentSnapshot.GetText(span);
+                _reParse = true;
+                return;
+            }
+            _isProcessing = true;
+            await DoParse();
+            while (_reParse)
+            {
+                _reParse = false;
+                _isProcessing = true;
+                await DoParse();
+            }
 
-                    // --- Let's use the Z80 assembly parser to obtain tags
-                    var visitor = Z80AsmVisitor.VisitSource(source);
-                    lock (_locker)
+            async Task DoParse()
+            {
+                await Task.Run(() =>
+                {
+                    try
                     {
-                        _z80SyntaxTreeVisitor = visitor;
-                    }
+                        // --- Get the entire text of the source code
+                        var span = new SnapshotSpan(_buffer.CurrentSnapshot, 0, _buffer.CurrentSnapshot.Length);
+                        var source = _buffer.CurrentSnapshot.GetText(span);
 
-                    // --- Code is parsed, sign the change
-                    ClassificationChanged?.Invoke(this, new ClassificationChangedEventArgs(span));
-                }
-                finally
-                {
-                    _isProcessing = false;
-                }
-            });
+                        // --- Let's use the Z80 assembly parser to obtain tags
+                        var visitor = Z80AsmVisitor.VisitSource(source);
+                        lock (_locker)
+                        {
+                            _z80SyntaxTreeVisitor = visitor;
+                        }
+
+                        // --- Code is parsed, sign the change
+                        ClassificationChanged?.Invoke(this, new ClassificationChangedEventArgs(span));
+                    }
+                    finally
+                    {
+                        _isProcessing = false;
+                    }
+                });
+            }
         }
 
         /// <summary>
@@ -519,11 +418,11 @@ namespace Spect.Net.VsPackage.LanguageServices.Z80Asm
         /// <param name="type">Type of classification</param>
         /// <returns>The newly created classification span</returns>
         private static void AddClassificationSpan(List<ClassificationSpan> list, ITextSnapshot snapshot,
-            TextSpan text, IClassificationType type)
+            TextSpan text, IClassificationType type, int startOffset)
         {
             try
             {
-                var span = new Span(text.Start, text.End - text.Start);
+                var span = new Span(text.Start + startOffset, text.End - text.Start);
                 var classificationSpan = new ClassificationSpan(new SnapshotSpan(snapshot, span), type);
                 list.Add(classificationSpan);
             }

@@ -314,6 +314,11 @@ namespace Spect.Net.VsPackage
         [Description("Logs the low level commands sent to the uPD765a FDC")]
         public bool LogFloppyCommands { get; set; } = false;
 
+        [Category("Diagnostics")]
+        [DisplayName("ASM editor syntax highligting")]
+        [Description("Turns on or off ASM syntax highlighting")]
+        public bool AsmSyntaxHighlighting { get; set; } = true;
+
         [Category("Memory View")]
         [DisplayName("BC Highlighted Background")]
         [Description("Background color used for the BC register pair (#rrggbb)")]
