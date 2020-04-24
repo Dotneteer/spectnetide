@@ -84,6 +84,10 @@ namespace Spect.Net.Assembler.Assembler
                     {
                         return (localSymbolValue.Value, localSymbolValue);
                     }
+                    if (scope.LocalSymbolBookings.Contains(symb))
+                    {
+                        return (null, null);
+                    }
                 }
 
                 // --- Check the global scope

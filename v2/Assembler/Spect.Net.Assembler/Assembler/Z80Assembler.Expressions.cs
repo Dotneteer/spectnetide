@@ -53,9 +53,6 @@ namespace Spect.Net.Assembler.Assembler
                 resolved = CurrentModule.ResolveSimpleSymbol(symbol);
             }
             return resolved;
-            //return !symbol.Contains(".") && !startFromGlobal
-            //    ? CurrentModule.ResolveSimpleSymbol(symbol)
-            //    : CurrentModule.ResolveCompoundSymbol(symbol, startFromGlobal);
         }
 
         /// <summary>

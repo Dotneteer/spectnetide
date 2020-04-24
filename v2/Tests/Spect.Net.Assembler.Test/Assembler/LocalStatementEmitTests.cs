@@ -141,6 +141,22 @@ namespace Spect.Net.Assembler.Test.Assembler
                 0x00, 0x00, 0x01, 0x00, 0x80);
         }
 
+        [TestMethod]
+        public void LocalOverridesGlobal()
+        {
+            CodeEmitWorksWithOptions(new AssemblerOptions { ProcExplicitLocalsOnly = true }, @"
+                read_ok: nop
+                .proc
+                    local ready_ok
+                    nop
+                    jp ready_ok
+                    nop
+                ready_ok
+                    nop
+                .endp
+            ", 0x00, 0x00, 0xc3, 0x06, 0x80, 0x00, 0x00);
+        }
+
 
     }
 }
