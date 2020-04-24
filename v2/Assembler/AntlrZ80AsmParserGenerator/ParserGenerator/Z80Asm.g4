@@ -683,7 +683,7 @@ ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE'
 		  | '.scopeend' | '.SCOPEEND' | 'scopeend' | 'SCOPEEND' ;
 STRUCT	: '.struct' | '.STRUCT' | 'struct' | 'STRUCT' ;
 ENDST	: '.ends' | '.ENDS' ;
-LOCAL	: '.local' | '.LOCAL' | 'local' | 'LOCAL' ;
+LOCAL	: '.local' | '.LOCAL' | 'local' | 'LOCAL' | 'Local' ;
 
 // --- Built-in function names
 TEXTOF	: 'textof' | 'TEXTOF' ;
