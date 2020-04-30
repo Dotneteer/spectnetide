@@ -347,7 +347,18 @@ namespace Spect.Net.VsPackage
             Z80AsmClassifierProvider.AttachToPackage();
             Z80AsmViewTaggerProvider.AttachToPackage();
             Log("SpectNetIdePackage initialized.");
+
+            _ = ReportMemory();
         }
+
+        private static async Task ReportMemory()
+        {
+            while (true)
+            {
+                await Task.Delay(20000);
+                MemoryUtils.ReportAllocatedMemory();
+            }
+        } 
 
         /// <summary>
         /// Initializes all commands that can be used within SpectNetIDE

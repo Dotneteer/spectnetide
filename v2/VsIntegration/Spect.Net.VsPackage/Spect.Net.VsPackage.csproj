@@ -373,6 +373,7 @@
       <DependentUpon>WatchToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\Watch\WatchToolWindowViewModel.cs" />
+    <Compile Include="VsxLibrary\MemoryUtils.cs" />
     <Compile Include="VsxLibrary\Command\CommandIdAttribute.cs" />
     <Compile Include="VsxLibrary\Command\CompileCodeCommandBase.cs" />
     <Compile Include="VsxLibrary\Command\ExecutableSpectrumProgramCommandBase.cs" />
