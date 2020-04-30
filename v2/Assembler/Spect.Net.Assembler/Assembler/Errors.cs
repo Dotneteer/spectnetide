@@ -51,6 +51,7 @@ namespace Spect.Net.Assembler.Assembler
         public const string Z0092 = "Z0092";
         public const string Z0093 = "Z0093";
         public const string Z0094 = "Z0094";
+        public const string Z0095 = "Z0095";
 
         public const string Z0100 = "Z0100";
         public const string Z0101 = "Z0101";
@@ -174,6 +175,7 @@ namespace Spect.Net.Assembler.Assembler
             { Z0092, "ALIGN pragma must be used with a parameter value between 1 and #4000; {0} in an invalid value." },
             { Z0093, "DEFH pragma requires a string argument." },
             { Z0094, "DEFH pragma requires a string with even hexadecimal digits." },
+            { Z0095, "'{0}' is invalid condition for JR." },
             { Z0100, "Unexpected token: '{0}'" },
             { Z0101, "Unexpected end of line" },
             { Z0102, "To use this Spectrum Next-specific instruction, you need to set MODEL type to NEXT explicitly." },

@@ -4183,7 +4183,13 @@ namespace Spect.Net.Assembler.Assembler
 
             if (op.Operand.Type == OperandType.Condition)
             {
-                var condIndex = s_ConditionOrder.IndexOf(op.Operand.Condition);
+                var cond = op.Operand.Condition;
+                if (cond == "PO" || cond == "PE" || cond == "P" || cond == "M")
+                {
+                    asm.ReportError(Errors.Z0095, op, cond);
+                    return;
+                }
+                var condIndex = s_ConditionOrder.IndexOf(cond);
                 var opCode = 0x20 + condIndex * 8;
                 asm.EmitJumpRelativeOp(op, op.Operand2.Expression, opCode);
                 return;

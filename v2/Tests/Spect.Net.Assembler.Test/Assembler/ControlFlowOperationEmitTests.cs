@@ -98,6 +98,16 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void JrFailsWithInvalidCondition()
+        {
+            // --- Start address is #8000!
+            CodeRaisesError("jr po,$", Errors.Z0095);
+            CodeRaisesError("jr pe,$", Errors.Z0095);
+            CodeRaisesError("jr p,$", Errors.Z0095);
+            CodeRaisesError("jr m,$", Errors.Z0095);
+        }
+
+        [TestMethod]
         public void JpOpsWorksAsExpected()
         {
             CodeEmitWorks("jp #3024", 0xC3, 0x24, 0x30);
