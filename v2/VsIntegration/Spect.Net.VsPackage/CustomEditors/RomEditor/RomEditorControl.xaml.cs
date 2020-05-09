@@ -94,6 +94,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
                             Prompt.IsValid = false;
                             Prompt.ValidationMessage = "No BASIC listing in this block";
                             e.Handled = false;
+                            break;
                         }
                         if (DisplayExportBasicListDialog(out var vm))
                         {
