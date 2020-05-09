@@ -2,6 +2,7 @@
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.ToolWindows.BankAware;
+using Spect.Net.VsPackage.ToolWindows.BasicList;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,6 +27,11 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
             get => _vm;
             set => DataContext = _vm = value;
         }
+
+        /// <summary>
+        /// The optional view model of the BASIC listing
+        /// </summary>
+        public BasicListViewModel BasicList { get; set; }
 
         public RomEditorControl()
         {
@@ -82,24 +88,42 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
                     break;
 
                 case RomEditorCommandType.ExportProgram:
-                    e.Handled = true;
-                    break;
-
-                case RomEditorCommandType.ExportDisass:
-                    if (DisplayExportDisassemblyDialog(out var vm, parser.Address, parser.Address2))
                     {
-                        // --- Export cancelled
+                        if (BasicList == null)
+                        {
+                            Prompt.IsValid = false;
+                            Prompt.ValidationMessage = "No BASIC listing in this block";
+                            e.Handled = false;
+                        }
+                        if (DisplayExportBasicListDialog(out var vm))
+                        {
+                            // --- Export cancelled
+                            break;
+                        }
+
+                        BasicList.ExportToFile(vm.Filename);
+                        ExportBasicListViewModel.LatestFolder =
+                            Path.GetDirectoryName(vm.Filename);
                         break;
                     }
 
-                    var exporter = new DisassemblyExporter(vm, new RomEditorDisassemblyParent());
-                    var disassembler = new Z80Disassembler(
-                        new List<MemorySection> { new MemorySection(parser.Address, parser.Address2) },
-                        Vm.MemoryBuffer);
-                    exporter.ExportDisassembly(disassembler);
-                    ExportDisassemblyViewModel.LatestFolder =
-                        Path.GetDirectoryName(vm.Filename);
-                    break;
+                case RomEditorCommandType.ExportDisass:
+                    {
+                        if (DisplayExportDisassemblyDialog(out var vm, parser.Address, parser.Address2))
+                        {
+                            // --- Export cancelled
+                            break;
+                        }
+
+                        var exporter = new DisassemblyExporter(vm, new RomEditorDisassemblyParent());
+                        var disassembler = new Z80Disassembler(
+                            new List<MemorySection> { new MemorySection(parser.Address, parser.Address2) },
+                            Vm.MemoryBuffer);
+                        exporter.ExportDisassembly(disassembler);
+                        ExportDisassemblyViewModel.LatestFolder =
+                            Path.GetDirectoryName(vm.Filename);
+                        break;
+                    }
 
                 default:
                     e.Handled = false;
@@ -147,6 +171,33 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
                 CommentStyle = CommentStyle.Semicolon,
                 MaxLineLengthType = LineLengthType.L100,
                 IndentDepth = IndentDepthType.Two
+            };
+            exportDialog.SetVm(vm);
+            var accepted = exportDialog.ShowModal();
+            return !accepted.HasValue || !accepted.Value;
+        }
+
+        /// <summary>
+        /// Displays the Export Disassembly dialog to collect parameter data
+        /// </summary>
+        /// <param name="vm">View model with collected data</param>
+        /// <param name="startAddress">Disassembly start address</param>
+        /// <param name="endAddress">Disassembly end address</param>
+        /// <returns>
+        /// True, if the user stars export; false, if the export is cancelled
+        /// </returns>
+        private static bool DisplayExportBasicListDialog(out ExportBasicListViewModel vm)
+        {
+            var exportDialog = new ExportBasicListDialog()
+            {
+                HasMaximizeButton = false,
+                HasMinimizeButton = false
+            };
+
+            vm = new ExportBasicListViewModel
+            {
+                Filename = Path.Combine(ExportBasicListViewModel.LatestFolder
+                    ?? "C:\\Temp", "BasicList.bas"),
             };
             exportDialog.SetVm(vm);
             var accepted = exportDialog.ShowModal();

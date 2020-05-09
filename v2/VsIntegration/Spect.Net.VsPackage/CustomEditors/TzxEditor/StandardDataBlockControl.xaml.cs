@@ -17,6 +17,7 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         public StandardDataBlockControl(TzxStandardSpeedBlockViewModel vm) : this()
         {
             DataContext = Vm = vm;
+            RomEditor.BasicList = vm?.ProgramList;
         }
 
         /// <summary>
