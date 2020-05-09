@@ -52,10 +52,6 @@ namespace Spect.Net.Wpf.Providers
         public override void OnAttachedToVm(ISpectrumVm hostVm)
         {
             base.OnAttachedToVm(hostVm);
-            _audioPars = Type == AudioProviderType.Beeper 
-                ? hostVm.AudioConfiguration : 
-                hostVm.SoundConfiguration;
-            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_audioPars.AudioSampleRate, 1);
             Reset();
         }
 
@@ -72,6 +68,10 @@ namespace Spect.Net.Wpf.Providers
             {
                 // --- We ignore this exception deliberately
             }
+            _audioPars = Type == AudioProviderType.Beeper
+                ? HostVm.AudioConfiguration :
+                HostVm.SoundConfiguration;
+            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(_audioPars.AudioSampleRate, 1);
             _waveOut = null;
             _bufferLength = (_audioPars.SamplesPerFrame + 1) * FRAMES_BUFFERED;
             _waveBuffer = new float[_bufferLength];
@@ -88,6 +88,7 @@ namespace Spect.Net.Wpf.Providers
         /// </param>
         public void AddSoundFrame(float[] samples)
         {
+            if (_waveOut == null) return;
             foreach (var sample in samples)
             {
                 _waveBuffer[_writeIndex++] = sample;
@@ -136,12 +137,10 @@ namespace Spect.Net.Wpf.Providers
             if (_waveOut == null)
             {
                 SetupSound();
+                _waveOut.Volume = 1.0F;
+                _waveOut?.Play();
             }
 
-            _waveOut.Volume = 1.0F;
-            _waveOut?.Play();
-            _waveOut?.Pause();
-            _waveOut?.Play();
         }
 
         public void PauseSound()
@@ -161,6 +160,7 @@ namespace Spect.Net.Wpf.Providers
 
         private void SetupSound()
         {
+            Reset();
             _waveOut = new WaveOut
             {
                 DesiredLatency = 100,

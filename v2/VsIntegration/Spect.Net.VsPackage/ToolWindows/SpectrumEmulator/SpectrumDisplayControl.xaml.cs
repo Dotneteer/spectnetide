@@ -46,6 +46,7 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
         private uint[] _colors;
         private CancellationTokenSource _cancellationSource;
         private Task _shadowRenderingTask;
+        private bool _justPaused = false;
 
         /// <summary>
         /// The ZX Spectrum virtual machine view model utilized by this user control
@@ -153,8 +154,8 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
             // --- Un-register messages this control listens to
             if (Vm != null)
             {
-                Vm.Machine.BeeperProvider?.PauseSound();
-                Vm.Machine.SoundProvider?.PauseSound();
+                Vm.Machine.BeeperProvider?.KillSound();
+                Vm.Machine.SoundProvider?.KillSound();
                 Vm.Machine.VmStateChanged -= OnVmStateChanged;
                 Vm.KeyScanning -= MachineOnKeyScanning;
                 Vm.CpuFrameCompleted -= MachineOnCpuFrameCompleted;
@@ -185,15 +186,14 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                             ShowUlaRaster();
                             break;
                         case VmState.Running:
-                            Vm.Machine.BeeperProvider?.PlaySound();
-                            Vm.Machine.SoundProvider?.PlaySound();
                             Vm.FastLoadCompleted += OnFastLoadCompleted;
                             ShowUlaRaster();
                             StopShadowScreenRendering();
                             break;
                         case VmState.Paused:
-                            Vm.Machine.BeeperProvider?.PauseSound();
-                            Vm.Machine.SoundProvider?.PauseSound();
+                            Vm.Machine.BeeperProvider?.KillSound();
+                            Vm.Machine.SoundProvider?.KillSound();
+                            _justPaused = true;
                             MachineOnRenderFrameCompleted(this,
                                 new RenderFrameEventArgs(Vm.Machine.SpectrumVm.ScreenDevice.GetPixelBuffer()));
                             StartShadowScreenRendering();
@@ -231,6 +231,12 @@ namespace Spect.Net.VsPackage.ToolWindows.SpectrumEmulator
                 {
                     _lastBuffer = e.ScreenPixels;
                     RefreshSpectrumScreen(_lastBuffer);
+                    if (!_justPaused)
+                    {
+                        Vm.Machine.BeeperProvider?.PlaySound();
+                        Vm.Machine.SoundProvider?.PlaySound();
+                    }
+                    _justPaused = false;
                 },
                 DispatcherPriority.Send
             );
