@@ -1,7 +1,11 @@
 ﻿using Spect.Net.SpectrumEmu.Devices.Rom;
+using Spect.Net.VsPackage.VsxLibrary;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
+using System.Windows;
 
 namespace Spect.Net.VsPackage.ToolWindows.BasicList
 {
@@ -165,6 +169,36 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
 
             lineVm.Text = sb.ToString();
             return progStart;
+        }
+
+        /// <summary>
+        /// Exports the list to the specified file
+        /// </summary>
+        /// <param name="filename"></param>
+        public void ExportToFile(string filename)
+        {
+            var listing = new StringBuilder(4096);
+            foreach (var line in ProgramLines)
+            {
+                listing.Append(line.LineNo);
+                listing.Append(" ");
+                listing.AppendLine(line.Text);
+            }
+            try
+            {
+                var dirName = Path.GetDirectoryName(filename);
+                if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName))
+                {
+                    Directory.CreateDirectory(dirName);
+                }
+                File.WriteAllText(filename, listing.ToString());
+            }
+            catch (Exception ex)
+            {
+                VsxDialogs.Show($"Error while exporting to file {filename}: {ex.Message}",
+                    "Export BASIC listing error.", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+                return;
+            }
         }
 
         /// <summary>

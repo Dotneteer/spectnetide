@@ -68,5 +68,24 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
             Address = (ushort)address;
             return true;
         }
+
+        /// <summary>
+        /// Gets the label value from the specified match
+        /// </summary>
+        /// <param name="match">Match instance</param>
+        /// <param name="groupId">Group to check for address capture</param>
+        /// <returns></returns>
+        protected virtual bool GetLabel2(Match match, int groupId = 2)
+        {
+            var addrStr = match.Groups[groupId].Captures[0].Value;
+            if (!int.TryParse(addrStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture,
+                out int address))
+            {
+                return false;
+            }
+            Address2 = (ushort)address;
+            return true;
+        }
+
     }
 }

@@ -96,6 +96,10 @@
     <Compile Include="Compilers\ZxbResult.cs" />
     <Compile Include="Compilers\ZxbRunner.cs" />
     <Compile Include="CustomEditors\RomEditor\CommandParser.cs" />
+    <Compile Include="CustomEditors\RomEditor\ExportBasicListDialog.xaml.cs">
+      <DependentUpon>ExportBasicListDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomEditors\RomEditor\ExportBasicListViewModel.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandParser.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorCommandType.cs" />
     <Compile Include="CustomEditors\RomEditor\RomEditorControl.xaml.cs">
@@ -682,6 +686,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Page Include="CustomEditors\RomEditor\ExportBasicListDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomEditors\RomEditor\RomEditorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

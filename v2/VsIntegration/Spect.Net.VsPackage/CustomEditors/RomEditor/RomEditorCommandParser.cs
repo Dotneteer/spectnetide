@@ -6,7 +6,9 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
     {
         private static readonly Regex s_GotoRegex = new Regex(@"^([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_DisassRegex = new Regex(@"^[#]\s*([a-fA-F0-9]{1,4})$");
-        private static readonly Regex s_ExitDisassRegex = new Regex(@"^[xX]\s*$");
+        private static readonly Regex s_ExportDisassRegex = new Regex(@"^[xX]\s*([a-fA-F0-9]{1,4})\s*([a-fA-F0-9]{1,4})$");
+        private static readonly Regex s_ExportProgramRegex = new Regex(@"^[pP]\s*$");
+        private static readonly Regex s_ExitDisassRegex = new Regex(@"^[qQ]\s*$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -60,6 +62,31 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
             if (match.Success)
             {
                 Command = RomEditorCommandType.ExitDisass;
+                return;
+            }
+
+            // --- Check for EXPORT PROGRAM command
+            match = s_ExportProgramRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = RomEditorCommandType.ExportProgram;
+                return;
+            }
+
+            // --- Check for EXPORT DISASSEMBLY command
+            match = s_ExportDisassRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = RomEditorCommandType.ExportDisass;
+                if (!GetLabel(match))
+                {
+                    Command = RomEditorCommandType.Invalid;
+                    return;
+                }
+                if (!GetLabel2(match))
+                {
+                    Command = RomEditorCommandType.Invalid;
+                }
                 return;
             }
 
