@@ -27,7 +27,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         /// </summary>
         /// <param name="exportParams">Export parameters collected from the dialog</param>
         /// <param name="parentViewModel">Disassembly parent view model</param>
-        public DisassemblyExporter(ExportDisassemblyViewModel exportParams, DisassemblyToolWindowViewModel parentViewModel)
+        public DisassemblyExporter(ExportDisassemblyViewModel exportParams, IDisassemblyItemParent parentViewModel)
         {
             ExportParams = exportParams;
             ParentViewModel = parentViewModel;
@@ -36,7 +36,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
             InitCommentProperties();
         }
 
-        public DisassemblyToolWindowViewModel ParentViewModel { get; }
+        public IDisassemblyItemParent ParentViewModel { get; }
 
         /// <summary>
         /// Export disassembly parameters

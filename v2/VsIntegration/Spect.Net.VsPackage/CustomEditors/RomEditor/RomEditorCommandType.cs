@@ -9,6 +9,8 @@
         Invalid,
         Goto,
         Disassemble,
+        ExportDisass,
+        ExportProgram,
         ExitDisass
     }
 }

@@ -124,7 +124,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Beeper
                 Overflow = (int) (HostVm.Cpu.Tacts - _frameBegins - _frameTacts);
             }
             _beeperProvider?.AddSoundFrame(AudioSamples);
-            _frameBegins += _frameTacts;
+            _frameBegins = HostVm.Cpu.Tacts;
         }
 
         /// <summary>
