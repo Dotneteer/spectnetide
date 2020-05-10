@@ -62,11 +62,11 @@
                 HasGraphics="true" GraphicsCode="7"/>
                 <local:Sp128KeyControl 
                 Code="N8"
-                MainKey="8" NumericMode="True" SShiftKey="(" ExtKey="" ExtShiftKey="POINT" 
+                MainKey="8" NumericMode="True" SShiftKey="(" ExtKey="BR/FL (off)" ExtShiftKey="POINT" 
                 HasGraphics="true" GraphicsCode="8"/>
                 <local:Sp128KeyControl 
                 Code="N9"
-                MainKey="9" NumericMode="True" SShiftKey=")" ExtKey="" ExtShiftKey="CAT" 
+                MainKey="9" NumericMode="True" SShiftKey=")" ExtKey="BR/FL (on)" ExtShiftKey="CAT" 
                 HasGraphics="false" />
                 <local:Sp128KeyControl 
                 Code="N0"

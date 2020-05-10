@@ -4,15 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:exportDisassembly="clr-namespace:Spect.Net.VsPackage.ToolWindows.Disassembly"
-             x:Class="Spect.Net.VsPackage.CustomEditors.RomEditor.ExportBasicListDialog"
+             xmlns:exportBasic="clr-namespace:Spect.Net.VsPackage.CustomEditors.RomEditor"
+             x:Class="Spect.Net.VsPackage.Dialogs.Export.ExportBasicListDialog"
              Background="{DynamicResource BKeyboardBackground}"
              SizeToContent="WidthAndHeight"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="800" 
              Title="Export Disassembly" ResizeMode="NoResize"
              WindowStartupLocation="CenterScreen" 
-             d:DataContext="{d:DesignInstance {x:Type exportDisassembly:ExportDisassemblyViewModel}, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type exportBasic:ExportBasicListViewModel}, IsDesignTimeCreatable=True}">
 
     <platformUi:DialogWindow.Resources>
         <ResourceDictionary>
@@ -28,6 +28,7 @@
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -55,8 +56,14 @@
                     Template="{DynamicResource DialogButtonTemplate}" Click="OnSelectFileFolderClick" />
         </Grid>
 
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" Margin="0,4">
+            <CheckBox Content="Mimic ZX BASIC" 
+                      Style="{DynamicResource DialogCheckBox}" 
+                      Visibility="{Binding EnableTapeFileArgs, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      IsChecked="{Binding MimicZxBasic, Mode=TwoWay}"/>
+        </StackPanel>
 
-        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                 Margin="0,12,0,0"
                 Padding="12,8" 
                 Background="{DynamicResource BDebugHeaderBackground}">

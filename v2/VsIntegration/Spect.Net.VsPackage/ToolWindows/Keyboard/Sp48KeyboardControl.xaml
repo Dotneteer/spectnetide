@@ -101,12 +101,16 @@
                 ExtShiftKey="POINT" 
                 HasGraphics="true"
                 GraphicsCode="0"
-                NumericMode="True"/>
+                NumericMode="True"
+                ColorKey="BR/FL (off)"
+                NumForeground="#808080" />
             <keyboard:Sp48KeyControl 
                 Code="N9"
                 Margin="0,0,18,0"
                 MainKey="9" SShiftKey=")" ExtKey="GRAPHICS" ExtShiftKey="CAT" 
-                NumericMode="True"/>
+                NumericMode="True"
+                ColorKey="BR/FL (on)"
+                NumForeground="#808080" />
             <keyboard:Sp48KeyControl 
                 Code="N0"
                 Margin="0,0,18,0"

@@ -15,6 +15,7 @@ using Task = System.Threading.Tasks.Task;
 using VsTask = Microsoft.VisualStudio.Shell.Task;
 using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 using Spect.Net.VsPackage.Dialogs.Export;
+using Microsoft.VisualStudio.Shell.TableManager;
 // ReSharper disable SuspiciousTypeConversion.Global
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
@@ -491,7 +492,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                     var errorTask = new ErrorTask
                     {
                         Category = TaskCategory.User,
-                        ErrorCategory = TaskErrorCategory.Error,
+                        ErrorCategory = error.IsWarning ? TaskErrorCategory.Warning : TaskErrorCategory.Error,
                         HierarchyItem = hierarchy,
                         Document = error.Filename ?? ItemPath,
                         Line = error.Line - 1,

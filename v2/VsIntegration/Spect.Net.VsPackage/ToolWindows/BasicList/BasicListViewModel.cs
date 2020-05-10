@@ -32,6 +32,11 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         public ushort EndOffset { get; }
 
         /// <summary>
+        /// Signs if ZX BASIC should be mimicked
+        /// </summary>
+        public bool MimicZxBasic { get; set; }
+
+        /// <summary>
         /// Program lines decoded
         /// </summary>
         public ObservableCollection<BasicLineViewModel> ProgramLines { get; set; } = new ObservableCollection<BasicLineViewModel>();
@@ -58,7 +63,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         /// <param name="memory">Memory array</param>
         /// <param name="startOffset">Start offset of the BASIC code</param>
         /// <param name="endOffset">End offset of the BASIC Code (exclusive)</param>
-        public BasicListViewModel(byte[] memory, ushort startOffset, ushort endOffset) : this()
+        public BasicListViewModel(byte[] memory, ushort startOffset, ushort endOffset, bool mimicZxBasic = false) : this()
         {
             var romDevice = SpectrumVm?.RomDevice;
             if (romDevice != null)
@@ -72,6 +77,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
             Memory = memory;
             StartOffset = startOffset;
             EndOffset = endOffset;
+            MimicZxBasic = mimicZxBasic;
         }
 
         /// <summary>
@@ -118,6 +124,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
             }
 
             var spaceBeforeToken = false;
+            var withinQuotes = false;
             var sb = new StringBuilder(256);
 
             while (progStart < lineEnd)
@@ -144,9 +151,35 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
                 // --- Whatever we print, the next token needs a space
                 spaceBeforeToken = true;
 
+                if (nextSymbol == 0x22)
+                {
+                    // --- Printable character
+                    sb.Append((char)nextSymbol);
+                    withinQuotes = !withinQuotes;
+                    continue;
+                }
+
                 if (nextSymbol >= 0x20 && nextSymbol <= 0x7F)
                 {
                     // --- Printable character
+                    if (withinQuotes)
+                    {
+                        if (nextSymbol == (int)'\\')
+                        {
+                            sb.Append("\\\\");
+                            continue;
+                        }
+                        else if (nextSymbol == 0x60)
+                        {
+                            sb.Append("\\`");
+                            continue;
+                        }
+                        else if (nextSymbol == 0x7f)
+                        {
+                            sb.Append("\\*");
+                            continue;
+                        }
+                    }
                     sb.Append((char)nextSymbol);
                     continue;
                 }
@@ -164,7 +197,96 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
                 }
 
                 // --- Non-printable character, let's display it with an escape sequence
-                sb.Append($"°{nextSymbol:X2}°");
+                if (MimicZxBasic && withinQuotes)
+                {
+                    var lookahead = progStart < Memory.Length ? Memory[progStart] : -1;
+                    switch (nextSymbol)
+                    {
+                        case 0x10:
+                            if (lookahead >= 0)
+                            {
+                                sb.Append("\\{i" + lookahead + "}");
+                                progStart++;
+                            }
+                            break;
+                        case 0x11:
+                            if (lookahead >= 0)
+                            {
+                                sb.Append("\\{p" + lookahead + "}");
+                                progStart++;
+                            }
+                            break;
+                        case 0x12:
+                            if (lookahead >= 0)
+                            {
+                                sb.Append("\\{f" + lookahead + "}");
+                                progStart++;
+                            }
+                            break;
+                        case 0x13:
+                            if (lookahead >= 0)
+                            {
+                                sb.Append("\\{b" + lookahead + "}");
+                                progStart++;
+                            }
+                            break;
+                        case 0x80:
+                            sb.Append("\\  ");
+                            break;
+                        case 0x81:
+                            sb.Append("\\ '");
+                            break;
+                        case 0x82:
+                            sb.Append("\\' ");
+                            break;
+                        case 0x83:
+                            sb.Append("\\''");
+                            break;
+                        case 0x84:
+                            sb.Append("\\ .");
+                            break;
+                        case 0x85:
+                            sb.Append("\\ :");
+                            break;
+                        case 0x86:
+                            sb.Append("\\'.");
+                            break;
+                        case 0x87:
+                            sb.Append("\\':");
+                            break;
+                        case 0x88:
+                            sb.Append("\\. ");
+                            break;
+                        case 0x89:
+                            sb.Append("\\.'");
+                            break;
+                        case 0x8a:
+                            sb.Append("\\: ");
+                            break;
+                        case 0x8b:
+                            sb.Append("\\:'");
+                            break;
+                        case 0x8c:
+                            sb.Append("\\..");
+                            break;
+                        case 0x8d:
+                            sb.Append("\\.:");
+                            break;
+                        case 0x8e:
+                            sb.Append("\\:.");
+                            break;
+                        case 0x8f:
+                            sb.Append("\\::");
+                            break;
+                        default:
+                            sb.Append($"#{nextSymbol & 0xff}");
+                            break;
+                    }
+                }
+                else
+                {
+                    sb.Append($"°{nextSymbol:X2}°");
+                }
             }
 
             lineVm.Text = sb.ToString();

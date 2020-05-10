@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.ProjectSystem.References;
 using Spect.Net.SpectrumEmu.Disassembler;
+using Spect.Net.VsPackage.Dialogs.Export;
 using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.ToolWindows.BankAware;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
@@ -102,6 +103,9 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
                             break;
                         }
 
+                        BasicList.MimicZxBasic = vm.MimicZxBasic;
+                        BasicList.ProgramLines.Clear();
+                        BasicList.DecodeBasicProgram();
                         BasicList.ExportToFile(vm.Filename);
                         ExportBasicListViewModel.LatestFolder =
                             Path.GetDirectoryName(vm.Filename);
@@ -198,7 +202,8 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
             vm = new ExportBasicListViewModel
             {
                 Filename = Path.Combine(ExportBasicListViewModel.LatestFolder
-                    ?? "C:\\Temp", "BasicList.bas"),
+                    ?? "C:\\Temp", "BasicList.zxbas"),
+                MimicZxBasic = true
             };
             exportDialog.SetVm(vm);
             var accepted = exportDialog.ShowModal();

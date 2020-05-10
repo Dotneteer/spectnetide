@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 
-namespace Spect.Net.VsPackage.CustomEditors.RomEditor
+namespace Spect.Net.VsPackage.Dialogs.Export
 {
     /// <summary>
     /// Interaction logic for ExportDisassemblyDialog.xaml

@@ -2,6 +2,8 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 
@@ -47,21 +49,52 @@ namespace Spect.Net.VsPackage.Compilers
                           var pane = OutputWindow.GetPane<Z80AssemblerOutputPane>();
                           pane.WriteLine($"Starting ZXB with: {zxbProcess.StartInfo.Arguments}");
                       }
-                      zxbProcess.Start();
 
-                      // --- Wait up to 10 seconds to run the process
-                      zxbProcess.WaitForExit(_timeOut);
-                      if (!zxbProcess.HasExited)
-                      {
-                          zxbProcess.Kill();
-                          tcs.SetException(new InvalidOperationException("ZXB task did not complete within timeout."));
-                      }
-                      else
-                      {
-                          var exitCode = zxbProcess.ExitCode;
-                          var output = zxbProcess.StandardError.ReadToEnd();
+                      var output = new StringBuilder();
+                      var error = new StringBuilder();
 
-                          tcs.SetResult(new ZxbResult(exitCode, output));
+                      using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+                      using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+                      {
+                          zxbProcess.OutputDataReceived += (sender, e) => {
+                              if (e.Data == null)
+                              {
+                                  outputWaitHandle.Set();
+                              }
+                              else
+                              {
+                                  output.AppendLine(e.Data);
+                              }
+                          };
+                          zxbProcess.ErrorDataReceived += (sender, e) =>
+                          {
+                              if (e.Data == null)
+                              {
+                                  errorWaitHandle.Set();
+                              }
+                              else
+                              {
+                                  error.AppendLine(e.Data);
+                              }
+                          };
+
+                          zxbProcess.Start();
+
+                          zxbProcess.BeginOutputReadLine();
+                          zxbProcess.BeginErrorReadLine();
+
+                          if (zxbProcess.WaitForExit(_timeOut) &&
+                              outputWaitHandle.WaitOne(_timeOut) &&
+                              errorWaitHandle.WaitOne(_timeOut))
+                          {
+                              var exitCode = zxbProcess.ExitCode;
+                              tcs.SetResult(new ZxbResult(exitCode, error.ToString()));
+                          }
+                          else
+                          {
+                              zxbProcess.Kill();
+                              tcs.SetException(new InvalidOperationException("ZXB task did not complete within timeout."));
+                          }
                       }
                   }
                   catch (Exception ex)

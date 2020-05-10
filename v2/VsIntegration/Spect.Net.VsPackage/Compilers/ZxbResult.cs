@@ -37,18 +37,16 @@ namespace Spect.Net.VsPackage.Compilers
             foreach (var errLine in errLines)
             {
                 var parts = errLine.Split(':');
-                if (parts.Length < 3) 
+                if (parts.Length >= 3) 
                 {
-                    Errors.Add(new AssemblerErrorInfo("ZXB", "", 1, 0, errLine));
-                }
-                else
-                {
+                    var message = string.Join("", parts.Skip(3).ToArray());
                     var errorInfo = new AssemblerErrorInfo(
                         "ZXB",
                         $"{parts[0]}:{parts[1]}",
                         int.TryParse(parts[2], out var parsed) ? parsed : 0,
                         1,
-                        string.Join("", parts.Skip(3).ToArray()));
+                        message,
+                        message.ToLower().Trim().StartsWith("warning"));
                     Errors.Add(errorInfo);
                 }
             }

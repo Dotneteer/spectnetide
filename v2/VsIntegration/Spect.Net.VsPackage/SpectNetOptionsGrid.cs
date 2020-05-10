@@ -398,11 +398,6 @@ namespace Spect.Net.VsPackage
         public bool StringBaseOne { get; set; }
 
         [Category("ZX BASIC options")]
-        [DisplayName("Use SINCLAIR flag")]
-        [Description("The --SINCLAIR option of ZXB")]
-        public bool SinclairFlag { get; set; }
-
-        [Category("ZX BASIC options")]
         [DisplayName("String manipulation heap size")]
         [Description("The --heap-size option of ZXB")]
         public ushort HeapSize { get; set; } = 4096;

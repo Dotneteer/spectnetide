@@ -109,14 +109,6 @@
         public bool? StringBaseOne { get; set; }
 
         /// <summary>
-        /// --sinclair
-        /// Tries to make ZX BASIC as much compatible as possible with Sinclair BASIC (ej. Arrays and Strings start at
-        /// position 1). Also includes some external functions like POINT, ATTR and SCREEN$, not available by default
-        /// (they are in external libraries).
-        /// </summary>
-        public bool? SinclairFlag { get; set; }
-
-        /// <summary>
         /// --heap-size
         /// Set the size of the heap. Default heap size is above 4K (4768 bytes exactly). The heap is a memory zone
         /// used to store and manipulate strings (and other dynamic size objects where available) If you don't make
@@ -190,8 +182,8 @@
                     + $"--optimize {Optimize} "
                     + $"--org {OrgValue} "
                     + $"--heap-size {HeapSize} "
+                    + "--sinclair "
                     + (StringBaseOne ?? false ? "--string-base=1 " : "")
-                    + (SinclairFlag ?? false ? "--sinclair " : "")
                     + (TzxFormat ?? false ? "--tzx " : "")
                     + (TapFormat ?? false ? "--tap " : "")
                     + (BasicLoader ?? false ? "--BASIC " : "")

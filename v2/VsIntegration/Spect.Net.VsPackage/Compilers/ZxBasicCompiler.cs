@@ -201,7 +201,6 @@ namespace Spect.Net.VsPackage.Compilers
                 OrgValue = packageOptions.OrgValue,
                 ArrayBaseOne = packageOptions.ArrayBaseOne,
                 StringBaseOne = packageOptions.StringBaseOne,
-                SinclairFlag = packageOptions.SinclairFlag,
                 HeapSize = packageOptions.HeapSize,
                 DebugMemory = packageOptions.DebugMemory,
                 DebugArray = packageOptions.DebugArray,

@@ -34,6 +34,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         public void RefreshBasicList()
         {
             List = CreateBasicListViewModel();
+            List.MimicZxBasic = true;
             List.DecodeBasicProgram();
         }
 

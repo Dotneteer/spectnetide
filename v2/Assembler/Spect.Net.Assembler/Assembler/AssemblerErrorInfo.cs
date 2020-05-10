@@ -32,13 +32,19 @@ namespace Spect.Net.Assembler.Assembler
         /// </summary>
         public string Message { get; }
 
-        public AssemblerErrorInfo(string errorCode, string filename, int line, int column, string message)
+        /// <summary>
+        /// Sign that this entry is a warning
+        /// </summary>
+        public bool IsWarning { get; }
+
+        public AssemblerErrorInfo(string errorCode, string filename, int line, int column, string message, bool isWarning = false)
         {
             ErrorCode = errorCode;
             Filename = filename;
             Line = line;
             Column = column;
             Message = message;
+            IsWarning = isWarning;
         }
 
         public AssemblerErrorInfo(SourceFileItem sourceItem, Z80AsmParserErrorInfo syntaxErrorInfo)
