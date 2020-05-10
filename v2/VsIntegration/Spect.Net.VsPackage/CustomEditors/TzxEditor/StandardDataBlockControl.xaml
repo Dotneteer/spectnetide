@@ -63,7 +63,7 @@
                    Visibility="{Binding ShowProgram, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Border Grid.Row="8" Grid.Column="1" 
                 Visibility="{Binding ShowProgram, Converter={StaticResource BoolToCollapsedConverter}}">
-            <romEditor:RomEditorControl x:Name="RomEditor" DataContext="{Binding Memory}" />
+            <romEditor:RomEditorControl x:Name="RomEditor" DataContext="{Binding Memory}" BasicListModeChanged="OnBasicListModeChanged" />
         </Border>
         <Border Grid.Row="8" Grid.Column="1" 
                 Visibility="{Binding ShowProgram, Converter={StaticResource BooleanToVisibilityConverter}}">

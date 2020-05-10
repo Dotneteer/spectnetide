@@ -11,6 +11,8 @@
         Disassemble,
         ExportDisass,
         ExportProgram,
-        ExitDisass
+        ExitDisass,
+        SinclairMode,
+        ZxBasicMode
     }
 }

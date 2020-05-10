@@ -23,14 +23,20 @@ namespace Spect.Net.VsPackage.CustomEditors.TzxEditor
         /// <summary>
         /// Switch between Data and Program view
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void OnDataLabelClicked(object sender, MouseButtonEventArgs e)
         {
             if (Vm.IsProgramDataBlock)
             {
                 Vm.ShowProgram = !Vm.ShowProgram;
             }
+        }
+
+        /// <summary>
+        /// Switch to BASIC view whenever the BASIC list mode changes.
+        /// </summary>
+        private void OnBasicListModeChanged(object sender, System.EventArgs e)
+        {
+            Vm.ShowProgram = true;
         }
     }
 }

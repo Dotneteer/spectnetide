@@ -37,6 +37,22 @@ This command exports the Z80 disassembly of the tape data block from the start a
 
 ![Predefined symbols]({{ site.baseurl }}/assets/images/commands/export-disassembly-dialog.png)
 
+## Use Sinclair BASIC output
+
+__`s`__
+
+Sets the BASIC listing display mode to *Sinclair*. In this mode, control characters (e.g., __INK__, __PAPER__, __BRIGHT__, etc.) are shown with their hexadecimal code between `°` characters:
+
+![Sinclair mode]({{ site.baseurl }}/assets/images/commands/sinclair-basic-mode.png)
+
+## Use ZX BASIC output
+
+__`z`__
+
+Sets the BASIC listing display mode to *ZXB*. In this mode, control characters (e.g., __INK__, __PAPER__, __BRIGHT__, etc.) are shown with their ZX BASIC escape sequences; inline control characters (out of string values wrapped in doupbe quotes) are omitted:
+
+![Sinclair mode]({{ site.baseurl }}/assets/images/commands/zx-basic-mode.png)
+
 ## Export BASIC Program
 
 __`p`__
@@ -44,3 +60,5 @@ __`p`__
 This command exports the BASIC listing of the tape data block, provided, it is a program data block:
 
 ![Predefined symbols]({{ site.baseurl }}/assets/images/commands/export-basic-listing-dialog.png)
+
+By setting the **Mimic ZX BASIC** checkbox, the output will use ZX BASIC escape sequences for control characters.

@@ -48,7 +48,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
                 Dispatcher.Invoke(() =>
                 {
                     var newModel = Vm.CreateBasicListViewModel();
-                    newModel.MimicZxBasic = true;
+                    newModel.MimicZxBasic = Vm.MimicZxBasic;
                     newModel.DecodeBasicProgram();
                     if (!BasicListViewModel.Compare(_lastModel, newModel))
                     {

@@ -1,15 +1,13 @@
-﻿using Microsoft.VisualStudio.ProjectSystem.References;
-using Spect.Net.SpectrumEmu.Disassembler;
+﻿using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.Dialogs.Export;
 using Spect.Net.VsPackage.ToolWindows;
 using Spect.Net.VsPackage.ToolWindows.BankAware;
 using Spect.Net.VsPackage.ToolWindows.BasicList;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace Spect.Net.VsPackage.CustomEditors.RomEditor
 {
@@ -18,6 +16,8 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
     /// </summary>
     public partial class RomEditorControl
     {
+        const string NO_BASIC = "No BASIC listing in this block";
+
         private MemoryViewModel _vm;
 
         /// <summary>
@@ -41,6 +41,11 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
             Prompt.CommandLineEntered += OnCommandLineEntered;
             DataContextChanged += (s, e) => Vm = DataContext as MemoryViewModel;
         }
+
+        /// <summary>
+        /// Signs that the Basic list mode has been changed
+        /// </summary>
+        public event EventHandler BasicListModeChanged;
 
         /// <summary>
         /// When a valid address is provided, we scroll the memory window to that address
@@ -77,6 +82,34 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
                     Vm.Disassembly(parser.Address);
                     break;
 
+                case RomEditorCommandType.SinclairMode:
+                    if (BasicList == null)
+                    {
+                        Prompt.IsValid = false;
+                        Prompt.ValidationMessage = NO_BASIC;
+                        e.Handled = false;
+                        break;
+                    }
+                    BasicList.MimicZxBasic = false;
+                    BasicList.ProgramLines.Clear();
+                    BasicList.DecodeBasicProgram();
+                    BasicListModeChanged?.Invoke(this, EventArgs.Empty);
+                    break;
+
+                case RomEditorCommandType.ZxBasicMode:
+                    if (BasicList == null)
+                    {
+                        Prompt.IsValid = false;
+                        Prompt.ValidationMessage = NO_BASIC;
+                        e.Handled = false;
+                        break;
+                    }
+                    BasicList.MimicZxBasic = true;
+                    BasicList.ProgramLines.Clear();
+                    BasicList.DecodeBasicProgram();
+                    BasicListModeChanged?.Invoke(this, EventArgs.Empty);
+                    break;
+
                 case RomEditorCommandType.ExitDisass:
                     if (!Vm.AllowDisassembly)
                     {
@@ -93,7 +126,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
                         if (BasicList == null)
                         {
                             Prompt.IsValid = false;
-                            Prompt.ValidationMessage = "No BASIC listing in this block";
+                            Prompt.ValidationMessage = NO_BASIC;
                             e.Handled = false;
                             break;
                         }
@@ -155,7 +188,7 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         /// <param name="startAddress">Disassembly start address</param>
         /// <param name="endAddress">Disassembly end address</param>
         /// <returns>
-        /// True, if the user stars export; false, if the export is cancelled
+        /// True, if the user cancels; false, if starts the export
         /// </returns>
         private static bool DisplayExportDisassemblyDialog(out ExportDisassemblyViewModel vm, ushort startAddress, ushort endAddress)
         {

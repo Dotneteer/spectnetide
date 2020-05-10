@@ -9,6 +9,8 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
         private static readonly Regex s_ExportDisassRegex = new Regex(@"^[xX]\s*([a-fA-F0-9]{1,4})\s*([a-fA-F0-9]{1,4})$");
         private static readonly Regex s_ExportProgramRegex = new Regex(@"^[pP]\s*$");
         private static readonly Regex s_ExitDisassRegex = new Regex(@"^[qQ]\s*$");
+        private static readonly Regex s_SinclairModeRegex = new Regex(@"^[sS]\s*$");
+        private static readonly Regex s_ZxBasicModeRegex = new Regex(@"^[zZ]\s*$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object" /> class.
@@ -62,6 +64,22 @@ namespace Spect.Net.VsPackage.CustomEditors.RomEditor
             if (match.Success)
             {
                 Command = RomEditorCommandType.ExitDisass;
+                return;
+            }
+
+            // --- Check for Sinclair Mode command
+            match = s_SinclairModeRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = RomEditorCommandType.SinclairMode;
+                return;
+            }
+
+            // --- Check for ZX BASIC Mode command
+            match = s_ZxBasicModeRegex.Match(commandText);
+            if (match.Success)
+            {
+                Command = RomEditorCommandType.ZxBasicMode;
                 return;
             }
 

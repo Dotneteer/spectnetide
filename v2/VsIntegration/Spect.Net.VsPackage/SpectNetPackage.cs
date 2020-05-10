@@ -366,6 +366,7 @@ namespace Spect.Net.VsPackage
             new ShowZ80CpuStackCommand();
             StackToolWindow.InitializeToolbarCommands();
             new ShowBasicListCommand();
+            BasicListToolWindow.InitializeToolbarCommands();
             new ShowTapeExplorerCommand();
             TapeFileExplorerToolWindow.InitializeToolbarCommands();
             new ShowWatchMemoryCommand();

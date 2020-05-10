@@ -8,7 +8,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
     public class BasicListToolWindowViewModel : SpectrumToolWindowViewModelBase
     {
         private BasicListViewModel _basicListViewModel;
-
+        
         /// <summary>
         /// The view model that represents the BASIC List
         /// </summary>
@@ -17,6 +17,11 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
             get => _basicListViewModel;
             set => Set(ref _basicListViewModel, value);
         }
+
+        /// <summary>
+        /// Should mimic ZX BASIC?
+        /// </summary>
+        public bool MimicZxBasic { get; set; } = false;
 
         /// <summary>
         /// Instantiates this view model
@@ -34,7 +39,7 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
         public void RefreshBasicList()
         {
             List = CreateBasicListViewModel();
-            List.MimicZxBasic = true;
+            List.MimicZxBasic = MimicZxBasic;
             List.DecodeBasicProgram();
         }
 

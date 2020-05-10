@@ -151,11 +151,31 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
                 // --- Whatever we print, the next token needs a space
                 spaceBeforeToken = true;
 
+                // --- Skip ENTER
+                if (nextSymbol == 0x0D)
+                {
+                    continue;
+                }
+
+                // --- Skip binary number characters
+                if (nextSymbol == 0x0E)
+                {
+                    // --- Skip the binary form of a floating point number
+                    progStart += 5;
+                    continue;
+                }
+
                 if (nextSymbol == 0x22)
                 {
                     // --- Printable character
                     sb.Append((char)nextSymbol);
                     withinQuotes = !withinQuotes;
+                    continue;
+                }
+
+                if (MimicZxBasic && !withinQuotes && nextSymbol < 0x20)
+                {
+                    // --- Skip all remaining control characters in ZX BASIC mode
                     continue;
                 }
 
@@ -166,33 +186,39 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
                     {
                         if (nextSymbol == (int)'\\')
                         {
-                            sb.Append("\\\\");
+                            sb.Append(MimicZxBasic ? "\\\\" : "\\");
                             continue;
                         }
                         else if (nextSymbol == 0x60)
                         {
-                            sb.Append("\\`");
+                            sb.Append(MimicZxBasic ? "\\`" : "Ł");
                             continue;
                         }
                         else if (nextSymbol == 0x7f)
                         {
-                            sb.Append("\\*");
+                            sb.Append(MimicZxBasic ? "\\*" : "©");
+                            continue;
+                        }
+                    } 
+                    else
+                    {
+                        if (nextSymbol == (int)'\\')
+                        {
+                            sb.Append("\\");
+                            continue;
+                        }
+                        else if (nextSymbol == 0x60)
+                        {
+                            sb.Append("Ł");
+                            continue;
+                        }
+                        else if (nextSymbol == 0x7f)
+                        {
+                            sb.Append("©");
                             continue;
                         }
                     }
                     sb.Append((char)nextSymbol);
-                    continue;
-                }
-
-                if (nextSymbol == 0x0D)
-                {
-                    continue;
-                }
-
-                if (nextSymbol == 0x0E)
-                {
-                    // --- Skip the binary form of a floating point number
-                    progStart += 5;
                     continue;
                 }
 

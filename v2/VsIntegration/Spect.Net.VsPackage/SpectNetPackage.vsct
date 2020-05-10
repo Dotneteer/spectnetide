@@ -48,6 +48,13 @@
         </Strings>
       </Menu>
 
+      <Menu guid="COMMAND_SET_GUID" id="BasicListToolbar" type="ToolWindowToolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>BASIC List ToolBar</ButtonText>
+        </Strings>
+      </Menu>
+
       <!-- Unit test explorer tool window toolbar -->
       <Menu guid="COMMAND_SET_GUID" id="UnitTestExplorerToolbar" type="ToolWindowToolbar">
         <CommandFlag>DefaultDocked</CommandFlag>
@@ -103,6 +110,12 @@
       <Group guid="COMMAND_SET_GUID" id="TapeFileExplorerToolbarGroup" priority="0x0000">
         <Parent guid="COMMAND_SET_GUID" id="TapeFileExplorerToolbar" />
       </Group>
+
+      <!-- BASIC Listing toolbar control commands group -->
+      <Group guid="COMMAND_SET_GUID" id="BasicListToolbarGroup" priority="0x0000">
+        <Parent guid="COMMAND_SET_GUID" id="BasicListToolbar" />
+      </Group>
+
 
       <!-- Z80 CPU Stack toolbar control commands group -->
       <Group guid="COMMAND_SET_GUID" id="CpuStackToolbarGroup" priority="0x0000">
@@ -408,6 +421,26 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Open tape file</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- BASIC list toolbar buttons -->
+      <Button guid="COMMAND_SET_GUID" id="ExportBasic" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="BasicListToolbarGroup" />
+        <Icon guid="ImageCatalogGuid" id="Save" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Save to file</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="COMMAND_SET_GUID" id="MimicZxBasic" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="BasicListToolbarGroup" />
+        <Icon guid="ImageCatalogGuid" id="Quote" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Mimic ZX BASIC escape sequences</ButtonText>
         </Strings>
       </Button>
 
@@ -908,7 +941,7 @@
       <IDSymbol name="TapeFileExplorerToolbarGroup" value="0x1420" />
       <IDSymbol name="OpenTapeFile" value="0x1481" />
 
-      <!-- ZX Spectrum BASIC List tool window -->
+      <!-- ZX Spectrum CPU Stack tool window -->
       <IDSymbol name="StackToolWindowCommandId" value="0x1500" />
       <IDSymbol name="CpuStackToolbar" value="0x1510" />
       <IDSymbol name="CpuStackToolbarGroup" value="0x1520" />
@@ -917,6 +950,10 @@
 
       <!-- ZX Spectrum BASIC List tool window -->
       <IDSymbol name="BasicToolWindowCommandId" value="0x1600" />
+      <IDSymbol name="BasicListToolbar" value="0x1610" />
+      <IDSymbol name="BasicListToolbarGroup" value="0x1620" />
+      <IDSymbol name="ExportBasic" value="0x1630" />
+      <IDSymbol name="MimicZxBasic" value="0x1631" />
 
       <!-- ZX Spectrum Keyboard tool window -->
       <IDSymbol name="KeyboardToolWindowCommandId" value="0x1700" />
