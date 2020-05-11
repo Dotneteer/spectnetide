@@ -225,6 +225,13 @@ namespace Spect.Net.VsPackage.ToolWindows.BasicList
                 // --- Non-printable character, let's display it with an escape sequence
                 if (MimicZxBasic && withinQuotes)
                 {
+                    if (nextSymbol >= 0x90 && nextSymbol <= 0xA4)
+                    {
+                        // --- Handle UDG chars in ZX BASIC
+                        sb.Append($"\\{(char)(nextSymbol - 0x90 + 'A')}");
+                        continue;
+                    }
+
                     var lookahead = progStart < Memory.Length ? Memory[progStart] : -1;
                     switch (nextSymbol)
                     {
