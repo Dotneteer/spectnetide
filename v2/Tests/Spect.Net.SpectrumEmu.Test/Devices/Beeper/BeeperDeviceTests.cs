@@ -266,56 +266,6 @@ namespace Spect.Net.SpectrumEmu.Test.Devices.Beeper
             }
         }
 
-        [TestMethod]
-        // --- No sample when overflow is less than 13
-        [DataRow(1, new[] { 88 }, null)]
-        [DataRow(7, new[] { 88 }, null)]
-        [DataRow(10, new[] { 88 }, null)]
-        [DataRow(11, new[] { 88 }, null)]
-        [DataRow(12, new[] { 88 }, null)]
-        // --- Overflow occurs from 13
-        [DataRow(13, new[] { 88 }, 0.0f)]
-        [DataRow(14, new[] { 88 }, 0.0f)]
-        [DataRow(23, new[] { 88 }, 0.0f)]
-
-        // --- Multiple samples
-        [DataRow(11, new[] { 88, 101 }, null)]
-        [DataRow(13, new[] { 88, 101 }, 1.0f)]
-        [DataRow(11, new[] { 112, 246 }, null)]
-        [DataRow(15, new[] { 112, 300 }, 1.0f)]
-        [DataRow(11, new[] { 112, 301 }, null)]
-        [DataRow(17, new[] { 112, 334, 610 }, 0.0f)]
-        public void OnNewFrameCreatesOverflowSample(int overflow, int[] tacts, float? sample)
-        {
-            // --- Arrange
-            var spectrum = new SpectrumBeepTestMachine();
-            var beeperDevice = new BeeperDevice();
-            beeperDevice.OnAttachedToVm(spectrum);
-            var initialBit = false;
-
-            // --- Act
-            foreach (var tact in tacts)
-            {
-                spectrum.SetCurrentCpuTact(tact);
-                beeperDevice.ProcessEarBitValue(false, initialBit);
-                initialBit = !initialBit;
-            }
-            spectrum.SetCurrentCpuTact(69888 + overflow);
-            beeperDevice.OnFrameCompleted();
-            var overflowBefore = beeperDevice.Overflow;
-            beeperDevice.OnNewFrame();
-
-            // --- Assert
-            beeperDevice.NextSampleIndex.ShouldBe(sample == null ? 0 : 1);
-            overflowBefore.ShouldBe(overflow);
-            beeperDevice.Overflow.ShouldBe(0);
-            if (sample.HasValue)
-            {
-                beeperDevice.AudioSamples[0].ShouldBe(sample.Value);
-            }
-        }
-
-
         /// <summary>
         /// VM to test the beeper
         /// </summary>

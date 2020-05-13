@@ -1,3 +1,14 @@
+### Version 2.0.8 (Preview 8)
+__FIX__: Patch version number is the same as the Preview version number.  
+__FIX__: Assembler does not allow non-existing `jr m,NN`, `jr p,NN`, `jr po,NN`, and `jr pe,nn` instructions anymore.  
+__FIX__: Z80 assembly code editor syntax highlighting lag removed.  
+__FIX__: A few memory leak and stability issues fixed.  
+__FIX__: Distorted sound and sound playback delays after pause/restart fixed.  
+__FEATURE__: You can automatically export the compilation to a `.tap` or `.tzx` file: https://dotneteer.github.io/spectnetide/getting-started/export-a-z80-program-2#auto-export  
+__FEATURE__: Tape File Explorer allows you new commands to export Z80 disassembly and BASIC listing: https://dotneteer.github.io/spectnetide/documents/tape-explorer-commands#article   
+__FEATURE__: The ZX Spectrum BASIC List tool window allows exporting the BASIC code: https://dotneteer.github.io/spectnetide/getting-started/list-basic-program#article  
+
+
 ### Version 2.0.7 (Preview 6)
 
 __FEATURE__: The [INJECTOP pragma](https://dotneteer.github.io/spectnetide/documents/pragmas#the-injectopt-pragma) allows you to change the "L" cursor to "K" cursor.  
