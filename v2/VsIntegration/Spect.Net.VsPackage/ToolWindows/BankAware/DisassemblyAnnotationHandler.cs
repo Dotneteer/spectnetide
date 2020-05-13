@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using Spect.Net.SpectrumEmu.Abstraction.Providers;
 using Spect.Net.SpectrumEmu.Disassembler;
 using Spect.Net.VsPackage.ToolWindows.Disassembly;
+using Spect.Net.VsPackage.VsxLibrary;
 
 namespace Spect.Net.VsPackage.ToolWindows.BankAware
 {
@@ -97,9 +100,16 @@ namespace Spect.Net.VsPackage.ToolWindows.BankAware
             if (annFile == null) return;
 
             RamBankAnnotationFile = annFile.Filename;
-            var disAnn = File.ReadAllText(annFile.Filename);
-            DisassemblyAnnotation.DeserializeBankAnnotations(disAnn, out var annotations);
-            RamBankAnnotations = annotations;
+            try
+            {
+                var disAnn = File.ReadAllText(annFile.Filename);
+                DisassemblyAnnotation.DeserializeBankAnnotations(disAnn, out var annotations);
+                RamBankAnnotations = annotations;
+            } 
+            catch (Exception ex)
+            {
+                VsxDialogs.Show(ex.Message, "Error loading annotation file", MessageBoxButton.OK, VsxMessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
