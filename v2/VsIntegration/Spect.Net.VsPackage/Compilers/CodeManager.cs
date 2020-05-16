@@ -80,7 +80,7 @@ namespace Spect.Net.VsPackage.Compilers
                     }
                     else
                     {
-                        var addr = segment.StartAddress + (segment.Displacement ?? 0);
+                        var addr = segment.StartAddress;
                         runSupport.InjectCodeToMemory((ushort)addr, segment.EmittedCode);
                     }
                 }

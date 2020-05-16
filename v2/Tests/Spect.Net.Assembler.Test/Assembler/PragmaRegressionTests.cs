@@ -228,5 +228,46 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(source, expected);
         }
 
+        [TestMethod]
+        public void DispPragmaEmitsDisplacedCode1()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var source = @"
+                .org #8000
+                .disp #20
+                nop
+                call Test
+                halt
+                Test: ret
+            ";
+
+            // --- Assert
+            CodeEmitWorks(source, 0x00, 0xcd, 0x25, 0x80, 0x76, 0xc9);
+        }
+
+        [TestMethod]
+        public void DispPragmaEmitsDisplacedCode2()
+        {
+            // --- Arrange
+            var compiler = new Z80Assembler();
+
+            // --- Act
+            var source = @"
+                .org #8000
+                .disp -#20
+                nop
+                call Test
+                halt
+                Test: ret
+            ";
+
+            // --- Assert
+            CodeEmitWorks(source, 0x00, 0xcd, 0xe5, 0x7f, 0x76, 0xc9);
+        }
+
+
     }
 }

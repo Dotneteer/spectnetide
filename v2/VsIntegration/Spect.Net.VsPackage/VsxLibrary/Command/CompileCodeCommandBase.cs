@@ -432,10 +432,16 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             statusBar.FreezeOutput(1);
             object icon = (short)Constants.SBAI_Build;
             statusBar.Animation(1, ref icon);
-            CompileSuccess = await Task.Run(() => CompileCode());
-            statusBar.FreezeOutput(0);
-            statusBar.Animation(0, ref icon);
-            statusBar.Clear();
+            try
+            {
+                CompileSuccess = await Task.Run(() => CompileCode());
+            }
+            finally
+            {
+                statusBar.FreezeOutput(0);
+                statusBar.Animation(0, ref icon);
+                statusBar.Clear();
+            }
         }
 
         /// <summary>

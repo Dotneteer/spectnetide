@@ -4368,7 +4368,7 @@ namespace Spect.Net.Assembler.Assembler
             else
             {
                 // --- Check for Relative address
-                dist = value.Value - (GetCurrentAssemblyAddress() + 2);
+                dist = (short)(ushort)(value.Value - (GetCurrentAssemblyAddress() + 2));
                 if (dist < -128 || dist > 127)
                 {
                     ReportError(Errors.Z0022, opLine, dist);

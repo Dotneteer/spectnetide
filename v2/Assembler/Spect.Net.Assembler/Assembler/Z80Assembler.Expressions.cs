@@ -457,7 +457,7 @@ namespace Spect.Net.Assembler.Assembler
                             var currentAssemblyAddress = segment.StartAddress
                                 + (segment.Displacement ?? 0)
                                 + fixup.Offset;
-                            var dist = value.AsWord() - (currentAssemblyAddress + 2);
+                            var dist = (short)(ushort)(value.AsWord() - (currentAssemblyAddress + 2));
                             if (dist < -128 || dist > 127)
                             {
                                 ReportError(Errors.Z0022, fixup.SourceLine, dist);
