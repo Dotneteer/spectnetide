@@ -231,9 +231,6 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void DispPragmaEmitsDisplacedCode1()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
             // --- Act
             var source = @"
                 .org #8000
@@ -251,9 +248,6 @@ namespace Spect.Net.Assembler.Test.Assembler
         [TestMethod]
         public void DispPragmaEmitsDisplacedCode2()
         {
-            // --- Arrange
-            var compiler = new Z80Assembler();
-
             // --- Act
             var source = @"
                 .org #8000
@@ -268,6 +262,75 @@ namespace Spect.Net.Assembler.Test.Assembler
             CodeEmitWorks(source, 0x00, 0xcd, 0xe5, 0x7f, 0x76, 0xc9);
         }
 
+        [TestMethod]
+        public void DispHandlesAddressShift1()
+        {
+            // --- Act
+            var source = @"
+                .org #8000
+                nop
+                .disp #100
+                This: ld bc, this
+                call Test
+                halt
+                Test: ret
+            ";
+
+            // --- Assert
+            CodeEmitWorks(source, 0x00, 0x01, 0x01, 0x81, 0xcd, 0x08, 0x81, 0x76, 0xc9);
+        }
+
+        [TestMethod]
+        public void DispHandlesAddressShift2()
+        {
+            // --- Act
+            var source = @"
+                .org #8000
+                nop
+                This: ld bc, this
+                .disp #100
+                call Test
+                halt
+                Test: ret
+            ";
+
+            // --- Assert
+            CodeEmitWorks(source, 0x00, 0x01, 0x01, 0x80, 0xcd, 0x08, 0x81, 0x76, 0xc9);
+        }
+
+        [TestMethod]
+        public void DispHandlesAddressShift3()
+        {
+            // --- Act
+            var source = @"
+                .org #8000
+                nop
+                .disp #100
+                This: jr Test
+                halt
+                Test: ret
+            ";
+
+            // --- Assert
+            CodeEmitWorks(source, 0x00, 0x18, 0x01, 0x76, 0xc9);
+        }
+
+        [TestMethod]
+        public void DispHandlesAddressShift4()
+        {
+            // --- Act
+            var source = @"
+                .org #8000
+                nop
+                This: jr Test
+                .disp #100
+                halt
+                Test: ret
+            ";
+
+            // --- Assert
+            CodeRaisesError(source, Errors.Z0022);
+        }
 
     }
 }

@@ -455,7 +455,7 @@ namespace Spect.Net.Assembler.Assembler
                         case FixupType.Jr:
                             // --- Check for Relative address
                             var currentAssemblyAddress = segment.StartAddress
-                                + (segment.Displacement ?? 0)
+                                + ((ushort)(segment.StartAddress + fixup.Offset) >= segment.DispPragmaOffset ? segment.Displacement ?? 0 : 0)
                                 + fixup.Offset;
                             var dist = (short)(ushort)(value.AsWord() - (currentAssemblyAddress + 2));
                             if (dist < -128 || dist > 127)

@@ -436,6 +436,10 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             {
                 CompileSuccess = await Task.Run(() => CompileCode());
             }
+            catch (Exception ex)
+            {
+                var x = 1;
+            }
             finally
             {
                 statusBar.FreezeOutput(0);
@@ -460,7 +464,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         protected override Task FinallyOnMainThreadAsync()
         {
             HostPackage.CompilationInProgress = false;
-            if (Output.Errors.Count > 0 ||
+            if (Output?.Errors.Count > 0 ||
                 PrebuildError != null
                 || PostbuildError != null
                 || CleanupError != null)
@@ -571,6 +575,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// </summary>
         protected void HandleAssemblyTasks()
         {
+            if (Output == null) return;
             HostPackage.TaskList.Clear();
             foreach (var todo in Output.Tasks)
             {

@@ -346,6 +346,9 @@ namespace Spect.Net.VsPackage
             // --- Prepare language services
             Z80AsmClassifierProvider.AttachToPackage();
             Z80AsmViewTaggerProvider.AttachToPackage();
+
+            // --- Prepare options
+            _ = Options;
             Log("SpectNetIdePackage initialized.");
         }
 

@@ -2281,6 +2281,7 @@ namespace Spect.Net.Assembler.Assembler
 
             EnsureCodeSegment();
             CurrentSegment.Displacement = value.Value;
+            CurrentSegment.DispPragmaOffset = (ushort)(CurrentSegment.StartAddress + CurrentSegment.CurrentOffset);
         }
 
         /// <summary>

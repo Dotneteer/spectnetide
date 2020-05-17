@@ -33,6 +33,11 @@ namespace Spect.Net.Assembler.Assembler
         public ushort? Displacement { get; set; }
 
         /// <summary>
+        /// The current assembly address when DISP pragma was used
+        /// </summary>
+        public ushort? DispPragmaOffset { get; set; }
+
+        /// <summary>
         /// Intel HEX start address of the this segment
         /// </summary>
         public ushort? XorgValue { get; set; }
