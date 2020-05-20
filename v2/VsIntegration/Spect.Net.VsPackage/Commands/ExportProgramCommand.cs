@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Debugger.Interop;
+using Microsoft.VisualStudio.Shell;
 using Spect.Net.Assembler.Assembler;
 using Spect.Net.SpectrumEmu.Devices.Tape;
 using Spect.Net.SpectrumEmu.Devices.Tape.Tzx;
@@ -6,6 +7,7 @@ using Spect.Net.VsPackage.Dialogs.Export;
 using Spect.Net.VsPackage.SolutionItems;
 using Spect.Net.VsPackage.VsxLibrary;
 using Spect.Net.VsPackage.VsxLibrary.Command;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,8 +57,6 @@ namespace Spect.Net.VsPackage.Commands
         private const byte NEW_LINE = 0x0D;
         private const byte PAUSE_TKN = 0xF2;
         private const byte BORDER_TKN = 0xE7;
-
-        public const string EXPORT_PATH = @".SpectNetIde\Exports";
 
         protected bool Success { get; set; }
 
@@ -159,9 +159,6 @@ namespace Spect.Net.VsPackage.Commands
         /// <returns></returns>
         public static int ExportCompiledCode(AssemblerOutput output, ExportZ80ProgramViewModel vm)
         {
-            vm.Filename = Path.Combine(Path.GetDirectoryName(SpectNetPackage.Default.ActiveProject.Root.FullName), 
-                EXPORT_PATH, 
-                vm.Name);
             var oldExt = vm.Format;
             vm.Format = ExportFormat.Unknown;
             vm.Format = oldExt;
@@ -272,42 +269,50 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="blocksToSave">Collection of data blocks to save</param>
         private static void SaveDataBlocks(ExportZ80ProgramViewModel vm, IEnumerable<byte[]> blocksToSave)
         {
-            // --- Create directory
-            var dirName = Path.GetDirectoryName(vm.Filename);
-            if (dirName != null && !Directory.Exists(dirName))
+            try
             {
-                Directory.CreateDirectory(dirName);
-            }
-
-            // --- Save data blocks
-            if (vm.Format == ExportFormat.Tzx)
-            {
-                using (var writer = new BinaryWriter(File.Create(vm.Filename)))
+                // --- Create directory
+                var dirName = Path.GetDirectoryName(vm.Filename);
+                if (dirName != null && !Directory.Exists(dirName))
                 {
-                    var header = new TzxHeader();
-                    header.WriteTo(writer);
+                    Directory.CreateDirectory(dirName);
+                }
 
-                    foreach (var block in blocksToSave)
+                // --- Save data blocks
+                if (vm.Format == ExportFormat.Tzx)
+                {
+                    using (var writer = new BinaryWriter(File.Create(vm.Filename)))
                     {
-                        var tzxBlock = new TzxStandardSpeedDataBlock
+                        var header = new TzxHeader();
+                        header.WriteTo(writer);
+
+                        foreach (var block in blocksToSave)
                         {
-                            Data = block,
-                            DataLength = (ushort)block.Length
-                        };
-                        tzxBlock.WriteTo(writer);
+                            var tzxBlock = new TzxStandardSpeedDataBlock
+                            {
+                                Data = block,
+                                DataLength = (ushort)block.Length
+                            };
+                            tzxBlock.WriteTo(writer);
+                        }
+                    }
+                }
+                else
+                {
+                    using (var writer = new BinaryWriter(File.Create(vm.Filename)))
+                    {
+                        foreach (var block in blocksToSave)
+                        {
+                            writer.Write((ushort)block.Length);
+                            writer.Write(block);
+                        }
                     }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                using (var writer = new BinaryWriter(File.Create(vm.Filename)))
-                {
-                    foreach (var block in blocksToSave)
-                    {
-                        writer.Write((ushort)block.Length);
-                        writer.Write(block);
-                    }
-                }
+                VsxDialogs.Show($"An error has been raised while exporting a program: {ex.Message}",
+                "Errorr when exporting file");
             }
         }
 

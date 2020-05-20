@@ -15,7 +15,6 @@ using Task = System.Threading.Tasks.Task;
 using VsTask = Microsoft.VisualStudio.Shell.Task;
 using OutputWindow = Spect.Net.VsPackage.VsxLibrary.Output.OutputWindow;
 using Spect.Net.VsPackage.Dialogs.Export;
-using Microsoft.VisualStudio.Shell.TableManager;
 // ReSharper disable SuspiciousTypeConversion.Global
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
@@ -27,6 +26,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
     /// </summary>
     public abstract class CompileCodeCommandBase : ExecutableSpectrumProgramCommandBase
     {
+        public const string EXPORT_PATH = @".SpectNetIde\Exports";
         public const string LIST_TMP_FOLDER = ".SpectNetIde/Lists";
         private const string FILE_EXISTS_MESSAGE =
             "The list file exists in the project. Would you like to override it?";
@@ -80,6 +80,8 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
         /// 
         /// </summary>
         public bool CompileSuccess { get; set; }
+
+        public Exception CompileException { get; private set; }
 
         /// <summary>
         /// The start address of the memory view
@@ -276,9 +278,12 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
                 if (!string.IsNullOrEmpty(SpectNetPackage.Default.Options.ExportOnCompile))
                 {
                     var parts = SpectNetPackage.Default.Options.ExportOnCompile.Split(';');
+                    var name = Path.GetFileNameWithoutExtension(ItemPath) ?? "MyCode";
                     var vm = new ExportZ80ProgramViewModel
                     {
-                        Name = Path.GetFileNameWithoutExtension(ItemPath) ?? "MyCode"
+                        Name = name,
+                        Filename = Path.Combine(Path.GetDirectoryName(SpectNetPackage.Default.ActiveProject.Root.FullName),
+                            EXPORT_PATH, name)
                     };
                     if (parts.Length > 0)
                     {
@@ -438,7 +443,7 @@ namespace Spect.Net.VsPackage.VsxLibrary.Command
             }
             catch (Exception ex)
             {
-                var x = 1;
+                CompileException = ex;
             }
             finally
             {
