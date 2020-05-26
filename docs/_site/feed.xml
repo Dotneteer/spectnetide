@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2020-05-10T18:13:24+02:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/spectnetide/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/spectnetide/" rel="alternate" type="text/html" /><updated>2020-05-26T10:48:52+02:00</updated><id>http://localhost:4000/spectnetide/feed.xml</id><title type="html">SpectNet IDE</title><subtitle>Visual Studio 2017/2019 integrated ZX Spectrum IDE for the Community</subtitle><entry><title type="html">Use ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/use-zx-basic" rel="alternate" type="text/html" title="Use ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/use-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/use-zx-basic">&lt;blockquote&gt;
   &lt;p&gt;To use &lt;strong&gt;ZX BASIC&lt;/strong&gt; — as it is a separate product from &lt;strong&gt;SpectNetIDE&lt;/strong&gt;, first, you should install it on your computer. The previous tutorial explains the setup procedure.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -234,7 +234,7 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/run-completed-2.png&quot; alt=&quot;Spectrum Emulator&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;As you see, the toolbar at the top of the window contains buttons to control the virtual machine.&lt;/p&gt;
+&lt;p&gt;As you see, the toolbar at the top of the window contains buttons to control the virtual machine. A few of these buttons have customizable shortcut keys that you can configure in the &lt;strong&gt;Tools | Options&lt;/strong&gt; dialog, in the &lt;strong&gt;Environment | Keyboard&lt;/strong&gt; tab, as you can learn from the &lt;a href=&quot;#customizing-shortcut-keys&quot;&gt;Customizing Shortcut Keys&lt;/a&gt; section.&lt;/p&gt;
 
 &lt;h3 id=&quot;start&quot;&gt;Start&lt;/h3&gt;
 
@@ -242,17 +242,17 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 
 &lt;p&gt;This button turns of the virtual machine if it stopped, or continues running it if the machine is stopped.&lt;/p&gt;
 
-&lt;p&gt;As you see, the toolbar at the top of the window contains buttons to control the virtual machine. You can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl + F5&lt;/code&gt; key as a shortcut.&lt;/p&gt;
+&lt;p&gt;As you see, the toolbar at the top of the window contains buttons to control the virtual machine.&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: shortcut keys are available only when the focus is in one of the emulator-related tool windows, including the emulator, ZX Spectrum Memory, Z80 Disassembly, Z80 Registers, and Watch Memory tool windows. You cannot use them while you are in the code editor or in Solution Explorer.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;em&gt;Default shortcut&lt;/em&gt;: &lt;strong&gt;Ctrl+M, S&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;stop&quot;&gt;Stop&lt;/h3&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/stop-button.png&quot; alt=&quot;Stop&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Immediately turns off the virtual machine (&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl + M&lt;/code&gt;, then &lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl + S&lt;/code&gt;). It is as if you turned the hardware off.&lt;/p&gt;
+&lt;p&gt;Immediately turns off the virtual machine. It is as if you turned the hardware off.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Default shortcut&lt;/em&gt;: &lt;strong&gt;Ctrl+M, Ctrl+S&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;pause&quot;&gt;Pause&lt;/h3&gt;
 
@@ -261,6 +261,8 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 &lt;p&gt;You can pause the running virtual machine at any time. Pausing suspends the execution, and the emulator-related tool windows display the state of the virtual machine, such as the current register values, the memory contents, or the execution point in the Disassembly view.&lt;/p&gt;
 
 &lt;p&gt;When you use step-by-step debugging, the virtual machine pauses every time it reaches a new breakpoint.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Default shortcut&lt;/em&gt;: &lt;strong&gt;Ctrl+M, Ctrl+space&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;restart&quot;&gt;Restart&lt;/h3&gt;
 
@@ -272,7 +274,9 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/debug-button.png&quot; alt=&quot;Debug&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;You can start the virtual machine in debug mode (&lt;code class=&quot;highlighter-rouge&quot;&gt;F5&lt;/code&gt;). In this mode, the virtual machine pauses when it reaches a breakpoint (and the optional breakpoint condition is satisfied). If you run the virtual machine with &lt;strong&gt;Start&lt;/strong&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl + F5&lt;/code&gt;), it won’t pause at breakpoints.&lt;/p&gt;
+&lt;p&gt;You can start the virtual machine in debug mode. In this mode, the virtual machine pauses when it reaches a breakpoint (and the optional breakpoint condition is satisfied). If you run the virtual machine with &lt;strong&gt;Start&lt;/strong&gt;, it won’t pause at breakpoints.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Default shortcut&lt;/em&gt;: &lt;strong&gt;Ctrl+M, D&lt;/strong&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: The caption of the ZX Spectrum Emulator window shows the &lt;strong&gt;(Debugging)&lt;/strong&gt; label when it runs in debug mode.&lt;/p&gt;
@@ -282,13 +286,17 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/step-into-button.png&quot; alt=&quot;Step-into&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;While the machine is paused, the Step-Into function (&lt;code class=&quot;highlighter-rouge&quot;&gt;F11&lt;/code&gt;) executes the next Z80 instruction. If the subsequent operation is a subroutine call (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;CALL&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;RST&lt;/code&gt;), &lt;em&gt;Step-Into&lt;/em&gt; pauses at the first operation of the subroutine. Should the next one be a block instruction (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;LDIR&lt;/code&gt;), &lt;em&gt;Step-Into&lt;/em&gt; breaks after the first loop of the block. Thus, if the block takes ten iterations, you have to &lt;em&gt;Step-Into&lt;/em&gt; ten time to get to the following operation.&lt;/p&gt;
+&lt;p&gt;While the machine is paused, the Step-Into function executes the next Z80 instruction. If the subsequent operation is a subroutine call (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;CALL&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;RST&lt;/code&gt;), &lt;em&gt;Step-Into&lt;/em&gt; pauses at the first operation of the subroutine. Should the next one be a block instruction (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;LDIR&lt;/code&gt;), &lt;em&gt;Step-Into&lt;/em&gt; breaks after the first loop of the block. Thus, if the block takes ten iterations, you have to &lt;em&gt;Step-Into&lt;/em&gt; ten time to get to the following operation.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Default shortcut&lt;/em&gt;: &lt;strong&gt;Ctrl+M, F11&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;step-over&quot;&gt;Step-Over&lt;/h3&gt;
 
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/step-over-button.png&quot; alt=&quot;Step over&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Step-Over&lt;/em&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;F10&lt;/code&gt;) works the same for most instructions as &lt;em&gt;Step-Into&lt;/em&gt;. Nonetheless, if the next operation is a &lt;code class=&quot;highlighter-rouge&quot;&gt;CALL&lt;/code&gt; (or &lt;code class=&quot;highlighter-rouge&quot;&gt;RST&lt;/code&gt;), &lt;em&gt;Step-Over&lt;/em&gt; executes the entire subroutine and pauses at the next instruction following the call. If there’s a block instruction (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;LDIR&lt;/code&gt;), &lt;em&gt;Step-Over&lt;/em&gt; breaks at the next statement, completing the entire block operation.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Step-Over&lt;/em&gt; works the same for most instructions as &lt;em&gt;Step-Into&lt;/em&gt;. Nonetheless, if the next operation is a &lt;code class=&quot;highlighter-rouge&quot;&gt;CALL&lt;/code&gt; (or &lt;code class=&quot;highlighter-rouge&quot;&gt;RST&lt;/code&gt;), &lt;em&gt;Step-Over&lt;/em&gt; executes the entire subroutine and pauses at the next instruction following the call. If there’s a block instruction (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;LDIR&lt;/code&gt;), &lt;em&gt;Step-Over&lt;/em&gt; breaks at the next statement, completing the entire block operation.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Default shortcut&lt;/em&gt;: &lt;strong&gt;Ctrl+M, F10&lt;/strong&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: If a subroutine call manipulates the stack and returns to somewhere else, &lt;em&gt;Step-Over&lt;/em&gt; may not pause at the location you expect.&lt;/p&gt;
@@ -299,6 +307,8 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 &lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/step-out-button.png&quot; alt=&quot;Sep out&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;When you are within a subroutine call, &lt;em&gt;Step-Out&lt;/em&gt; continues the execution flow until the current subroutine returns to the caller, and pauses the machine right after returning.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Default shortcut&lt;/em&gt;: &lt;strong&gt;Ctrl+M, F12&lt;/strong&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: If a subroutine call manipulates the stack and returns to somewhere else, &lt;em&gt;Step-Out&lt;/em&gt; may not pause at the location you expect.&lt;/p&gt;
@@ -350,7 +360,23 @@ The Keyboard layout allows you to select from the Default, Spectrum48, and Spect
 
 &lt;p&gt;Even if the ZX Spectrum Emulator tool window is closed, the virtual machine still runs in the background once you’ve started it. It halts if you explicitly stop it, close the current solutions, or exit the Visual Studio IDE.&lt;/p&gt;
 
-&lt;p&gt;While the ZX Spectrum Emulator tool window has the focus, the IDE forward the keystrokes to the emulator that senses them as if you pressed a key on the ZX Spectrum hardware.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE would not be useful without an emulator to develop programs. The ZX Spectrum Emulator tool window shows the screen of the embedded ZX Spectrum virtual machine that runs in the background.</summary></entry><entry><title type="html">Setup ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/setup-zx-basic" rel="alternate" type="text/html" title="Setup ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/setup-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/setup-zx-basic">&lt;p&gt;ZX BASIC (Boriel’s BASIC) is a separate product maintained by Jose Rodriguez-Rosa (Boriel). You can find more information about this product in &lt;a href=&quot;https://github.com/boriel/zxbasic&quot;&gt;Github&lt;/a&gt;. This site refers to several links that raise a 404 Error.&lt;/p&gt;
+&lt;p&gt;While the ZX Spectrum Emulator tool window has the focus, the IDE forward the keystrokes to the emulator that senses them as if you pressed a key on the ZX Spectrum hardware.&lt;/p&gt;
+
+&lt;h2 id=&quot;customizing-shortcut-keys&quot;&gt;Customizing Shortcut Keys&lt;/h2&gt;
+
+&lt;p&gt;If you do not like the current keyboard shortcuts, you can customize them in the &lt;strong&gt;Tools | Options&lt;/strong&gt; dialog, within the &lt;strong&gt;Environment | Keyboard&lt;/strong&gt; tab. To find the &lt;strong&gt;SpectNetIDE&lt;/strong&gt; commands that are available for customization, type “ZXSpectrum” in the “Show commands containing” field:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/custom-shortcuts-default.png&quot; alt=&quot;Shortcut default&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Select the command you intend to customize, set the focus to the “Press shortcut keys” field, and then, use the desired shortcut keys. Click Assign to bind the key to the command:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/custom-shortcuts-new.png&quot; alt=&quot;Shortcut default&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With these actions, the Visual Studio IDE does not replace the original shortcut key, but assigns a new one. You can open the “Shortcuts to selected command” to see the list of available key bindings:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/spectnetide/assets/images/tutorials/custom-shortcuts-bindings.png&quot; alt=&quot;Shortcut default&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To delete an old or unused shortcut, select it from the dropdown list, and click Remove.&lt;/p&gt;</content><author><name></name></author><summary type="html">SpectNetIDE would not be useful without an emulator to develop programs. The ZX Spectrum Emulator tool window shows the screen of the embedded ZX Spectrum virtual machine that runs in the background.</summary></entry><entry><title type="html">Setup ZX BASIC</title><link href="http://localhost:4000/spectnetide/getting-started/setup-zx-basic" rel="alternate" type="text/html" title="Setup ZX BASIC" /><published>2019-10-01T00:00:00+02:00</published><updated>2019-10-01T00:00:00+02:00</updated><id>http://localhost:4000/spectnetide/getting-started/setup-zx-basic</id><content type="html" xml:base="http://localhost:4000/spectnetide/getting-started/setup-zx-basic">&lt;p&gt;ZX BASIC (Boriel’s BASIC) is a separate product maintained by Jose Rodriguez-Rosa (Boriel). You can find more information about this product in &lt;a href=&quot;https://github.com/boriel/zxbasic&quot;&gt;Github&lt;/a&gt;. This site refers to several links that raise a 404 Error.&lt;/p&gt;
 
 &lt;p&gt;You can find the ZX BASIC Wiki &lt;a href=&quot;https://zxbasic.readthedocs.io/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
