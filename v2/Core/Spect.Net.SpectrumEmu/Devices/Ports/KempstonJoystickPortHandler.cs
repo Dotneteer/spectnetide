@@ -7,8 +7,8 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     /// </summary>
     public class KempstonJoystickPortHandler : PortHandlerBase
     {
-        private const ushort PORTMASK = 0b0000_0000_0001_1111;
-        private const ushort PORT = 0b0000_0000_0001_1111;
+        private const ushort PORTMASK = 0b0000_0000_1110_0000;
+        private const ushort PORT = 0b0000_0000_0000_0000;
 
         public KempstonJoystickPortHandler(IPortDevice parent) : base(parent, PORTMASK, PORT, true, false)
         {

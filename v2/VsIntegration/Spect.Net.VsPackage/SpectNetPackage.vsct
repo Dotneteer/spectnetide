@@ -293,6 +293,20 @@
           <ButtonText>Start (Ctrl+F5)</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Start button for command well -->
+      <Button guid="COMMAND_SET_GUID" id="EmulatorStart" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="Run" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Start</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="COMMAND_SET_GUID" id="EmulatorStop" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="Stop" />
@@ -302,6 +316,19 @@
           <ButtonText>Stop</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Start button for command well -->
+      <Button guid="COMMAND_SET_GUID" id="EmulatorStop" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="Stop" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Stop</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="COMMAND_SET_GUID" id="EmulatorPause" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="Pause" />
@@ -311,6 +338,19 @@
           <ButtonText>Pause</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Pause button for command well -->
+      <Button guid="COMMAND_SET_GUID" id="EmulatorPause" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="Pause" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Pause</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="COMMAND_SET_GUID" id="EmulatorReset" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarGroup" />
         <Icon guid="ImageCatalogGuid" id="Restart" />
@@ -320,42 +360,95 @@
           <ButtonText>Reset</ButtonText>
         </Strings>
       </Button>
+      
       <Button guid="COMMAND_SET_GUID" id="EmulatorStartDebug" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarDebugGroup" />
         <Icon guid="ImageCatalogGuid" id="PlayStep" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Start Debugging (F5)</ButtonText>
+          <ButtonText>Start Debugging</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Debug button for command well -->
+      <Button guid="COMMAND_SET_GUID" id="EmulatorStartDebug" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="PlayStep" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Start Debugging</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="COMMAND_SET_GUID" id="EmulatorStepInto" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarDebugGroup" />
         <Icon guid="ImageCatalogGuid" id="StepInto" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Step Into (F11)</ButtonText>
+          <ButtonText>Step Into</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Step-Into button for command well -->
+      <Button guid="COMMAND_SET_GUID" id="EmulatorStepInto" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="StepInto" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Step Into</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="COMMAND_SET_GUID" id="EmulatorStepOver" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarDebugGroup" />
         <Icon guid="ImageCatalogGuid" id="StepOver" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Step Over (F10)</ButtonText>
+          <ButtonText>Step Over</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Step-Over button for command well -->
+      <Button guid="COMMAND_SET_GUID" id="EmulatorStepOver" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="StepOver" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Step Over</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="COMMAND_SET_GUID" id="EmulatorStepOut" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarDebugGroup" />
         <Icon guid="ImageCatalogGuid" id="StepOut" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Step Out (F12)</ButtonText>
+          <ButtonText>Step Out</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Step-Over button for command well -->
+      <Button guid="COMMAND_SET_GUID" id="EmulatorStepOut" priority="0x0100" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="StepOut" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Step Out</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="COMMAND_SET_GUID" id="EmulatorSaveState" priority="0x0100" type="Button">
         <Parent guid="COMMAND_SET_GUID" id="EmulatorToolbarStateGroup" />
         <Icon guid="ImageCatalogGuid" id="Save" />
@@ -849,7 +942,15 @@
   <KeyBindings>
     <KeyBinding guid="COMMAND_SET_GUID" id="RunDefaultProgramCommandId" editor="guidVSStd97" key1="M" mod1="Control" key2="R" mod2="Control" />
     <KeyBinding guid="COMMAND_SET_GUID" id="DebugDefaultProgramCommandId" editor="guidVSStd97" key1="M" mod1="Control" key2="R" />
+
+    <KeyBinding guid="COMMAND_SET_GUID" id="EmulatorStart" editor="guidVSStd97" key1="M" mod1="Control" key2="S"/>
     <KeyBinding guid="COMMAND_SET_GUID" id="EmulatorStop" editor="guidVSStd97" key1="M" mod1="Control" key2="S" mod2="Control" />
+    <KeyBinding guid="COMMAND_SET_GUID" id="EmulatorPause" editor="guidVSStd97" key1="M" mod1="Control" key2="VK_SPACE" mod2="Control" />
+    <KeyBinding guid="COMMAND_SET_GUID" id="EmulatorStartDebug" editor="guidVSStd97" key1="M" mod1="Control" key2="D"/>
+    <KeyBinding guid="COMMAND_SET_GUID" id="EmulatorStepInto" editor="guidVSStd97" key1="M" mod1="Control" key2="VK_F11" />
+    <KeyBinding guid="COMMAND_SET_GUID" id="EmulatorStepOver" editor="guidVSStd97" key1="M" mod1="Control" key2="VK_F10" />
+    <KeyBinding guid="COMMAND_SET_GUID" id="EmulatorStepOut" editor="guidVSStd97" key1="M" mod1="Control" key2="VK_F12" />
+
   </KeyBindings>
 
   <VisibilityConstraints>

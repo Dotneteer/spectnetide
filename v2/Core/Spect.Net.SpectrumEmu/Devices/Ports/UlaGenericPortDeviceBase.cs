@@ -24,6 +24,11 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
         }
 
         /// <summary>
+        /// Get the memory device
+        /// </summary>
+        public IMemoryDevice MemoryDevice => _memoryDevice;
+
+        /// <summary>
         /// Define how to handle an unattached port
         /// </summary>
         /// <param name="addr">Port address</param>
@@ -35,11 +40,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             var memAddr = (ushort)0;
             switch (rt.Phase)
             {
-                case ScreenRenderingPhase.BorderFetchPixel:
-                case ScreenRenderingPhase.DisplayB1FetchB2:
-                case ScreenRenderingPhase.DisplayB2FetchB1:
-                    memAddr = rt.PixelByteToFetchAddress;
-                    break;
                 case ScreenRenderingPhase.BorderFetchPixelAttr:
                 case ScreenRenderingPhase.DisplayB1FetchA2:
                 case ScreenRenderingPhase.DisplayB2FetchA1:

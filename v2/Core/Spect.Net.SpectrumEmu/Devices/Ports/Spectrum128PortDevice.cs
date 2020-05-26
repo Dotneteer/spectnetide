@@ -1,4 +1,5 @@
 ﻿using Spect.Net.SpectrumEmu.Abstraction.Devices;
+using Spect.Net.SpectrumEmu.Abstraction.Devices.Screen;
 
 namespace Spect.Net.SpectrumEmu.Devices.Ports
 {
@@ -8,7 +9,6 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
     public class Spectrum128PortDevice: UlaGenericPortDeviceBase
     {
         private readonly Spectrum128MemoryPagePortHandler _memoryHandler;
-        protected IMemoryDevice MemoryDevice;
         protected ISoundDevice SoundDevice;
 
         /// <summary>
@@ -29,6 +29,35 @@ namespace Spect.Net.SpectrumEmu.Devices.Ports
             Handlers.Add(_memoryHandler);
             Handlers.Add(new SoundRegisterIndexPortHandler(this));
             Handlers.Add(new SoundRegisterValuePortHandler(this));
+        }
+
+        /// <summary>
+        /// Define how to handle an unattached port
+        /// </summary>
+        /// <param name="addr">Port address</param>
+        /// <returns>Port value for the unhandled port address</returns>
+        public override byte UnhandledRead(ushort addr)
+        {
+            var tact = HostVm.CurrentFrameTact % ScreenDevice.RenderingTactTable.Length;
+            var rt = ScreenDevice.RenderingTactTable[tact];
+            var memAddr = (ushort)0;
+            switch (rt.Phase)
+            {
+                case ScreenRenderingPhase.BorderFetchPixel:
+                case ScreenRenderingPhase.DisplayB1FetchB2:
+                case ScreenRenderingPhase.DisplayB2FetchB1:
+                    memAddr = rt.PixelByteToFetchAddress;
+                    break;
+                case ScreenRenderingPhase.BorderFetchPixelAttr:
+                case ScreenRenderingPhase.DisplayB1FetchA2:
+                case ScreenRenderingPhase.DisplayB2FetchA1:
+                    memAddr = rt.AttributeToFetchAddress;
+                    break;
+            }
+
+            if (memAddr == 0) return 0xFF;
+            var readValue = MemoryDevice.Read(memAddr, true);
+            return readValue;
         }
 
         /// <summary>
