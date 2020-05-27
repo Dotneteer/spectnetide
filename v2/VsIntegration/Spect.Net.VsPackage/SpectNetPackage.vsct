@@ -566,6 +566,20 @@
         </Strings>
       </Button>
 
+      <!-- Run Default Program for command well -->
+      <Button guid="COMMAND_SET_GUID" id="RunDefaultProgramCommandId" priority="0x0101" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="Run" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Run program</ButtonText>
+          <CommandName>RunDefaultSpectrumProgram</CommandName>
+        </Strings>
+      </Button>
+
       <!-- Debug Default Program command -->
       <Button guid="COMMAND_SET_GUID" id="DebugDefaultProgramCommandId" priority="0x0102" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
@@ -573,6 +587,20 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Debug program</ButtonText>
+          <CommandName>DebugDefaultSpectrumProgram</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- Debug Default Program for command well -->
+      <Button guid="COMMAND_SET_GUID" id="DebugDefaultProgramCommandId" priority="0x0102" type="Button">
+        <Parent guid="COMMAND_SET_GUID" id="InfoWindowsGroup" />
+        <Icon guid="ImageCatalogGuid" id="PlayStep" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
         <Strings>
           <ButtonText>Debug program</ButtonText>
           <CommandName>DebugDefaultSpectrumProgram</CommandName>
