@@ -1,6 +1,6 @@
 # Introduction
 
-## Version 2.0 (Preview 8) has been released!
+## Version 2.0 (Preview 9) has been released!
 
 I have been actively working on version 2 since June 2019.
 
@@ -10,15 +10,14 @@ I have been actively working on version 2 since June 2019.
 - __New debugging tools.__ The ZX Spectrum emulator provides two extra options: _ULA render point indication_, and _shadow screen rendering_.
 - __New, more modern project item icons.__
 
-Preview 8 has these limitations:
+Preview 9 has these limitations:
 
 - ZX BASIC source code debugging is not supported yet.
-- Z80 Assembler Output and Z80 Unit Test Explorer are not supported yet.
-- Spectrum Scripting Console App project type removed.
 
-I decided not to implement VS 2017 compatibility, so version 2.x will work only on Visual Studio 2019, or later.
+I decided not to implement VS 2017 compatibility, so version 2.x will work only on Visual Studio 2019, or later. Also, I discontinue
+implementing the Z80 Assembler Output and Z80 Unit Test Explorer, and Spectrum Scripting Console App features, as they are not used by the community.
 
-You can download the v2.0-preview 8 VSIX installer file [here](https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde2).
+You can download the v2.0-preview 9 VSIX installer file [here](https://marketplace.visualstudio.com/items?itemName=Dotneteer.SpectNetIde2).
 
 __Stay tuned!__
 

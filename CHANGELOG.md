@@ -1,3 +1,10 @@
+### Version 2.0.9 (Preview 9)
+__FIX__: DISP pragma not works properly within a code segment.  
+__FIX__: Export program saves the code to the correct location and display error message in case of problems.  
+__FIX__: Floating bus issue with ZX Spectrum 48 model fixed.  
+__FEATURE__: ZX Spectrum Emulator start, stop, pause, step-into, step-over, and step-out command shortcuts now can be customized: https://dotneteer.github.io/spectnetide/getting-started/zx-spectrum-emulator-window-2#customizing-shortcut-keys  
+
+
 ### Version 2.0.8 (Preview 8)
 __FIX__: Patch version number is the same as the Preview version number.  
 __FIX__: Assembler does not allow non-existing `jr m,NN`, `jr p,NN`, `jr po,NN`, and `jr pe,nn` instructions anymore.  
