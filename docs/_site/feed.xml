@@ -42,7 +42,7 @@ print at 4,6; ink 7; paper 1; flash 1;&quot; HELLO, ZX BASIC! &quot;
     &lt;p&gt;Select the &lt;strong&gt;ZX BASIC Program&lt;/strong&gt; item type, set the name to &lt;code class=&quot;highlighter-rouge&quot;&gt;Clock.zxbas&lt;/code&gt;, and click &lt;strong&gt;Add&lt;/strong&gt;.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Type (copy) this code into the new &lt;code class=&quot;highlighter-rouge&quot;&gt;Cloxk.zxbas&lt;/code&gt; file:&lt;/p&gt;
+    &lt;p&gt;Type (copy) this code into the new &lt;code class=&quot;highlighter-rouge&quot;&gt;Clock.zxbas&lt;/code&gt; file:&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
 

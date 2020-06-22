@@ -43,7 +43,7 @@ Let's create a new ZX BASIC program!
 {:start="2"}
 2. Select the __ZX BASIC Program__ item type, set the name to `Clock.zxbas`, and click __Add__.
 
-3. Type (copy) this code into the new `Cloxk.zxbas` file:
+3. Type (copy) this code into the new `Clock.zxbas` file:
 
 ```
 CLS
