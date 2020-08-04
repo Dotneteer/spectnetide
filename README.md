@@ -1,5 +1,7 @@
 # Introduction
 
+**Besides SpectNetIDE, I'm actively working on bringing a similar experience to Visual Studio Code with [Klive IDE](https://github.com/Dotneteer/kliveide). In the future, though I still maintain this project, I focus on Klive IDE.**
+
 ## Version 2.0 (Preview 9) has been released!
 
 I have been actively working on version 2 since June 2019.
