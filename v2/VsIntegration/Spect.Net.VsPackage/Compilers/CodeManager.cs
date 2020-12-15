@@ -71,6 +71,12 @@ namespace Spect.Net.VsPackage.Compilers
 
             if (spectrumVm is ISpectrumVmRunCodeSupport runSupport)
             {
+                // --- Clear the screen unless required else
+                if (!output.InjectOptions.Contains("nocls"))
+                {
+                    runSupport.ClearScreen();
+                }
+
                 // --- Go through all code segments and inject them
                 foreach (var segment in output.Segments)
                 {

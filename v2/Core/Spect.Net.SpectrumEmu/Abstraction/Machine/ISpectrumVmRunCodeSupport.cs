@@ -29,5 +29,10 @@ namespace Spect.Net.SpectrumEmu.Abstraction.Machine
         /// with the RUN command.
         /// </summary>
         void PrepareRunMode(HashSet<string> options);
+
+        /// <summary>
+        /// Clears the screen
+        /// </summary>
+        void ClearScreen();
     }
 }

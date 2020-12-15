@@ -288,7 +288,7 @@ operand
 	|	indexedAddr
 	|	expr
 	|	condition
-	|	(HREG | LREG) LPAR (reg16Std | macroParam) RPAR
+	|	(HREG | LREG) LPAR (reg16Std | macroParam | NONEARG) RPAR
 	|	NONEARG
 	;
 

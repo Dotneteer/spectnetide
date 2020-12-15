@@ -1795,6 +1795,27 @@ namespace Spect.Net.Assembler.Test.Assembler
         }
 
         [TestMethod]
+        public void UnpassedMacroArgumentsGetEmptyString4()
+        {
+            // --- Arrange
+            const string SOURCE = @"
+                Simple: .macro(arg1, arg2)
+                    .if def({{arg1}})
+                        ld a,hreg({{arg1}})
+                    .endif
+                    .if def({{arg2}})
+                        ld b,lreg({{arg2}})
+                    .endif
+                .endm
+                Simple(, bc)
+                Simple(bc)";
+
+            CodeEmitWorks(SOURCE, 0x41, 0x78);
+        }
+
+
+
+        [TestMethod]
         public void MacroInMacroWorks1()
         {
             // --- Arrange
