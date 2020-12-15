@@ -74,7 +74,7 @@ directive
 	|	ENDIF
 	|	ELSE
 	|	IF expr
-	|	INCLUDE (STRING | FSTRING)
+	|	INCLUDE (STRING)
 	|	LINEDIR expr (COMMA? STRING)?
 	;	
 
@@ -751,7 +751,6 @@ REALNUM	: [0-9]* DOT [0-9]+ ExponentPart?
 
 CHAR	: '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' ;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
-FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
 
 // --- Boolean literals;
 
@@ -759,12 +758,14 @@ BOOLLIT	: TRUE | FALSE ;
 TRUE	: 'true' | '.true' | 'TRUE' | '.TRUE' ;
 FALSE	: 'false' | '.false' | 'FALSE' | '.FALSE' ;
 
+// --- Semi-identifiers
+CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
+
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
-IDSTART	: '_' | '@' | '`' | 'A'..'Z' | 'a'..'z'	;
+IDSTART	: '.' | '_' | '@' | '`' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' | '.' ;
 
-CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
 NONEARG	: '$<none>$' ;
 
 // --- Any invalid character should be converted into an ErrorCharacter token.

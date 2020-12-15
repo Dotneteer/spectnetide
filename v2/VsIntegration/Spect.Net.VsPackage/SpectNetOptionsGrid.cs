@@ -366,7 +366,7 @@ namespace Spect.Net.VsPackage
 
         [Category("ZX BASIC options")]
         [DisplayName("ZXB utility path")]
-        [Description("The full path where the ZXB utility (ZXB.EXE) can be found.")]
+        [Description("The full path where the ZXB utility (ZXBC.EXE) can be found.")]
         public string ZxbPath { get; set; }
 
         [Category("ZX BASIC options")]
@@ -378,7 +378,7 @@ namespace Spect.Net.VsPackage
             set
             {
                 _optimize = value;
-                if (_optimize > 3) _optimize = 3;
+                if (_optimize > 4) _optimize = 4;
             }
         }
 
