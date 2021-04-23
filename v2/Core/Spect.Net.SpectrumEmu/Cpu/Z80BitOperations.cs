@@ -2115,7 +2115,7 @@ namespace Spect.Net.SpectrumEmu.Cpu
         private void SRL_HLi()
         {
             var srlVal = ReadMemory(_registers.HL);
-            _registers.F = s_RlCarry0Flags[srlVal];
+            _registers.F = s_RrCarry0Flags[srlVal];
             srlVal >>= 1;
             if (UseGateArrayContention)
             {
