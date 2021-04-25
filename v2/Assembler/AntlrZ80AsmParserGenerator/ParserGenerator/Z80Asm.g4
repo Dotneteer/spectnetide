@@ -104,7 +104,7 @@ statement
 iterationTest: (LOOP | WHILE | UNTIL | ELIF | IDENTIFIER
 	{this.p("loop", "while", "until", "elif")}?
 	) expr;
-macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
+macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR SINGLETON? ;
 macroEndMarker: ENDMACRO ;
 procStatement: PROC;
 procEndMarker: ENDPROC ;
@@ -684,6 +684,7 @@ ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE'
 STRUCT	: '.struct' | '.STRUCT' | 'struct' | 'STRUCT' ;
 ENDST	: '.ends' | '.ENDS' ;
 LOCAL	: '.local' | '.LOCAL' | 'local' | 'LOCAL' | 'Local' ;
+SINGLETON: '.singleton' | '.SINGLETON' ;
 
 // --- Built-in function names
 TEXTOF	: 'textof' | 'TEXTOF' ;
