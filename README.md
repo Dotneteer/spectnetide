@@ -6,9 +6,9 @@
 
 This is a cumulative release including many fixes:
 
-- __Support for latest ZX Basic versions.
-- __Improved performance.
-- __Corrected multiple problems.
+- __Support for latest ZX Basic versions.__
+- __Improved performance.__
+- __Corrected multiple problems.__
 
 For more info check the changelog.
 
