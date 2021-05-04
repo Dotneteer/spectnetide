@@ -1,3 +1,12 @@
+### Version 2.0.9 (Preview 10)
+__FIX__: Fixed SRL instruction when using (HL) as target.
+__FIX__: Emulator windows distortion fixed.
+__FIX__: Fixed issue with .ifdef and lreg.
+__FIX__: Fixed issue with "<<" operator.
+__FIX__: Improved sound generation,
+__FEATURE__: Added support for .injectopt nocls.
+__FEATURE__: Added support for labels using dots.
+
 ### Version 2.0.9 (Preview 9)
 __FIX__: DISP pragma not works properly within a code segment.  
 __FIX__: Export program saves the code to the correct location and display error message in case of problems.  
