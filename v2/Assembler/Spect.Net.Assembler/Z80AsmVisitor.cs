@@ -518,10 +518,6 @@ namespace Spect.Net.Assembler
             {
                 AddString(context.STRING());
             }
-            else if (context.FSTRING() != null)
-            {
-                AddString(context.FSTRING());
-            }
             if (mnemonic == "#INCLUDE")
             {
                 return new IncludeDirective(this, context);

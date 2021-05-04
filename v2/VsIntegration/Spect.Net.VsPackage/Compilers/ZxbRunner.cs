@@ -31,7 +31,7 @@ namespace Spect.Net.VsPackage.Compilers
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = Path.Combine(_zxbPath ?? string.Empty, "zxb.exe"),
+                    FileName = Path.Combine(_zxbPath ?? string.Empty, "zxbc.exe"),
                     Arguments = options.ToString(),
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,

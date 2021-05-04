@@ -74,7 +74,7 @@ directive
 	|	ENDIF
 	|	ELSE
 	|	IF expr
-	|	INCLUDE (STRING | FSTRING)
+	|	INCLUDE (STRING)
 	|	LINEDIR expr (COMMA? STRING)?
 	;	
 
@@ -104,7 +104,7 @@ statement
 iterationTest: (LOOP | WHILE | UNTIL | ELIF | IDENTIFIER
 	{this.p("loop", "while", "until", "elif")}?
 	) expr;
-macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR	;
+macroStatement: MACRO LPAR (IDENTIFIER (COMMA IDENTIFIER)*)? RPAR SINGLETON? ;
 macroEndMarker: ENDMACRO ;
 procStatement: PROC;
 procEndMarker: ENDPROC ;
@@ -288,7 +288,7 @@ operand
 	|	indexedAddr
 	|	expr
 	|	condition
-	|	(HREG | LREG) LPAR (reg16Std | macroParam) RPAR
+	|	(HREG | LREG) LPAR (reg16Std | macroParam | NONEARG) RPAR
 	|	NONEARG
 	;
 
@@ -684,6 +684,7 @@ ENDMOD	: '.endmodule' | '.ENDMODULE' | 'endmodule' | 'ENDMODULE'
 STRUCT	: '.struct' | '.STRUCT' | 'struct' | 'STRUCT' ;
 ENDST	: '.ends' | '.ENDS' ;
 LOCAL	: '.local' | '.LOCAL' | 'local' | 'LOCAL' | 'Local' ;
+SINGLETON: '.singleton' | '.SINGLETON' ;
 
 // --- Built-in function names
 TEXTOF	: 'textof' | 'TEXTOF' ;
@@ -751,7 +752,6 @@ REALNUM	: [0-9]* DOT [0-9]+ ExponentPart?
 
 CHAR	: '\'' (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter) '\'' ;
 STRING	: '"'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '"' ;
-FSTRING	: '<'  (~["\\\r\n\u0085\u2028\u2029] | CommonCharacter)* '>' ;
 
 // --- Boolean literals;
 
@@ -759,12 +759,14 @@ BOOLLIT	: TRUE | FALSE ;
 TRUE	: 'true' | '.true' | 'TRUE' | '.TRUE' ;
 FALSE	: 'false' | '.false' | 'FALSE' | '.FALSE' ;
 
+// --- Semi-identifiers
+CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
+
 // --- Identifiers
 IDENTIFIER: IDSTART IDCONT*	;
-IDSTART	: '_' | '@' | '`' | 'A'..'Z' | 'a'..'z'	;
+IDSTART	: '.' | '_' | '@' | '`' | 'A'..'Z' | 'a'..'z'	;
 IDCONT	: '_' | '@' | '!' | '?' | '#' | '0'..'9' | 'A'..'Z' | 'a'..'z' | '.' ;
 
-CURCNT	: '$cnt' | '$CNT' | '.cnt' | '.CNT' ;
 NONEARG	: '$<none>$' ;
 
 // --- Any invalid character should be converted into an ErrorCharacter token.

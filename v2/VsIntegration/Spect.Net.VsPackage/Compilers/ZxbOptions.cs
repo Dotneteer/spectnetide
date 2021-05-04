@@ -31,7 +31,7 @@
             {
                 _optimize = value;
                 if (_optimize < 1) _optimize = 1;
-                else if (_optimize > 3) _optimize = 3;
+                else if (_optimize > 4) _optimize = 4;
             }
         }
 

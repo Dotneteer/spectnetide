@@ -35,8 +35,8 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 [System.CLSCompliant(false)]
 public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, IZ80AsmVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by the <c>FunctionInvocationExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>RealLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -44,11 +44,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitFunctionInvocationExpr([NotNull] Z80AsmParser.FunctionInvocationExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitRealLiteral([NotNull] Z80AsmParser.RealLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>UnaryPlusExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>BinLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -56,11 +56,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitUnaryPlusExpr([NotNull] Z80AsmParser.UnaryPlusExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitBinLiteral([NotNull] Z80AsmParser.BinLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>TernaryExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>OctalLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -68,11 +68,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTernaryExpr([NotNull] Z80AsmParser.TernaryExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitOctalLiteral([NotNull] Z80AsmParser.OctalLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>AddExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>CharLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -80,11 +80,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAddExpr([NotNull] Z80AsmParser.AddExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitCharLiteral([NotNull] Z80AsmParser.CharLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>SymbolExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>BoolLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -92,11 +92,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitBoolLiteral([NotNull] Z80AsmParser.BoolLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>UnaryMinusExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>StringLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -104,11 +104,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitUnaryMinusExpr([NotNull] Z80AsmParser.UnaryMinusExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitStringLiteral([NotNull] Z80AsmParser.StringLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>EquExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>DecimalLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -116,11 +116,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEquExpr([NotNull] Z80AsmParser.EquExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitDecimalLiteral([NotNull] Z80AsmParser.DecimalLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>XorExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>CurCounterLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -128,11 +128,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitXorExpr([NotNull] Z80AsmParser.XorExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitCurCounterLiteral([NotNull] Z80AsmParser.CurCounterLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>MacroParamExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>HexLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -140,11 +140,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMacroParamExpr([NotNull] Z80AsmParser.MacroParamExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitHexLiteral([NotNull] Z80AsmParser.HexLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>BinaryNotExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
+	/// Visit a parse tree produced by the <c>CurAddrLiteral</c>
+	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -152,55 +152,7 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBinaryNotExpr([NotNull] Z80AsmParser.BinaryNotExprContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>MultExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitMultExpr([NotNull] Z80AsmParser.MultExprContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>BracketedExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitBracketedExpr([NotNull] Z80AsmParser.BracketedExprContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>LogicalNotExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitLogicalNotExpr([NotNull] Z80AsmParser.LogicalNotExprContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>OrExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitOrExpr([NotNull] Z80AsmParser.OrExprContext context) { return VisitChildren(context); }
+	public virtual Result VisitCurAddrLiteral([NotNull] Z80AsmParser.CurAddrLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>AndExpr</c>
@@ -213,54 +165,6 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitAndExpr([NotNull] Z80AsmParser.AndExprContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ShiftExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitShiftExpr([NotNull] Z80AsmParser.ShiftExprContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>LiteralExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitLiteralExpr([NotNull] Z80AsmParser.LiteralExprContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ParenthesizedExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitParenthesizedExpr([NotNull] Z80AsmParser.ParenthesizedExprContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>MinMaxExpr</c>
-	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>BuiltInFunctionExpr</c>
@@ -287,8 +191,8 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitRelExpr([NotNull] Z80AsmParser.RelExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg16Invoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>XorExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -296,11 +200,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsReg16Invoke([NotNull] Z80AsmParser.IsReg16InvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitXorExpr([NotNull] Z80AsmParser.XorExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg8StdInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>MultExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -308,11 +212,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsReg8StdInvoke([NotNull] Z80AsmParser.IsReg8StdInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitMultExpr([NotNull] Z80AsmParser.MultExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>DefInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>LogicalNotExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -320,11 +224,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDefInvoke([NotNull] Z80AsmParser.DefInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitLogicalNotExpr([NotNull] Z80AsmParser.LogicalNotExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsExprInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>SymbolExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -332,11 +236,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsExprInvoke([NotNull] Z80AsmParser.IsExprInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitSymbolExpr([NotNull] Z80AsmParser.SymbolExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegIInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>AddExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -344,11 +248,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegIInvoke([NotNull] Z80AsmParser.IsRegIInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitAddExpr([NotNull] Z80AsmParser.AddExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsCportInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>MinMaxExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -356,11 +260,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsCportInvoke([NotNull] Z80AsmParser.IsCportInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitMinMaxExpr([NotNull] Z80AsmParser.MinMaxExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegDInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>FunctionInvocationExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -368,11 +272,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegDInvoke([NotNull] Z80AsmParser.IsRegDInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitFunctionInvocationExpr([NotNull] Z80AsmParser.FunctionInvocationExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegLInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>BracketedExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -380,11 +284,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegLInvoke([NotNull] Z80AsmParser.IsRegLInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitBracketedExpr([NotNull] Z80AsmParser.BracketedExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegAInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>EquExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -392,11 +296,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegAInvoke([NotNull] Z80AsmParser.IsRegAInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitEquExpr([NotNull] Z80AsmParser.EquExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegXLInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>OrExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -404,11 +308,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegXLInvoke([NotNull] Z80AsmParser.IsRegXLInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitOrExpr([NotNull] Z80AsmParser.OrExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegXHInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>MacroParamExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -416,11 +320,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegXHInvoke([NotNull] Z80AsmParser.IsRegXHInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitMacroParamExpr([NotNull] Z80AsmParser.MacroParamExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegIndirectInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>UnaryPlusExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -428,11 +332,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegIndirectInvoke([NotNull] Z80AsmParser.IsRegIndirectInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitUnaryPlusExpr([NotNull] Z80AsmParser.UnaryPlusExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegCInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>LiteralExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -440,11 +344,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegCInvoke([NotNull] Z80AsmParser.IsRegCInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitLiteralExpr([NotNull] Z80AsmParser.LiteralExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>TextOfInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>ParenthesizedExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -452,11 +356,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTextOfInvoke([NotNull] Z80AsmParser.TextOfInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitParenthesizedExpr([NotNull] Z80AsmParser.ParenthesizedExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsIndexedAddrInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>ShiftExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -464,11 +368,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsIndexedAddrInvoke([NotNull] Z80AsmParser.IsIndexedAddrInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitShiftExpr([NotNull] Z80AsmParser.ShiftExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegSPInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>TernaryExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -476,11 +380,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegSPInvoke([NotNull] Z80AsmParser.IsRegSPInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitTernaryExpr([NotNull] Z80AsmParser.TernaryExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg8StdSpecInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>UnaryMinusExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -488,11 +392,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsReg8StdSpecInvoke([NotNull] Z80AsmParser.IsReg8StdSpecInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitUnaryMinusExpr([NotNull] Z80AsmParser.UnaryMinusExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg8Invoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// Visit a parse tree produced by the <c>BinaryNotExpr</c>
+	/// labeled alternative in <see cref="Z80AsmParser.expr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -500,127 +404,7 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsReg8Invoke([NotNull] Z80AsmParser.IsReg8InvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegIYInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegIYInvoke([NotNull] Z80AsmParser.IsRegIYInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg16StdInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsReg16StdInvoke([NotNull] Z80AsmParser.IsReg16StdInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegHLInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegHLInvoke([NotNull] Z80AsmParser.IsRegHLInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegEInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegEInvoke([NotNull] Z80AsmParser.IsRegEInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg16IdxInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsReg16IdxInvoke([NotNull] Z80AsmParser.IsReg16IdxInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegDEInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegDEInvoke([NotNull] Z80AsmParser.IsRegDEInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegYHInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegYHInvoke([NotNull] Z80AsmParser.IsRegYHInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegAfInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegAfInvoke([NotNull] Z80AsmParser.IsRegAfInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsReg8IdxInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsReg8IdxInvoke([NotNull] Z80AsmParser.IsReg8IdxInvokeContext context) { return VisitChildren(context); }
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegBInvoke</c>
-	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegBInvoke([NotNull] Z80AsmParser.IsRegBInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitBinaryNotExpr([NotNull] Z80AsmParser.BinaryNotExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>IsConditionInvoke</c>
@@ -635,6 +419,90 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitIsConditionInvoke([NotNull] Z80AsmParser.IsConditionInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegBInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegBInvoke([NotNull] Z80AsmParser.IsRegBInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg16Invoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsReg16Invoke([NotNull] Z80AsmParser.IsReg16InvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg16StdInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsReg16StdInvoke([NotNull] Z80AsmParser.IsReg16StdInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsIndexedAddrInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsIndexedAddrInvoke([NotNull] Z80AsmParser.IsIndexedAddrInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg8StdSpecInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsReg8StdSpecInvoke([NotNull] Z80AsmParser.IsReg8StdSpecInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegLInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegLInvoke([NotNull] Z80AsmParser.IsRegLInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsCportInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsCportInvoke([NotNull] Z80AsmParser.IsCportInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
 	/// Visit a parse tree produced by the <c>IsRegBCInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
@@ -647,7 +515,7 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitIsRegBCInvoke([NotNull] Z80AsmParser.IsRegBCInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegHInvoke</c>
+	/// Visit a parse tree produced by the <c>IsReg8Invoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -656,10 +524,10 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegHInvoke([NotNull] Z80AsmParser.IsRegHInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsReg8Invoke([NotNull] Z80AsmParser.IsReg8InvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegYLInvoke</c>
+	/// Visit a parse tree produced by the <c>IsExprInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -668,10 +536,10 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegYLInvoke([NotNull] Z80AsmParser.IsRegYLInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsExprInvoke([NotNull] Z80AsmParser.IsExprInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IsRegIXInvoke</c>
+	/// Visit a parse tree produced by the <c>IsReg16IdxInvoke</c>
 	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -680,7 +548,19 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIsRegIXInvoke([NotNull] Z80AsmParser.IsRegIXInvokeContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsReg16IdxInvoke([NotNull] Z80AsmParser.IsReg16IdxInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg8StdInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsReg8StdInvoke([NotNull] Z80AsmParser.IsReg8StdInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>IsRegRInvoke</c>
@@ -695,8 +575,8 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitIsRegRInvoke([NotNull] Z80AsmParser.IsRegRInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>StringLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>IsRegEInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -704,11 +584,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitStringLiteral([NotNull] Z80AsmParser.StringLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsRegEInvoke([NotNull] Z80AsmParser.IsRegEInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>BinLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>IsRegXHInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -716,11 +596,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBinLiteral([NotNull] Z80AsmParser.BinLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsRegXHInvoke([NotNull] Z80AsmParser.IsRegXHInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>HexLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>TextOfInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -728,11 +608,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitHexLiteral([NotNull] Z80AsmParser.HexLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitTextOfInvoke([NotNull] Z80AsmParser.TextOfInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>BoolLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>IsRegYHInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -740,11 +620,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBoolLiteral([NotNull] Z80AsmParser.BoolLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsRegYHInvoke([NotNull] Z80AsmParser.IsRegYHInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>RealLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>IsRegAInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -752,11 +632,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitRealLiteral([NotNull] Z80AsmParser.RealLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsRegAInvoke([NotNull] Z80AsmParser.IsRegAInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>CurCounterLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>IsRegDEInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -764,11 +644,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCurCounterLiteral([NotNull] Z80AsmParser.CurCounterLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsRegDEInvoke([NotNull] Z80AsmParser.IsRegDEInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>CharLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>IsRegSPInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -776,11 +656,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCharLiteral([NotNull] Z80AsmParser.CharLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsRegSPInvoke([NotNull] Z80AsmParser.IsRegSPInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>OctalLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>DefInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -788,11 +668,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOctalLiteral([NotNull] Z80AsmParser.OctalLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitDefInvoke([NotNull] Z80AsmParser.DefInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>DecimalLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>IsRegAfInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -800,11 +680,11 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDecimalLiteral([NotNull] Z80AsmParser.DecimalLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsRegAfInvoke([NotNull] Z80AsmParser.IsRegAfInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>CurAddrLiteral</c>
-	/// labeled alternative in <see cref="Z80AsmParser.literal"/>.
+	/// Visit a parse tree produced by the <c>IsRegCInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -812,7 +692,127 @@ public partial class Z80AsmBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCurAddrLiteral([NotNull] Z80AsmParser.CurAddrLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitIsRegCInvoke([NotNull] Z80AsmParser.IsRegCInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegHInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegHInvoke([NotNull] Z80AsmParser.IsRegHInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegIXInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegIXInvoke([NotNull] Z80AsmParser.IsRegIXInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegDInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegDInvoke([NotNull] Z80AsmParser.IsRegDInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegYLInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegYLInvoke([NotNull] Z80AsmParser.IsRegYLInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegXLInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegXLInvoke([NotNull] Z80AsmParser.IsRegXLInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsReg8IdxInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsReg8IdxInvoke([NotNull] Z80AsmParser.IsReg8IdxInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegHLInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegHLInvoke([NotNull] Z80AsmParser.IsRegHLInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegIInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegIInvoke([NotNull] Z80AsmParser.IsRegIInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegIYInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegIYInvoke([NotNull] Z80AsmParser.IsRegIYInvokeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>IsRegIndirectInvoke</c>
+	/// labeled alternative in <see cref="Z80AsmParser.builtinFunctionInvocation"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitIsRegIndirectInvoke([NotNull] Z80AsmParser.IsRegIndirectInvokeContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Z80AsmParser.compileUnit"/>.

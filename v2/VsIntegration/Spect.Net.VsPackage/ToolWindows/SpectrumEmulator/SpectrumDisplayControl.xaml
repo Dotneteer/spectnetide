@@ -24,7 +24,7 @@
             <Image x:Name="Display"  
                    SnapsToDevicePixels="True"
                    UseLayoutRounding="True"
-                   RenderOptions.BitmapScalingMode="NearestNeighbor" 
+                   RenderOptions.BitmapScalingMode="HighQuality" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" />
         </Border>

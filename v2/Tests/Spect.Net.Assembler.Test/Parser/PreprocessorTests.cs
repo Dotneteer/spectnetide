@@ -35,20 +35,6 @@ namespace Spect.Net.Assembler.Test.Parser
         }
 
         [TestMethod]
-        public void IncludeDirectiveWorksWithFStringAsExpected()
-        {
-            // --- Act
-            var visitor = Parse("#include <myfile.z80asm>");
-
-            // --- Assert
-            visitor.Compilation.Lines.Count.ShouldBe(1);
-            var line = visitor.Compilation.Lines[0] as IncludeDirective;
-            line.ShouldNotBeNull();
-            line.Mnemonic.ShouldBe("#INCLUDE");
-            line.Filename.ShouldBe("<myfile.z80asm>");
-        }
-
-        [TestMethod]
         public void IncludeFailsWithLabel()
         {
             // --- Act/Assert

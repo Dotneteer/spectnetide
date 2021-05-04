@@ -44,7 +44,7 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
 
             double result = 0;
             for (var i = 0; i < _numTaps; i++) result += _sr[i] * _taps[i];
-            return result;
+            return result / 3;
         }
     }
 }
