@@ -557,10 +557,6 @@
       <Project>{47b17533-f094-4aa9-81de-8bd4a2566add}</Project>
       <Name>Spect.Net.ProjectResources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Spect.Net.ProjectWizard\Spect.Net.ProjectWizard.csproj">
-      <Project>{7f2dc1ea-d3d4-43a9-8f69-95e90014a828}</Project>
-      <Name>Spect.Net.ProjectWizard</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Spect.Net.Z80AsmTemplate\Spect.Net.Z80AsmTemplate.csproj">
       <Project>{f1705241-501d-4bcc-a1b7-90a2e0aa7795}</Project>
       <Name>Spect.Net.Z80AsmTemplate</Name>
