@@ -6,8 +6,8 @@
 
 This is a service version including:
 
-- __Fix for random exception in Visual Studio.
-- __Support for the next incomming ZX Basic version.
+- __Fix for random exception in Visual Studio.__
+- __Support for the next incomming ZX Basic version.__
 
 For more info check the changelog.
 
@@ -17,9 +17,9 @@ You can download the V2.0-preview 11 VSIX installer from the [Releases page](htt
 
 This is a cumulative release including many fixes:
 
-- __Support for latest ZX Basic versions.
-- __Improved performance.
-- __Corrected multiple problems.
+- __Support for latest ZX Basic versions.__
+- __Improved performance.__
+- __Corrected multiple problems.__
 
 For more info check the changelog.
 
