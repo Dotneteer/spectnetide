@@ -2,6 +2,17 @@
 
 **Besides SpectNetIDE, I'm actively working on bringing a similar experience to Visual Studio Code with [Klive IDE](https://github.com/Dotneteer/kliveide). In the future, though I still maintain this project, I focus on Klive IDE.**
 
+## Version 2.0 (Preview 11) released
+
+This is a service version including:
+
+- __Fix for random exception in Visual Studio.__
+- __Support for the next incomming ZX Basic version.__
+
+For more info check the changelog.
+
+You can download the V2.0-preview 11 VSIX installer from the [Releases page](https://github.com/Dotneteer/spectnetide/releases).
+
 ## Version 2.0 (Preview 10) released
 
 This is a cumulative release including many fixes:

@@ -1,3 +1,7 @@
+### Version 2.0.9 (Preview 11)
+__FIX__: Fixed random exception when using Visual Studio.
+__FEATURE__: Added support latest ZX Basic version (experimental)
+
 ### Version 2.0.9 (Preview 10)
 __FIX__: Fixed SRL instruction when using (HL) as target.
 __FIX__: Emulator windows distortion fixed.
