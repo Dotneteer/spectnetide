@@ -55,7 +55,7 @@ namespace Spect.Net.VsPackage
     [InstalledProductRegistration(
         "#110", 
         "#112", 
-        "2.0.10", 
+        "2.0.11", 
         IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
@@ -163,7 +163,7 @@ namespace Spect.Net.VsPackage
         /// </summary>
         public const string CPS_FOLDER = @"CustomProjectSystems\Spect.Net.CodeDiscover";
         public const string CPS_VERSION_FILE = "cps.version";
-        public const string CURRENT_CPS_VERSION = "2.0.10";
+        public const string CURRENT_CPS_VERSION = "2.0.11";
         public const string CPS_RESOURCE_PREFIX = "Spect.Net.ProjectResources";
         public const string CPS_RULES = "Rules";
 
