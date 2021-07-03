@@ -31,9 +31,11 @@ namespace Spect.Net.VsPackage.Commands
         protected override void OnQueryStatus(OleMenuCommand mc)
         {
             base.OnQueryStatus(mc);
-            if (!mc.Visible) return;
 
-            mc.Visible = SpectNetPackage.Default.EmulatorViewModel.Machine.SpectrumVm.FloppyDevice is FloppyDevice;
+            if (!mc.Visible) 
+                return;
+
+            mc.Visible = (SpectNetPackage.Default?.EmulatorViewModel?.Machine?.SpectrumVm?.FloppyDevice ?? (object)null) is FloppyDevice;
         }
 
         /// <summary>
