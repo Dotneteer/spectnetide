@@ -200,6 +200,7 @@ namespace Spect.Net.VsPackage.Commands
                 var autoStartBlocks = CreateAutoStartBlock(
                     output,
                     vm.Name,
+                    vm.SingleBlock,
                     useScreenFile,
                     vm.AddPause0,
                     vm.Border,
@@ -531,6 +532,9 @@ namespace Spect.Net.VsPackage.Commands
         /// </summary>
         /// <param name="output">Assembler output</param>
         /// <param name="name">Program name</param>
+        /// <param name="singleBlock">
+        /// If singleBlock is true then only single instance of LOAD "" CODE is required
+        /// Otherwise LOAD "" CODE will be added to BASIC loader for each code segment
         /// <param name="useScreenFile">Indicates if a screen file is used</param>
         /// <param name="addPause0">Indicates if a "PAUSE 0" should be added</param>
         /// <param name="borderColor">Border color ("0"-"7")</param>
@@ -538,6 +542,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns>Block contents</returns>
         private static List<byte[]> CreateAutoStartBlock(AssemblerOutput output, string name,
+            bool singleBlock,
             bool useScreenFile,
             bool addPause0,
             string borderColor,
@@ -547,10 +552,10 @@ namespace Spect.Net.VsPackage.Commands
             return output.ModelType == SpectrumModelType.Spectrum48
                    || output.Segments.Count(s => s.Bank != null) == 0
                 // --- No banks to emit, use the ZX Spectrum 48 auto-loader format
-                ? CreateSpectrum48StartBlock(output, name, useScreenFile, addPause0,
+                ? CreateSpectrum48StartBlock(output, name, singleBlock, useScreenFile, addPause0,
                     borderColor, startAddr, clearAddr)
                 // --- There are banks to emit, use the ZX Spectrum 128 auto-loader format
-                : CreateSpectrum128StartBlock(output, name, useScreenFile, addPause0,
+                : CreateSpectrum128StartBlock(output, name, singleBlock, useScreenFile, addPause0,
                     borderColor, startAddr, clearAddr);
         }
 
@@ -566,6 +571,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns>Block contents</returns>
         private static List<byte[]> CreateSpectrum48StartBlock(AssemblerOutput output, string name,
+            bool singleBlock,
             bool useScreenFile,
             bool addPause0,
             string borderColor,
@@ -614,13 +620,24 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Add 'LOAD "" CODE' for each block
-            for (var i = 0; i < output.Segments.Count; i++)
+            if (singleBlock)
             {
                 codeLine.Add(LOAD_TKN);
                 codeLine.Add(DQUOTE);
                 codeLine.Add(DQUOTE);
                 codeLine.Add(CODE_TKN);
                 codeLine.Add(COLON);
+            }
+            else
+            {
+                for (var i = 0; i < output.Segments.Count; i++)
+                {
+                    codeLine.Add(LOAD_TKN);
+                    codeLine.Add(DQUOTE);
+                    codeLine.Add(DQUOTE);
+                    codeLine.Add(CODE_TKN);
+                    codeLine.Add(COLON);
+                }
             }
 
             // --- Add 'PAUSE 0'
@@ -693,6 +710,7 @@ namespace Spect.Net.VsPackage.Commands
         /// <param name="clearAddr">Optional CLEAR address</param>
         /// <returns>Block contents</returns>
         private static List<byte[]> CreateSpectrum128StartBlock(AssemblerOutput output, string name,
+            bool singleBlock,
             bool useScreenFile,
             bool addPause0,
             string borderColor,
@@ -782,16 +800,26 @@ namespace Spect.Net.VsPackage.Commands
             }
 
             // --- Add 'LOAD "" CODE' for each block
-            for (var i = 0; i < output.Segments.Count(s => s.Bank == null); i++)
+            if (singleBlock)
             {
-                if (i > 0)
-                {
-                    codeLine.Add(COLON);
-                }
                 codeLine.Add(LOAD_TKN);
                 codeLine.Add(DQUOTE);
                 codeLine.Add(DQUOTE);
                 codeLine.Add(CODE_TKN);
+            }
+            else
+            {
+                for (var i = 0; i < output.Segments.Count(s => s.Bank == null); i++)
+                {
+                    if (i > 0)
+                    {
+                        codeLine.Add(COLON);
+                    }
+                    codeLine.Add(LOAD_TKN);
+                    codeLine.Add(DQUOTE);
+                    codeLine.Add(DQUOTE);
+                    codeLine.Add(CODE_TKN);
+                }
             }
 
             codeLine.Add(NEW_LINE);
@@ -830,8 +858,10 @@ namespace Spect.Net.VsPackage.Commands
             codeLine.Add(NEW_LINE);
             lines.Add(codeLine);
 
-            // --- PAUSE and START
+            // --- Finishing
             codeLine = new List<byte>(100);
+
+            // --- PAUSE and START
             if (addPause0)
             {
                 codeLine.Add(PAUSE_TKN);
@@ -855,6 +885,22 @@ namespace Spect.Net.VsPackage.Commands
             lines.Add(codeLine);
 
             // --- Add data lines with the machine code subroutine
+            /*
+                di                  243
+                ld a, ($5b5c)       58,92,91
+                and $f8              240, 248
+                ld b, a             71
+
+                ld a, ($5c38)       58,56,92
+                or b                176
+
+                ld ($5b5c),a        50,92,91
+
+                ld bc, ($7ffd)      1,253,127
+                out (c), a          237,121
+                ei                  251
+                ret                 201
+            */
             codeLine = new List<byte>(100);
             WriteDataStatement(codeLine, new ushort[]
             {
