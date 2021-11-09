@@ -172,6 +172,13 @@ namespace Spect.Net.VsPackage.SolutionItems
                     }
                 }
 
+                // Before we reassign HierarchyItems to new collection 
+                // we have to call Dispose manually for all previous items, to unsibscribe from HierarchyEvents
+                foreach(SpectrumProject proj in HierarchyItems)
+                {
+                    proj.Dispose();
+                }
+
                 HierarchyItems = collectedItems;
                 Projects = new ReadOnlyCollection<SpectrumProject>(HierarchyItems);
                 var contents = File.ReadAllText(Path.Combine(SolutionDir, PRIVATE_FOLDER, SETTINGS_FILE));
