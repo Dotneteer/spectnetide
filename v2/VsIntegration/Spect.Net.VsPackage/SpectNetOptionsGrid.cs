@@ -366,7 +366,7 @@ namespace Spect.Net.VsPackage
 
         [Category("ZX BASIC options")]
         [DisplayName("ZXB utility path")]
-        [Description("The full path where the ZXB utility (ZXBC.EXE) can be found.")]
+        [Description("The full path where the ZXB utility (ZXB.EXE) can be found.")]
         public string ZxbPath { get; set; }
 
         [Category("ZX BASIC options")]
