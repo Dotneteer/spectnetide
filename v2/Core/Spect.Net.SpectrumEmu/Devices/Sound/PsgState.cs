@@ -395,12 +395,26 @@ namespace Spect.Net.SpectrumEmu.Devices.Sound
         /// <summary>
         /// I/O Port register A
         /// </summary>
-        public byte Register14 { get; set; }
+        public byte Register14 {
+            get => _regs[14].Value;
+            set
+            {
+                _regs[14].Value = (byte)(value & 0xFF);
+                _regs[14].ModifiedTact = HostVm.Cpu.Tacts;
+            }
+        }
 
         /// <summary>
         /// I/O Port register B
         /// </summary>
-        public byte Register15 { get; set; }
+        public byte Register15 {
+            get => _regs[15].Value;
+            set
+            {
+                _regs[15].Value = (byte)(value & 0xFF);
+                _regs[15].ModifiedTact = HostVm.Cpu.Tacts;
+            }
+        }
 
         /// <summary>
         /// Gets a register by its index
