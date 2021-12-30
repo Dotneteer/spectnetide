@@ -336,7 +336,7 @@ namespace Spect.Net.VsPackage.Compilers
         }
 
         private const string ZXB_NOT_FOUND_MESSAGE =
-            "SpectNetIDE cannot run ZXBC.EXE ({0}). Please check that you specified the " +
+            "SpectNetIDE cannot run ZXB.EXE ({0}). Please check that you specified the " +
             "correct path in the Spect.Net IDE options page (ZXB utility path) or added it " +
             "to the PATH evnironment variable.\nFor more details, check this article: " +
             SETUP_URL +
